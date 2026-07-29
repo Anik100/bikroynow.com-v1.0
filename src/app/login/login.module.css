@@ -1,0 +1,293 @@
+.authContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px);
+  padding: 0.5rem 0;
+}
+
+.authCard {
+  background: #ffffff;
+  padding: 1.1rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.08), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+  border: 1px solid #e2e8f0;
+  border-top: 4px solid var(--primary-orange);
+  width: 100%;
+  max-width: 390px;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.authCard h2 {
+  margin-bottom: 0.15rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  letter-spacing: -0.3px;
+}
+
+.authCard p {
+  color: var(--text-light);
+  margin-bottom: 0.65rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+}
+
+.error {
+  background: #fef2f2;
+  color: var(--error-color);
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  margin-bottom: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  text-align: left;
+}
+
+.form input {
+  padding: 0.5rem 0.75rem !important;
+  font-size: 0.85rem !important;
+  border-radius: 8px !important;
+  border: 1.5px solid #cbd5e1 !important;
+  background-color: #fafafa !important;
+  transition: all 0.2s ease-in-out !important;
+}
+
+.form input:focus {
+  border-color: var(--primary-orange) !important;
+  background-color: #ffffff !important;
+  box-shadow: 0 0 0 3px rgba(255, 117, 25, 0.15) !important;
+  outline: none !important;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.inputGroup label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.submitBtn {
+  width: 100%;
+  margin-top: 0.3rem;
+  padding: 0.55rem 1rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #ff7519 0%, #e65c00 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(255, 117, 25, 0.28);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+  border: none;
+}
+
+.submitBtn:hover {
+  box-shadow: 0 6px 16px rgba(255, 117, 25, 0.38);
+  opacity: 0.96;
+}
+
+.submitBtn:active {
+  transform: scale(0.98);
+}
+
+.divider {
+  margin: 0.5rem 0;
+  position: relative;
+  text-align: center;
+}
+
+.divider::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 1px;
+  background: #e2e8f0;
+  z-index: 0;
+}
+
+.divider span {
+  background: #ffffff;
+  padding: 0 0.75rem;
+  color: #94a3b8;
+  font-size: 0.72rem;
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.googleBtn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.52rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.googleBtn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.googleBtn:active {
+  transform: scale(0.98);
+}
+
+.footerText {
+  margin-top: 0.5rem;
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+.footerText a {
+  color: var(--primary-orange);
+  font-weight: 700;
+  transition: color 0.15s ease;
+}
+
+.footerText a:hover {
+  color: #e65c00;
+  text-decoration: underline;
+}
+
+/* Mobile Specific Optimizations - Larger, prominent mobile elements */
+@media (max-width: 480px) {
+  .authContainer {
+    padding: 0.8rem 0;
+    min-height: calc(100vh - 120px);
+  }
+
+  .authCard {
+    width: 95%;
+    max-width: 100%;
+    padding: 1.4rem 1.2rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  }
+
+  .authCard h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .authCard p {
+    margin-bottom: 0.9rem;
+    font-size: 0.88rem;
+  }
+
+  .form {
+    gap: 0.7rem;
+  }
+
+  .inputGroup label {
+    font-size: 0.88rem;
+  }
+
+  .form input {
+    padding: 0.7rem 0.85rem !important;
+    font-size: 0.98rem !important;
+    border-radius: 10px !important;
+  }
+
+  .submitBtn {
+    padding: 0.75rem 1rem;
+    font-size: 0.98rem;
+    border-radius: 10px;
+    margin-top: 0.4rem;
+  }
+
+  .divider {
+    margin: 0.75rem 0;
+  }
+
+  .divider span {
+    font-size: 0.8rem;
+  }
+
+  .googleBtn {
+    padding: 0.7rem 1rem;
+    font-size: 0.92rem;
+    border-radius: 10px;
+  }
+
+  .footerText {
+    margin-top: 0.8rem;
+    font-size: 0.88rem;
+  }
+
+  /* Specific mobile sizing boost for Login card */
+  .loginCard {
+    padding: 1.6rem 1.4rem !important;
+  }
+
+  .loginCard h2 {
+    font-size: 1.6rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .loginCard p {
+    font-size: 0.92rem !important;
+    margin-bottom: 1.1rem !important;
+  }
+
+  .loginCard .form {
+    gap: 0.8rem !important;
+  }
+
+  .loginCard .inputGroup label {
+    font-size: 0.9rem !important;
+  }
+
+  .loginCard .form input {
+    padding: 0.78rem 0.95rem !important;
+    font-size: 1.02rem !important;
+    border-radius: 10px !important;
+  }
+
+  .loginCard .submitBtn {
+    padding: 0.8rem 1rem !important;
+    font-size: 1.02rem !important;
+    margin-top: 0.5rem !important;
+    border-radius: 10px !important;
+  }
+
+  .loginCard .divider {
+    margin: 0.9rem 0 !important;
+  }
+
+  .loginCard .googleBtn {
+    padding: 0.78rem 1rem !important;
+    font-size: 0.95rem !important;
+    border-radius: 10px !important;
+  }
+
+  .loginCard .footerText {
+    margin-top: 1rem !important;
+    font-size: 0.92rem !important;
+  }
+}

@@ -1,0 +1,285 @@
+.pageWrapper {
+  background-color: #f4f7f6;
+  min-height: 100vh;
+  padding: 1.5rem 0 2.5rem 0;
+}
+
+.supportCard {
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+  padding: 1.1rem;
+  max-width: 390px;
+  margin: 0 auto;
+}
+
+.headerText {
+  text-align: center;
+  margin-bottom: 1.15rem;
+}
+
+.headerText h1 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.headerText p {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.hoursBanner {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.bannerOpen {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.bannerClosed {
+  border-color: #fca5a5;
+  background: #fef2f2;
+  color: #991b1b;
+}
+
+.channelGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.channelCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.channelCard:hover:not(.cardDisabled) {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.channelLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.iconWrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.infoBlock h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.15rem;
+}
+
+.infoBlock p {
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.statusIndicator {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+}
+
+.statusOpen {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.statusClosed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.cardDisabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Live Support Window overlay styling */
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  height: 380px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  margin-top: 0.85rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+.chatHeader {
+  background: #008b5e;
+  color: white;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chatHeaderTitle {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.chatHeaderSubtitle {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.chatMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.msgRow {
+  display: flex;
+  width: 100%;
+}
+
+.msgSent {
+  justify-content: flex-end;
+}
+
+.msgReceived {
+  justify-content: flex-start;
+}
+
+.msgBubble {
+  max-width: 75%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  position: relative;
+}
+
+.msgSent .msgBubble {
+  background: #008b5e;
+  color: white;
+  border-top-right-radius: 2px;
+}
+
+.msgReceived .msgBubble {
+  background: white;
+  color: #1e293b;
+  border-top-left-radius: 2px;
+  border: 1px solid #e2e8f0;
+}
+
+.msgTime {
+  display: block;
+  font-size: 0.68rem;
+  margin-top: 0.3rem;
+  opacity: 0.75;
+  text-align: right;
+}
+
+.msgReceived .msgTime {
+  color: #64748b;
+}
+
+.chatInputArea {
+  display: flex;
+  padding: 0.75rem;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  gap: 0.5rem;
+}
+
+.chatInput {
+  flex: 1;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chatInput:focus {
+  border-color: #008b5e;
+}
+
+.chatSendBtn {
+  background: #008b5e;
+  border: none;
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.chatSendBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.unauthorizedCard {
+  background: white;
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  max-width: 440px;
+  margin: 4rem auto;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

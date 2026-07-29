@@ -1,0 +1,297 @@
+.pageWrapper {
+  background-color: #f4f7f6;
+  min-height: 100vh;
+  padding: 1.5rem 0 3rem 0;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  color: #64748b;
+  gap: 1rem;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  color: #008b5e;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.unauthorizedCard {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem 1.5rem;
+  max-width: 440px;
+  margin: 3rem auto;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.iconBox {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.unauthorizedCard h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.unauthorizedCard p {
+  color: #64748b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.backLinkWrapper {
+  margin-bottom: 1.25rem;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #64748b;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.backLink:hover {
+  color: #008b5e;
+}
+
+.pageHeader {
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.75rem;
+}
+
+.pageTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.resultsCount {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  background: #f1f5f9;
+  padding: 0.15rem 0.5rem;
+  border-radius: 20px;
+  margin-left: 0.4rem;
+}
+
+.adList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.adCard {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.01);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: row;
+  padding: 0.75rem;
+  gap: 1rem;
+  align-items: center;
+  text-decoration: none;
+}
+
+.adCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  border-color: #cbd5e1;
+}
+
+.imageBox {
+  width: 112px;
+  height: 84px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f8fafc;
+  position: relative;
+}
+
+.imageBox img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.verifiedBadge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: #fef08a;
+  color: #854d0e;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  z-index: 10;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.favoriteBtn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 15;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: all 0.2s ease;
+}
+
+.favoriteBtn:hover {
+  transform: scale(1.08);
+  background: #fff0f0;
+}
+
+.adInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 84px;
+  padding: 0.1rem 0;
+}
+
+.titleMeta {
+  display: flex;
+  flex-direction: column;
+}
+
+.adTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.3;
+}
+
+.adMeta {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.priceTime {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.adPrice {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #008b5e;
+}
+
+.cardFooter {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem 1.5rem;
+  background: white;
+  border-radius: 12px;
+  color: #64748b;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.01);
+  border: 1px solid #e2e8f0;
+  max-width: 500px;
+  margin: 2rem auto;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.emptyState h3 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 0.5rem;
+}
+
+.emptyState p {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-width: 380px;
+  margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+  .adCard {
+    padding: 0.6rem;
+    gap: 0.75rem;
+  }
+  
+  .imageBox {
+    width: 88px;
+    height: 66px;
+  }
+  
+  .adInfo {
+    height: 66px;
+  }
+  
+  .adTitle {
+    font-size: 0.85rem;
+    -webkit-line-clamp: 1;
+  }
+  
+  .adMeta {
+    font-size: 0.72rem;
+  }
+  
+  .adPrice {
+    font-size: 0.95rem;
+  }
+  
+  .cardFooter {
+    font-size: 0.68rem;
+  }
+}

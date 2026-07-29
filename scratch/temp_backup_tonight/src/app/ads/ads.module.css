@@ -1,0 +1,673 @@
+.adsWrapper {
+  background-color: #f4f7f6;
+  min-height: 100vh;
+  padding: 1.5rem 0 5rem 0;
+}
+
+.adsLayoutFullWidth {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.topFilterBar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  background: white;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  width: 100%;
+}
+
+.filterBarWrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.viewToggleGroup {
+  display: flex;
+  gap: 0.3rem;
+  background: #f1f5f9;
+  padding: 0.3rem;
+  border-radius: 6px;
+}
+
+.viewToggleBtn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  padding: 0.4rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.viewToggleBtn:hover {
+  color: #0f172a;
+}
+
+.activeView {
+  background: white;
+  color: #008b5e;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+@media (min-width: 768px) {
+  .topFilterBar {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.premiumFilterBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #008b5e;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem; /* Compact size! */
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.86rem; /* Compact text! */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 139, 94, 0.12);
+}
+
+.premiumFilterBtn:hover {
+  background: #00704c;
+  transform: translateY(-1px);
+}
+
+.activeFiltersRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filterBadge {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  padding: 0.25rem 0.6rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.badgeResetBtn {
+  background: none;
+  border: none;
+  color: #ef4444;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  margin-left: 0.3rem;
+}
+
+.badgeResetBtn:hover {
+  text-decoration: underline;
+}
+
+/* Floating Filter Overlay on top of Ads Grid */
+.floatingFilterOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.floatingFilterCard {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  padding: 1.5rem;
+  animation: slideUpModal 0.3s ease-out;
+}
+
+@keyframes slideUpModal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.floatingFilterHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.floatingFilterHeader h4 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #1c2b38;
+  margin: 0;
+}
+
+.floatingFilterBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.filterGroup {
+  margin-bottom: 0.5rem;
+}
+
+.filterGroup label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+
+.filterSelector {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #1c2b38;
+  background: white;
+}
+
+.priceInputs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.priceInputs input {
+  width: 50%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  color: #1c2b38;
+}
+
+.filterActions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.applyBtn {
+  flex: 1;
+  background: #008b5e;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.applyBtn:hover {
+  background: #00704c;
+}
+
+.resetBtn {
+  background: #f0f0f0;
+  color: #666;
+  border: none;
+  padding: 0.8rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.resetBtn:hover {
+  background: #e2e8f0;
+}
+
+.adsMainFull {
+  width: 100%;
+}
+
+.pageHeader {
+  margin-bottom: 1.5rem;
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pageTitle {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #1c2b38;
+}
+
+.resultsCount {
+  font-size: 0.85rem;
+  color: #888;
+  font-weight: 500;
+  margin-left: 0.6rem;
+}
+
+/* LIST VIEW (Horizontal Stack) */
+.adListFull {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* GRID VIEW (Vertical Cards) */
+.adGridFull {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  .adGridFull {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .adGridFull {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.adCard {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: row; /* Horizontal Layout! */
+  padding: 0.8rem;
+  gap: 1rem;
+  align-items: center;
+  text-decoration: none;
+}
+
+/* Modifiers for Grid View */
+.adCardGrid {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #f0f0f0;
+  display: flex;
+  flex-direction: column; /* Vertical Layout! */
+  text-decoration: none;
+}
+
+.adCardGrid:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border-color: #e2e8f0;
+}
+
+.adCardGrid .imageBox {
+  width: 100%;
+  height: 140px;
+  border-radius: 0;
+}
+
+.adCardGrid .adInfo {
+  padding: 1.2rem;
+  height: auto;
+  gap: 0.8rem;
+}
+
+.adCardGrid .priceTime {
+  margin-top: 0.5rem;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.adCard:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.07);
+  border-color: #e2e8f0;
+}
+
+.imageBox {
+  width: 130px;
+  height: 98px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f7fafc;
+  position: relative;
+}
+
+.imageBox img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.verifiedBadge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: #fef08a;
+  color: #854d0e;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.favoriteBtn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 15;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: all 0.2s ease;
+}
+
+.favoriteBtn:hover {
+  transform: scale(1.1);
+  background: #ffffff;
+}
+
+.favoriteBtn.active {
+  background: #ffffff;
+}
+
+.adInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 98px; /* Perfectly aligned to the image box! */
+  padding: 0.1rem 0;
+}
+
+.titleMeta {
+  display: flex;
+  flex-direction: column;
+}
+
+.adTitle {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #1c2b38;
+  margin-bottom: 0.2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.35;
+}
+
+.adMeta {
+  font-size: 0.78rem;
+  color: #718096;
+}
+
+.priceTime {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.adPrice {
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: #008b5e;
+}
+
+.cardFooter {
+  font-size: 0.74rem;
+  color: #a0aec0;
+}
+
+@media (max-width: 480px) {
+  .adCard {
+    padding: 0.6rem;
+    gap: 0.8rem;
+  }
+  
+  .imageBox {
+    width: 90px;
+    height: 72px;
+  }
+  
+  .adInfo {
+    height: 72px;
+  }
+  
+  .adTitle {
+    font-size: 0.88rem;
+    -webkit-line-clamp: 1;
+  }
+  
+  .adMeta {
+    font-size: 0.74rem;
+  }
+  
+  .adPrice {
+    font-size: 0.95rem;
+  }
+  
+  .cardFooter {
+    font-size: 0.7rem;
+  }
+}
+
+.noAds {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: white;
+  border-radius: 12px;
+  color: #718096;
+  font-weight: 600;
+  width: 100%;
+}
+
+/* Modals */
+.darkModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.darkModal {
+  background: #333333;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 16px;
+  color: white;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.darkModalHeader h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.darkModalSearch {
+  width: 100%;
+  padding: 0.8rem;
+  background: #444;
+  border: 1px solid #555;
+  border-radius: 8px;
+  color: white;
+  margin-top: 1rem;
+  outline: none;
+}
+
+.radioList {
+  display: flex;
+  flex-direction: column;
+  max-height: 350px;
+  overflow-y: auto;
+  margin-top: 1rem;
+  padding-right: 0.3rem;
+}
+
+.radioList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.radioList::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 3px;
+}
+
+.radioItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+}
+
+.locInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.locName {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.locParent {
+  font-size: 0.75rem;
+  color: #a0aec0;
+}
+
+.radioCircle {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #718096;
+  border-radius: 50%;
+  position: relative;
+}
+
+.radioItem input {
+  position: absolute;
+  opacity: 0;
+}
+
+.radioItem input:checked ~ .radioCircle {
+  border-color: #4fd1c5;
+}
+
+.radioItem input:checked ~ .radioCircle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  background: #4fd1c5;
+  border-radius: 50%;
+}
+
+.backBtn {
+  background: #444;
+  border: 1px solid #555;
+  color: #4fd1c5;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 1rem;
+  transition: all 0.2s;
+  display: inline-block;
+  outline: none;
+}
+
+.backBtn:hover {
+  background: #555;
+  border-color: #666;
+}
+
+.subCatHeader {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #a0aec0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 1rem;
+  margin-bottom: 0.4rem;
+  padding-left: 0.2rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  padding-bottom: 0.2rem;
+}
