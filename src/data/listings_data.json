@@ -1,0 +1,62 @@
+[
+  {
+    "id": "test-ad-999",
+    "user_id": "user-1785429378863",
+    "title": "Test Router from Script",
+    "description": "",
+    "price": 1500,
+    "category_id": "Accessories",
+    "location": "Tangail",
+    "condition": "Used",
+    "contact_phone": "01700000000",
+    "images": [
+      "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&auto=format&fit=crop&q=80"
+    ],
+    "status": "active",
+    "created_at": "2026-07-30T16:36:18.863Z"
+  },
+  {
+    "id": "tplink-router-tangail",
+    "user_id": "user-business-1",
+    "title": "TP-Link wdr6500 Dualband china used",
+    "description": "High speed dualband router in great working condition. 4 external antennas, 1750Mbps speed.",
+    "price": 1650,
+    "category_id": "Accessories",
+    "location": "Tangail",
+    "condition": "Used",
+    "contact_phone": "01700000000",
+    "images": [
+      "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&auto=format&fit=crop&q=80"
+    ],
+    "status": "active",
+    "is_featured": true,
+    "promotion_type": "3-day express boost",
+    "created_at": "2026-07-30T07:15:00.000Z",
+    "profiles": {
+      "membership_type": "business",
+      "membership_expires_at": "2030-01-01"
+    }
+  },
+  {
+    "id": "china-mobile-onu-tangail",
+    "user_id": "user-business-1",
+    "title": "China mobile pt939g Gigabit xpon onu+router",
+    "description": "Gigabit XPON ONU router with Wi-Fi support. Excellent signal range and fiber connectivity.",
+    "price": 1950,
+    "category_id": "Accessories",
+    "location": "Tangail",
+    "condition": "Used",
+    "contact_phone": "01700000000",
+    "images": [
+      "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&auto=format&fit=crop&q=80"
+    ],
+    "status": "active",
+    "is_featured": true,
+    "promotion_type": "3-day express boost",
+    "created_at": "2026-07-30T07:15:00.000Z",
+    "profiles": {
+      "membership_type": "business",
+      "membership_expires_at": "2030-01-01"
+    }
+  }
+]

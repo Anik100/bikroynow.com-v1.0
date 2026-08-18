@@ -38,7 +38,9 @@ export default function Footer() {
             <li><Link href="/about-us">Blog</Link></li>
             <li>
               <div className={styles.socialIcons}>
-                <Facebook size={20} />
+                <a href="https://www.facebook.com/profile.php?id=61592653021446" target="_blank" rel="noopener noreferrer" title="Facebook Page" className={styles.socialLink}>
+                  <Facebook size={20} />
+                </a>
                 <Twitter size={20} />
                 <Instagram size={20} />
                 <Youtube size={20} />

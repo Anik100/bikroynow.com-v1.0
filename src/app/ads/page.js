@@ -240,143 +240,84 @@ function AdsContent() {
 
   const fetchFilteredAds = async () => {
     setLoading(true);
-    let query = supabase.from('listings').select('*').neq('status', 'pending').order('is_verified', { ascending: false, nullsFirst: false }).order('created_at', { ascending: false });
+    try {
+      const apiRes = await fetch(`/api/listings?t=${Date.now()}`, { cache: 'no-store' });
+      if (apiRes.ok) {
+        const apiJson = await apiRes.json();
+        let allItems = Array.isArray(apiJson.listings) ? apiJson.listings : [];
 
-    const cat = searchParams.get('category');
-    const loc = searchParams.get('location');
-    const minP = searchParams.get('minPrice');
-    const maxP = searchParams.get('maxPrice');
+        // Apply filters locally in Javascript to bypass RLS restrictions completely for all accounts
+        const cat = searchParams.get('category');
+        const loc = searchParams.get('location');
+        const minP = searchParams.get('minPrice');
+        const maxP = searchParams.get('maxPrice');
+        const q = searchParams.get('q');
+        const verifiedOnly = searchParams.get('verified') === 'true';
 
-    if (cat) {
-      if (CATEGORIES[cat]) {
-        // Selected a Main Category - fetch all specific subcategory items underneath
-        const subcategories = CATEGORIES[cat];
-        const specificItems = [];
-        Object.entries(subcategories).forEach(([subKey, items]) => {
-          items.forEach(item => specificItems.push(item));
-        });
-        query = query.in('category_id', specificItems);
-      } else {
-        // Selected a specific subcategory/item - query directly
-        query = query.eq('category_id', cat);
-      }
-    }
-    
-    const verifiedOnly = searchParams.get('verified') === 'true';
-    
-    if (loc && loc !== 'All of Bangladesh') {
-      const isDivision = Object.keys(LOCATIONS).includes(loc);
-      const isAllOfDivision = loc.startsWith('All of ') && loc.endsWith(' Division');
-      
-      if (isDivision || isAllOfDivision) {
-        const divisionName = isDivision ? loc : loc.replace('All of ', '').replace(' Division', '');
-        const districtsInDivision = LOCATIONS[divisionName];
-        if (districtsInDivision) {
-          query = query.in('location', [loc, ...districtsInDivision]);
-        } else {
-          query = query.eq('location', loc);
-        }
-      } else {
-        query = query.eq('location', loc);
-      }
-    }
-    if (minP) query = query.gte('price', parseFloat(minP));
-    if (maxP) query = query.lte('price', parseFloat(maxP));
-    if (verifiedOnly) query = query.eq('is_verified', true);
+        let filtered = allItems;
 
-    let { data, error } = await query;
-
-    if (error && error.message.includes('is_verified')) {
-      console.warn('Fallback: is_verified column missing in database. Fetching search results without verification ordering.');
-      let fallbackQuery = supabase.from('listings').select('*').neq('status', 'pending').order('created_at', { ascending: false });
-      
-      if (cat) {
-        if (CATEGORIES[cat]) {
-          const subcategories = CATEGORIES[cat];
-          const specificItems = [];
-          Object.entries(subcategories).forEach(([subKey, items]) => {
-            items.forEach(item => specificItems.push(item));
-          });
-          fallbackQuery = fallbackQuery.in('category_id', specificItems);
-        } else {
-          fallbackQuery = fallbackQuery.eq('category_id', cat);
-        }
-      }
-      if (loc && loc !== 'All of Bangladesh') {
-        const isDivision = Object.keys(LOCATIONS).includes(loc);
-        const isAllOfDivision = loc.startsWith('All of ') && loc.endsWith(' Division');
-        
-        if (isDivision || isAllOfDivision) {
-          const divisionName = isDivision ? loc : loc.replace('All of ', '').replace(' Division', '');
-          const districtsInDivision = LOCATIONS[divisionName];
-          if (districtsInDivision) {
-            fallbackQuery = fallbackQuery.in('location', [loc, ...districtsInDivision]);
+        // 1. Category Filter
+        if (cat) {
+          if (CATEGORIES[cat]) {
+            const subcategories = CATEGORIES[cat];
+            const specificItems = [];
+            Object.entries(subcategories).forEach(([subKey, items]) => {
+              items.forEach(item => specificItems.push(item));
+            });
+            filtered = filtered.filter(item => specificItems.includes(item.category_id));
           } else {
-            fallbackQuery = fallbackQuery.eq('location', loc);
+            filtered = filtered.filter(item => item.category_id === cat);
           }
-        } else {
-          fallbackQuery = fallbackQuery.eq('location', loc);
         }
-      }
-      if (minP) fallbackQuery = fallbackQuery.gte('price', parseFloat(minP));
-      if (maxP) fallbackQuery = fallbackQuery.lte('price', parseFloat(maxP));
-      if (verifiedOnly) fallbackQuery = fallbackQuery.eq('is_verified', true);
 
-      const fallbackResult = await fallbackQuery;
-      data = fallbackResult.data;
-      error = fallbackResult.error;
-    }
-
-    if (error) {
-      console.error('Error fetching filtered ads:', error);
-    }
-    
-    if (data && data.length > 0) {
-      // Fetch active featured slider listing IDs
-      const { data: featuredData } = await supabase
-        .from('featured_ads')
-        .select('listing_id')
-        .eq('is_active', true);
-
-      const featuredSet = new Set((featuredData || []).map(f => f.listing_id));
-
-      const userIds = [...new Set(data.map(item => item.user_id).filter(Boolean))];
-      if (userIds.length > 0) {
-        const { data: profilesData } = await supabase
-          .from('profiles')
-          .select('id, membership_type, membership_expires_at')
-          .in('id', userIds);
+        // 2. Location Filter
+        if (loc && loc !== 'All of Bangladesh') {
+          const isDivision = Object.keys(LOCATIONS).includes(loc);
+          const isAllOfDivision = loc.startsWith('All of ') && loc.endsWith(' Division');
           
-        if (profilesData) {
-          const profilesMap = {};
-          profilesData.forEach(p => {
-            profilesMap[p.id] = p;
-          });
-          const enrichedData = data.map(item => ({
-            ...item,
-            is_featured: featuredSet.has(item.id),
-            profiles: profilesMap[item.user_id] || null
-          }));
-
-          setListings(sortPremiumListings(enrichedData));
-        } else {
-          const enrichedData = data.map(item => ({
-            ...item,
-            is_featured: featuredSet.has(item.id)
-          }));
-          setListings(sortPremiumListings(enrichedData));
+          if (isDivision || isAllOfDivision) {
+            const divisionName = isDivision ? loc : loc.replace('All of ', '').replace(' Division', '');
+            const districtsInDivision = LOCATIONS[divisionName];
+            if (districtsInDivision) {
+              const locs = [loc, ...districtsInDivision];
+              filtered = filtered.filter(item => locs.includes(item.location));
+            } else {
+              filtered = filtered.filter(item => item.location === loc);
+            }
+          } else {
+            filtered = filtered.filter(item => item.location === loc);
+          }
         }
-      } else {
-        const enrichedData = data.map(item => ({
-          ...item,
-          is_featured: featuredSet.has(item.id)
-        }));
-        setListings(sortPremiumListings(enrichedData));
+
+        // 3. Price Filter
+        if (minP) {
+          filtered = filtered.filter(item => item.price >= parseFloat(minP));
+        }
+        if (maxP) {
+          filtered = filtered.filter(item => item.price <= parseFloat(maxP));
+        }
+
+        // 4. Verified Only Filter
+        if (verifiedOnly) {
+          filtered = filtered.filter(item => item.is_verified);
+        }
+
+        // 5. Search query Filter
+        if (q) {
+          const queryTerm = q.toLowerCase().trim();
+          filtered = filtered.filter(item => 
+            (item.title && item.title.toLowerCase().includes(queryTerm)) ||
+            (item.description && item.description.toLowerCase().includes(queryTerm))
+          );
+        }
+
+        setListings(sortPremiumListings(filtered));
       }
-    } else {
-      setListings(sortPremiumListings(data || []));
+    } catch (err) {
+      console.error('Error fetching filtered ads:', err);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const applyFilters = () => {

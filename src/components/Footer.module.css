@@ -45,6 +45,13 @@
   margin-top: 0.5rem;
 }
 
+.socialLink {
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
 .socialIcons svg {
   cursor: pointer;
   transition: color 0.2s;

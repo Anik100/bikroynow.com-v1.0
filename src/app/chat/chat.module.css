@@ -1,13 +1,14 @@
 .chatLayout {
   display: flex;
-  height: auto; /* শুধু navbar বাদ দেওয়া, footer নেই */
-  background: white;
+  height: calc(100vh - 71px); /* Fill remaining viewport height below navbar */
+  background: #f8fafc;
   overflow: hidden;
   position: fixed;
   top: 71px;
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 100; /* Ensure it stays on top of footer and other layout elements */
 }
 
 /* Chat List Sidebar */
@@ -323,7 +324,7 @@
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
   .chatLayout {
-    height: auto;
+    height: calc(100vh - 71px);
   }
 
   .chatList {
@@ -337,7 +338,7 @@
     right: 0;
     bottom: 0;
     z-index: 1000;
-    height: auto;
+    height: calc(100vh - 71px);
   }
   
   .backBtn {

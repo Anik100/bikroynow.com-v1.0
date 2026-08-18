@@ -24,6 +24,10 @@ export default function FeaturedSlider({ lang = 'en' }) {
   }, []);
 
   const fetchFeaturedAds = async () => {
+    const timeout = setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+
     try {
       const { data, error } = await supabase
         .from('featured_ads')
@@ -42,8 +46,10 @@ export default function FeaturedSlider({ lang = 'en' }) {
       }
     } catch (err) {
       console.error('Error fetching featured ads:', err);
+    } finally {
+      clearTimeout(timeout);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const stopAutoSlide = useCallback(() => {

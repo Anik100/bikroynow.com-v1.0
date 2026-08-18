@@ -106,66 +106,32 @@ export default function Home() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    let isCancelled = false;
+
     const fetchListings = async () => {
       try {
         setLoading(true);
-        let { data, error } = await supabase
-          .from('listings')
-          .select('*')
-          .neq('status', 'pending')
-          .order('created_at', { ascending: false })
-          .limit(10);
-        
-        if (error) {
-          console.error('Error fetching listings:', error);
-          setListings([]);
-        } else if (data && data.length > 0) {
-          // Fetch user profiles to display their membership badges
-          const userIds = [...new Set(data.map(item => item.user_id).filter(Boolean))];
-          if (userIds.length > 0) {
-            const { data: profilesData } = await supabase
-              .from('profiles')
-              .select('id, membership_type, membership_expires_at')
-              .in('id', userIds);
-              
-            if (profilesData) {
-              const profilesMap = {};
-              profilesData.forEach(p => {
-                profilesMap[p.id] = p;
-              });
-
-              // Fetch active featured slider listing IDs
-              const { data: featuredData } = await supabase
-                .from('featured_ads')
-                .select('listing_id')
-                .eq('is_active', true);
-
-              const featuredSet = new Set((featuredData || []).map(f => f.listing_id));
-
-              const enrichedData = data.map(item => ({
-                ...item,
-                is_featured: featuredSet.has(item.id),
-                profiles: profilesMap[item.user_id] || null
-              }));
-              
-              setListings(sortPremiumListings(enrichedData));
-            } else {
-              setListings(sortPremiumListings(data));
-            }
-          } else {
-            setListings(sortPremiumListings(data));
+        const apiRes = await fetch(`/api/listings?t=${Date.now()}`, { cache: 'no-store' });
+        if (apiRes.ok) {
+          const apiJson = await apiRes.json();
+          if (Array.isArray(apiJson.listings) && !isCancelled) {
+            setListings(sortPremiumListings(apiJson.listings));
+            setLoading(false);
+            return;
           }
-        } else {
-          setListings(sortPremiumListings(data || []));
         }
       } catch (err) {
         console.error('Unexpected error fetching listings:', err);
-        setListings([]);
       } finally {
-        setLoading(false);
+        if (!isCancelled) setLoading(false);
       }
     };
+
     fetchListings();
+
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   // Fetch session and user's favorites dynamically

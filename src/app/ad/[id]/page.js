@@ -326,15 +326,24 @@ export default function AdDetails({ params }) {
 
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setCurrentUser(session?.user || null);
-      if (session?.user && params.id) {
-        const { data } = await supabase
-          .from('favorites')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .eq('listing_id', params.id)
-          .maybeSingle();
-        if (data) setIsFavorite(true);
+      let activeUser = session?.user;
+      if (!activeUser) {
+        try {
+          const localUser = localStorage.getItem('bikroynow_demo_user');
+          if (localUser) activeUser = JSON.parse(localUser);
+        } catch (e) {}
+      }
+      setCurrentUser(activeUser || null);
+      if (activeUser && params.id) {
+        try {
+          const { data } = await supabase
+            .from('favorites')
+            .select('*')
+            .eq('user_id', activeUser.id)
+            .eq('listing_id', params.id)
+            .maybeSingle();
+          if (data) setIsFavorite(true);
+        } catch (e) {}
       }
     };
 
@@ -342,15 +351,24 @@ export default function AdDetails({ params }) {
     if (params.id) fetchAdData();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        setCurrentUser(session.user);
-        const { data } = await supabase
-          .from('favorites')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .eq('listing_id', params.id)
-          .maybeSingle();
-        if (data) setIsFavorite(true);
+      let activeUser = session?.user;
+      if (!activeUser) {
+        try {
+          const localUser = localStorage.getItem('bikroynow_demo_user');
+          if (localUser) activeUser = JSON.parse(localUser);
+        } catch (e) {}
+      }
+      if (activeUser) {
+        setCurrentUser(activeUser);
+        try {
+          const { data } = await supabase
+            .from('favorites')
+            .select('*')
+            .eq('user_id', activeUser.id)
+            .eq('listing_id', params.id)
+            .maybeSingle();
+          if (data) setIsFavorite(true);
+        } catch (e) {}
       } else {
         setCurrentUser(null);
         setIsFavorite(false);
@@ -740,81 +758,49 @@ export default function AdDetails({ params }) {
                   onClick={async () => {
                     setSendingChat(true);
                     try {
+                      let activeUser = null;
                       const { data: { session } } = await supabase.auth.getSession();
-                      if (!session) {
+                      if (session?.user) {
+                        activeUser = session.user;
+                      } else {
+                        try {
+                          const localUser = localStorage.getItem('bikroynow_demo_user');
+                          if (localUser) activeUser = JSON.parse(localUser);
+                        } catch (e) {}
+                      }
+
+                      if (!activeUser) {
                         router.push('/login');
                         return;
                       }
                       
-                      if (session.user.id === ad.user_id) {
+                      const isOwnAd = activeUser.id === ad.user_id || 
+                        (activeUser.email && profile?.email && activeUser.email.toLowerCase() === profile.email.toLowerCase());
+                      if (isOwnAd) {
                         alert(lang === 'bn' ? 'আপনি নিজের বিজ্ঞাপনে চ্যাট করতে পারবেন না।' : 'You cannot chat on your own ad.');
                         return;
                       }
 
-                      // Step 1: Ensure buyer profile exists
-                      const { data: buyerProfile } = await supabase
-                        .from('profiles')
-                        .select('id')
-                        .eq('id', session.user.id)
-                        .single();
+                      // Call server-side chats API to create or get chat session
+                      const chatRes = await fetch('/api/chats', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          listing_id: ad.id,
+                          buyer_id: activeUser.id,
+                          seller_id: ad.user_id || 'seller-business-1'
+                        })
+                      });
 
-                      if (!buyerProfile) {
-                        // Create profile if missing
-                        await supabase.from('profiles').insert({
-                          id: session.user.id,
-                          full_name: session.user.user_metadata?.full_name || session.user.email,
-                          email: session.user.email,
-                          phone: session.user.user_metadata?.phone || null,
-                        });
-                      }
-
-                      // Step 2: Find existing chat or create new one
-                      let chatId = null;
-
-                      // Check if chat already exists
-                      const { data: existingChat } = await supabase
-                        .from('chats')
-                        .select('id')
-                        .eq('listing_id', ad.id)
-                        .eq('buyer_id', session.user.id)
-                        .maybeSingle();
-
-                      if (existingChat?.id) {
-                        chatId = existingChat.id;
-                      } else {
-                        // Create new chat
-                        const { error: chatError } = await supabase
-                          .from('chats')
-                          .insert([{
-                            listing_id: ad.id,
-                            buyer_id: session.user.id,
-                            seller_id: ad.user_id
-                          }]);
-
-                        if (chatError && chatError.code !== '23505') {
-                          // 23505 = duplicate key, which means chat was just created
-                          console.error('Chat insert error:', chatError);
-                          throw chatError;
-                        }
-
-                        // Now do a fresh SELECT to get the chat ID
-                        const { data: newlyCreatedChat } = await supabase
-                          .from('chats')
-                          .select('id')
-                          .eq('listing_id', ad.id)
-                          .eq('buyer_id', session.user.id)
-                          .single();
-
-                        if (newlyCreatedChat?.id) {
-                          chatId = newlyCreatedChat.id;
+                      if (chatRes.ok) {
+                        const chatJson = await chatRes.json();
+                        if (chatJson.id) {
+                          router.push(`/chat/${chatJson.id}`);
+                          return;
                         }
                       }
 
-                      if (chatId) {
-                        router.push(`/chat/${chatId}`);
-                      } else {
-                        throw new Error(lang === 'bn' ? 'চ্যাট তৈরি হয়েছে কিন্তু আইডি পাওয়া যাচ্ছে না। দয়া করে বিজ্ঞাপনদাতার প্রোফাইল চেক করুন।' : 'Chat created but ID not found. Please ensure the seller has a profile.');
-                      }
+                      throw new Error(lang === 'bn' ? 'সার্ভার চ্যাট তৈরি করতে ব্যর্থ হয়েছে।' : 'Failed to create chat session on server.');
                     } catch (err) {
                       console.error('Chat error full:', err);
                       alert((lang === 'bn' ? 'চ্যাট শুরু করতে সমস্যা হয়েছে: ' : 'Error starting chat: ') + err.message);

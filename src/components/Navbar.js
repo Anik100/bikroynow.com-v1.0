@@ -65,27 +65,15 @@ export default function Navbar() {
 
     const fetchUnreadCount = async () => {
       try {
-        // Get all chats where the user is a participant
-        const { data: userChats } = await supabase
-          .from('chats')
-          .select('id')
-          .or(`buyer_id.eq.${user.id},seller_id.eq.${user.id}`);
-
-        if (!userChats || userChats.length === 0) {
-          setUnreadCount(0);
-          return;
+        const res = await fetch(`/api/chats/list?user_id=${user.id}&t=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          if (Array.isArray(json.chats)) {
+            // Sum unreadCount from all active chat sessions
+            const totalUnread = json.chats.reduce((sum, chat) => sum + (chat.unreadCount || 0), 0);
+            setUnreadCount(totalUnread);
+          }
         }
-
-        const chatIds = userChats.map(c => c.id);
-
-        const { count } = await supabase
-          .from('messages')
-          .select('*', { count: 'exact', head: true })
-          .in('chat_id', chatIds)
-          .eq('is_read', false)
-          .neq('sender_id', user.id);
-
-        setUnreadCount(count || 0);
       } catch (err) {
         console.error('Error fetching unread count:', err);
       }
@@ -93,19 +81,12 @@ export default function Navbar() {
 
     fetchUnreadCount();
 
-    const subscription = supabase
-      .channel('global-messages')
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'messages' 
-      }, () => {
-        fetchUnreadCount();
-      })
-      .subscribe();
+    const interval = setInterval(() => {
+      fetchUnreadCount();
+    }, 3000);
 
     return () => {
-      supabase.removeChannel(subscription);
+      clearInterval(interval);
     };
   }, [user]);
 
@@ -163,14 +144,32 @@ export default function Navbar() {
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user || null);
+      if (session?.user) {
+        setUser(session.user);
+      } else {
+        const localUser = localStorage.getItem('bikroynow_demo_user');
+        if (localUser) {
+          setUser(JSON.parse(localUser));
+        } else {
+          setUser(null);
+        }
+      }
     };
 
     checkUser();
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        setUser(session?.user || null);
+        if (session?.user) {
+          setUser(session.user);
+        } else {
+          const localUser = localStorage.getItem('bikroynow_demo_user');
+          if (localUser) {
+            setUser(JSON.parse(localUser));
+          } else {
+            setUser(null);
+          }
+        }
       }
     );
 
@@ -233,7 +232,10 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    localStorage.removeItem('bikroynow_demo_user');
+    setUser(null);
     router.push('/');
+    router.refresh();
   };
 
   return (

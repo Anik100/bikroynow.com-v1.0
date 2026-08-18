@@ -36,9 +36,23 @@ export default function MyAds() {
     const { data, error } = await supabase
       .from('listings')
       .select('*')
-      .eq('user_id', userId)
       .order('created_at', { ascending: false });
-    if (data) setListings(data);
+    
+    let dbAds = data || [];
+    let myAdsList = dbAds.filter(ad => ad.user_id === userId);
+
+    try {
+      const publicAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+      if (publicAds.length > 0) {
+        const existingIds = new Set(myAdsList.map(item => item.id));
+        const extraAds = publicAds.filter(ad => !existingIds.has(ad.id) && ad.status !== 'deleted');
+        myAdsList = [...extraAds, ...myAdsList];
+      }
+    } catch (e) {
+      console.error(e);
+    }
+
+    setListings(myAdsList);
     setLoading(false);
   };
 

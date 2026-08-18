@@ -55,7 +55,16 @@ export default function Contact() {
 
             <div className={styles.contactCard}>
               <h3>🌐 {lang === 'bn' ? 'সোশ্যাল মিডিয়া' : 'Social Media'}</h3>
-              <p>facebook.com/BikroyNow</p>
+              <p>
+                <a 
+                  href="https://www.facebook.com/profile.php?id=61592653021446" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ color: '#008b5e', fontWeight: 'bold', textDecoration: 'underline' }}
+                >
+                  facebook.com/bikroynow
+                </a>
+              </p>
               <p style={{ fontSize: '0.8rem', color: '#888', marginTop: '0.5rem' }}>
                 {lang === 'bn' ? 'মেসেঞ্জারে নক করুন যেকোনো সময়' : 'Message us on Messenger anytime'}
               </p>

@@ -133,3 +133,11 @@ export const sortPremiumListings = (dataArr) => {
     return timeB - timeA;
   });
 };
+
+export const getUserId = (user) => {
+  if (!user) return null;
+  if (user.email) {
+    return 'user-' + user.email.toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+  return user.id;
+};

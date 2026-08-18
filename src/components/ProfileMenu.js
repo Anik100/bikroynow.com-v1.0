@@ -24,16 +24,28 @@ export default function ProfileMenu({ user, hasAdminAccess, onClose, onLogout })
   useEffect(() => {
     if (!user) return;
     const fetchProfile = async () => {
-      const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
-      if (data) {
-        setProfile(data);
-        setNewName(data.full_name || '');
-        setNewAvatar(data.avatar_url || '');
-      }
+      try {
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+        if (data) {
+          setProfile(data);
+          setNewName(data.full_name || '');
+          setNewAvatar(data.avatar_url || '');
+          return;
+        }
+      } catch (e) {}
+      
+      // Fallback profile details from user metadata or email
+      const fallbackName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+      setProfile({
+        full_name: fallbackName,
+        avatar_url: user.user_metadata?.avatar_url || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y',
+        membership_type: 'free'
+      });
+      setNewName(fallbackName);
     };
     fetchProfile();
   }, [user]);

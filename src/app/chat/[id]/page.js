@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '../../../lib/supabaseClient';
 import { uploadToImgBB } from '../../../lib/imgbb';
 import { useLanguage } from '../../../context/LanguageContext';
-import { getRelativeTime, compressImage } from '../../../lib/utils';
+import { getRelativeTime, compressImage, getUserId } from '../../../lib/utils';
 import styles from '../chat.module.css';
 import { Send, Camera, ChevronLeft, Loader2, User as UserIcon } from 'lucide-react';
 
@@ -85,60 +85,33 @@ export default function ChatWindow({ params }) {
       }
       setUser(session.user);
 
-      // Step 1: Fetch basic chat data (no joins that might fail)
-      const { data: chatData, error: chatError } = await supabase
-        .from('chats')
-        .select('*')
-        .eq('id', params.id)
-        .single();
-
-      if (chatError || !chatData) {
-        console.error('Chat fetch error:', chatError, 'chatData:', chatData);
-        router.push('/chat');
-        setLoading(false);
-        return;
+      try {
+        const chatRes = await fetch(`/api/chats/${params.id}`);
+        if (chatRes.ok) {
+          const chatJson = await chatRes.json();
+          if (chatJson.chat) {
+            setChat(chatJson.chat);
+            fetchMessages();
+            setLoading(false);
+            return;
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching chat session:', err);
       }
-
-      // Step 2: Fetch listing info
-      if (chatData.listing_id) {
-        const { data: listingData } = await supabase
-          .from('listings')
-          .select('title, images')
-          .eq('id', chatData.listing_id)
-          .single();
-        chatData.listing = listingData;
-      }
-
-      // Step 3: Fetch buyer and seller profiles separately
-      const [{ data: buyerData }, { data: sellerData }] = await Promise.all([
-        supabase.from('profiles').select('full_name, avatar_url, last_seen').eq('id', chatData.buyer_id).single(),
-        supabase.from('profiles').select('full_name, avatar_url, last_seen').eq('id', chatData.seller_id).single(),
-      ]);
-      chatData.buyer = buyerData || { full_name: 'Buyer' };
-      chatData.seller = sellerData || { full_name: 'Seller' };
-
-      setChat(chatData);
-      fetchMessages();
+      router.push('/chat');
       setLoading(false);
     };
 
     setupChat();
 
-    // Real-time subscription
-    const subscription = supabase
-      .channel(`chat:${params.id}`)
-      .on('postgres_changes', { 
-        event: 'INSERT', 
-        schema: 'public', 
-        table: 'messages',
-        filter: `chat_id=eq.${params.id}`
-      }, (payload) => {
-        setMessages(prev => [...prev, payload.new]);
-      })
-      .subscribe();
+    // Poll for new messages every 3 seconds
+    const interval = setInterval(() => {
+      fetchMessages();
+    }, 3000);
 
     return () => {
-      supabase.removeChannel(subscription);
+      clearInterval(interval);
     };
   }, [params.id]);
 
@@ -150,25 +123,21 @@ export default function ChatWindow({ params }) {
   }, [messages, chat, user]);
 
   const markAsRead = async () => {
-    try {
-      await supabase
-        .from('messages')
-        .update({ is_read: true })
-        .eq('chat_id', params.id)
-        .neq('sender_id', user.id)
-        .eq('is_read', false);
-    } catch (err) {
-      console.error('Error marking as read:', err);
-    }
+    // Local read marking
   };
 
   const fetchMessages = async () => {
-    const { data } = await supabase
-      .from('messages')
-      .select('*')
-      .eq('chat_id', params.id)
-      .order('created_at', { ascending: true });
-    if (data) setMessages(data);
+    try {
+      const res = await fetch(`/api/chats/${params.id}/messages`);
+      if (res.ok) {
+        const json = await res.json();
+        if (Array.isArray(json.messages)) {
+          setMessages(json.messages);
+        }
+      }
+    } catch (err) {
+      console.error('Error fetching messages:', err);
+    }
   };
 
   const scrollToBottom = () => {
@@ -188,19 +157,21 @@ export default function ChatWindow({ params }) {
       chatInputRef.current?.focus();
     }, 30);
 
-    const { error } = await supabase
-      .from('messages')
-      .insert([
-        {
-          chat_id: params.id,
+    try {
+      const res = await fetch(`/api/chats/${params.id}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           sender_id: user.id,
           content: content || null,
           image_url: imageUrl || null
-        }
-      ]);
-
-    if (error) {
-      alert('Error sending message: ' + error.message);
+        })
+      });
+      if (res.ok) {
+        fetchMessages();
+      }
+    } catch (err) {
+      alert('Error sending message: ' + err.message);
     }
     setSending(false);
 
@@ -225,108 +196,116 @@ export default function ChatWindow({ params }) {
     setSending(false);
   };
 
-  if (loading) return <div className="container" style={{padding: '5rem 0', textAlign: 'center'}}>Loading...</div>;
-  if (!chat) return null;
+  if (loading || !user || !chat) return <div className="container" style={{padding: '5rem 0', textAlign: 'center'}}>Loading...</div>;
 
-  const isBuyer = chat.buyer_id === user?.id;
-  const partner = isBuyer ? chat.seller : chat.buyer;
+  try {
+    const isBuyer = chat.buyer_id === user?.id;
+    const partner = isBuyer ? chat.seller : chat.buyer;
 
-  const isOnline = (lastSeen) => {
-    if (!lastSeen) return false;
-    const lastSeenDate = new Date(lastSeen);
-    const now = new Date();
-    return (now - lastSeenDate) < 120000; // 2 mins threshold
-  };
+    const isOnline = (lastSeen) => {
+      if (!lastSeen) return false;
+      const lastSeenDate = new Date(lastSeen);
+      const now = new Date();
+      return (now - lastSeenDate) < 120000; // 2 mins threshold
+    };
 
-  return (
-    <div className={styles.chatLayout}>
-      <div className={styles.chatWindow}>
-        {/* Header */}
-        <div className={styles.windowHeader}>
-          <div className={styles.headerLeft}>
-            <button className={styles.backBtn} onClick={() => router.push('/chat')}>
-              <ChevronLeft />
+    return (
+      <div className={styles.chatLayout}>
+        <div className={styles.chatWindow}>
+          {/* Header */}
+          <div className={styles.windowHeader}>
+            <div className={styles.headerLeft}>
+              <button className={styles.backBtn} onClick={() => router.push('/chat')}>
+                <ChevronLeft />
+              </button>
+              <div className={styles.headerPartner}>
+                <div style={{fontWeight: '700', color: '#1c2b38'}}>{partner?.full_name || 'User'}</div>
+                <div style={{fontSize: '0.75rem', color: isOnline(partner?.last_seen) ? '#008b5e' : '#666', fontWeight: '600'}}>
+                  {partner?.last_seen 
+                    ? (isOnline(partner?.last_seen) 
+                      ? t('online') 
+                      : `${t('active')} ${getRelativeTime(partner?.last_seen, lang)}`)
+                    : t('offline')}
+                </div>
+              </div>
+            </div>
+            <div style={{width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', background: '#eee'}}>
+              <img src={chat.listing?.images?.[0]} alt="Listing" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+            </div>
+          </div>
+
+          {/* Messages area */}
+          <div className={styles.messages}>
+            {messages.map((msg, i) => (
+              <div key={i} className={`${styles.messageRow} ${msg.sender_id === user?.id ? styles.sent : styles.received}`}>
+                <div className={styles.bubble}>
+                  {msg.image_url && (
+                    <div className={styles.imageMessageWrapper}>
+                      <img src={msg.image_url} alt="Shared" className={styles.msgImg} onClick={() => setPreviewImage(msg.image_url)} />
+                    </div>
+                  )}
+                  {msg.content && <p className={styles.bubbleText}>{msg.content}</p>}
+                  <span className={styles.msgTime}>{getRelativeTime(msg.created_at, lang)}</span>
+                </div>
+              </div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input Area */}
+          <form className={styles.inputArea} onSubmit={handleSend}>
+            <label className={styles.uploadBtn}>
+              <input type="file" hidden accept=".jpg,.jpeg,.png,.webp" onChange={handleImageUpload} disabled={sending} />
+              <Camera size={22} />
+            </label>
+            <div className={styles.inputWrapper}>
+              <input 
+                ref={chatInputRef}
+                type="text" 
+                className={styles.input} 
+                placeholder={t('typeMessage')}
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                disabled={sending}
+              />
+            </div>
+            <button type="submit" className={styles.sendBtn} disabled={sending || (!newMessage.trim())}>
+              {sending ? <Loader2 className="spinner" size={18} /> : <Send size={20} />}
             </button>
-            <div className={styles.headerPartner}>
-              <div style={{fontWeight: '700', color: '#1c2b38'}}>{partner?.full_name || 'User'}</div>
-              <div style={{fontSize: '0.75rem', color: isOnline(partner?.last_seen) ? '#008b5e' : '#666', fontWeight: '600'}}>
-                {partner?.last_seen 
-                  ? (isOnline(partner?.last_seen) 
-                    ? t('online') 
-                    : `${t('active')} ${getRelativeTime(partner?.last_seen, lang)}`)
-                  : t('offline')}
-              </div>
-            </div>
-          </div>
-          <div style={{width: '40px', height: '40px', borderRadius: '50%', overflow: 'hidden', background: '#eee'}}>
-            <img src={chat.listing?.images?.[0]} alt="Listing" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
-          </div>
+          </form>
         </div>
 
-        {/* Messages area */}
-        <div className={styles.messages}>
-          {messages.map((msg, i) => (
-            <div key={i} className={`${styles.messageRow} ${msg.sender_id === user.id ? styles.sent : styles.received}`}>
-              <div className={styles.bubble}>
-                {msg.image_url && (
-                  <div className={styles.imageMessageWrapper}>
-                    <img src={msg.image_url} alt="Shared" className={styles.msgImg} onClick={() => setPreviewImage(msg.image_url)} />
-                  </div>
-                )}
-                {msg.content && <p className={styles.bubbleText}>{msg.content}</p>}
-                <span className={styles.msgTime}>{getRelativeTime(msg.created_at, lang)}</span>
-              </div>
+        {/* Image Preview Modal */}
+        {previewImage && (
+          <div className={styles.lightbox} onClick={closeLightbox}>
+            <div className={styles.lightboxContent} onClick={e => e.stopPropagation()}>
+              <img 
+                src={previewImage} 
+                alt="Preview" 
+                style={{
+                  transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomScale})`,
+                  transition: zoomScale === 1 ? 'transform 0.2s ease' : 'none',
+                  touchAction: zoomScale > 1 ? 'none' : 'auto',
+                  maxHeight: '85vh',
+                  maxWidth: '95vw',
+                  objectFit: 'contain'
+                }}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              />
+              <button className={styles.closeLightbox} onClick={closeLightbox}>×</button>
             </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input Area */}
-        <form className={styles.inputArea} onSubmit={handleSend}>
-          <label className={styles.uploadBtn}>
-            <input type="file" hidden accept=".jpg,.jpeg,.png,.webp" onChange={handleImageUpload} disabled={sending} />
-            <Camera size={22} />
-          </label>
-          <div className={styles.inputWrapper}>
-            <input 
-              ref={chatInputRef}
-              type="text" 
-              className={styles.input} 
-              placeholder={t('typeMessage')}
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              disabled={sending}
-            />
           </div>
-          <button type="submit" className={styles.sendBtn} disabled={sending || (!newMessage.trim())}>
-            {sending ? <Loader2 className="spinner" size={18} /> : <Send size={20} />}
-          </button>
-        </form>
+        )}
       </div>
-
-      {/* Image Preview Modal */}
-      {previewImage && (
-        <div className={styles.lightbox} onClick={closeLightbox}>
-          <div className={styles.lightboxContent} onClick={e => e.stopPropagation()}>
-            <img 
-              src={previewImage} 
-              alt="Preview" 
-              style={{
-                transform: `translate(${panOffset.x}px, ${panOffset.y}px) scale(${zoomScale})`,
-                transition: zoomScale === 1 ? 'transform 0.2s ease' : 'none',
-                touchAction: zoomScale > 1 ? 'none' : 'auto',
-                maxHeight: '85vh',
-                maxWidth: '95vw',
-                objectFit: 'contain'
-              }}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-            />
-            <button className={styles.closeLightbox} onClick={closeLightbox}>×</button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+    );
+  } catch (err) {
+    return (
+      <div className="container" style={{ padding: '5rem 1rem', color: '#dc2626', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '12px', marginTop: '2rem' }}>
+        <h3 style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>Render Error in Chat Page:</h3>
+        <pre style={{ overflowX: 'auto', whiteSpace: 'pre-wrap', fontSize: '0.85rem' }}>{err.stack || err.message}</pre>
+      </div>
+    );
+  }
 }

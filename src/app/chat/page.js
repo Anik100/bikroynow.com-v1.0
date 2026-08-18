@@ -16,7 +16,6 @@ export default function ChatListPage() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
     const fetchChats = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
@@ -25,73 +24,29 @@ export default function ChatListPage() {
       }
       setUser(session.user);
 
-      // Step 1: Fetch basic chats (no joins that can fail)
-      const { data, error } = await supabase
-        .from('chats')
-        .select('id, created_at, listing_id, buyer_id, seller_id')
-        .or(`buyer_id.eq.${session.user.id},seller_id.eq.${session.user.id}`)
-        .order('created_at', { ascending: false });
-
-      if (error || !data) {
-        console.error('Chat list error:', error);
+      try {
+        const res = await fetch(`/api/chats/list?user_id=${session.user.id}&t=${Date.now()}`, { cache: 'no-store' });
+        if (res.ok) {
+          const json = await res.json();
+          if (Array.isArray(json.chats)) {
+            setChats(json.chats);
+          }
+        }
+      } catch (err) {
+        console.error('Chat list fetch error:', err);
+      } finally {
         setLoading(false);
-        return;
       }
-
-      // Step 2: Enrich each chat with listing, partner profile, and last message
-      const enriched = await Promise.all(data.map(async (chat) => {
-        const isBuyer = chat.buyer_id === session.user.id;
-        const partnerId = isBuyer ? chat.seller_id : chat.buyer_id;
-
-        const [{ data: listing }, { data: partner }, { data: messages }, { count: unreadCount }] = await Promise.all([
-          supabase.from('listings').select('title, images').eq('id', chat.listing_id).single(),
-          supabase.from('profiles').select('full_name, avatar_url').eq('id', partnerId).single(),
-          supabase.from('messages').select('content, image_url, created_at').eq('chat_id', chat.id).order('created_at', { ascending: false }).limit(1),
-          supabase.from('messages').select('*', { count: 'exact', head: true })
-            .eq('chat_id', chat.id)
-            .eq('is_read', false)
-            .neq('sender_id', session.user.id), // আমার পাঠানো মেসেজ বাদে, অপর জনের পাঠানো অপঠিত মেসেজ
-        ]);
-
-        const lastMsg = messages?.[0] || null;
-        return {
-          ...chat,
-          listing: listing || null,
-          partner: partner || { full_name: isBuyer ? 'Seller' : 'Buyer' },
-          lastMsg,
-          unreadCount: unreadCount || 0,
-        };
-      }));
-
-      // Only show chats that have at least one message
-      const withMessages = enriched.filter(chat => chat.lastMsg !== null);
-
-      // Sort by last message time
-      withMessages.sort((a, b) => {
-        const tA = a.lastMsg?.created_at || a.created_at;
-        const tB = b.lastMsg?.created_at || b.created_at;
-        return new Date(tB) - new Date(tA);
-      });
-
-      setChats(withMessages);
-      setLoading(false);
     };
 
     fetchChats();
 
-    const subscription = supabase
-      .channel('chat-list-changes')
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'messages' 
-      }, () => {
-        fetchChats();
-      })
-      .subscribe();
+    const interval = setInterval(() => {
+      fetchChats();
+    }, 3000);
 
     return () => {
-      supabase.removeChannel(subscription);
+      clearInterval(interval);
     };
   }, [router, lang]);
 
