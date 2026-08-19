@@ -7,12 +7,11 @@ VIDEO_MIN_MAGNITUDE = 4.5  # M4.5+ -> 3D Video Reels
 PHOTO_MAX_MAGNITUDE = 4.49 # M4.0 to M4.4 -> High-Resolution Infographic Photo + Text
 CHECK_INTERVAL_SECONDS = 600  # 10 minutes
 
-# Facebook Page Settings
-FB_PAGE_ID = "1305415129314506"
+# Facebook Page Settings (Always fallback to valid Page ID)
+FB_PAGE_ID = os.environ.get("FB_PAGE_ID") or "1305415129314506"
 FB_PAGE_ACCESS_TOKEN = os.environ.get(
-    "FB_PAGE_ACCESS_TOKEN",
-    "EAAXKINI8fZCABSR3DRhedsygsJe23QQSzEc6v1VdRXx94r7yZCraEZBl2kqbJNwFUFrOjdxjzfZBpX1ChdwYLEiTN1rAZBCb4AiO5wmFqh9J6tvFO49wJiflILkfMjaTSUDH0vVWkV3H5TFRFl1YkiotrZBqTx3Tz3Cn4bBZAoS5UZAwjbvyHoJ4HglXTEuuTi9qBUoj"
-)
+    "FB_PAGE_ACCESS_TOKEN"
+) or "EAAXKINI8fZCABSR3DRhedsygsJe23QQSzEc6v1VdRXx94r7yZCraEZBl2kqbJNwFUFrOjdxjzfZBpX1ChdwYLEiTN1rAZBCb4AiO5wmFqh9J6tvFO49wJiflILkfMjaTSUDH0vVWkV3H5TFRFl1YkiotrZBqTx3Tz3Cn4bBZAoS5UZAwjbvyHoJ4HglXTEuuTi9qBUoj"
 
 # AI Voice Settings (Microsoft Edge Neural TTS - 100% Free)
 VOICE_NAME = "en-US-JennyNeural"

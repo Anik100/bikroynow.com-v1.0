@@ -6,12 +6,17 @@ on:
     - cron: '*/10 * * * *'
   workflow_dispatch: # Allows manual trigger anytime from GitHub UI
 
+permissions:
+  contents: write
+
 jobs:
   track-and-post:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -30,7 +35,7 @@ jobs:
 
       - name: Run Earthquake Tracker Engine
         env:
-          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID || '1305415129314506' }}
           FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
         run: |
           python earthquake_tracker/tracker_pipeline.py
