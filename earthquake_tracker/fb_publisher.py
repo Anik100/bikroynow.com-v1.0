@@ -6,7 +6,6 @@ import re
 if sys.platform == "win32":
     try:
         sys.stdout.reconfigure(encoding='utf-8')
-        sys.stderr.reconfigure(encoding='utf-8')
     except Exception:
         pass
 
@@ -36,9 +35,9 @@ def create_post_caption(event):
     country, country_tags = extract_country_and_tags(place)
 
     if mag >= 7.0:
-        headline = f"🚨 MAJOR EARTHQUAKE ALERT: Magnitude {mag} in {country.upper()}! 🚨"
+        headline = f"🚨 MAJOR EARTHQUAKE REPORT: Magnitude {mag} in {country.upper()}! 🚨"
     elif mag >= 6.0:
-        headline = f"🔴 STRONG SEISMIC ALERT: Magnitude {mag} Strikes {country.upper()}!"
+        headline = f"🔴 STRONG SEISMIC REPORT: Magnitude {mag} Strikes {country.upper()}!"
     else:
         headline = f"⚡ BREAKING: Magnitude {mag} Earthquake Strikes {country.upper()}!"
 
@@ -46,7 +45,7 @@ def create_post_caption(event):
 
     caption = (
         f"{headline}\n\n"
-        f"A seismic event of magnitude {mag} has been recorded by official seismic monitoring systems.\n\n"
+        f"A seismic event of magnitude {mag} has been recorded by official global seismic monitoring networks.\n\n"
         f"📊 Official Seismic Report:\n"
         f"━━━━━━━━━━━━━━━━━━━━━\n"
         f"📍 Region / Epicenter: {place}\n"
@@ -64,6 +63,42 @@ def create_post_caption(event):
         f"#NaturalDisaster {country_tags}"
     )
     return caption
+
+def upload_photo_to_facebook(image_path, event):
+    """
+    Uploads an Infographic Photo directly to the Facebook Page using Graph API.
+    """
+    if not FB_PAGE_ACCESS_TOKEN:
+        print("⚠️ Facebook Page Access Token is not set. Skipping photo upload.")
+        return False
+
+    url = f"https://graph.facebook.com/v20.0/{FB_PAGE_ID}/photos"
+    caption = create_post_caption(event)
+
+    print(f"📸 Uploading Infographic Photo to Facebook Page ({FB_PAGE_ID})...")
+
+    with open(image_path, "rb") as img_file:
+        payload = {
+            "caption": caption,
+            "access_token": FB_PAGE_ACCESS_TOKEN
+        }
+        files = {
+            "source": img_file
+        }
+
+        try:
+            response = requests.post(url, data=payload, files=files, timeout=120)
+            res_data = response.json()
+            if "id" in res_data:
+                photo_id = res_data["id"]
+                print(f"✅ Photo successfully published to Facebook! Photo ID: {photo_id}")
+                return True
+            else:
+                print(f"❌ Facebook Photo API Error: {res_data}")
+                return False
+        except Exception as e:
+            print(f"❌ Photo Upload Failed: {e}")
+            return False
 
 def upload_video_to_facebook(video_path, event):
     """

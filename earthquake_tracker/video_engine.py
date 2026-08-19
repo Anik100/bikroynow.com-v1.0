@@ -1,6 +1,9 @@
 import os
 import sys
 import math
+import numpy as np
+from PIL import Image, ImageDraw, ImageFont
+import imageio_ffmpeg
 import subprocess
 
 if sys.platform == "win32":
@@ -10,13 +13,10 @@ if sys.platform == "win32":
     except Exception:
         pass
 
-import numpy as np
-from PIL import Image, ImageDraw, ImageFont
-import imageio_ffmpeg
 from config import VIDEO_WIDTH, VIDEO_HEIGHT, FPS, OUTPUT_DIR
-from map_engine import generate_fullscreen_satellite_map
+from map_engine import generate_reference_satellite_map
 
-def get_font(size, bold=False):
+def get_font(size, bold=True):
     try:
         font_name = "arialbd.ttf" if bold else "arial.ttf"
         return ImageFont.truetype(font_name, size)
@@ -26,15 +26,11 @@ def get_font(size, bold=False):
         except Exception:
             return ImageFont.load_default()
 
-def get_severity_colors(mag):
-    if mag >= 7.0:
-        return "#dc2626", "#7f1d1d" # Crimson Red
-    elif mag >= 6.0:
-        return "#ea580c", "#7c2d12" # Vivid Orange
-    elif mag >= 5.0:
-        return "#d97706", "#78350f" # Amber
-    else:
-        return "#0284c7", "#0c4a6e"
+def parse_country_name(place_str):
+    parts = [p.strip() for p in place_str.split(",")]
+    if len(parts) >= 2:
+        return parts[-1].upper()
+    return place_str.upper()
 
 def get_current_subtitle(sentences, frame_num, total_frames):
     if not sentences:
@@ -44,209 +40,180 @@ def get_current_subtitle(sentences, frame_num, total_frames):
     curr_idx = min(num_sentences - 1, int(frame_num / frames_per_sentence))
     return sentences[curr_idx]
 
-def parse_location_details(place_str):
-    parts = [p.strip() for p in place_str.split(",")]
-    if len(parts) >= 2:
-        country = parts[-1].upper()
-        city_district = ", ".join(parts[:-1])
-    else:
-        country = place_str.upper()
-        city_district = place_str
-    return country, city_district
+def draw_seismograph_pin(draw, x, y, size=36):
+    """
+    Draws the iconic red teardrop map pin with white circular seismograph wave badge.
+    """
+    draw.ellipse([(x - size, y - size * 2), (x + size, y)], fill="#e11d48", outline="#ffffff", width=2)
+    draw.polygon([(x - size * 0.75, y - size), (x + size * 0.75, y - size), (x, y + 8)], fill="#e11d48")
+    
+    in_r = int(size * 0.72)
+    center_y = y - size
+    draw.ellipse([(x - in_r, center_y - in_r), (x + in_r, center_y + in_r)], fill="#ffffff")
 
-def render_frame(event, base_map_img, epicenter_coords, sentences, frame_num, total_frames):
+    wave_pts = [
+        (x - in_r + 4, center_y),
+        (x - in_r + 10, center_y - 2),
+        (x - 8, center_y + 8),
+        (x - 4, center_y - 12),
+        (x, center_y + 12),
+        (x + 4, center_y - 10),
+        (x + 8, center_y + 6),
+        (x + in_r - 10, center_y - 2),
+        (x + in_r - 4, center_y)
+    ]
+    draw.line(wave_pts, fill="#e11d48", width=3)
+
+def draw_prominent_country_badge(draw, cx, cy, country_name):
     """
-    Renders an advance-level colorful video frame with progressive cinematic zoom.
+    Draws an elevated 3D floating badge above the red epicenter mark showing the Country name.
     """
-    # 1. DYNAMIC CINEMATIC ZOOM (Progressive zoom from 1.0x to 1.32x into epicenter)
+    f_country = get_font(36, bold=True)
+    bbox = draw.textbbox((0, 0), country_name, font=f_country)
+    text_w = bbox[2] - bbox[0]
+    box_w = max(260, text_w + 70)
+    box_h = 60
+    
+    box_x1 = cx - (box_w // 2)
+    box_y1 = cy - 120
+    box_x2 = box_x1 + box_w
+    box_y2 = box_y1 + box_h
+
+    # 3D Drop Shadows
+    draw.rounded_rectangle([(box_x1 + 6, box_y1 + 8), (box_x2 + 6, box_y2 + 8)], radius=18, fill="#000000bb")
+    
+    # 3D Main Pill (Bright Gold border, dark background)
+    draw.rounded_rectangle([(box_x1, box_y1), (box_x2, box_y2)], radius=18, fill="#090d16fa", outline="#facc15", width=4)
+    draw.rounded_rectangle([(box_x1 + 10, box_y1 + 4), (box_x2 - 10, box_y1 + 8)], radius=3, fill="#ffffff77")
+
+    # Connector pointer triangle
+    draw.polygon([(cx - 12, box_y2), (cx + 12, box_y2), (cx, box_y2 + 14)], fill="#facc15")
+
+    # Country Name Text
+    draw.text((cx, box_y1 + 30), country_name, fill="#facc15", font=f_country, stroke_width=4, stroke_fill="#000000", anchor="mm")
+
+def render_reference_style_frame(event, base_map_img, epicenter_coords, sentences, frame_num, total_frames):
     progress = frame_num / max(1, total_frames)
-    # Smooth easing curve for zoom
+    mag = event["mag"]
+    country_name = parse_country_name(event["place"])
+    ep_x, ep_y = epicenter_coords
+
+    # FASTER & SMOOTHER CINEMATIC DYNAMIC ZOOM (1.00x up to 1.50x)
     ease_zoom = 0.5 * (1 - math.cos(progress * math.pi))
-    zoom_scale = 1.0 + (ease_zoom * 0.32)
+    zoom_scale = 1.0 + (ease_zoom * 0.50)
 
     orig_w, orig_h = base_map_img.size
     new_w = int(orig_w / zoom_scale)
     new_h = int(orig_h / zoom_scale)
 
-    ep_x, ep_y = epicenter_coords
-
     crop_left = max(0, min(orig_w - new_w, int(ep_x - (new_w / 2))))
     crop_top = max(0, min(orig_h - new_h, int(ep_y - (new_h / 2))))
 
-    cropped_frame = base_map_img.crop((crop_left, crop_top, crop_left + new_w, crop_top + new_h))
-    frame_bg = cropped_frame.resize((VIDEO_WIDTH, VIDEO_HEIGHT), Image.Resampling.BILINEAR)
+    cropped_map = base_map_img.crop((crop_left, crop_top, crop_left + new_w, crop_top + new_h))
+    frame = cropped_map.resize((VIDEO_WIDTH, VIDEO_HEIGHT), Image.Resampling.BILINEAR)
 
-    # Recalculate epicenter position on current zoomed canvas
     curr_ep_x = (ep_x - crop_left) * (VIDEO_WIDTH / new_w)
     curr_ep_y = (ep_y - crop_top) * (VIDEO_HEIGHT / new_h)
 
-    mag = event["mag"]
-    accent_color, bg_dark = get_severity_colors(mag)
-    country_name, city_name = parse_location_details(event["place"])
-
-    # 2. MARK THE AFFECTED EARTHQUAKE IMPACT ZONE
+    # Overlays: Red Hazard Area Mark + Seismograph Rings + Ripple Waves
     overlay = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (0, 0, 0, 0))
     ol_draw = ImageDraw.Draw(overlay)
 
-    zone_radius = int((160 + (mag - 4.0) * 65) * zoom_scale * 0.85)
-
-    # Translucent Red Seismic Danger Perimeter
+    # 🔴 1. BOLD RED EARTHQUAKE IMPACT AREA MARK (Translucent Danger Highlight)
+    hazard_base_r = int((110 + (mag - 4.0) * 45) * zoom_scale * 0.85)
+    
+    # Glowing Red Hazard Perimeter
     ol_draw.ellipse(
-        [(curr_ep_x - zone_radius, curr_ep_y - zone_radius),
-         (curr_ep_x + zone_radius, curr_ep_y + zone_radius)],
+        [(curr_ep_x - hazard_base_r, curr_ep_y - hazard_base_r - 20),
+         (curr_ep_x + hazard_base_r, curr_ep_y + hazard_base_r - 20)],
         fill=(220, 38, 38, 85),
-        outline=(220, 38, 38, 240),
+        outline=(239, 68, 68, 240),
         width=5
     )
 
-    core_radius = int(zone_radius * 0.45)
+    # Inner Red Danger Core
+    core_r = int(hazard_base_r * 0.45)
     ol_draw.ellipse(
-        [(curr_ep_x - core_radius, curr_ep_y - core_radius),
-         (curr_ep_x + core_radius, curr_ep_y + core_radius)],
-        fill=(239, 68, 68, 130),
-        outline=(255, 255, 255, 240),
+        [(curr_ep_x - core_r, curr_ep_y - core_r - 20),
+         (curr_ep_x + core_r, curr_ep_y + core_r - 20)],
+        fill=(255, 0, 0, 140),
+        outline=(255, 255, 255, 220),
         width=3
     )
 
-    frame_bg.paste(overlay, (0, 0), overlay)
-    draw = ImageDraw.Draw(frame_bg)
-
-    # Animated Shockwaves Radiating from Epicenter
+    # 2. Concentric White Seismograph Acoustic Rings
     t = (frame_num % FPS) / FPS
-    for ring_i in range(3):
-        phase = (t + (ring_i * 0.33)) % 1.0
-        radius = int(zone_radius + phase * 240)
-        draw.ellipse(
-            [(curr_ep_x - radius, curr_ep_y - radius), (curr_ep_x + radius, curr_ep_y + radius)],
-            outline="#ef4444",
+    for ring_i in range(8):
+        r_dist = int(25 + (ring_i * 18))
+        alpha = max(20, int(220 - (ring_i * 22)))
+        ol_draw.ellipse(
+            [(curr_ep_x - r_dist, curr_ep_y - r_dist - 20),
+             (curr_ep_x + r_dist, curr_ep_y + r_dist - 20)],
+            outline=(255, 255, 255, alpha),
+            width=1
+        )
+
+    # 3. Expanding Red Seismic Shockwave Ripple
+    for wave_i in range(2):
+        w_phase = (t + (wave_i * 0.5)) % 1.0
+        w_radius = int(hazard_base_r + (w_phase * 260))
+        w_alpha = int((1.0 - w_phase) * 160)
+        ol_draw.ellipse(
+            [(curr_ep_x - w_radius, curr_ep_y - w_radius - 20),
+             (curr_ep_x + w_radius, curr_ep_y + w_radius - 20)],
+            fill=(225, 29, 72, int(w_alpha * 0.25)),
+            outline=(225, 29, 72, w_alpha),
             width=4
         )
 
-    # Epicenter Bullseye
-    draw.ellipse([(curr_ep_x - 22, curr_ep_y - 22), (curr_ep_x + 22, curr_ep_y + 22)], fill="#dc2626", outline="#ffffff", width=4)
-    draw.ellipse([(curr_ep_x - 8, curr_ep_y - 8), (curr_ep_x + 8, curr_ep_y + 8)], fill="#ffffff")
+    frame.paste(overlay, (0, 0), overlay)
+    draw = ImageDraw.Draw(frame)
 
-    # Impact Zone Top Banner
-    f_zone_tag = get_font(24, bold=True)
-    draw.rounded_rectangle([(curr_ep_x - 210, curr_ep_y - zone_radius - 52), (curr_ep_x + 210, curr_ep_y - zone_radius - 2)], radius=12, fill="#090d16fa", outline="#dc2626", width=3)
-    draw.text((curr_ep_x, curr_ep_y - zone_radius - 27), "SEISMIC IMPACT ZONE", fill="#f87171", font=f_zone_tag, anchor="mm")
+    # 4. Epicenter Seismograph Pin
+    draw_seismograph_pin(draw, curr_ep_x, curr_ep_y)
 
-    # 3. 3D ELEVATED HERO EPICENTER BADGE (THE BIGGEST & RAISED ABOVE MAP)
-    f_country_hero = get_font(44, bold=True)
-    f_city_hero = get_font(26, bold=True)
-    
-    badge_w = 520
-    badge_h = 112
-    badge_x1 = curr_ep_x - (badge_w // 2)
-    badge_y1 = curr_ep_y + 35
-    badge_x2 = badge_x1 + badge_w
-    badge_y2 = badge_y1 + badge_h
+    # 🌟 5. 3D ELEVATED COUNTRY BADGE RIGHT ABOVE THE RED EPICENTER MARK
+    draw_prominent_country_badge(draw, curr_ep_x, curr_ep_y, country_name)
 
-    # 3D Drop Shadows
-    draw.rounded_rectangle([(badge_x1 + 6, badge_y1 + 8), (badge_x2 + 6, badge_y2 + 8)], radius=20, fill="#000000aa")
-    draw.rounded_rectangle([(badge_x1 + 3, badge_y1 + 4), (badge_x2 + 3, badge_y2 + 4)], radius=20, fill="#000000cc")
-    
-    # Main 3D Card
-    draw.rounded_rectangle([(badge_x1, badge_y1), (badge_x2, badge_y2)], radius=20, fill="#090d16f8", outline="#facc15", width=4)
-    draw.rounded_rectangle([(badge_x1 + 10, badge_y1 + 6), (badge_x2 - 10, badge_y1 + 12)], radius=4, fill="#ffffff55")
+    # 6. TOP HEADER
+    f_mag = get_font(86, bold=True)
+    draw.text((VIDEO_WIDTH // 2, 140), f"M{mag:.1f}", fill="#eab308", font=f_mag, stroke_width=6, stroke_fill="#000000", anchor="mm")
 
-    # Country & City
-    draw.text((curr_ep_x, badge_y1 + 42), country_name, fill="#facc15", font=f_country_hero, anchor="mm")
-    draw.text((curr_ep_x, badge_y1 + 84), city_name[:38], fill="#ffffff", font=f_city_hero, anchor="mm")
+    f_eq = get_font(46, bold=True)
+    draw.text((VIDEO_WIDTH // 2, 215), "EARTHQUAKE", fill="#ffffff", font=f_eq, stroke_width=4, stroke_fill="#000000", anchor="mm")
 
-    # 4. TOP HEADER BAR
-    draw.rounded_rectangle([(50, 35), (VIDEO_WIDTH - 50, 115)], radius=18, fill="#090d16fa", outline="#ef4444", width=3)
-    
-    blink = (frame_num // 12) % 2 == 0
-    dot_color = "#ef4444" if blink else "#7f1d1d"
-    draw.ellipse([(80, 58), (110, 88)], fill=dot_color)
+    place_str = event["place"]
+    if " of " in place_str:
+        dist_part, region_part = place_str.split(" of ", 1)
+        line3 = f"{dist_part} of"
+        line4 = region_part
+    else:
+        line3 = place_str
+        line4 = ""
 
-    f_top = get_font(32, bold=True)
-    draw.text((VIDEO_WIDTH // 2 + 15, 75), "LIVE EARTHQUAKE ALERT", fill="#ffffff", font=f_top, anchor="mm")
+    f_loc = get_font(36, bold=True)
+    draw.text((VIDEO_WIDTH // 2, 275), line3, fill="#ffffff", font=f_loc, stroke_width=4, stroke_fill="#000000", anchor="mm")
+    if line4:
+        draw.text((VIDEO_WIDTH // 2, 325), line4, fill="#ffffff", font=f_loc, stroke_width=4, stroke_fill="#000000", anchor="mm")
 
-    # 5. FLOATING HERO MAGNITUDE CARD (Top-Left)
-    mag_card_y = 130
-    draw.rounded_rectangle([(50, mag_card_y), (480, mag_card_y + 115)], radius=18, fill="#090d16fa", outline=accent_color, width=3)
-    
-    f_mag_label = get_font(22, bold=True)
-    draw.text((75, mag_card_y + 35), "MAGNITUDE", fill="#94a3b8", font=f_mag_label)
-    
-    f_mag_num = get_font(58, bold=True)
-    draw.text((75, mag_card_y + 82), f"M {mag:.1f}", fill=accent_color, font=f_mag_num)
-
-    # Upper Right: Depth & Coordinates
-    draw.rounded_rectangle([(510, mag_card_y), (VIDEO_WIDTH - 50, mag_card_y + 115)], radius=18, fill="#090d16fa", outline="#334155", width=2)
-    f_stat_label = get_font(20, bold=True)
-    f_stat_val = get_font(26, bold=True)
-    draw.text((535, mag_card_y + 35), "DEPTH & COORDINATES", fill="#38bdf8", font=f_stat_label)
-    draw.text((535, mag_card_y + 80), f"{event['depth_km']} km  •  {event['latitude']:.1f}°, {event['longitude']:.1f}°", fill="#ffffff", font=f_stat_val)
-
-    # 6. DYNAMIC EYE-LEVEL SUBTITLES (Auto-sized, Zero Overflow)
+    # 7. BOTTOM SUBTITLES
     current_sub = get_current_subtitle(sentences, frame_num, total_frames)
     if current_sub:
-        f_sub = get_font(34, bold=True)
-        words = current_sub.split()
-        lines = []
-        curr_l = ""
-        for w in words:
-            t_l = curr_l + (" " if curr_l else "") + w
-            if len(t_l) > 32:
-                lines.append(curr_l)
-                curr_l = w
-            else:
-                curr_l = t_l
-        if curr_l:
-            lines.append(curr_l)
+        f_sub = get_font(38, bold=True)
+        draw.text((VIDEO_WIDTH // 2, 1680), current_sub, fill="#ffffff", font=f_sub, stroke_width=4, stroke_fill="#000000", anchor="mm")
 
-        line_height = 48
-        box_h = 75 + (len(lines) * line_height) + 20
-        sub_box_y = 1200
-
-        draw.rounded_rectangle([(50, sub_box_y), (VIDEO_WIDTH - 50, sub_box_y + box_h)], radius=22, fill="#000000fa", outline="#fbbf24", width=3)
-
-        draw.rounded_rectangle([(80, sub_box_y + 16), (280, sub_box_y + 54)], radius=8, fill="#fbbf24")
-        f_tag = get_font(20, bold=True)
-        draw.text((180, sub_box_y + 35), "NEWS UPDATE", fill="#000000", font=f_tag, anchor="mm")
-
-        text_start_y = sub_box_y + 70
-        for l_i, line_text in enumerate(lines):
-            draw.text((80, text_start_y + (l_i * line_height)), line_text, fill="#ffffff", font=f_sub)
-
-    # 7. BIG BOLD BOTTOM LOCATION & TSUNAMI CARD
-    bottom_y = 1610
-    draw.rounded_rectangle([(50, bottom_y), (VIDEO_WIDTH - 50, bottom_y + 190)], radius=20, fill="#000000fa", outline="#38bdf8", width=3)
-
-    f_b_title = get_font(22, bold=True)
-    f_b_loc = get_font(30, bold=True)
-    f_b_sub = get_font(24, bold=True)
-
-    draw.text((80, bottom_y + 20), "LOCATION & REGION", fill="#94a3b8", font=f_b_title)
-    draw.text((80, bottom_y + 50), f"{country_name} — {city_name[:36]}", fill="#ffffff", font=f_b_loc)
-
-    tsunami_text = "TSUNAMI RISK UNDER EVALUATION" if event["tsunami_alert"] else "NO IMMEDIATE TSUNAMI RISK"
-    tsunami_col = "#ef4444" if event["tsunami_alert"] else "#22c55e"
-    draw.text((80, bottom_y + 95), f"Time: {event['time_utc']}", fill="#94a3b8", font=f_b_sub)
-    draw.text((80, bottom_y + 135), f"Status: {tsunami_text}", fill=tsunami_col, font=f_b_sub)
-
-    # 8. FOOTER BRANDING
-    f_brand = get_font(26, bold=True)
-    draw.text((VIDEO_WIDTH // 2, VIDEO_HEIGHT - 50), "EARTHQUAKE TRACKER • 24/7 GLOBAL MONITORING", fill="#94a3b8", font=f_brand, anchor="mm")
-
-    return frame_bg
+    return frame
 
 def create_earthquake_video(event, audio_path, sentences, output_video_path):
-    """
-    Renders immersive 1080x1920 Reel with progressive zoom and 3D hero badge.
-    """
-    print(f"🎬 Rendering Progressive Zoom Reel for: M{event['mag']} - {event['place']}")
+    print(f"🎬 Rendering Elevated Country Badge + Red Mark Reel for: M{event['mag']} - {event['place']}")
     
-    map_temp_path = os.path.join(OUTPUT_DIR, f"cinematic_map_{event['id']}.png")
-    _, epicenter_coords = generate_fullscreen_satellite_map(
+    map_temp_path = os.path.join(OUTPUT_DIR, f"ref_style_map_{event['id']}.png")
+    _, epicenter_coords = generate_reference_satellite_map(
         event["latitude"],
         event["longitude"],
         event["place"],
         map_temp_path,
-        zoom=7
+        zoom=8
     )
     base_map_img = Image.open(map_temp_path)
 
@@ -260,7 +227,7 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
             try:
                 time_str = line.split("Duration:")[1].split(",")[0].strip()
                 h, m, s = time_str.split(":")
-                duration_secs = float(h) * 3600 + float(m) * 60 + float(s) + 0.8
+                duration_secs = float(h) * 3600 + float(m) * 60 + float(s) + 0.5
                 break
             except Exception:
                 pass
@@ -268,7 +235,7 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
     total_frames = int(duration_secs * FPS)
     print(f"⏱️ Video duration: {duration_secs:.1f}s ({total_frames} frames)")
 
-    temp_raw_video = os.path.join(OUTPUT_DIR, f"raw_cinema_{event['id']}.mp4")
+    temp_raw_video = os.path.join(OUTPUT_DIR, f"raw_country_badge_{event['id']}.mp4")
 
     writer_cmd = [
         ffmpeg_exe,
@@ -288,18 +255,16 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
     proc = subprocess.Popen(writer_cmd, stdin=subprocess.PIPE)
 
     for f_idx in range(total_frames):
-        frame = render_frame(event, base_map_img, epicenter_coords, sentences, f_idx, total_frames)
+        frame = render_reference_style_frame(event, base_map_img, epicenter_coords, sentences, f_idx, total_frames)
         proc.stdin.write(frame.tobytes())
 
     proc.stdin.close()
     proc.wait()
 
-    # Ensure target output path is writable
     if os.path.exists(output_video_path):
         try:
             os.remove(output_video_path)
         except Exception:
-            # If file is open in media player, use alternative filename
             name, ext = os.path.splitext(output_video_path)
             output_video_path = f"{name}_new{ext}"
 
@@ -322,5 +287,5 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
         except Exception:
             pass
 
-    print(f"🎉 Final Progressive Zoom Reel successfully generated: {output_video_path}")
+    print(f"🎉 Final Elevated Country Badge Reel successfully generated: {output_video_path}")
     return output_video_path
