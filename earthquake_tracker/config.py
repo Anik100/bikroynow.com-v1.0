@@ -1,8 +1,10 @@
 import os
 
 # Earthquake Monitoring Settings
-USGS_FEED_URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson"
-MIN_MAGNITUDE = 4.5
+USGS_FEED_URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson"
+MIN_MAGNITUDE = 4.0        # Fetch all earthquakes starting from M4.0
+VIDEO_MIN_MAGNITUDE = 4.5  # M4.5+ -> 3D Video Reels
+PHOTO_MAX_MAGNITUDE = 4.49 # M4.0 to M4.4 -> High-Resolution Infographic Photo + Text
 CHECK_INTERVAL_SECONDS = 600  # 10 minutes
 
 # Facebook Page Settings
