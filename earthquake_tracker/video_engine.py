@@ -40,7 +40,7 @@ def get_current_subtitle(sentences, frame_num, total_frames):
     curr_idx = min(num_sentences - 1, int(frame_num / frames_per_sentence))
     return sentences[curr_idx]
 
-def draw_seismograph_pin(draw, x, y, size=36):
+def draw_seismograph_pin(draw, x, y, size=38):
     """
     Draws the iconic red teardrop map pin with white circular seismograph wave badge.
     """
@@ -98,9 +98,10 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     country_name = parse_country_name(event["place"])
     ep_x, ep_y = epicenter_coords
 
-    # FASTER & SMOOTHER CINEMATIC DYNAMIC ZOOM (1.00x up to 1.50x)
+    # 🚀 DEEP CINEMATIC SMOOTH PROGRESSIVE GLIDE-ZOOM (1.00x up to 1.85x)
+    # Smooth S-curve easing so camera gracefully glides deeply into the affected area
     ease_zoom = 0.5 * (1 - math.cos(progress * math.pi))
-    zoom_scale = 1.0 + (ease_zoom * 0.50)
+    zoom_scale = 1.0 + (ease_zoom * 0.85)
 
     orig_w, orig_h = base_map_img.size
     new_w = int(orig_w / zoom_scale)
@@ -115,20 +116,27 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     curr_ep_x = (ep_x - crop_left) * (VIDEO_WIDTH / new_w)
     curr_ep_y = (ep_y - crop_top) * (VIDEO_HEIGHT / new_h)
 
-    # Overlays: Red Hazard Area Mark + Seismograph Rings + Ripple Waves
+    # Overlays: Red Impact Area Perimeter + Hazard Line + Shockwaves
     overlay = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (0, 0, 0, 0))
     ol_draw = ImageDraw.Draw(overlay)
 
-    # 🔴 1. BOLD RED EARTHQUAKE IMPACT AREA MARK (Translucent Danger Highlight)
-    hazard_base_r = int((110 + (mag - 4.0) * 45) * zoom_scale * 0.85)
+    # 🔴 1. BOLD RED EARTHQUAKE IMPACT PERIMETER & RED HAZARD BORDER
+    hazard_base_r = int((130 + (mag - 4.0) * 55) * zoom_scale * 0.75)
     
-    # Glowing Red Hazard Perimeter
+    # Outer Glowing Danger Border (Double Red Contour Line)
+    ol_draw.ellipse(
+        [(curr_ep_x - hazard_base_r - 12, curr_ep_y - hazard_base_r - 32),
+         (curr_ep_x + hazard_base_r + 12, curr_ep_y + hazard_base_r - 8)],
+        outline=(239, 68, 68, 120),
+        width=3
+    )
+    # Primary Red Hazard Border Line
     ol_draw.ellipse(
         [(curr_ep_x - hazard_base_r, curr_ep_y - hazard_base_r - 20),
          (curr_ep_x + hazard_base_r, curr_ep_y + hazard_base_r - 20)],
-        fill=(220, 38, 38, 85),
-        outline=(239, 68, 68, 240),
-        width=5
+        fill=(220, 38, 38, 90),
+        outline=(239, 68, 68, 255),
+        width=6
     )
 
     # Inner Red Danger Core
@@ -136,8 +144,8 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     ol_draw.ellipse(
         [(curr_ep_x - core_r, curr_ep_y - core_r - 20),
          (curr_ep_x + core_r, curr_ep_y + core_r - 20)],
-        fill=(255, 0, 0, 140),
-        outline=(255, 255, 255, 220),
+        fill=(255, 0, 0, 150),
+        outline=(255, 255, 255, 230),
         width=3
     )
 
@@ -156,14 +164,14 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     # 3. Expanding Red Seismic Shockwave Ripple
     for wave_i in range(2):
         w_phase = (t + (wave_i * 0.5)) % 1.0
-        w_radius = int(hazard_base_r + (w_phase * 260))
-        w_alpha = int((1.0 - w_phase) * 160)
+        w_radius = int(hazard_base_r + (w_phase * 280))
+        w_alpha = int((1.0 - w_phase) * 170)
         ol_draw.ellipse(
             [(curr_ep_x - w_radius, curr_ep_y - w_radius - 20),
              (curr_ep_x + w_radius, curr_ep_y + w_radius - 20)],
             fill=(225, 29, 72, int(w_alpha * 0.25)),
             outline=(225, 29, 72, w_alpha),
-            width=4
+            width=5
         )
 
     frame.paste(overlay, (0, 0), overlay)
@@ -176,7 +184,7 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     draw_prominent_country_badge(draw, curr_ep_x, curr_ep_y, country_name)
 
     # 6. TOP HEADER
-    f_mag = get_font(86, bold=True)
+    f_mag = get_font(88, bold=True)
     draw.text((VIDEO_WIDTH // 2, 140), f"M{mag:.1f}", fill="#eab308", font=f_mag, stroke_width=6, stroke_fill="#000000", anchor="mm")
 
     f_eq = get_font(46, bold=True)
@@ -200,6 +208,11 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     current_sub = get_current_subtitle(sentences, frame_num, total_frames)
     if current_sub:
         f_sub = get_font(38, bold=True)
+        # Subtitle background bar for ultra readability
+        bbox = draw.textbbox((0, 0), current_sub, font=f_sub)
+        sub_w = bbox[2] - bbox[0]
+        if sub_w > VIDEO_WIDTH - 80:
+            f_sub = get_font(30, bold=True)
         draw.text((VIDEO_WIDTH // 2, 1680), current_sub, fill="#ffffff", font=f_sub, stroke_width=4, stroke_fill="#000000", anchor="mm")
 
     return frame
@@ -218,28 +231,26 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
     base_map_img = Image.open(map_temp_path)
 
     ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
-    cmd_probe = [ffmpeg_exe, "-i", audio_path]
-    res = subprocess.run(cmd_probe, stderr=subprocess.PIPE, stdout=subprocess.PIPE, text=True)
-    
-    duration_secs = 12.0
-    for line in res.stderr.splitlines():
-        if "Duration:" in line:
-            try:
-                time_str = line.split("Duration:")[1].split(",")[0].strip()
-                h, m, s = time_str.split(":")
-                duration_secs = float(h) * 3600 + float(m) * 60 + float(s) + 0.5
-                break
-            except Exception:
-                pass
 
-    total_frames = int(duration_secs * FPS)
-    print(f"⏱️ Video duration: {duration_secs:.1f}s ({total_frames} frames)")
+    # Determine audio duration via ffprobe
+    probe_cmd = [
+        ffmpeg_exe, "-i", audio_path,
+        "-show_entries", "format=duration",
+        "-v", "quiet", "-of", "csv=p=0"
+    ]
+    try:
+        res = subprocess.run(probe_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        audio_duration = float(res.stdout.strip())
+    except Exception:
+        audio_duration = 24.0
 
-    temp_raw_video = os.path.join(OUTPUT_DIR, f"raw_country_badge_{event['id']}.mp4")
+    total_frames = int(audio_duration * FPS) + (FPS * 1) # 1 sec outro hold
+    print(f"⏱️ Video duration: {audio_duration:.1f}s ({total_frames} frames)")
 
-    writer_cmd = [
-        ffmpeg_exe,
-        "-y",
+    raw_video_path = os.path.join(OUTPUT_DIR, f"raw_country_badge_{event['id']}.mp4")
+
+    render_cmd = [
+        ffmpeg_exe, "-y",
         "-f", "rawvideo",
         "-vcodec", "rawvideo",
         "-s", f"{VIDEO_WIDTH}x{VIDEO_HEIGHT}",
@@ -248,44 +259,44 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
         "-i", "-",
         "-c:v", "libx264",
         "-pix_fmt", "yuv420p",
-        "-preset", "ultrafast",
-        temp_raw_video
+        "-profile:v", "baseline",
+        "-level", "4.0",
+        "-crf", "23",
+        "-b:v", "8000k",
+        raw_video_path
     ]
 
-    proc = subprocess.Popen(writer_cmd, stdin=subprocess.PIPE)
+    pipe = subprocess.Popen(render_cmd, stdin=subprocess.PIPE)
 
-    for f_idx in range(total_frames):
-        frame = render_reference_style_frame(event, base_map_img, epicenter_coords, sentences, f_idx, total_frames)
-        proc.stdin.write(frame.tobytes())
+    for f in range(total_frames):
+        frame = render_reference_style_frame(event, base_map_img, epicenter_coords, sentences, f, total_frames)
+        raw_bytes = frame.tobytes()
+        pipe.stdin.write(raw_bytes)
 
-    proc.stdin.close()
-    proc.wait()
+    pipe.stdin.close()
+    pipe.wait()
 
-    if os.path.exists(output_video_path):
-        try:
-            os.remove(output_video_path)
-        except Exception:
-            name, ext = os.path.splitext(output_video_path)
-            output_video_path = f"{name}_new{ext}"
-
-    merge_cmd = [
-        ffmpeg_exe,
-        "-y",
-        "-i", temp_raw_video,
+    # Merge audio + video
+    final_cmd = [
+        ffmpeg_exe, "-y",
+        "-i", raw_video_path,
         "-i", audio_path,
         "-c:v", "copy",
         "-c:a", "aac",
+        "-b:a", "192k",
         "-shortest",
         output_video_path
     ]
-    subprocess.run(merge_cmd, check=True)
+    subprocess.run(final_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
-    for p in [temp_raw_video, map_temp_path]:
-        try:
-            if os.path.exists(p):
-                os.remove(p)
-        except Exception:
-            pass
+    # Cleanup temp files
+    try:
+        if os.path.exists(map_temp_path):
+            os.remove(map_temp_path)
+        if os.path.exists(raw_video_path):
+            os.remove(raw_video_path)
+    except Exception:
+        pass
 
     print(f"🎉 Final Elevated Country Badge Reel successfully generated: {output_video_path}")
     return output_video_path
