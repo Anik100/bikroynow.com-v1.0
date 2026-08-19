@@ -5,3 +5,5 @@ matplotlib>=3.8.0
 numpy>=1.26.0
 imageio>=2.34.0
 imageio-ffmpeg>=0.5.1
+timezonefinder>=6.5.0
+tzdata>=2024.1

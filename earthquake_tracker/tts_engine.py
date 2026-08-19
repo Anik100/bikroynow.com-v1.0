@@ -14,12 +14,14 @@ from config import VOICE_NAME, VOICE_RATE, VOICE_PITCH
 
 def generate_script(event):
     """
-    Generates a high-impact, professional international news broadcast script.
+    Generates a high-impact international news broadcast script
+    speaking BOTH Local Time and Universal UTC Time clearly.
     """
     mag = event["mag"]
     place = event["place"]
     depth = event["depth_km"]
-    time_str = event["time_utc"]
+    local_time = event.get("local_time_short", "local time")
+    utc_time = event.get("utc_short", event.get("time_utc", "UTC"))
     tsunami = event["tsunami_alert"]
 
     if mag >= 7.0:
@@ -38,7 +40,8 @@ def generate_script(event):
     sentences = [
         urgency_prefix,
         f"A magnitude {mag} earthquake has struck {place}.",
-        f"The seismic event occurred at a depth of {depth} kilometers on {time_str}.",
+        f"The tremor occurred at {local_time}, corresponding to {utc_time}.",
+        f"The focal depth was recorded at {depth} kilometers below the surface.",
         tsunami_text,
         "Stay alert and follow Earthquake Tracker for 24/7 global seismic updates."
     ]

@@ -27,3 +27,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# earthquake outputs
+earthquake_tracker/output/*
+!earthquake_tracker/output/.gitkeep

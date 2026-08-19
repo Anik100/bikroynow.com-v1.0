@@ -11,6 +11,7 @@ if sys.platform == "win32":
     except Exception:
         pass
 from config import USGS_FEED_URL, MIN_MAGNITUDE, HISTORY_FILE
+from time_utils import get_earthquake_times
 
 def load_history():
     """Load list of previously posted earthquake IDs."""
@@ -64,15 +65,15 @@ def fetch_latest_earthquakes():
             continue
 
         epoch_ms = props.get("time", 0)
-        event_time_utc = datetime.fromtimestamp(epoch_ms / 1000.0, tz=timezone.utc)
-        formatted_time = event_time_utc.strftime("%B %d, %Y at %H:%M UTC")
-
         place = props.get("place", "Unknown Location")
         tsunami = props.get("tsunami", 0) == 1
         depth_km = round(coords[2], 1) if len(coords) > 2 else 10.0
         longitude = coords[0]
         latitude = coords[1]
         url = props.get("url", "")
+
+        # Compute accurate Local and UTC times
+        t_data = get_earthquake_times(epoch_ms, latitude, longitude)
 
         event_data = {
             "id": event_id,
@@ -81,7 +82,12 @@ def fetch_latest_earthquakes():
             "latitude": latitude,
             "longitude": longitude,
             "depth_km": depth_km,
-            "time_utc": formatted_time,
+            "time_utc": t_data["utc_full"],
+            "utc_short": t_data["utc_short"],
+            "local_time_short": t_data["local_short"],
+            "local_time_full": t_data["local_full"],
+            "local_voice": t_data["local_voice"],
+            "tz_name": t_data["tz_name"],
             "epoch_ms": epoch_ms,
             "tsunami_alert": tsunami,
             "url": url

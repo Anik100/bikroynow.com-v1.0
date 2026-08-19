@@ -26,12 +26,13 @@ def extract_country_and_tags(place_str):
 
 def create_post_caption(event):
     """
-    Generates an engaging Facebook Post Status with trending hashtags.
+    Generates an engaging Facebook Post Status with Local Time and Universal Time.
     """
     mag = event["mag"]
     place = event["place"]
     depth = event["depth_km"]
-    time_str = event["time_utc"]
+    local_time = event.get("local_time_full") or event.get("local_time_short") or "Recorded locally"
+    utc_time = event.get("time_utc") or "Recorded in UTC"
     country, country_tags = extract_country_and_tags(place)
 
     if mag >= 7.0:
@@ -52,7 +53,8 @@ def create_post_caption(event):
         f"⚡ Magnitude: M {mag:.1f}\n"
         f"📏 Depth: {depth} km below surface\n"
         f"🌐 Coordinates: {event['latitude']}°, {event['longitude']}°\n"
-        f"⏱️ Time: {time_str}\n"
+        f"⏱️ Local Time: {local_time}\n"
+        f"🌍 Universal Time: {utc_time}\n"
         f"🌊 Tsunami Status: {tsunami}\n"
         f"🏛️ Source: USGS Official Monitoring Network\n"
         f"━━━━━━━━━━━━━━━━━━━━━\n\n"

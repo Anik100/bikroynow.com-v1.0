@@ -3,7 +3,6 @@ import sys
 import math
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-import cv2
 
 if sys.platform == "win32":
     try:
@@ -35,7 +34,7 @@ def create_earthquake_infographic_photo(event, output_image_path):
     Creates a 1080x1350 High-Resolution Facebook Infographic Photo Card:
     - High-contrast natural satellite epicenter map
     - Red hazard zone & 3D country badge
-    - News bulletin statistics cards (Magnitude, Depth, Tsunami Status, Coordinates, Time)
+    - News bulletin statistics cards (Magnitude, Local Time, Universal Time, Depth, Tsunami Status, Coordinates)
     - Full branding
     """
     width, height = 1080, 1350
@@ -49,16 +48,16 @@ def create_earthquake_infographic_photo(event, output_image_path):
         event["longitude"],
         event["place"],
         map_temp_path,
-        zoom=7,
+        zoom=6,
         target_w=1080,
-        target_h=850
+        target_h=830
     )
     sat_map = Image.open(map_temp_path)
     canvas.paste(sat_map, (0, 0))
 
     # Center of map
     cx = width // 2
-    cy = 425
+    cy = 415
 
     # 2. Draw Epicenter Pin & Hazard Circle
     hazard_r = int(140 + (event["mag"] - 4.0) * 50)
@@ -105,34 +104,39 @@ def create_earthquake_infographic_photo(event, output_image_path):
     f_top_head = get_font(28, bold=True)
     draw.text((width // 2, 60), "EARTHQUAKE TRACKER • OFFICIAL REPORT", fill="#ffffff", font=f_top_head, anchor="mm")
 
-    # 4. Bottom Information Dashboard (850px to 1350px)
-    dash_y = 850
+    # 4. Bottom Information Dashboard (830px to 1350px)
+    dash_y = 830
     draw.rectangle([(0, dash_y), (width, height)], fill="#070a12")
     draw.line([(0, dash_y), (width, dash_y)], fill="#facc15", width=4)
 
     # Left Box: Magnitude Card
     mag = event["mag"]
-    draw.rounded_rectangle([(40, dash_y + 25), (380, dash_y + 235)], radius=20, fill="#0f172a", outline="#ef4444", width=3)
+    draw.rounded_rectangle([(40, dash_y + 20), (370, dash_y + 245)], radius=20, fill="#0f172a", outline="#ef4444", width=3)
     f_mag_title = get_font(22, bold=True)
     f_mag_big = get_font(72, bold=True)
     f_mag_sub = get_font(20, bold=False)
-    draw.text((210, dash_y + 60), "MAGNITUDE", fill="#94a3b8", font=f_mag_title, anchor="mm")
-    draw.text((210, dash_y + 130), f"M {mag:.1f}", fill="#ef4444", font=f_mag_big, anchor="mm")
-    draw.text((210, dash_y + 195), "SEISMIC ACTIVITY", fill="#38bdf8", font=f_mag_sub, anchor="mm")
+    draw.text((205, dash_y + 55), "MAGNITUDE", fill="#94a3b8", font=f_mag_title, anchor="mm")
+    draw.text((205, dash_y + 125), f"M {mag:.1f}", fill="#ef4444", font=f_mag_big, anchor="mm")
+    draw.text((205, dash_y + 195), "SEISMIC ACTIVITY", fill="#38bdf8", font=f_mag_sub, anchor="mm")
 
-    # Right Box: Depth & Coordinates Card
-    draw.rounded_rectangle([(410, dash_y + 25), (width - 40, dash_y + 235)], radius=20, fill="#0f172a", outline="#334155", width=2)
-    f_stat_h = get_font(22, bold=True)
-    f_stat_v = get_font(26, bold=True)
+    # Right Box: Depth, Coordinates, and Local/UTC Time Card
+    draw.rounded_rectangle([(390, dash_y + 20), (width - 40, dash_y + 245)], radius=20, fill="#0f172a", outline="#334155", width=2)
+    f_stat_h = get_font(19, bold=True)
+    f_stat_v = get_font(23, bold=True)
 
-    draw.text((440, dash_y + 55), "LOCATION & REGION:", fill="#94a3b8", font=f_stat_h)
-    draw.text((440, dash_y + 88), event["place"][:36], fill="#ffffff", font=f_stat_v)
+    draw.text((415, dash_y + 40), "LOCATION & REGION:", fill="#94a3b8", font=f_stat_h)
+    draw.text((415, dash_y + 68), event["place"][:36], fill="#ffffff", font=f_stat_v)
 
-    draw.text((440, dash_y + 135), "DEPTH & COORDINATES:", fill="#94a3b8", font=f_stat_h)
-    draw.text((440, dash_y + 168), f"{event['depth_km']} km  •  {event['latitude']:.2f}°, {event['longitude']:.2f}°", fill="#38bdf8", font=f_stat_v)
+    local_t = event.get("local_time_short", "Local Time")
+    utc_t = event.get("utc_short", event.get("time_utc", "UTC"))
+    draw.text((415, dash_y + 105), "RECORDED TIME (LOCAL & UTC):", fill="#94a3b8", font=f_stat_h)
+    draw.text((415, dash_y + 133), f"LOCAL: {local_t.upper()}  •  UTC: {utc_t.upper()}", fill="#facc15", font=f_stat_v)
+
+    draw.text((415, dash_y + 170), "DEPTH & COORDINATES:", fill="#94a3b8", font=f_stat_h)
+    draw.text((415, dash_y + 198), f"{event['depth_km']} km depth  •  {event['latitude']:.2f}°, {event['longitude']:.2f}°", fill="#38bdf8", font=f_stat_v)
 
     # Full Width Bottom Row: Tsunami & Source
-    tsunami_box_y = dash_y + 255
+    tsunami_box_y = dash_y + 265
     tsunami_text = "TSUNAMI WARNING: UNDER EVALUATION" if event["tsunami_alert"] else "TSUNAMI STATUS: NO IMMEDIATE THREAT"
     tsunami_bg = "#7f1d1d" if event["tsunami_alert"] else "#064e3b"
     tsunami_border = "#ef4444" if event["tsunami_alert"] else "#10b981"
@@ -142,7 +146,7 @@ def create_earthquake_infographic_photo(event, output_image_path):
 
     # Footer
     f_foot = get_font(22, bold=True)
-    draw.text((width // 2, height - 35), "AUTOMATED REAL-TIME SEISMIC MONITORING • USGS NETWORK", fill="#64748b", font=f_foot, anchor="mm")
+    draw.text((width // 2, height - 30), "AUTOMATED REAL-TIME SEISMIC MONITORING • USGS NETWORK", fill="#64748b", font=f_foot, anchor="mm")
 
     canvas.save(output_image_path, quality=95)
     
