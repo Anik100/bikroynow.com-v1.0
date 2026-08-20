@@ -50,6 +50,8 @@ def fetch_latest_earthquakes():
 
     features = data.get("features", [])
     new_events = []
+    current_time_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
+    history_updated = False
 
     for item in features:
         event_id = item.get("id")
@@ -65,6 +67,14 @@ def fetch_latest_earthquakes():
             continue
 
         epoch_ms = props.get("time", 0)
+        age_minutes = (current_time_ms - epoch_ms) / 60000.0
+
+        # Skip events older than 35 minutes and mark them as posted (archived)
+        if age_minutes > 35.0:
+            history["posted_ids"].append(event_id)
+            history_updated = True
+            continue
+
         place = props.get("place", "Unknown Location")
         tsunami = props.get("tsunami", 0) == 1
         depth_km = round(coords[2], 1) if len(coords) > 2 else 10.0
@@ -93,6 +103,12 @@ def fetch_latest_earthquakes():
             "url": url
         }
         new_events.append(event_data)
+
+    if history_updated:
+        # Keep last 500
+        if len(history["posted_ids"]) > 500:
+            history["posted_ids"] = history["posted_ids"][-500:]
+        save_history(history)
 
     print(f"✅ Found {len(new_events)} new earthquake(s) >= M{MIN_MAGNITUDE}")
     return new_events
