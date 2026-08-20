@@ -75,6 +75,9 @@ def run_pipeline():
         print("💤 No new earthquakes >= M4.0 found. All caught up!")
         return
 
+    # Sort events to ensure the newest ones are processed first
+    events.sort(key=lambda x: x.get("epoch_ms", 0), reverse=True)
+
     # Process events (up to 4 events per run)
     for event in events[:4]:
         try:

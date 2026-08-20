@@ -244,7 +244,7 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
     except Exception:
         audio_duration = 24.0
 
-    total_frames = int(audio_duration * FPS) + (FPS * 1) # 1 sec outro hold
+    total_frames = int((audio_duration + 3.0) * FPS) # 3 seconds safety outro hold
     print(f"⏱️ Video duration: {audio_duration:.1f}s ({total_frames} frames)")
 
     raw_video_path = os.path.join(OUTPUT_DIR, f"raw_country_badge_{event['id']}.mp4")
@@ -284,7 +284,6 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
         "-c:v", "copy",
         "-c:a", "aac",
         "-b:a", "192k",
-        "-shortest",
         output_video_path
     ]
     subprocess.run(final_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
