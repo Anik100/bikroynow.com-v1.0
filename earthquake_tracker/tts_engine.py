@@ -52,11 +52,11 @@ def get_dynamic_cta(place, country):
     Generates dynamic call-to-actions asking local residents to comment with ground updates.
     """
     ctas = [
-        f"If you are in {country} or nearby regions and felt this shaking, please comment below and let us know your safety status.",
-        f"Did you feel the tremor in {country}? Leave a comment with your location and let us know what you experienced.",
-        f"Residents across {country}, please share your live ground updates in the comments below.",
-        f"If you felt this earthquake, tell us in the comments how strong the shaking was where you are.",
-        f"Please comment your location if you felt this tremor, and check on family and neighbors."
+        f"If you are in {country} or nearby regions and felt this shaking, please comment below and tell us what you felt and how strong it was.",
+        f"Did you feel the tremor in {country}? Don't forget to write in the comments what the shaking felt like in your location.",
+        f"Residents across {country}, if you experienced this quake, please comment below to share what you felt and help us map the impact.",
+        f"For anyone near the epicenter in {country}, tell us in the comments what you felt during the shaking and stay safe.",
+        f"If you felt this earthquake in {country}, please share your experience and local ground conditions in the comments below."
     ]
     return random.choice(ctas)
 
