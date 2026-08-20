@@ -123,6 +123,7 @@ def upload_video_to_facebook(video_path, event):
         payload = {
             "title": title,
             "description": description,
+            "published": True,
             "access_token": FB_PAGE_ACCESS_TOKEN
         }
         files = {
