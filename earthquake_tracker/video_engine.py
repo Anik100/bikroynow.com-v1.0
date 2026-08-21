@@ -32,11 +32,13 @@ def parse_country_name(place_str):
         return parts[-1].upper()
     return place_str.upper()
 
-def get_current_subtitle(sentences, frame_num, total_frames):
+def get_current_subtitle(sentences, frame_num, audio_frames):
     if not sentences:
         return ""
+    if frame_num >= audio_frames:
+        return "🔔 Follow Earthquake Tracker for 24/7 Live Updates"
     num_sentences = len(sentences)
-    frames_per_sentence = total_frames / num_sentences
+    frames_per_sentence = max(1, audio_frames / num_sentences)
     curr_idx = min(num_sentences - 1, int(frame_num / frames_per_sentence))
     return sentences[curr_idx]
 
@@ -92,16 +94,15 @@ def draw_prominent_country_badge(draw, cx, cy, country_name):
     # Country Name Text
     draw.text((cx, box_y1 + 30), country_name, fill="#facc15", font=f_country, stroke_width=4, stroke_fill="#000000", anchor="mm")
 
-def render_reference_style_frame(event, base_map_img, epicenter_coords, sentences, frame_num, total_frames):
+def render_reference_style_frame(event, base_map_img, epicenter_coords, sentences, frame_num, total_frames, audio_frames):
     progress = frame_num / max(1, total_frames)
     mag = event["mag"]
     country_name = parse_country_name(event["place"])
     ep_x, ep_y = epicenter_coords
 
-    # 🚀 DEEP CINEMATIC SMOOTH PROGRESSIVE GLIDE-ZOOM (1.00x up to 1.85x)
-    # Smooth S-curve easing so camera gracefully glides deeply into the affected area
-    ease_zoom = 0.5 * (1 - math.cos(progress * math.pi))
-    zoom_scale = 1.0 + (ease_zoom * 0.85)
+    # 🚀 CONTINUOUS SMOOTH PROGRESSIVE GLIDE-ZOOM (1.00x up to 1.85x)
+    # Never freezes or halts at the end - keeps constantly moving like a dynamic video till the last frame
+    zoom_scale = 1.0 + (math.pow(progress, 0.85) * 0.85)
 
     orig_w, orig_h = base_map_img.size
     new_w = int(orig_w / zoom_scale)
@@ -205,7 +206,7 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
         draw.text((VIDEO_WIDTH // 2, 325), line4, fill="#ffffff", font=f_loc, stroke_width=4, stroke_fill="#000000", anchor="mm")
 
     # 7. BOTTOM SUBTITLES
-    current_sub = get_current_subtitle(sentences, frame_num, total_frames)
+    current_sub = get_current_subtitle(sentences, frame_num, audio_frames)
     if current_sub:
         f_sub = get_font(38, bold=True)
         # Subtitle background bar for ultra readability
@@ -244,8 +245,9 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
     except Exception:
         audio_duration = 24.0
 
-    total_frames = int((audio_duration + 3.0) * FPS) # 3 seconds safety outro hold
-    print(f"⏱️ Video duration: {audio_duration:.1f}s ({total_frames} frames)")
+    audio_frames = int(audio_duration * FPS)
+    total_frames = int((audio_duration + 3.0) * FPS) # 3 seconds continuous outro motion
+    print(f"⏱️ Video duration: {audio_duration + 3.0:.1f}s ({total_frames} frames, audio={audio_duration:.1f}s)")
 
     raw_video_path = os.path.join(OUTPUT_DIR, f"raw_country_badge_{event['id']}.mp4")
 
@@ -269,7 +271,7 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
     pipe = subprocess.Popen(render_cmd, stdin=subprocess.PIPE)
 
     for f in range(total_frames):
-        frame = render_reference_style_frame(event, base_map_img, epicenter_coords, sentences, f, total_frames)
+        frame = render_reference_style_frame(event, base_map_img, epicenter_coords, sentences, f, total_frames, audio_frames)
         raw_bytes = frame.tobytes()
         pipe.stdin.write(raw_bytes)
 
