@@ -100,9 +100,9 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     country_name = parse_country_name(event["place"])
     ep_x, ep_y = epicenter_coords
 
-    # 🚀 CONTINUOUS SMOOTH PROGRESSIVE GLIDE-ZOOM (1.00x up to 1.85x)
-    # Never freezes or halts at the end - keeps constantly moving like a dynamic video till the last frame
-    zoom_scale = 1.0 + (math.pow(progress, 0.85) * 0.85)
+    # 🚀 CONSTANT SMOOTH PROGRESSIVE GLIDE-ZOOM (1.00x up to 1.85x)
+    # Constant lively cinematic zoom rate so the scene is always actively moving and never feels paused
+    zoom_scale = 1.0 + (progress * 0.85)
 
     orig_w, orig_h = base_map_img.size
     new_w = int(orig_w / zoom_scale)
@@ -245,9 +245,11 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
     except Exception:
         audio_duration = 24.0
 
+    outro_seconds = 1.0
+    total_duration = audio_duration + outro_seconds
     audio_frames = int(audio_duration * FPS)
-    total_frames = int((audio_duration + 3.0) * FPS) # 3 seconds continuous outro motion
-    print(f"⏱️ Video duration: {audio_duration + 3.0:.1f}s ({total_frames} frames, audio={audio_duration:.1f}s)")
+    total_frames = int(total_duration * FPS)
+    print(f"⏱️ Video duration: {total_duration:.1f}s ({total_frames} frames, voice={audio_duration:.1f}s, outro={outro_seconds:.1f}s)")
 
     raw_video_path = os.path.join(OUTPUT_DIR, f"raw_country_badge_{event['id']}.mp4")
 
@@ -278,14 +280,18 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
     pipe.stdin.close()
     pipe.wait()
 
-    # Merge audio + video
+    # Merge audio + video and pad audio with apad filter so audio and video match 100% in length
     final_cmd = [
         ffmpeg_exe, "-y",
         "-i", raw_video_path,
         "-i", audio_path,
+        "-filter_complex", f"[1:a]apad=whole_dur={total_duration:.2f}[a]",
+        "-map", "0:v",
+        "-map", "[a]",
         "-c:v", "copy",
         "-c:a", "aac",
         "-b:a", "192k",
+        "-shortest",
         output_video_path
     ]
     subprocess.run(final_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
