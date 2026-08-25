@@ -95,15 +95,25 @@ def draw_prominent_country_badge(draw, cx, cy, country_name):
     # Country Name Text
     draw.text((cx, box_y1 + 30), country_name, fill="#facc15", font=f_country, stroke_width=4, stroke_fill="#000000", anchor="mm")
 
+def estimate_impact_radius_km(mag):
+    """
+    Estimates realistic seismic shaking impact radius in km based on earthquake magnitude.
+    """
+    # M4.0 -> ~60km, M5.0 -> ~130km, M6.0 -> ~320km, M7.0 -> ~650km
+    raw_r = math.pow(10, 0.42 * mag - 0.55)
+    return int(max(50, min(750, round(raw_r / 10.0) * 10)))
+
 def render_reference_style_frame(event, base_map_img, epicenter_coords, sentences, frame_num, total_frames, audio_frames):
     progress = frame_num / max(1, total_frames)
     mag = event["mag"]
     country_name = parse_country_name(event["place"])
     ep_x, ep_y = epicenter_coords
+    impact_km = estimate_impact_radius_km(mag)
 
-    # 🚀 CONSTANT SMOOTH PROGRESSIVE GLIDE-ZOOM (1.00x up to 1.85x)
-    # Constant lively cinematic zoom rate so the scene is always actively moving and never feels paused
-    zoom_scale = 1.0 + (progress * 0.85)
+    # 🚀 ENHANCED SMOOTH & FASTER CINEMATIC GLIDE-ZOOM (1.00x up to 2.25x)
+    # Starts with a swift cinematic glide and glides smoothly into the epicenter
+    ease_progress = math.pow(progress, 0.82)
+    zoom_scale = 1.0 + (ease_progress * 1.25)
 
     orig_w, orig_h = base_map_img.size
     new_w = int(orig_w / zoom_scale)
@@ -122,32 +132,36 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     overlay = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (0, 0, 0, 0))
     ol_draw = ImageDraw.Draw(overlay)
 
-    # 🔴 1. BOLD RED EARTHQUAKE IMPACT PERIMETER & RED HAZARD BORDER
-    hazard_base_r = int((130 + (mag - 4.0) * 55) * zoom_scale * 0.75)
+    # 🔴 1. HIGH-PRECISION GLOWING RED EARTHQUAKE IMPACT ZONE & PERIMETER
+    # Scaled proportionally to estimated km impact radius and map zoom
+    hazard_base_r = int((140 + (mag - 4.0) * 65) * zoom_scale * 0.70)
     
-    # Outer Glowing Danger Border (Double Red Contour Line)
-    ol_draw.ellipse(
-        [(curr_ep_x - hazard_base_r - 12, curr_ep_y - hazard_base_r - 32),
-         (curr_ep_x + hazard_base_r + 12, curr_ep_y + hazard_base_r - 8)],
-        outline=(239, 68, 68, 120),
-        width=3
-    )
-    # Primary Red Hazard Border Line
+    # Outer Danger Aura Glow
+    for glow_i in range(3):
+        g_r = hazard_base_r + (glow_i * 12)
+        ol_draw.ellipse(
+            [(curr_ep_x - g_r, curr_ep_y - g_r - 20),
+             (curr_ep_x + g_r, curr_ep_y + g_r - 20)],
+            outline=(239, 68, 68, max(25, 90 - glow_i * 25)),
+            width=2
+        )
+
+    # Primary Semi-Transparent Red Hazard Field Fill
     ol_draw.ellipse(
         [(curr_ep_x - hazard_base_r, curr_ep_y - hazard_base_r - 20),
          (curr_ep_x + hazard_base_r, curr_ep_y + hazard_base_r - 20)],
-        fill=(220, 38, 38, 90),
+        fill=(220, 38, 38, 75),
         outline=(239, 68, 68, 255),
-        width=6
+        width=5
     )
 
-    # Inner Red Danger Core
-    core_r = int(hazard_base_r * 0.45)
+    # Inner Intense Danger Core
+    core_r = int(hazard_base_r * 0.38)
     ol_draw.ellipse(
         [(curr_ep_x - core_r, curr_ep_y - core_r - 20),
          (curr_ep_x + core_r, curr_ep_y + core_r - 20)],
-        fill=(255, 0, 0, 150),
-        outline=(255, 255, 255, 230),
+        fill=(255, 0, 0, 140),
+        outline=(255, 255, 255, 220),
         width=3
     )
 
@@ -166,23 +180,50 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     # 3. Expanding Red Seismic Shockwave Ripple
     for wave_i in range(2):
         w_phase = (t + (wave_i * 0.5)) % 1.0
-        w_radius = int(hazard_base_r + (w_phase * 280))
+        w_radius = int(hazard_base_r + (w_phase * 260))
         w_alpha = int((1.0 - w_phase) * 170)
         ol_draw.ellipse(
             [(curr_ep_x - w_radius, curr_ep_y - w_radius - 20),
              (curr_ep_x + w_radius, curr_ep_y + w_radius - 20)],
-            fill=(225, 29, 72, int(w_alpha * 0.25)),
+            fill=(225, 29, 72, int(w_alpha * 0.22)),
             outline=(225, 29, 72, w_alpha),
-            width=5
+            width=4
         )
 
     frame.paste(overlay, (0, 0), overlay)
     draw = ImageDraw.Draw(frame)
 
-    # 4. Epicenter Seismograph Pin
+    # 📍 4. PROFESSIONAL IMPACT RADIUS BADGE (attached to the red hazard border)
+    f_km = get_font(26, bold=True)
+    km_text = f"🔴 IMPACT ZONE: ~{impact_km} KM"
+    bbox_km = draw.textbbox((0, 0), km_text, font=f_km)
+    km_w = bbox_km[2] - bbox_km[0] + 30
+    km_h = 42
+    badge_x = int(curr_ep_x)
+    badge_y = int(curr_ep_y + hazard_base_r + 5)
+    
+    # Keep badge inside frame bounds
+    if 50 <= badge_y <= VIDEO_HEIGHT - 350:
+        draw.rounded_rectangle(
+            [(badge_x - (km_w // 2) + 3, badge_y - (km_h // 2) + 3),
+             (badge_x + (km_w // 2) + 3, badge_y + (km_h // 2) + 3)],
+            radius=12,
+            fill="#000000bb"
+        )
+        draw.rounded_rectangle(
+            [(badge_x - (km_w // 2), badge_y - (km_h // 2)),
+             (badge_x + (km_w // 2), badge_y + (km_h // 2))],
+            radius=12,
+            fill="#991b1bfa",
+            outline="#fca5a5",
+            width=2
+        )
+        draw.text((badge_x, badge_y), km_text, fill="#ffffff", font=f_km, stroke_width=2, stroke_fill="#000000", anchor="mm")
+
+    # 5. Epicenter Seismograph Pin
     draw_seismograph_pin(draw, curr_ep_x, curr_ep_y)
 
-    # 🌟 5. 3D ELEVATED COUNTRY BADGE RIGHT ABOVE THE RED EPICENTER MARK
+    # 🌟 6. 3D ELEVATED COUNTRY BADGE RIGHT ABOVE THE RED EPICENTER MARK
     draw_prominent_country_badge(draw, curr_ep_x, curr_ep_y, country_name)
 
     # 6. TOP HEADER
