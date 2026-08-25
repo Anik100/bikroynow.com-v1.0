@@ -110,10 +110,10 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     ep_x, ep_y = epicenter_coords
     impact_km = estimate_impact_radius_km(mag)
 
-    # 🚀 3X FASTER & DEEP CINEMATIC PLUNGE ZOOM (1.00x up to 4.85x)
-    # Fast initial acceleration that dives deeply into the epicenter with high-speed dynamic motion
-    ease_progress = math.pow(progress, 0.65)
-    zoom_scale = 1.0 + (ease_progress * 3.85)
+    # 🚀 HIGH-SPEED BROADCAST PLUNGE ZOOM (1.00x up to 4.85x)
+    # Rapidly dives from continental view right to the epicenter in the first 3.5-4 seconds!
+    zoom_progress = 1.0 - math.exp(-progress * 7.5) # Reaches ~85% zoom depth in the first 4 seconds!
+    zoom_scale = 1.0 + (zoom_progress * 3.85)
 
     orig_w, orig_h = base_map_img.size
     new_w = int(orig_w / zoom_scale)
@@ -128,69 +128,69 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     curr_ep_x = (ep_x - crop_left) * (VIDEO_WIDTH / new_w)
     curr_ep_y = (ep_y - crop_top) * (VIDEO_HEIGHT / new_h)
 
-    # Overlays: Red Impact Area Perimeter + Hazard Line + Shockwaves
+    # Overlays: 3D Elevated Pop-up Red Terrain + Hazard Bevel + Shockwaves
     overlay = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (0, 0, 0, 0))
     ol_draw = ImageDraw.Draw(overlay)
 
-    # 🔴 1. 3D ELEVATED RED EPICENTER LAND MARK (ম্যাপের স্থানটি থ্রিডি আকারে উঁচু করে রেড মার্ক)
-    # Smooth elevation pop-up effect as the camera plunges in
-    elev_anim = math.sin(min(1.0, progress * 3.0) * (math.pi / 2))
-    elev_px = int(28 * elev_anim) # Height of 3D extrusion / elevation
-    disc_rx = int(95 + (mag - 4.0) * 35) # Horizontal radius
-    disc_ry = int(disc_rx * 0.58) # Perspective isometric vertical radius
+    # 🔴 1. TRUE 3D ELEVATED RED EPICENTER PEDESTAL (ম্যাপের স্থানটি থ্রিডি আকারে নিচ থেকে উঁচু হয়ে উঠবে)
+    # Smooth dynamic elevation pop-up as camera reaches epicenter
+    elev_anim = math.sin(min(1.0, progress * 4.0) * (math.pi / 2))
+    elev_px = int(48 * elev_anim) # 48px dramatic 3D elevation height
+    disc_rx = int(115 + (mag - 4.0) * 40) # Horizontal radius of the affected zone
+    disc_ry = int(disc_rx * 0.58) # Perspective 3D isometric tilt
 
-    # A. 3D Deep Drop Shadow on the original ground below the elevated mark
+    # A. Deep Realistic 3D Ground Shadow beneath the raised land
     ol_draw.ellipse(
-        [(curr_ep_x - disc_rx - 12, curr_ep_y - disc_ry + 18),
-         (curr_ep_x + disc_rx + 12, curr_ep_y + disc_ry + 32)],
-        fill=(0, 0, 0, 160)
+        [(curr_ep_x - disc_rx - 15, curr_ep_y - disc_ry + 20),
+         (curr_ep_x + disc_rx + 15, curr_ep_y + disc_ry + 45)],
+        fill=(0, 0, 0, 185)
     )
 
-    # B. 3D Extruded Wall / Bevel (উঁচু করা লাল অংশ)
+    # B. 3D Extruded Cylinder Wall / Bevel (উঁচু হওয়া লাল সাইডওয়াল)
     for wall_y in range(elev_px, 0, -2):
-        shade_alpha = int(140 + (wall_y / max(1, elev_px)) * 90)
+        shade_alpha = int(160 + (wall_y / max(1, elev_px)) * 95)
         ol_draw.ellipse(
             [(curr_ep_x - disc_rx, curr_ep_y - disc_ry - wall_y),
              (curr_ep_x + disc_rx, curr_ep_y + disc_ry - wall_y)],
-            fill=(159, 18, 57, shade_alpha),
-            outline=(225, 29, 72, 180),
+            fill=(136, 19, 55, shade_alpha),
+            outline=(225, 29, 72, 210),
             width=2
         )
 
-    # C. Top Elevated Red Platform Surface
+    # C. Top Elevated 3D Red Platform Surface
     top_cy = curr_ep_y - elev_px
-    # Glowing Outer Rim
+    # Glowing Outer Rim Contour
     ol_draw.ellipse(
-        [(curr_ep_x - disc_rx - 4, top_cy - disc_ry - 4),
-         (curr_ep_x + disc_rx + 4, top_cy + disc_ry + 4)],
-        outline=(254, 202, 202, 220),
+        [(curr_ep_x - disc_rx - 6, top_cy - disc_ry - 6),
+         (curr_ep_x + disc_rx + 6, top_cy + disc_ry + 6)],
+        outline=(254, 202, 202, 230),
         width=3
     )
-    # Top Glowing Red Disc
+    # Top Glowing Red Platform
     ol_draw.ellipse(
         [(curr_ep_x - disc_rx, top_cy - disc_ry),
          (curr_ep_x + disc_rx, top_cy + disc_ry)],
-        fill=(225, 29, 72, 210),
+        fill=(225, 29, 72, 215),
         outline=(255, 255, 255, 255),
         width=4
     )
-    # Inner Bright Red Core
+    # Inner Intense Danger Core
     core_rx = int(disc_rx * 0.45)
     core_ry = int(disc_ry * 0.45)
     ol_draw.ellipse(
         [(curr_ep_x - core_rx, top_cy - core_ry),
          (curr_ep_x + core_rx, top_cy + core_ry)],
-        fill=(255, 0, 0, 230),
-        outline=(255, 255, 255, 240),
-        width=2
+        fill=(255, 0, 0, 240),
+        outline=(255, 255, 255, 250),
+        width=3
     )
 
     # 2. Concentric White Seismograph Acoustic Wave Rings
     t = (frame_num % FPS) / FPS
     for ring_i in range(6):
-        r_dist_x = int(disc_rx + (ring_i * 22))
+        r_dist_x = int(disc_rx + (ring_i * 24))
         r_dist_y = int(r_dist_x * 0.58)
-        alpha = max(15, int(180 - (ring_i * 28)))
+        alpha = max(15, int(190 - (ring_i * 30)))
         ol_draw.ellipse(
             [(curr_ep_x - r_dist_x, top_cy - r_dist_y),
              (curr_ep_x + r_dist_x, top_cy + r_dist_y)],
@@ -201,13 +201,13 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     # 3. Expanding Red Seismic Shockwave Ripple
     for wave_i in range(2):
         w_phase = (t + (wave_i * 0.5)) % 1.0
-        w_radius_x = int(disc_rx + (w_phase * 260))
+        w_radius_x = int(disc_rx + (w_phase * 280))
         w_radius_y = int(w_radius_x * 0.58)
-        w_alpha = int((1.0 - w_phase) * 180)
+        w_alpha = int((1.0 - w_phase) * 190)
         ol_draw.ellipse(
             [(curr_ep_x - w_radius_x, top_cy - w_radius_y),
              (curr_ep_x + w_radius_x, top_cy + w_radius_y)],
-            fill=(225, 29, 72, int(w_alpha * 0.20)),
+            fill=(225, 29, 72, int(w_alpha * 0.22)),
             outline=(239, 68, 68, w_alpha),
             width=4
         )
@@ -215,7 +215,7 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     frame.paste(overlay, (0, 0), overlay)
     draw = ImageDraw.Draw(frame)
 
-    # 4. Epicenter Seismograph Pin (placed on top of the elevated 3D platform)
+    # 4. Epicenter Seismograph Pin (sitting right on top of the elevated 3D red pedestal)
     draw_seismograph_pin(draw, curr_ep_x, top_cy)
 
     # 🌟 5. 3D ELEVATED COUNTRY BADGE RIGHT ABOVE THE PIN
