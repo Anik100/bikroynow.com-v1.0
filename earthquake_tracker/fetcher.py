@@ -31,24 +31,29 @@ def save_history(history_data):
     with open(HISTORY_FILE, "w", encoding="utf-8") as f:
         json.dump(history_data, f, indent=2)
 
+import threading
+import math
+
+history_lock = threading.Lock()
+
 def is_duplicate_event(candidate, existing_list):
     """
     Checks if a candidate earthquake is already present in existing_list
-    via geospatial proximity (<120km) and time proximity (<5 minutes).
+    via geospatial proximity (<60km), magnitude match (+-0.4), and time proximity (<3 minutes).
+    Ensures separate quakes in different towns or aftershocks are never mistakenly filtered.
     """
-    c_lat, c_lon, c_time = candidate["latitude"], candidate["longitude"], candidate["epoch_ms"]
+    c_lat, c_lon, c_time, c_mag = candidate["latitude"], candidate["longitude"], candidate["epoch_ms"], candidate["mag"]
     for ex in existing_list:
         time_diff = abs(c_time - ex["epoch_ms"])
-        if time_diff < 300000: # within 5 minutes
+        mag_diff = abs(c_mag - ex["mag"])
+        if time_diff < 180000 and mag_diff <= 0.4: # within 3 minutes and matching magnitude
             # Approximate distance in km
             d_lat = (c_lat - ex["latitude"]) * 111.0
             d_lon = (c_lon - ex["longitude"]) * 111.0 * math.cos(math.radians(c_lat))
             dist_km = math.hypot(d_lat, d_lon)
-            if dist_km < 120.0:
+            if dist_km < 60.0:
                 return True
     return False
-
-import math
 
 def fetch_latest_earthquakes():
     """
@@ -184,12 +189,13 @@ def fetch_latest_earthquakes():
     return new_events
 
 def mark_event_as_posted(event_id):
-    """Adds event_id to history so it won't be reposted."""
-    history = load_history()
-    if "posted_ids" not in history:
-        history["posted_ids"] = []
-    if event_id not in history["posted_ids"]:
-        history["posted_ids"].append(event_id)
-        if len(history["posted_ids"]) > 500:
-            history["posted_ids"] = history["posted_ids"][-500:]
-        save_history(history)
+    """Adds event_id to history so it won't be reposted (thread-safe)."""
+    with history_lock:
+        history = load_history()
+        if "posted_ids" not in history:
+            history["posted_ids"] = []
+        if event_id not in history["posted_ids"]:
+            history["posted_ids"].append(event_id)
+            if len(history["posted_ids"]) > 500:
+                history["posted_ids"] = history["posted_ids"][-500:]
+            save_history(history)
