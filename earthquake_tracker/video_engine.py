@@ -1,6 +1,7 @@
 import os
 import sys
 import math
+import re
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 import imageio_ffmpeg
@@ -233,23 +234,24 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
 
     ffmpeg_exe = imageio_ffmpeg.get_ffmpeg_exe()
 
-    # Determine audio duration via ffprobe
-    probe_cmd = [
-        ffmpeg_exe, "-i", audio_path,
-        "-show_entries", "format=duration",
-        "-v", "quiet", "-of", "csv=p=0"
-    ]
+    # Accurately extract audio duration in seconds using FFmpeg stderr
     try:
-        res = subprocess.run(probe_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
-        audio_duration = float(res.stdout.strip())
-    except Exception:
-        audio_duration = 24.0
+        res = subprocess.run([ffmpeg_exe, "-i", audio_path], capture_output=True, text=True)
+        match = re.search(r"Duration:\s*(\d+):(\d+):(\d+\.?\d*)", res.stderr)
+        if match:
+            hours, mins, secs = match.groups()
+            audio_duration = int(hours) * 3600 + int(mins) * 60 + float(secs)
+        else:
+            audio_duration = 28.0
+    except Exception as e:
+        print(f"⚠️ Error probing audio duration: {e}")
+        audio_duration = 28.0
 
-    outro_seconds = 1.0
+    outro_seconds = 1.5
     total_duration = audio_duration + outro_seconds
     audio_frames = int(audio_duration * FPS)
     total_frames = int(total_duration * FPS)
-    print(f"⏱️ Video duration: {total_duration:.1f}s ({total_frames} frames, voice={audio_duration:.1f}s, outro={outro_seconds:.1f}s)")
+    print(f"⏱️ Audio duration: {audio_duration:.2f}s | Total video duration: {total_duration:.2f}s ({total_frames} frames)")
 
     raw_video_path = os.path.join(OUTPUT_DIR, f"raw_country_badge_{event['id']}.mp4")
 
