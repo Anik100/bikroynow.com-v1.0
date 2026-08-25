@@ -103,7 +103,7 @@ def estimate_impact_radius_km(mag):
     raw_r = math.pow(10, 0.42 * mag - 0.55)
     return int(max(50, min(750, round(raw_r / 10.0) * 10)))
 
-def render_reference_style_frame(event, base_map_img, epicenter_coords, sentences, frame_num, total_frames, audio_frames):
+def render_reference_style_frame(event, base_map_img, epicenter_coords, places_list, sentences, frame_num, total_frames, audio_frames):
     progress = frame_num / max(1, total_frames)
     mag = event["mag"]
     country_name = parse_country_name(event["place"])
@@ -215,13 +215,83 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     frame.paste(overlay, (0, 0), overlay)
     draw = ImageDraw.Draw(frame)
 
-    # 4. Epicenter Seismograph Pin (sitting right on top of the elevated 3D red pedestal)
+    # 🏙️ 4. DYNAMIC CRYSTAL-CLEAR VECTOR LABELS FOR SURROUNDING CITIES & PROVINCES
+    # Rendered freshly on the final 1080x1920 frame at ANY zoom level so they NEVER blur!
+    f_city = get_font(28, bold=True)
+    f_prov = get_font(30, bold=True)
+    
+    drawn_label_positions = []
+    if places_list:
+        for orig_px, orig_py, p_name, p_type in places_list:
+            curr_px = (orig_px - crop_left) * (VIDEO_WIDTH / new_w)
+            curr_py = (orig_py - crop_top) * (VIDEO_HEIGHT / new_h)
+            
+            # Check if visible on screen within safe margins
+            if 50 <= curr_px <= VIDEO_WIDTH - 50 and 260 <= curr_py <= VIDEO_HEIGHT - 320:
+                # Check clearance from epicenter 3D pedestal
+                dist_to_epicenter = math.hypot(curr_px - curr_ep_x, curr_py - top_cy)
+                if dist_to_epicenter < (disc_rx + 65):
+                    continue
+                    
+                # Avoid overlapping adjacent labels
+                overlap = False
+                for lx, ly in drawn_label_positions:
+                    if math.hypot(curr_px - lx, curr_py - ly) < 70:
+                        overlap = True
+                        break
+                if overlap:
+                    continue
+                    
+                drawn_label_positions.append((curr_px, curr_py))
+                
+                # City Dot Marker
+                dot_color = "#facc15" if p_type in ["city", "town", "municipality"] else "#38bdf8"
+                draw.ellipse(
+                    [(curr_px - 7, curr_py - 7), (curr_px + 7, curr_py + 7)],
+                    fill=dot_color,
+                    outline="#000000",
+                    width=2
+                )
+                draw.ellipse(
+                    [(curr_px - 3, curr_py - 3), (curr_px + 3, curr_py + 3)],
+                    fill="#ffffff"
+                )
+                
+                # Dynamic Clean Text Label with Dark Pill Outline
+                label_font = f_prov if p_type in ["county", "state", "province", "region"] else f_city
+                label_color = "#fef08a" if p_type in ["county", "state", "province"] else "#ffffff"
+                
+                bbox = draw.textbbox((0, 0), p_name, font=label_font)
+                bw = bbox[2] - bbox[0] + 20
+                bh = bbox[3] - bbox[1] + 12
+                by = curr_py - 26
+                
+                draw.rounded_rectangle(
+                    [(curr_px - (bw // 2), by - (bh // 2)),
+                     (curr_px + (bw // 2), by + (bh // 2))],
+                    radius=8,
+                    fill="#000000aa",
+                    outline="#ffffff44",
+                    width=1
+                )
+                
+                draw.text(
+                    (curr_px, by),
+                    p_name,
+                    fill=label_color,
+                    font=label_font,
+                    stroke_width=3,
+                    stroke_fill="#000000",
+                    anchor="mm"
+                )
+
+    # 5. Epicenter Seismograph Pin (sitting right on top of the elevated 3D red pedestal)
     draw_seismograph_pin(draw, curr_ep_x, top_cy)
 
-    # 🌟 5. 3D ELEVATED COUNTRY BADGE RIGHT ABOVE THE PIN
+    # 🌟 6. 3D ELEVATED COUNTRY BADGE RIGHT ABOVE THE PIN
     draw_prominent_country_badge(draw, curr_ep_x, top_cy, country_name)
 
-    # 6. TOP HEADER
+    # 7. TOP HEADER
     f_mag = get_font(88, bold=True)
     draw.text((VIDEO_WIDTH // 2, 140), f"M{mag:.1f}", fill="#eab308", font=f_mag, stroke_width=6, stroke_fill="#000000", anchor="mm")
 
@@ -242,7 +312,7 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     if line4:
         draw.text((VIDEO_WIDTH // 2, 325), line4, fill="#ffffff", font=f_loc, stroke_width=4, stroke_fill="#000000", anchor="mm")
 
-    # 7. BOTTOM SUBTITLES
+    # 8. BOTTOM SUBTITLES
     current_sub = get_current_subtitle(sentences, frame_num, audio_frames)
     if current_sub:
         f_sub = get_font(38, bold=True)
@@ -259,7 +329,7 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
     print(f"🎬 Rendering Elevated Country Badge + Red Mark Reel for: M{event['mag']} - {event['place']}")
     
     map_temp_path = os.path.join(OUTPUT_DIR, f"ref_style_map_{event['id']}.png")
-    _, epicenter_coords = generate_reference_satellite_map(
+    _, epicenter_coords, places_list = generate_reference_satellite_map(
         event["latitude"],
         event["longitude"],
         event["place"],
@@ -311,7 +381,7 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
     pipe = subprocess.Popen(render_cmd, stdin=subprocess.PIPE)
 
     for f in range(total_frames):
-        frame = render_reference_style_frame(event, base_map_img, epicenter_coords, sentences, f, total_frames, audio_frames)
+        frame = render_reference_style_frame(event, base_map_img, epicenter_coords, places_list, sentences, f, total_frames, audio_frames)
         raw_bytes = frame.tobytes()
         pipe.stdin.write(raw_bytes)
 

@@ -141,15 +141,10 @@ def generate_reference_satellite_map(lat, lon, place_name, output_path, zoom=8, 
     final_x = (exact_x - left) * (target_w / crop_w)
     final_y = (exact_y - top) * (target_h / crop_h)
 
-    # 🏙️ Plot All Surrounding Places
-    draw = ImageDraw.Draw(cropped)
-    f_city = get_font(24, bold=True)
-    f_sea = get_font(26, bold=True)
-    f_island = get_font(22, bold=True)
-
+    # 🏙️ Fetch and compute coordinates for all surrounding cities, towns, provinces, islands
     places = get_surrounding_places_osm(lat, lon, radius_km=600)
+    places_data = []
     
-    drawn_boxes = []
     for p_lat, p_lon, p_name, p_type in places:
         p_lat_rad = math.radians(p_lat)
         p_exact_x = ((p_lon + 180.0) / 360.0 * n - x_start) * 256.0
@@ -157,30 +152,7 @@ def generate_reference_satellite_map(lat, lon, place_name, output_path, zoom=8, 
 
         px = (p_exact_x - left) * (target_w / crop_w)
         py = (p_exact_y - top) * (target_h / crop_h)
-
-        dist_from_epicenter = math.hypot(px - final_x, py - final_y)
-
-        # Do not collide with epicenter badge (keep clearance)
-        if 40 <= px <= target_w - 40 and 60 <= py <= target_h - 60 and dist_from_epicenter > 150:
-            # Overlap check
-            overlap = False
-            for bx, by in drawn_boxes:
-                if math.hypot(px - bx, py - by) < 70:
-                    overlap = True
-                    break
-            if overlap:
-                continue
-
-            drawn_boxes.append((px, py))
-
-            if p_type in ["city", "town", "municipality"]:
-                draw.ellipse([(px - 5, py - 5), (px + 5, py + 5)], fill="#facc15", outline="#000000", width=2)
-                draw_text_with_shadow(draw, (px, py - 18), p_name, f_city, fill="#ffffff", shadow_fill="#000000", anchor="mm")
-            elif p_type in ["sea", "ocean"]:
-                draw_text_with_shadow(draw, (px, py), p_name, f_sea, fill="#38bdf8", shadow_fill="#0369a1", anchor="mm")
-            else:
-                draw.ellipse([(px - 4, py - 4), (px + 4, py + 4)], fill="#ffffff", outline="#000000", width=1)
-                draw_text_with_shadow(draw, (px, py - 16), p_name, f_island, fill="#fef08a", shadow_fill="#000000", anchor="mm")
+        places_data.append((px, py, p_name, p_type))
 
     cropped.save(output_path, quality=95)
-    return output_path, (final_x, final_y)
+    return output_path, (final_x, final_y), places_data
