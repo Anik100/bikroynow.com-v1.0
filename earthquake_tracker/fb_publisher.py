@@ -11,8 +11,34 @@ if sys.platform == "win32":
 
 from config import FB_PAGE_ID, FB_PAGE_ACCESS_TOKEN
 
+LOCAL_EARTHQUAKE_TAGS = {
+    "indonesia": "#Gempa #GempaBumi #InfoGempa #BMKG",
+    "turkey": "#Deprem #SonDepremler #DepremOldu #Kandilli",
+    "türkiye": "#Deprem #SonDepremler #DepremOldu #Kandilli",
+    "japan": "#Jishin #地震 #緊急地震速報",
+    "philippines": "#Lindol #LindolPH #EarthquakePH #PHIVOLCS",
+    "chile": "#Terremoto #Temblor #Sismo #SismoChile",
+    "peru": "#Terremoto #Temblor #Sismo #SismoPeru",
+    "mexico": "#Terremoto #Temblor #Sismo #SismoCDMX",
+    "colombia": "#Terremoto #Temblor #Sismo",
+    "ecuador": "#Terremoto #Temblor #Sismo",
+    "argentina": "#Terremoto #Temblor #Sismo",
+    "guatemala": "#Terremoto #Temblor #Sismo",
+    "spain": "#Terremoto #Sismo",
+    "italy": "#Terremoto #Sisma #INGV",
+    "greece": "#Seismos #Σεισμός",
+    "iran": "#Zelzeleh #زلزله",
+    "afghanistan": "#Zelzeleh #زلزله",
+    "pakistan": "#Zalzala #زلزلہ",
+    "india": "#EarthquakeIndia #Bhookamp #भूकंप",
+    "bangladesh": "#ভূমিকম্প #EarthquakeBangladesh",
+    "taiwan": "#地震 #EarthquakeTaiwan",
+    "iceland": "#Jardskjalfti #Skjálfti",
+    "new zealand": "#Geonet #NZQuake"
+}
+
 def extract_country_and_tags(place_str):
-    """Generates country and city specific hashtags."""
+    """Generates country and city specific hashtags along with native viral keywords."""
     parts = [p.strip() for p in place_str.split(",")]
     country = parts[-1] if len(parts) >= 1 else "World"
     
@@ -22,6 +48,14 @@ def extract_country_and_tags(place_str):
     country_tags = f"#{country_clean} #{country_clean}Earthquake #{country_clean}News"
     if city_clean and len(city_clean) > 2:
         country_tags += f" #{city_clean}"
+
+    # Append localized native language earthquake hashtags for viral search reach
+    place_lower = place_str.lower()
+    for k, native_tags in LOCAL_EARTHQUAKE_TAGS.items():
+        if k in place_lower:
+            country_tags += f" {native_tags}"
+            break
+
     return country, country_tags
 
 def create_post_caption(event):
