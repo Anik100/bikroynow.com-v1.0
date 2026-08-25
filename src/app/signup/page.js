@@ -98,13 +98,19 @@ export default function Signup() {
         throw new Error(data.error || 'ওটিপি ভেরিফাই করতে সমস্যা হয়েছে।');
       }
 
+      // If backend returned session, set it on client-side Supabase client!
+      if (data.session) {
+        try {
+          await supabase.auth.setSession(data.session);
+        } catch (e) {}
+      }
+
       setSuccessMsg(data.message);
 
       // Auto redirect to homepage after short delay
       setTimeout(() => {
-        router.push('/');
-        router.refresh();
-      }, 1000);
+        window.location.href = '/';
+      }, 800);
     } catch (err) {
       setError(err.message);
     } finally {

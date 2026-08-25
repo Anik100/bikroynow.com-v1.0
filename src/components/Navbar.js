@@ -35,37 +35,59 @@ export default function Navbar() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
 
-  // Update last seen
+  // Helper to validate Supabase UUIDs
+  const isValidUUID = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+
+  // Update last seen heartbeat
   useEffect(() => {
     if (!user) return;
 
-    const updateLastSeen = async () => {
+    const sendHeartbeat = async () => {
       try {
-        await supabase
-          .from('profiles')
-          .update({ last_seen: new Date().toISOString() })
-          .eq('id', user.id);
-      } catch (err) {
-        console.error('Error updating last seen:', err);
-      }
+        fetch('/api/user/heartbeat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id, email: user.email })
+        }).catch(() => {});
+
+        // Also try direct Supabase update if session has permissions
+        const nowIso = new Date().toISOString();
+        if (user.id && isValidUUID(user.id)) {
+          supabase
+            .from('profiles')
+            .update({ last_seen: nowIso })
+            .eq('id', user.id)
+            .then(() => {})
+            .catch(() => {});
+        }
+      } catch (err) {}
     };
 
-    updateLastSeen();
-    const interval = setInterval(updateLastSeen, 30000); // Every 30 seconds
+    sendHeartbeat();
+    const interval = setInterval(sendHeartbeat, 10000); // Heartbeat every 10s
+    const handleActivity = () => sendHeartbeat();
+    window.addEventListener('focus', handleActivity);
+    window.addEventListener('visibilitychange', handleActivity);
+    window.addEventListener('click', handleActivity);
 
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', handleActivity);
+      window.removeEventListener('visibilitychange', handleActivity);
+      window.removeEventListener('click', handleActivity);
+    };
   }, [user]);
 
   // Fetch unread count and subscribe
   useEffect(() => {
-    if (!user) {
+    if (!user?.id) {
       setUnreadCount(0);
       return;
     }
 
     const fetchUnreadCount = async () => {
       try {
-        const res = await fetch(`/api/chats/list?user_id=${user.id}&t=${Date.now()}`, { cache: 'no-store' });
+        const res = await fetch(`/api/chats/list?user_id=${user.id}`);
         if (res.ok) {
           const json = await res.json();
           if (Array.isArray(json.chats)) {
@@ -83,16 +105,16 @@ export default function Navbar() {
 
     const interval = setInterval(() => {
       fetchUnreadCount();
-    }, 3000);
+    }, 4000); // 4s interval for instant live updates
 
     return () => {
       clearInterval(interval);
     };
-  }, [user]);
+  }, [user?.id, pathname]);
 
   // Fetch unread support messages count and subscribe
   useEffect(() => {
-    if (!user) {
+    if (!user?.id || !isValidUUID(user.id)) {
       setUnreadSupportCount(0);
       return;
     }
@@ -180,11 +202,19 @@ export default function Navbar() {
 
   useEffect(() => {
     const checkAdminAccess = async () => {
-      if (!user) {
+      if (!user?.email) {
         setHasAdminAccess(false);
         return;
       }
-      if (user.email === 'anikh0000@gmail.com') {
+      const adminEmails = [
+        'anikh0000@gmail.com',
+        'anikh00000@gmail.com',
+        'anikh00@gmail.com',
+        'aunik008@gmail.com',
+        'aunik003@gmail.com'
+      ];
+      const cleanEmail = user.email.toLowerCase().trim();
+      if (adminEmails.includes(cleanEmail)) {
         setHasAdminAccess(true);
         return;
       }
@@ -192,7 +222,7 @@ export default function Navbar() {
         const { data } = await supabase.from('admin_settings').select('value').eq('key', 'moderators').single();
         if (data && data.value) {
           const modsList = JSON.parse(data.value);
-          if (modsList.some(m => m.email === user.email)) {
+          if (modsList.some(m => m.email?.toLowerCase().trim() === cleanEmail)) {
             setHasAdminAccess(true);
             return;
           }
@@ -434,11 +464,28 @@ export default function Navbar() {
           <span>{t('home')}</span>
         </Link>
         <Link href="/chat" className={`${styles.bottomNavItem} ${pathname.startsWith('/chat') ? styles.activeChat : ''}`}>
-          <div className={styles.iconWrapper}>
+          <div className={styles.iconWrapper} style={{ position: 'relative', display: 'inline-flex' }}>
             <MessageCircle size={22} className={styles.iconChat} />
             {unreadCount > 0 && (
-              <span className={styles.badge}>
-                {unreadCount > 9 ? '9+' : unreadCount}
+              <span className={styles.badge} style={{
+                position: 'absolute',
+                top: '-6px',
+                right: '-10px',
+                background: '#ef4444',
+                color: '#ffffff',
+                borderRadius: '10px',
+                minWidth: '18px',
+                height: '18px',
+                padding: '0 4px',
+                fontSize: '0.7rem',
+                fontWeight: '800',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1.5px solid #ffffff',
+                boxShadow: '0 2px 6px rgba(239, 68, 68, 0.5)'
+              }}>
+                {unreadCount > 99 ? '99+' : unreadCount}
               </span>
             )}
           </div>

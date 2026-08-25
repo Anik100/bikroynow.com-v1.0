@@ -154,6 +154,38 @@
   margin-top: 4px;
 }
 
+.uploadingSlot {
+  background-color: #fffbeb;
+  border: 2px dashed #f59e0b !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.spinnerSmall {
+  width: 22px;
+  height: 22px;
+  border: 2.5px solid #fde047;
+  border-top-color: #d97706;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.uploadingText {
+  font-size: 0.62rem;
+  font-weight: 750;
+  color: #b45309;
+  text-align: center;
+  line-height: 1.1;
+  padding: 0 2px;
+}
+
 /* Inputs */
 .premiumInput {
   width: 100%;

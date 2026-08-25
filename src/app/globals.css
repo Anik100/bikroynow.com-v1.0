@@ -103,16 +103,16 @@ button {
 
 /* Global Smooth Interactive Transitions */
 a, button, input, select, textarea, [role="button"] {
-  transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
-              border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
-              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
-              transform 0.15s cubic-bezier(0.4, 0, 0.2, 1),
-              opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.15s ease, 
+              border-color 0.15s ease, 
+              box-shadow 0.15s ease, 
+              transform 0.1s ease,
+              opacity 0.15s ease;
 }
 
 /* Micro-interaction on click/tap */
 a:active, button:active, [role="button"]:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
 }
 
 /* Smooth HTML scroll behavior */
@@ -123,8 +123,8 @@ html {
 /* Page load transition styling */
 @keyframes pageSlideUp {
   from {
-    opacity: 0;
-    transform: translateY(10px);
+    opacity: 0.85;
+    transform: translateY(4px);
   }
   to {
     opacity: 1;
@@ -133,8 +133,5 @@ html {
 }
 
 .page-transition-wrapper {
-  /* 'both' fill-mode applies 'from' immediately (no flash) and keeps 'to' after end.
-     'transform: none' and no filter means NO stacking context is created after animation,
-     so position:fixed modals inside compete globally against the bottom nav. */
-  animation: pageSlideUp 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: pageSlideUp 0.15s cubic-bezier(0.16, 1, 0.3, 1) both;
 }

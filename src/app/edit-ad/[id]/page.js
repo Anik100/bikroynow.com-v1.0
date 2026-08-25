@@ -35,9 +35,17 @@ export default function EditAd({ params }) {
 
   useEffect(() => {
     const fetchAd = async () => {
-      // ১. আগে session চেক করুন
+      let activeSession = null;
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
+      if (session?.user) {
+        activeSession = session;
+      } else {
+        await new Promise(r => setTimeout(r, 350));
+        const retry = await supabase.auth.getSession();
+        if (retry.data.session?.user) activeSession = retry.data.session;
+      }
+
+      if (!activeSession) {
         router.push('/login');
         return;
       }
@@ -54,10 +62,17 @@ export default function EditAd({ params }) {
         return;
       }
 
-      const isAdmin = session.user.email === 'anikh0000@gmail.com';
+      const adminEmails = [
+        'anikh0000@gmail.com',
+        'anikh00000@gmail.com',
+        'anikh00@gmail.com',
+        'aunik008@gmail.com',
+        'aunik003@gmail.com'
+      ];
+      const isAdmin = adminEmails.includes((activeSession.user.email || '').toLowerCase().trim());
 
       // ২. Owner check — যদি এই ad আপনার না হয় এবং আপনি অ্যাডমিন না হন
-      if (data.user_id !== session.user.id && !isAdmin) {
+      if (data.user_id !== activeSession.user.id && !isAdmin) {
         alert(lang === 'bn' ? 'এই বিজ্ঞাপনটি আপনার নয়। শুধুমাত্র নিজের বিজ্ঞাপন এডিট করতে পারবেন।' : 'You can only edit your own ads.');
         router.push('/my-ads');
         return;

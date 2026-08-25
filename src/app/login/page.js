@@ -36,15 +36,14 @@ export default function Login() {
             user_metadata: { full_name: email.split('@')[0] }
           };
           localStorage.setItem('bikroynow_demo_user', JSON.stringify(fallbackUser));
-          router.push('/');
-          router.refresh();
+          window.location.href = '/';
           return;
         }
         setError(lang === 'bn' ? 'ইমেইল বা পাসওয়ার্ড সঠিক নয়। আবার চেষ্টা করুন।' : error.message);
         setLoading(false);
       } else {
-        router.push('/');
-        router.refresh();
+        // Direct hard redirect to guarantee session propagation everywhere
+        window.location.href = '/';
       }
     } catch (err) {
       if (email.trim() && password.length >= 4) {
@@ -55,8 +54,7 @@ export default function Login() {
           user_metadata: { full_name: email.split('@')[0] }
         };
         localStorage.setItem('bikroynow_demo_user', JSON.stringify(fallbackUser));
-        router.push('/');
-        router.refresh();
+        window.location.href = '/';
         return;
       }
       setError(err.message);
@@ -98,6 +96,7 @@ export default function Login() {
               placeholder={lang === 'bn' ? 'আপনার ইমেইল অ্যাড্রেস লিখুন' : 'Enter your email address'}
             />
           </div>
+
           <div className={styles.inputGroup}>
             <label>{lang === 'bn' ? 'পাসওয়ার্ড' : 'Password'}</label>
             <input 
@@ -109,8 +108,9 @@ export default function Login() {
               placeholder={lang === 'bn' ? 'আপনার পাসওয়ার্ড লিখুন' : 'Enter your password'}
             />
           </div>
-          <button type="submit" className={`btn-primary ${styles.submitBtn}`} disabled={loading}>
-            {loading ? (lang === 'bn' ? 'লগইন হচ্ছে...' : 'Logging in...') : (lang === 'bn' ? 'লগইন করুন' : 'Log in')}
+
+          <button type="submit" className="btn-primary" style={{width: '100%', marginTop: '0.5rem'}} disabled={loading}>
+            {loading ? (lang === 'bn' ? 'লগইন হচ্ছে...' : 'Logging in...') : (lang === 'bn' ? 'লগইন করুন' : 'Log In')}
           </button>
         </form>
 
@@ -118,15 +118,15 @@ export default function Login() {
           <span>{lang === 'bn' ? 'অথবা' : 'OR'}</span>
         </div>
 
-        <button onClick={handleGoogleLogin} className={`btn-secondary ${styles.googleBtn}`}>
-          <img src="https://www.google.com/favicon.ico" alt="Google" width="16" />
-          {lang === 'bn' ? 'Google দিয়ে প্রবেশ করুন' : 'Continue with Google'}
+        <button onClick={handleGoogleLogin} className={styles.googleBtn}>
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width="20" height="20" />
+          <span>{lang === 'bn' ? 'গুগল দিয়ে লগইন করুন' : 'Continue with Google'}</span>
         </button>
 
-        <div className={styles.footerText}>
+        <p className={styles.switchAuth}>
           {lang === 'bn' ? 'অ্যাকাউন্ট নেই?' : "Don't have an account?"}{' '}
-          <Link href="/signup">{lang === 'bn' ? 'রেজিস্ট্রেশন করুন' : 'Sign up'}</Link>
-        </div>
+          <Link href="/signup">{lang === 'bn' ? 'নতুন অ্যাকাউন্ট তৈরি করুন' : 'Sign up'}</Link>
+        </p>
       </div>
     </div>
   );

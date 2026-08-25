@@ -24,11 +24,20 @@ export default function FeaturedSlider({ lang = 'en' }) {
   }, []);
 
   const fetchFeaturedAds = async () => {
-    const timeout = setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-
     try {
+      // 1. Try server endpoint
+      const res = await fetch('/api/admin/featured-ads');
+      if (res.ok) {
+        const json = await res.json();
+        if (Array.isArray(json.data) && json.data.length > 0) {
+          const active = json.data.filter(ad => ad.is_active && ad.listing && !ad.listing.error);
+          setFeaturedAds(active);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // 2. Fallback to direct supabase query
       const { data, error } = await supabase
         .from('featured_ads')
         .select(`
@@ -47,7 +56,6 @@ export default function FeaturedSlider({ lang = 'en' }) {
     } catch (err) {
       console.error('Error fetching featured ads:', err);
     } finally {
-      clearTimeout(timeout);
       setLoading(false);
     }
   };

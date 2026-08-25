@@ -1,0 +1,30 @@
+[
+  {
+    "id": "8a7cdb5d-e184-4225-8ae5-aed10b67164a",
+    "listing_id": "7805152b-27f2-4ead-b292-83fcd5ae7e15",
+    "is_active": true,
+    "sort_order": 0,
+    "created_at": "2026-07-30T01:07:15.935049+00:00"
+  },
+  {
+    "id": "850bddf8-7e2d-4705-9984-f807859578eb",
+    "listing_id": "f068e58e-12a5-473e-8271-24f2807cde2d",
+    "is_active": true,
+    "sort_order": 1,
+    "created_at": "2026-07-30T01:11:17.033668+00:00"
+  },
+  {
+    "id": "87644f06-2d0f-44d6-a9b1-796f8b01307f",
+    "listing_id": "539a03b7-f530-4bf5-9469-8203ab994faf",
+    "is_active": true,
+    "sort_order": 2,
+    "created_at": "2026-07-30T01:14:56.89596+00:00"
+  },
+  {
+    "id": "b435d2ed-4eca-4fed-b8ce-f08f1533ab93",
+    "listing_id": "6b842afc-adb6-46b8-a06c-79f7b235c39b",
+    "is_active": true,
+    "sort_order": 3,
+    "created_at": "2026-08-25T19:47:43.199Z"
+  }
+]

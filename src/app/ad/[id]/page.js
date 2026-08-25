@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { supabase } from '../../../lib/supabaseClient';
 import styles from './ad-details.module.css';
 import { MapPin, Clock, Phone, User as UserIcon, ShieldCheck, Heart, Share2, ChevronLeft, ChevronRight, Trash2, Star, Edit, Check, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useLanguage } from '../../../context/LanguageContext';
 import { getRelativeTime, formatFullDate, formatPrice, getPromotionBadgeText } from '../../../lib/utils';
@@ -79,6 +79,8 @@ const getSellerBadge = (profile, lang) => {
 };
 
 export default function AdDetails({ params }) {
+  const routeParams = useParams();
+  const effectiveId = routeParams?.id || params?.id;
   const { t, lang } = useLanguage();
   const router = useRouter();
   const [ad, setAd] = useState(null);
@@ -268,33 +270,57 @@ export default function AdDetails({ params }) {
   };
 
   useEffect(() => {
+    if (!effectiveId) {
+      setLoading(false);
+      return;
+    }
+
     const fetchAdData = async () => {
       try {
-        // 1. Fetch Ad
-        const { data: adData, error: adError } = await supabase
-          .from('listings')
-          .select('*')
-          .eq('id', params.id)
-          .single();
+        let adData = null;
+        const isValidUUID = (str) => typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 
-        if (adError) throw adError;
+        // 1. If valid UUID, query Supabase DB
+        if (isValidUUID(effectiveId)) {
+          const { data, error } = await supabase
+            .from('listings')
+            .select('*')
+            .eq('id', effectiveId)
+            .maybeSingle();
+          if (data) adData = data;
+        }
+
+        // 2. Fetch from /api/listings (handling both array & { listings: [] })
+        if (!adData) {
+          try {
+            const res = await fetch(`/api/listings?t=${Date.now()}`);
+            if (res.ok) {
+              const resJson = await res.json();
+              const allListings = Array.isArray(resJson) ? resJson : (resJson?.listings || []);
+              adData = allListings.find(l => String(l.id) === String(effectiveId)) || null;
+            }
+          } catch (e) {}
+        }
+
+        // 3. Fallback to localStorage
+        if (!adData) {
+          try {
+            const localAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+            adData = localAds.find(l => String(l.id) === String(effectiveId)) || null;
+          } catch (e) {}
+        }
+
+        if (!adData) {
+          setLoading(false);
+          return;
+        }
+
         setAd(adData);
 
         // Fetch similar ads based on category
         if (adData?.category_id) {
-          let { data: similarAdsData, error: similarAdsError } = await supabase
-            .from('listings')
-            .select('*')
-            .eq('category_id', adData.category_id)
-            .neq('status', 'pending')
-            .neq('id', adData.id)
-            .order('is_verified', { ascending: false, nullsFirst: false })
-            .order('created_at', { ascending: false })
-            .limit(4);
-          
-          if (similarAdsError && similarAdsError.message.includes('is_verified')) {
-            console.warn('Fallback: is_verified column missing in database. Fetching similar ads without verification ordering.');
-            const fallback = await supabase
+          try {
+            let { data: similarAdsData } = await supabase
               .from('listings')
               .select('*')
               .eq('category_id', adData.category_id)
@@ -302,20 +328,20 @@ export default function AdDetails({ params }) {
               .neq('id', adData.id)
               .order('created_at', { ascending: false })
               .limit(4);
-            similarAdsData = fallback.data;
-          }
-          
-          if (similarAdsData) setSimilarAds(similarAdsData);
+            if (similarAdsData) setSimilarAds(similarAdsData);
+          } catch (e) {}
         }
 
-        // 2. Fetch Profile separately
-        if (adData?.user_id) {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', adData.user_id)
-            .single();
-          if (profileData) setProfile(profileData);
+        // Fetch Profile separately if user_id is valid UUID
+        if (adData?.user_id && isValidUUID(adData.user_id)) {
+          try {
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', adData.user_id)
+              .maybeSingle();
+            if (profileData) setProfile(profileData);
+          } catch (e) {}
         }
       } catch (err) {
         console.error('Fetch Error:', err);
@@ -334,13 +360,13 @@ export default function AdDetails({ params }) {
         } catch (e) {}
       }
       setCurrentUser(activeUser || null);
-      if (activeUser && params.id) {
+      if (activeUser && effectiveId) {
         try {
           const { data } = await supabase
             .from('favorites')
             .select('*')
             .eq('user_id', activeUser.id)
-            .eq('listing_id', params.id)
+            .eq('listing_id', effectiveId)
             .maybeSingle();
           if (data) setIsFavorite(true);
         } catch (e) {}
@@ -348,8 +374,10 @@ export default function AdDetails({ params }) {
     };
 
     checkUser();
-    if (params.id) fetchAdData();
+    fetchAdData();
+  }, [effectiveId]);
 
+  useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       let activeUser = session?.user;
       if (!activeUser) {
@@ -360,15 +388,17 @@ export default function AdDetails({ params }) {
       }
       if (activeUser) {
         setCurrentUser(activeUser);
-        try {
-          const { data } = await supabase
-            .from('favorites')
-            .select('*')
-            .eq('user_id', activeUser.id)
-            .eq('listing_id', params.id)
-            .maybeSingle();
-          if (data) setIsFavorite(true);
-        } catch (e) {}
+        if (effectiveId) {
+          try {
+            const { data } = await supabase
+              .from('favorites')
+              .select('*')
+              .eq('user_id', activeUser.id)
+              .eq('listing_id', effectiveId)
+              .maybeSingle();
+            if (data) setIsFavorite(true);
+          } catch (e) {}
+        }
       } else {
         setCurrentUser(null);
         setIsFavorite(false);
@@ -378,7 +408,7 @@ export default function AdDetails({ params }) {
     return () => {
       subscription.unsubscribe();
     };
-  }, [params.id]);
+  }, [effectiveId]);
 
   const toggleFavorite = async () => {
     if (!currentUser) {

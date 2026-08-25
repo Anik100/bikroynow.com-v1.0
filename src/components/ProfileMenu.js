@@ -9,9 +9,48 @@ import styles from './ProfileMenu.module.css';
 import { uploadToImgBB } from '../lib/imgbb';
 import { compressImage } from '../lib/utils';
 
-export default function ProfileMenu({ user, hasAdminAccess, onClose, onLogout }) {
+export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin, onClose, onLogout }) {
   const { lang, t, toggleLanguage } = useLanguage();
+  const [user, setUser] = useState(propUser || null);
   const [profile, setProfile] = useState(null);
+  const [hasAdminAccess, setHasAdminAccess] = useState(propAdmin || false);
+
+  useEffect(() => {
+    const adminEmails = [
+      'anikh0000@gmail.com',
+      'anikh00000@gmail.com',
+      'anikh00@gmail.com',
+      'aunik008@gmail.com',
+      'aunik003@gmail.com'
+    ];
+
+    if (propUser) {
+      setUser(propUser);
+      if (propUser.email && adminEmails.includes(propUser.email.toLowerCase().trim())) {
+        setHasAdminAccess(true);
+      }
+    } else {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          setUser(session.user);
+          if (session.user.email && adminEmails.includes(session.user.email.toLowerCase().trim())) {
+            setHasAdminAccess(true);
+          }
+        } else {
+          try {
+            const localUser = localStorage.getItem('bikroynow_demo_user');
+            if (localUser) {
+              const parsed = JSON.parse(localUser);
+              setUser(parsed);
+              if (parsed.email && adminEmails.includes(parsed.email.toLowerCase().trim())) {
+                setHasAdminAccess(true);
+              }
+            }
+          } catch (e) {}
+        }
+      });
+    }
+  }, [propUser]);
   
   // Profile editing states
   const [isEditing, setIsEditing] = useState(false);
@@ -48,6 +87,57 @@ export default function ProfileMenu({ user, hasAdminAccess, onClose, onLogout })
       setNewName(fallbackName);
     };
     fetchProfile();
+  }, [user]);
+
+  const [unreadSupportCount, setUnreadSupportCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) {
+      setUnreadSupportCount(0);
+      return;
+    }
+
+    const fetchUnreadSupport = async () => {
+      try {
+        const { data: chat } = await supabase
+          .from('support_chats')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (chat) {
+          const { count } = await supabase
+            .from('support_messages')
+            .select('*', { count: 'exact', head: true })
+            .eq('support_chat_id', chat.id)
+            .neq('sender_id', user.id)
+            .eq('is_read', false);
+
+          setUnreadSupportCount(count || 0);
+        } else {
+          setUnreadSupportCount(0);
+        }
+      } catch (err) {
+        console.error('Error fetching support unread count:', err);
+      }
+    };
+
+    fetchUnreadSupport();
+
+    const subscription = supabase
+      .channel('profile-menu-support-messages')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'support_messages'
+      }, () => {
+        fetchUnreadSupport();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
   }, [user]);
 
   const handleImageUpload = async (e) => {
@@ -137,57 +227,6 @@ export default function ProfileMenu({ user, hasAdminAccess, onClose, onLogout })
     }
     return null;
   };
-
-  const [unreadSupportCount, setUnreadSupportCount] = useState(0);
-
-  useEffect(() => {
-    if (!user) {
-      setUnreadSupportCount(0);
-      return;
-    }
-
-    const fetchUnreadSupport = async () => {
-      try {
-        const { data: chat } = await supabase
-          .from('support_chats')
-          .select('id')
-          .eq('user_id', user.id)
-          .maybeSingle();
-
-        if (chat) {
-          const { count } = await supabase
-            .from('support_messages')
-            .select('*', { count: 'exact', head: true })
-            .eq('support_chat_id', chat.id)
-            .neq('sender_id', user.id)
-            .eq('is_read', false);
-
-          setUnreadSupportCount(count || 0);
-        } else {
-          setUnreadSupportCount(0);
-        }
-      } catch (err) {
-        console.error('Error fetching support unread count:', err);
-      }
-    };
-
-    fetchUnreadSupport();
-
-    const subscription = supabase
-      .channel('profile-menu-support-messages')
-      .on('postgres_changes', {
-        event: '*',
-        schema: 'public',
-        table: 'support_messages'
-      }, () => {
-        fetchUnreadSupport();
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(subscription);
-    };
-  }, [user]);
 
   return (
     <div className={styles.overlay} onClick={onClose}>

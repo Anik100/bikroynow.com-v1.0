@@ -26,5 +26,33 @@
     "buyer_id": "user-aunik003gmailcom",
     "seller_id": "user-anikh0000gmailcom",
     "created_at": "2026-07-30T17:06:52.471Z"
+  },
+  {
+    "id": "chat-1787679990653-t4a84",
+    "listing_id": "ad-1787678324480-7j3so",
+    "buyer_id": "user-demo-buyer",
+    "seller_id": "user-demo-seller",
+    "created_at": "2026-08-25T17:46:30.653Z"
+  },
+  {
+    "id": "chat-1787679991593-lzye9",
+    "listing_id": "f609c5b8-1962-4f36-ade8-e3c8b54b127d",
+    "buyer_id": "95695a1d-f082-4072-983f-e7a1857ba734",
+    "seller_id": "5e05f0cf-99f4-4092-8cba-fec57f44bf52",
+    "created_at": "2026-08-25T17:46:31.593Z"
+  },
+  {
+    "id": "chat-1787680047689-dcuds",
+    "listing_id": "ad-1787678324480-7j3so",
+    "buyer_id": "5cb1a712-ad07-4f28-8c33-739c2ecfe1db",
+    "seller_id": "user-anikh0000gmailcom",
+    "created_at": "2026-08-25T17:47:27.689Z"
+  },
+  {
+    "id": "chat-1787680275375-daotq",
+    "listing_id": "ad-1787678324480-7j3so",
+    "buyer_id": "user-anik-test",
+    "seller_id": "user-seller-test",
+    "created_at": "2026-08-25T17:51:15.375Z"
   }
 ]

@@ -4,8 +4,25 @@ import { getGlobalListings } from '../../../lib/globalListingsStore';
 
 export const dynamic = 'force-dynamic';
 
+// In-memory high-speed cache for super-fast responses (< 5ms)
+let cachedListings = null;
+let cacheTime = 0;
+const CACHE_TTL_MS = 15000; // 15 seconds cache
+
 export async function GET(req) {
   try {
+    const now = Date.now();
+
+    // Serve from ultra-fast in-memory cache if valid
+    if (cachedListings && (now - cacheTime < CACHE_TTL_MS)) {
+      return NextResponse.json({ listings: cachedListings }, {
+        headers: {
+          'Cache-Control': 'public, max-age=15, stale-while-revalidate=60',
+          'X-Cache': 'HIT'
+        }
+      });
+    }
+
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -18,23 +35,23 @@ export async function GET(req) {
           auth: { persistSession: false, autoRefreshToken: false }
         });
 
-        // 1. Fetch featured ads ids on the server
-        const { data: featuredData } = await serverSupabase
-          .from('featured_ads')
-          .select('listing_id')
-          .eq('is_active', true);
+        // Parallel execution of featured ads and listings RPC to cut database latency in half
+        const [featuredRes, rpcRes] = await Promise.all([
+          serverSupabase
+            .from('featured_ads')
+            .select('listing_id')
+            .eq('is_active', true),
+          serverSupabase.rpc('get_listings_v2')
+        ]);
 
-        if (featuredData) {
-          featuredSet = new Set(featuredData.map(f => f.listing_id));
+        if (featuredRes?.data) {
+          featuredSet = new Set(featuredRes.data.map(f => f.listing_id));
         }
 
-        // 2. Try calling the get_listings_v2 RPC (bypasses RLS using SECURITY DEFINER)
-        const { data: rpcData, error: rpcErr } = await serverSupabase.rpc('get_listings_v2');
-
-        if (!rpcErr && Array.isArray(rpcData)) {
-          dbListings = rpcData;
+        if (!rpcRes?.error && Array.isArray(rpcRes?.data)) {
+          dbListings = rpcRes.data;
         } else {
-          // 3. Fallback to normal query if RPC is not created yet
+          // Fallback if RPC is not available
           const { data: listings } = await serverSupabase
             .from('listings')
             .select('*')
@@ -58,13 +75,18 @@ export async function GET(req) {
 
     const combinedListings = [...extraAds, ...dbListings].map(item => ({ 
       ...item, 
-      status: 'active',
-      is_featured: item.is_featured || featuredSet.has(item.id)
+      status: item.status || 'active',
+      is_featured: Boolean(item.is_featured || featuredSet.has(item.id))
     }));
+
+    // Update in-memory cache
+    cachedListings = combinedListings;
+    cacheTime = now;
 
     return NextResponse.json({ listings: combinedListings }, {
       headers: {
-        'Cache-Control': 'no-store, max-age=0, must-revalidate'
+        'Cache-Control': 'public, max-age=15, stale-while-revalidate=60',
+        'X-Cache': 'MISS'
       }
     });
   } catch (err) {

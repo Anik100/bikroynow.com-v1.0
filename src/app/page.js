@@ -111,7 +111,7 @@ export default function Home() {
     const fetchListings = async () => {
       try {
         setLoading(true);
-        const apiRes = await fetch(`/api/listings?t=${Date.now()}`, { cache: 'no-store' });
+        const apiRes = await fetch('/api/listings');
         if (apiRes.ok) {
           const apiJson = await apiRes.json();
           if (Array.isArray(apiJson.listings) && !isCancelled) {
@@ -539,7 +539,16 @@ export default function Home() {
 
         <div className={styles.adGrid}>
           {loading ? (
-            <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '2rem'}}>Loading...</div>
+            Array.from({ length: 8 }).map((_, idx) => (
+              <div key={idx} className={styles.adCard} style={{ opacity: 0.7, pointerEvents: 'none' }}>
+                <div className={styles.adImageWrapper} style={{ background: '#e2e8f0', minHeight: '150px' }} />
+                <div className={styles.adContent} style={{ padding: '0.85rem' }}>
+                  <div style={{ height: '14px', background: '#e2e8f0', borderRadius: '4px', marginBottom: '8px', width: '80%' }} />
+                  <div style={{ height: '12px', background: '#f1f5f9', borderRadius: '4px', marginBottom: '8px', width: '50%' }} />
+                  <div style={{ height: '16px', background: '#e2e8f0', borderRadius: '4px', width: '40%' }} />
+                </div>
+              </div>
+            ))
           ) : (() => {
             const displayedListings = listings.filter(ad => {
               if (!selectedCategoryFilter) return true;
@@ -589,6 +598,8 @@ export default function Home() {
                       src={ad.images[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
                       alt={ad.title} 
                       className={styles.adImage}
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <div className={styles.adContent} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>

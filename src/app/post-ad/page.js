@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { uploadToImgBB } from '../../lib/imgbb';
+import { compressImage } from '../../lib/utils';
 import { LOCATIONS, CATEGORIES } from '../../lib/constants';
 import { useLanguage } from '../../context/LanguageContext';
 import { Smartphone, Laptop, Zap, Car, Home as HouseIcon, Briefcase, Box, ChevronRight, ChevronDown } from 'lucide-react';
@@ -23,10 +24,10 @@ const CAT_CONFIG = {
 
 const BN_CAT_NAMES = {
   Electronics: 'ইলেকট্রনিক্স',
+  Computers: 'কম্পিউটার ও আইটি',
   'Mobile Phones': 'মোবাইল ফোন',
-  Computers: 'কম্পিউটার',
-  Vehicles: 'যানবাহন',
-  Property: 'প্রপার্টি',
+  Vehicles: 'গাড়ি ও যানবাহন',
+  Property: 'জমি ও ফ্ল্যাট',
   Jobs: 'চাকরি',
   'অন্যান্য': 'অন্যান্য',
 };
@@ -36,6 +37,7 @@ export default function PostAd() {
   const { t, lang } = useLanguage();
   const router = useRouter();
   const [error, setError] = useState(null);
+  const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -50,7 +52,7 @@ export default function PostAd() {
   });
 
   const [imageUrls, setImageUrls] = useState([]);
-  const [uploading, setUploading] = useState(false);
+  const [uploadingSlots, setUploadingSlots] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [submittedSuccess, setSubmittedSuccess] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -58,45 +60,11 @@ export default function PostAd() {
   const [activeSub, setActiveSub] = useState(null);
   const [displayCategory, setDisplayCategory] = useState('');
   const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // Drag-to-reorder state
-  const [dragIndex, setDragIndex] = useState(null);
-  const [dragOverIndex, setDragOverIndex] = useState(null);
-
-  // Lock body scroll when modal is open
-  useEffect(() => {
-    if (showCategoryModal) {
-      const scrollY = window.scrollY;
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollY}px`;
-      document.body.style.width = '100%';
-      document.body.style.overflowY = 'scroll';
-    } else {
-      const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflowY = '';
-      if (scrollY) {
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }
-    }
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      document.body.style.overflowY = '';
-    };
-  }, [showCategoryModal]);
-
   const [userProfile, setUserProfile] = useState(null);
   const [monthlyAdsCount, setMonthlyAdsCount] = useState(0);
 
   useEffect(() => {
+    setMounted(true);
     const fetchUserAndQuota = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -135,33 +103,93 @@ export default function PostAd() {
     fetchUserAndQuota();
   }, [router]);
 
-  // Multi-image upload handler
+  // Drag-to-reorder state
+  const [dragIndex, setDragIndex] = useState(null);
+  const [dragOverIndex, setDragOverIndex] = useState(null);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (showCategoryModal) {
+      const scrollY = window.scrollY;
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.body.style.overflowY = 'scroll';
+    } else {
+      const scrollY = document.body.style.top;
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflowY = '';
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }
+    }
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflowY = '';
+    };
+  }, [showCategoryModal]);
+
+  // Concurrent Non-blocking Multi-image upload handler
   const handleImageChange = async (e) => {
-    const files = Array.from(e.target.files);
+    const files = Array.from(e.target.files || []);
     if (!files.length) return;
 
-    const remaining = 5 - imageUrls.length;
-    if (files.length > remaining) {
+    // Reset input value safely after extracting files
+    if (fileInputRef.current) fileInputRef.current.value = '';
+
+    const currentTotal = imageUrls.length + uploadingSlots.length;
+    const remaining = Math.max(0, 5 - currentTotal);
+
+    if (remaining === 0) {
       setError(lang === 'bn'
-        ? `সর্বোচ্চ ৫টি ছবি দেওয়া যাবে। আর মাত্র ${remaining}টি যোগ করতে পারবেন।`
-        : `You can only add ${remaining} more image(s). Max 5 total.`);
+        ? 'সর্বোচ্চ ৫টি ছবি যোগ করা যাবে।'
+        : 'Maximum 5 images allowed.');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
-    setUploading(true);
-    setError(null);
-    e.target.value = '';
-
-    try {
-      const uploadPromises = files.slice(0, remaining).map(file => uploadToImgBB(file));
-      const urls = await Promise.all(uploadPromises);
-      setImageUrls(prev => [...prev, ...urls.filter(Boolean)]);
-    } catch (err) {
-      console.error('Parallel upload error:', err);
-    } finally {
-      setUploading(false);
+    const filesToUpload = files.slice(0, remaining);
+    if (files.length > remaining) {
+      setError(lang === 'bn'
+        ? `সর্বোচ্চ ৫টি ছবি দেওয়া যাবে। শুধুমাত্র প্রথম ${remaining}টি ছবি নেওয়া হয়েছে।`
+        : `Only first ${remaining} image(s) added. Max 5 total.`);
+    } else {
+      setError(null);
     }
+
+    // Create temporary task objects with instant local blob previews
+    const newTasks = filesToUpload.map(file => ({
+      id: 'task-' + Math.random().toString(36).slice(2, 9) + '-' + Date.now(),
+      preview: URL.createObjectURL(file),
+      file
+    }));
+
+    setUploadingSlots(prev => [...prev, ...newTasks]);
+
+    // Process each upload independently in parallel
+    newTasks.forEach(async (task) => {
+      try {
+        const compressed = await compressImage(task.file);
+        const url = await uploadToImgBB(compressed || task.file);
+        if (url) {
+          setImageUrls(prev => {
+            if (prev.length >= 5) return prev;
+            return [...prev, url];
+          });
+        }
+      } catch (err) {
+        console.error('Parallel upload error:', err);
+      } finally {
+        setUploadingSlots(prev => prev.filter(t => t.id !== task.id));
+        try {
+          URL.revokeObjectURL(task.preview);
+        } catch (e) {}
+      }
+    });
   };
 
   const removeImage = (index) => {
@@ -233,58 +261,70 @@ export default function PostAd() {
     const parsedPrice = parseFloat(formData.price) || 0;
     setSubmitting(true);
 
-    const location = formData.district || formData.division || 'Dhaka';
-    const contactPhone = phoneInput || '01700000000';
-
-    const newAdPayload = {
-      id: 'ad-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
-      title: formData.title.trim(),
-      description: formData.description || '',
-      price: parsedPrice,
-      category_id: formData.category_id,
-      location,
-      condition: formData.condition || 'Used',
-      contact_phone: contactPhone,
-      images: imageUrls,
-      status: 'active',
-      created_at: new Date().toISOString()
-    };
-
-    if (user?.id && user.id.length > 10 && user.id !== 'default-user') {
-      newAdPayload.user_id = user.id;
-    }
-
-    // 1. Post to server-side API endpoint (saves in global server listings store for ALL accounts)
     try {
-      fetch('/api/post-ad', {
+      const location = formData.district || formData.division || 'Dhaka';
+      const generateUUID = () => {
+        if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+          return crypto.randomUUID();
+        }
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+          const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+          return v.toString(16);
+        });
+      };
+
+      const isValidUUID = (str) => typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+
+      let adUserId = user?.id;
+      if (!isValidUUID(adUserId)) {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.user?.id && isValidUUID(session.user.id)) {
+            adUserId = session.user.id;
+          }
+        } catch (e) {}
+      }
+
+      const newAdPayload = {
+        id: generateUUID(),
+        user_id: adUserId,
+        title: formData.title.trim(),
+        description: formData.description || '',
+        price: parsedPrice,
+        category_id: formData.category_id,
+        location,
+        condition: formData.condition || 'Used',
+        contact_phone: phoneInput || formData.contact_phone || '01700000000',
+        images: imageUrls,
+        status: 'pending',
+        created_at: new Date().toISOString()
+      };
+
+      // 1. Post to server-side API endpoint
+      const res = await fetch('/api/post-ad', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newAdPayload)
-      }).catch(err => console.error('API post-ad error:', err));
-    } catch (e) {
-      console.error(e);
-    }
+      });
+      const data = await res.json();
+      if (data?.ad?.id) {
+        newAdPayload.id = data.ad.id;
+      }
 
-    // 2. Fire & forget database insert to Supabase DB
-    try {
-      supabase.from('listings').insert([newAdPayload]).then(() => {}).catch(() => {});
-    } catch (e) {
-      console.error(e);
-    }
+      // 2. Save to shared public ads pool in localStorage as client fallback
+      try {
+        const existingPublic = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+        localStorage.setItem('bikroynow_public_ads', JSON.stringify([newAdPayload, ...existingPublic]));
+      } catch (e) {}
 
-    // 3. Save to shared public ads pool in localStorage as client fallback
-    try {
-      const existingPublic = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
-      localStorage.setItem('bikroynow_public_ads', JSON.stringify([newAdPayload, ...existingPublic]));
-    } catch (e) {
-      console.error(e);
-    }
-
-    // Instantly transition to success screen in 150ms!
-    setTimeout(() => {
       setSubmittedSuccess(true);
+    } catch (err) {
+      console.error('Submit ad error:', err);
+      setError(lang === 'bn' ? 'বিজ্ঞাপনটি জমা দিতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।' : 'Failed to submit ad. Please try again.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } finally {
       setSubmitting(false);
-    }, 150);
+    }
   };
 
   if (submittedSuccess) {
@@ -293,7 +333,7 @@ export default function PostAd() {
         <div className={styles.postCard} style={{ textAlign: 'center', padding: '3.5rem 1.5rem' }}>
           <div style={{
             width: '72px', height: '72px', borderRadius: '50%', background: '#e6f7f0', color: '#008b5e',
-            display: 'flex', alignItems: 'center', justify: 'center', margin: '0 auto 1.5rem', fontSize: '2.5rem', fontWeight: 800
+            display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', fontSize: '2.5rem', fontWeight: 800
           }}>
             ✓
           </div>
@@ -399,7 +439,7 @@ export default function PostAd() {
               type="text" required className={styles.premiumInput}
               value={formData.title}
               onChange={e => setFormData({ ...formData, title: e.target.value })}
-              placeholder={lang === 'bn' ? 'যেমন: iPhone 14 Pro Max' : 'e.g., iPhone 14 Pro Max'}
+              placeholder={lang === 'bn' ? 'পণ্যের নাম লিখুন...' : 'Enter product name...'}
             />
           </div>
 
@@ -410,11 +450,21 @@ export default function PostAd() {
               <span style={{ color: '#9ca3af', fontWeight: 400, marginLeft: '4px' }}>({imageUrls.length}/5)</span>
             </label>
 
+            {/* Hidden persistent file input */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              multiple
+              onChange={handleImageChange}
+              style={{ display: 'none' }}
+            />
+
             <div className={styles.imageGrid}>
-              {/* Filled image slots — draggable */}
+              {/* 1. Completed uploaded image slots — draggable */}
               {imageUrls.map((url, index) => (
                 <div
-                  key={index}
+                  key={`img-${index}-${url.slice(-8)}`}
                   className={[
                     styles.imageBox,
                     dragIndex === index ? styles.dragging : '',
@@ -439,35 +489,32 @@ export default function PostAd() {
                 </div>
               ))}
 
-              {/* Add button — only shown when < 5 images */}
-              {imageUrls.length < 5 && (
-                <label
-                  className={`${styles.imageBox} ${styles.uploadBox}`}
-                  style={{ cursor: uploading ? 'wait' : 'pointer' }}
-                >
-                  <input
-                    type="file"
-                    hidden
-                    accept="image/*"
-                    multiple
-                    onChange={handleImageChange}
-                    disabled={uploading}
+              {/* 2. Uploading in-progress slots with instant photo preview + modern spinner */}
+              {uploadingSlots.map((task) => (
+                <div key={task.id} className={`${styles.imageBox} ${styles.uploadingSlot}`} style={{ position: 'relative', overflow: 'hidden' }}>
+                  <img 
+                    src={task.preview} 
+                    alt="uploading" 
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4 }} 
                   />
-                  <div className={styles.uploadPlaceholder}>
-                    <span className={styles.plusIcon}>{uploading ? '⏳' : '+'}</span>
-                    {uploading && (
-                      <span className={styles.uploadingText}>
-                        {lang === 'bn' ? 'আপলোড হচ্ছে...' : 'Uploading...'}
-                      </span>
-                    )}
-                  </div>
-                </label>
-              )}
+                  <div className={styles.spinnerSmall} style={{ position: 'relative', zIndex: 2 }} />
+                  <span className={styles.uploadingText} style={{ position: 'relative', zIndex: 2, background: 'rgba(255, 255, 255, 0.88)', borderRadius: '4px', padding: '1px 4px' }}>
+                    {lang === 'bn' ? 'আপলোড...' : 'Uploading...'}
+                  </span>
+                </div>
+              ))}
 
-              {/* Empty decorative slots to always fill grid to 5 */}
-              {Array.from({ length: Math.max(0, 4 - imageUrls.length) }).map((_, i) => (
-                <div key={`empty-${i}`} className={`${styles.imageBox} ${styles.emptySlot}`}>
-                  <span className={styles.plusIcon} style={{ color: '#e0e0e0' }}>+</span>
+              {/* 3. Empty active clickable upload slots (always fill total to 5) */}
+              {Array.from({ length: Math.max(0, 5 - imageUrls.length - uploadingSlots.length) }).map((_, i) => (
+                <div
+                  key={`empty-upload-${i}`}
+                  className={`${styles.imageBox} ${styles.uploadBox}`}
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className={styles.uploadPlaceholder}>
+                    <span className={styles.plusIcon}>+</span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -486,7 +533,7 @@ export default function PostAd() {
               type="number" required className={styles.premiumInput}
               value={formData.price}
               onChange={e => setFormData({ ...formData, price: e.target.value })}
-              placeholder={lang === 'bn' ? 'যেমন: ৪৫০০০' : 'e.g., 45000'}
+              placeholder={lang === 'bn' ? 'মূল্য লিখুন (যেমন: ৫০০০)' : 'Enter price (e.g. 5000)'}
               min="0"
             />
           </div>
@@ -559,7 +606,7 @@ export default function PostAd() {
           </div>
 
           {/* === SUBMIT === */}
-          <button type="submit" className={styles.submitBtn} disabled={submitting || uploading}>
+          <button type="submit" className={styles.submitBtn} disabled={submitting || uploadingSlots.length > 0}>
             {submitting ? t('processing') : (lang === 'bn' ? 'বিজ্ঞাপন দিন' : 'Post Ad')}
           </button>
         </form>

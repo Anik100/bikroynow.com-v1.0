@@ -59,7 +59,13 @@ function getTranslatedPackageName(name, lang) {
   return name;
 }
 
-const ADMIN_EMAIL = 'anikh0000@gmail.com'; // Master Admin Email
+const ADMIN_EMAILS = [
+  'anikh0000@gmail.com',
+  'anikh00000@gmail.com',
+  'anikh00@gmail.com',
+  'aunik008@gmail.com',
+  'aunik003@gmail.com'
+];
 
 export default function AdminDashboard() {
   const { t, lang } = useLanguage();
@@ -128,6 +134,14 @@ export default function AdminDashboard() {
   
   const [errorMessage, setErrorMessage] = useState(null);
   const [confirmDialog, setConfirmDialog] = useState(null);
+
+  // User Management & Purchase filter states
+  const [profiles, setProfiles] = useState([]);
+  const [profilesLoading, setProfilesLoading] = useState(false);
+  const [editingProfile, setEditingProfile] = useState(null);
+  const [userSearchQuery, setUserSearchQuery] = useState('');
+  const [paymentSearchQuery, setPaymentSearchQuery] = useState('');
+  const [purchaseFilter, setPurchaseFilter] = useState('pending');
 
   useEffect(() => {
     if (errorMessage) {
@@ -216,14 +230,6 @@ export default function AdminDashboard() {
     }
   }, [supportMessages]);
 
-  // User Management states
-  const [profiles, setProfiles] = useState([]);
-  const [profilesLoading, setProfilesLoading] = useState(false);
-  const [editingProfile, setEditingProfile] = useState(null); // { id, email, membership_type, membership_expires_at }
-  const [userSearchQuery, setUserSearchQuery] = useState('');
-  const [paymentSearchQuery, setPaymentSearchQuery] = useState('');
-  const [purchaseFilter, setPurchaseFilter] = useState('pending');
-
   const getPurchaseFilterBtnStyle = (isActive, activeColor) => ({
     background: isActive ? activeColor : 'white',
     color: isActive ? 'white' : '#475569',
@@ -273,92 +279,85 @@ export default function AdminDashboard() {
     let isMounted = true;
     
     const checkAdmin = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      const authorizeUser = (userEmail) => {
-        return new Promise(async (resolve) => {
-          try {
-            const { data: settingsData } = await supabase.from('admin_settings').select('*');
-            let modsList = [];
-            if (settingsData) {
-              const modsVal = settingsData.find(s => s.key === 'moderators')?.value;
-              if (modsVal) {
-                try {
-                  modsList = JSON.parse(modsVal);
-                } catch (e) {}
-              }
-            }
-            
-            const isMasterAdmin = userEmail === ADMIN_EMAIL;
-            const matchingMod = modsList.find(m => m.email === userEmail);
-            
-            if (isMasterAdmin || matchingMod) {
-              resolve({ authorized: true, isMasterAdmin, matchingMod });
-            } else {
-              resolve({ authorized: false });
-            }
-          } catch (err) {
-            resolve({ authorized: userEmail === ADMIN_EMAIL, isMasterAdmin: userEmail === ADMIN_EMAIL });
-          }
-        });
-      };
+      let activeUser = null;
 
-      if (session) {
-        const { authorized, isMasterAdmin, matchingMod } = await authorizeUser(session.user.email);
-        if (authorized) {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        activeUser = session.user;
+      } else {
+        try {
+          const localUser = localStorage.getItem('bikroynow_demo_user');
+          if (localUser) activeUser = JSON.parse(localUser);
+        } catch (e) {}
+      }
+
+      if (!activeUser) {
+        await new Promise(r => setTimeout(r, 450));
+        const retry = await supabase.auth.getSession();
+        if (retry.data?.session?.user) activeUser = retry.data.session.user;
+      }
+
+      if (!activeUser) {
+        if (isMounted) {
+          setLoading(false);
+          setIsAdmin(false);
+        }
+        return;
+      }
+
+      const cleanEmail = (activeUser.email || '').toLowerCase().trim();
+      const isMasterAdmin = ADMIN_EMAILS.some(e => e.toLowerCase() === cleanEmail);
+
+      if (isMasterAdmin) {
+        if (isMounted) {
+          setIsAdmin(true);
+          setIsModerator(false);
+          setModeratorInfo(null);
+          setLoading(false);
+          fetchListings();
+          fetchPurchases();
+          fetchSettings();
+          fetchSupportChats();
+          fetchFeaturedList();
+        }
+        return;
+      }
+
+      // Check moderators
+      try {
+        const { data: settingsData } = await supabase.from('admin_settings').select('*');
+        let modsList = [];
+        if (settingsData) {
+          const modsVal = settingsData.find(s => s.key === 'moderators')?.value;
+          if (modsVal) {
+            try {
+              modsList = JSON.parse(modsVal);
+            } catch (e) {}
+          }
+        }
+        const matchingMod = modsList.find(m => m.email?.toLowerCase().trim() === cleanEmail);
+        if (matchingMod) {
           if (isMounted) {
             setIsAdmin(true);
-            setIsModerator(!isMasterAdmin);
-            setModeratorInfo(matchingMod || null);
-            
-            if (matchingMod) {
-              const allowed = matchingMod.allowed_sections || [];
-              if (allowed.length > 0) {
-                setActiveTab(allowed[0]);
-              }
+            setIsModerator(true);
+            setModeratorInfo(matchingMod);
+            setLoading(false);
+            if (matchingMod.allowed_sections?.length > 0) {
+              setActiveTab(matchingMod.allowed_sections[0]);
             }
-
             fetchListings();
             fetchPurchases();
             fetchSettings();
             fetchSupportChats();
             fetchFeaturedList();
           }
-        } else {
-          router.push('/');
+          return;
         }
-      } else {
-        setTimeout(async () => {
-          if (!isMounted) return;
-          const { data: { session: retrySession } } = await supabase.auth.getSession();
-          if (retrySession) {
-            const { authorized, isMasterAdmin, matchingMod } = await authorizeUser(retrySession.user.email);
-            if (authorized) {
-              if (isMounted) {
-                setIsAdmin(true);
-                setIsModerator(!isMasterAdmin);
-                setModeratorInfo(matchingMod || null);
-                
-                if (matchingMod) {
-                  const allowed = matchingMod.allowed_sections || [];
-                  if (allowed.length > 0) {
-                    setActiveTab(allowed[0]);
-                  }
-                }
+      } catch (err) {}
 
-                fetchListings();
-                fetchPurchases();
-                fetchSettings();
-                fetchSupportChats();
-                fetchFeaturedList();
-              }
-            } else {
-              router.push('/');
-            }
-          } else {
-            router.push('/');
-          }
-        }, 1200);
+      if (isMounted) {
+        setLoading(false);
+        setIsAdmin(false);
       }
     };
     
@@ -370,12 +369,52 @@ export default function AdminDashboard() {
 
   const fetchListings = async () => {
     setAdsLoading(true);
-    const { data, error } = await supabase
-      .from('listings')
-      .select('*')
-      .order('created_at', { ascending: false });
-      
-    if (data) setListings(data);
+    let combinedList = [];
+    const seenIds = new Set();
+
+    try {
+      const { data, error } = await supabase
+        .from('listings')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (data && Array.isArray(data)) {
+        data.forEach(item => {
+          if (!seenIds.has(item.id)) {
+            seenIds.add(item.id);
+            combinedList.push(item);
+          }
+        });
+      }
+    } catch (e) {}
+
+    try {
+      const res = await fetch(`/api/listings?t=${Date.now()}`);
+      if (res.ok) {
+        const apiListings = await res.json();
+        if (Array.isArray(apiListings)) {
+          apiListings.forEach(item => {
+            if (!seenIds.has(item.id)) {
+              seenIds.add(item.id);
+              combinedList.push(item);
+            }
+          });
+        }
+      }
+    } catch (e) {}
+
+    try {
+      const localAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+      if (Array.isArray(localAds)) {
+        localAds.forEach(item => {
+          if (!seenIds.has(item.id)) {
+            seenIds.add(item.id);
+            combinedList.push(item);
+          }
+        });
+      }
+    } catch (e) {}
+
+    setListings(combinedList);
     setAdsLoading(false);
     setLoading(false);
   };
@@ -840,18 +879,12 @@ export default function AdminDashboard() {
   const fetchFeaturedList = async () => {
     setFeaturedLoading(true);
     try {
-      const { data, error } = await supabase
-        .from('featured_ads')
-        .select(`
-          *,
-          listing:listing_id (
-            id, title, price, location, images, user_id, status
-          )
-        `)
-        .order('sort_order', { ascending: true });
-
-      if (data && !error) {
-        setFeaturedList(data);
+      const res = await fetch('/api/admin/featured-ads');
+      if (res.ok) {
+        const json = await res.json();
+        if (json.data) {
+          setFeaturedList(json.data);
+        }
       }
     } catch (err) {
       console.error('Error fetching featured ads list in admin:', err);
@@ -861,16 +894,14 @@ export default function AdminDashboard() {
 
   const handleToggleFeaturedActive = async (id, currentVal) => {
     try {
-      const { error } = await supabase
-        .from('featured_ads')
-        .update({ is_active: !currentVal })
-        .eq('id', id);
-
-      if (!error) {
+      const res = await fetch('/api/admin/featured-ads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'update', id, is_active: !currentVal })
+      });
+      if (res.ok) {
         setFeaturedList(prev => prev.map(item => item.id === id ? { ...item, is_active: !currentVal } : item));
         setErrorMessage(lang === 'bn' ? '✓ স্ট্যাটাস সফলভাবে পরিবর্তন করা হয়েছে!' : '✓ Status successfully updated!');
-      } else {
-        setErrorMessage('Error toggling featured ad: ' + error.message);
       }
     } catch (err) {
       setErrorMessage('Exception: ' + err.message);
@@ -879,16 +910,14 @@ export default function AdminDashboard() {
 
   const handleDeleteFeatured = async (id) => {
     try {
-      const { error } = await supabase
-        .from('featured_ads')
-        .delete()
-        .eq('id', id);
-
-      if (!error) {
+      const res = await fetch('/api/admin/featured-ads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'delete', id })
+      });
+      if (res.ok) {
         setFeaturedList(prev => prev.filter(item => item.id !== id));
         setErrorMessage(lang === 'bn' ? '✓ ফিচার্ড লিস্ট থেকে সরানো হয়েছে!' : '✓ Removed from featured list!');
-      } else {
-        setErrorMessage('Error removing featured ad: ' + error.message);
       }
     } catch (err) {
       setErrorMessage('Exception: ' + err.message);
@@ -897,16 +926,15 @@ export default function AdminDashboard() {
 
   const handleUpdateFeaturedSortOrder = async (featuredId, newSortOrder) => {
     try {
-      const { error } = await supabase
-        .from('featured_ads')
-        .update({ sort_order: parseInt(newSortOrder) || 0 })
-        .eq('id', featuredId);
-
-      if (!error) {
-        setFeaturedList(prev => prev.map(item => item.id === featuredId ? { ...item, sort_order: parseInt(newSortOrder) || 0 } : item));
+      const parsedSort = parseInt(newSortOrder) || 0;
+      const res = await fetch('/api/admin/featured-ads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'update', id: featuredId, sort_order: parsedSort })
+      });
+      if (res.ok) {
+        setFeaturedList(prev => prev.map(item => item.id === featuredId ? { ...item, sort_order: parsedSort } : item));
         setErrorMessage(lang === 'bn' ? '✓ স্লাইডার পজিশন সফলভাবে আপডেট হয়েছে!' : '✓ Slider position updated!');
-      } else {
-        setErrorMessage('Error updating sort order: ' + error.message);
       }
     } catch (err) {
       setErrorMessage('Exception: ' + err.message);
@@ -916,23 +944,15 @@ export default function AdminDashboard() {
   const handleAddManualFeatured = async (listingId) => {
     if (!listingId) return;
     try {
-      const nextSort = featuredList.length > 0 ? Math.max(...featuredList.map(item => item.sort_order || 0)) + 1 : 0;
-      
-      const { data, error } = await supabase
-        .from('featured_ads')
-        .upsert({ listing_id: listingId, is_active: true, sort_order: nextSort }, { onConflict: 'listing_id' })
-        .select(`
-          *,
-          listing:listing_id (
-            id, title, price, location, images, user_id, status
-          )
-        `);
-
-      if (!error && data && data.length > 0) {
+      const res = await fetch('/api/admin/featured-ads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'toggle', listing_id: listingId })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
         setErrorMessage(lang === 'bn' ? '✓ সফলভাবে বিজ্ঞাপনটি ফিচার করা হয়েছে!' : '✓ Ad successfully featured!');
         fetchFeaturedList();
-      } else {
-        setErrorMessage(error ? 'Error featuring ad: ' + error.message : 'Already exists or error adding.');
       }
     } catch (err) {
       setErrorMessage('Exception: ' + err.message);
@@ -1400,29 +1420,28 @@ export default function AdminDashboard() {
   const handleToggleSliderDirect = async (adId) => {
     setActionLoading(adId + '-slider');
     try {
-      const isAlreadyFeatured = featuredList.some(item => item.listing_id === adId);
-      if (isAlreadyFeatured) {
-        const featItem = featuredList.find(item => item.listing_id === adId);
-        const { error } = await supabase.from('featured_ads').delete().eq('id', featItem.id);
-        if (!error) {
-          setFeaturedList(prev => prev.filter(item => item.listing_id !== adId));
-          setErrorMessage(lang === 'bn' ? '✓ হোমপেজ স্লাইডার থেকে সরানো হয়েছে!' : '✓ Removed from Homepage Slider!');
-        } else {
-          setErrorMessage('Error removing slider ad: ' + error.message);
-        }
-      } else {
-        const nextSort = featuredList.length > 0 ? Math.max(...featuredList.map(item => item.sort_order || 0)) + 1 : 0;
-        const { data, error } = await supabase
-          .from('featured_ads')
-          .upsert({ listing_id: adId, is_active: true, sort_order: nextSort }, { onConflict: 'listing_id' })
-          .select(`*, listing:listing_id (id, title, price, location, images, user_id, status)`);
-        
-        if (!error && data && data.length > 0) {
-          setFeaturedList(prev => [...prev, data[0]]);
+      const res = await fetch('/api/admin/featured-ads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'toggle', listing_id: adId })
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        if (data.action === 'added') {
+          const matchedListing = listings.find(l => l.id === adId);
+          const newItem = {
+            ...(data.item || {}),
+            listing_id: adId,
+            listing: matchedListing || null
+          };
+          setFeaturedList(prev => [...prev.filter(i => i.listing_id !== adId), newItem]);
           setErrorMessage(lang === 'bn' ? '✓ স্লাইডারে ১-ক্লিকে সফলভাবে যুক্ত করা হয়েছে!' : '✓ Successfully added to slider!');
         } else {
-          setErrorMessage(error ? 'Error adding to slider: ' + error.message : 'Error adding to slider.');
+          setFeaturedList(prev => prev.filter(item => item.listing_id !== adId));
+          setErrorMessage(lang === 'bn' ? '✓ হোমপেজ স্লাইডার থেকে সরানো হয়েছে!' : '✓ Removed from Homepage Slider!');
         }
+      } else {
+        setErrorMessage(data?.error || 'Error updating slider.');
       }
     } catch (err) {
       setErrorMessage('Exception: ' + err.message);
@@ -1431,8 +1450,42 @@ export default function AdminDashboard() {
     }
   };
 
-  if (loading) return <div className="container" style={{padding: '5rem 0', textAlign: 'center'}}>Loading Admin Panel...</div>;
-  if (!isAdmin) return null; // Prevent UI flash if not authorized
+  if (loading) {
+    return (
+      <div className="container" style={{ padding: '8rem 1rem', textAlign: 'center' }}>
+        <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>⏳</div>
+        <p style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1c2b38' }}>{t('loading') || 'Loading Admin Panel...'}</p>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="container" style={{ maxWidth: '480px', padding: '5rem 1rem', textAlign: 'center' }}>
+        <div style={{ background: 'white', borderRadius: '18px', padding: '2.5rem 1.5rem', boxShadow: '0 10px 40px rgba(0,0,0,0.08)', border: '1px solid #e2e8f0' }}>
+          <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#fee2e2', color: '#dc2626', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.2rem', fontSize: '1.8rem' }}>
+            🛡️
+          </div>
+          <h2 style={{ fontSize: '1.35rem', fontWeight: 850, color: '#0f172a', marginBottom: '0.5rem' }}>
+            {lang === 'bn' ? 'অ্যাডমিন অনুমতি প্রয়োজন' : 'Admin Access Required'}
+          </h2>
+          <p style={{ color: '#64748b', fontSize: '0.88rem', lineHeight: 1.5, marginBottom: '1.8rem' }}>
+            {lang === 'bn' 
+              ? 'এই পেজটিতে শুধুমাত্র অনুমোদিত অ্যাডমিনিস্ট্রেটরগণ প্রবেশ করতে পারবেন। অনুগ্রহ করে আপনার অ্যাডমিন অ্যাকাউন্টে লগইন করুন।' 
+              : 'This page is restricted to authorized administrators only. Please log in with your admin account.'}
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <Link href="/login" className="btn-primary" style={{ padding: '0.75rem', borderRadius: '10px', fontWeight: 700, textDecoration: 'none', display: 'block' }}>
+              {lang === 'bn' ? 'অ্যাডমিন অ্যাকাউন্টে লগইন করুন' : 'Log in as Admin'}
+            </Link>
+            <Link href="/" style={{ padding: '0.75rem', borderRadius: '10px', color: '#64748b', fontWeight: 600, textDecoration: 'none', border: '1px solid #e2e8f0', display: 'block' }}>
+              {lang === 'bn' ? 'হোম পেজে ফিরে যান' : 'Return Home'}
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const totalAds = listings.length;
   const pendingAds = listings.filter(ad => ad.status === 'pending').length;

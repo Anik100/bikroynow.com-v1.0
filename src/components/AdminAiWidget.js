@@ -2,12 +2,14 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { Bot, X, Send, ShieldCheck, Zap, Star, Award, CreditCard, CheckCircle, MessageSquare, Settings } from 'lucide-react';
+import styles from './AdminAiWidget.module.css';
+import { Bot, X, Send, ShieldCheck, Star, Award, CreditCard, CheckCircle, MessageSquare } from 'lucide-react';
 
 export default function AdminAiWidget() {
   const { lang: globalLang } = useLanguage();
   const [aiLang, setAiLang] = useState(globalLang || 'bn');
   const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [inputText, setInputText] = useState('');
   const messagesEndRef = useRef(null);
 
@@ -38,6 +40,27 @@ export default function AdminAiWidget() {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isOpen]);
+
+  // Smooth toggle handler
+  const handleToggle = () => {
+    if (isOpen) {
+      setIsClosing(true);
+      setTimeout(() => {
+        setIsOpen(false);
+        setIsClosing(false);
+      }, 260);
+    } else {
+      setIsOpen(true);
+    }
+  };
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setIsOpen(false);
+      setIsClosing(false);
+    }, 260);
+  };
 
   const handleToggleLanguage = () => {
     const nextLang = aiLang === 'bn' ? 'en' : 'bn';
@@ -114,99 +137,39 @@ export default function AdminAiWidget() {
   };
 
   return (
-    <div style={{ position: 'fixed', bottom: '25px', right: '25px', zIndex: 99990, fontFamily: 'Inter, sans-serif' }}>
-      {!isOpen ? (
-        <button
-          onClick={() => setIsOpen(true)}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.55rem',
-            padding: '0.65rem 1.2rem',
-            borderRadius: '99px',
-            background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
-            color: '#ffffff',
-            border: '2px solid #f59e0b',
-            boxShadow: '0 10px 30px rgba(15, 23, 42, 0.4), 0 0 15px rgba(245, 158, 11, 0.35)',
-            cursor: 'pointer',
-            fontWeight: 900,
-            fontSize: '0.86rem',
-            transition: 'all 0.25s ease'
-          }}
-        >
-          <div style={{ background: '#f59e0b', padding: '4px', borderRadius: '50%', color: '#0f172a', display: 'flex' }}>
-            <Bot size={18} />
-          </div>
-          <span>{aiLang === 'bn' ? '⚡ অ্যাডমিন AI গাইড' : '⚡ Admin AI Guide'}</span>
-        </button>
-      ) : (
-        <div style={{
-          width: '400px',
-          maxWidth: 'calc(100vw - 30px)',
-          height: '540px',
-          maxHeight: 'calc(100vh - 90px)',
-          background: '#ffffff',
-          borderRadius: '20px',
-          boxShadow: '0 25px 60px rgba(15, 23, 42, 0.4)',
-          border: '2px solid #1e1b4b',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden'
-        }}>
+    <div className={styles.floatingContainer}>
+      {/* 1. Chat Window — Slide Up / Slide Down Animation */}
+      {(isOpen || isClosing) && (
+        <div className={`${styles.chatWindow} ${isClosing ? styles.chatWindowClosing : ''}`}>
           {/* Header */}
-          <div style={{
-            background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
-            color: 'white',
-            padding: '0.9rem 1.1rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderBottom: '3px solid #f59e0b'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+          <div className={styles.chatHeader}>
+            <div className={styles.headerLeft}>
               <div style={{ background: '#f59e0b', padding: '6px', borderRadius: '10px', color: '#0f172a', display: 'flex' }}>
                 <ShieldCheck size={20} />
               </div>
-              <div>
-                <h4 style={{ margin: 0, fontSize: '0.92rem', fontWeight: 900, color: '#ffffff' }}>
+              <div className={styles.headerTitleBox}>
+                <h4 className={styles.headerTitle}>
                   {aiLang === 'bn' ? 'অ্যাডমিন AI গাইড সেন্টার' : 'Admin AI Guide Center'}
                 </h4>
-                <span style={{ fontSize: '0.7rem', color: '#f59e0b', fontWeight: 800 }}>
+                <span className={styles.headerStatus}>
                   {aiLang === 'bn' ? '● ড্যাশবোর্ড কন্ট্রোল অ্যাসিস্ট্যান্ট' : '● Dashboard Control Assistant'}
                 </span>
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <div className={styles.headerRight}>
               <button
+                type="button"
                 onClick={handleToggleLanguage}
-                style={{
-                  background: 'rgba(255,255,255,0.15)',
-                  border: '1px solid #f59e0b',
-                  color: '#ffb703',
-                  padding: '0.22rem 0.6rem',
-                  borderRadius: '6px',
-                  fontSize: '0.72rem',
-                  fontWeight: 900,
-                  cursor: 'pointer'
-                }}
+                className={styles.langToggleBtn}
               >
                 {aiLang === 'bn' ? 'ENGLISH' : 'বাংলা'}
               </button>
               <button
-                onClick={() => setIsOpen(false)}
-                style={{
-                  background: 'rgba(255,255,255,0.15)',
-                  border: 'none',
-                  color: 'white',
-                  width: '28px',
-                  height: '28px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer'
-                }}
+                type="button"
+                onClick={handleClose}
+                className={styles.closeBtn}
+                aria-label="Close"
               >
                 <X size={16} />
               </button>
@@ -214,22 +177,13 @@ export default function AdminAiWidget() {
           </div>
 
           {/* Messages Body */}
-          <div style={{ flex: 1, padding: '0.9rem', overflowY: 'auto', background: '#f8fafc', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+          <div className={styles.chatBody}>
             {messages.map(msg => (
-              <div key={msg.id} style={{ display: 'flex', justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start' }}>
-                <div style={{
-                  maxWidth: '88%',
-                  padding: '0.8rem 1rem',
-                  borderRadius: '14px',
-                  fontSize: '0.8rem',
-                  lineHeight: 1.5,
-                  fontWeight: 500,
-                  whiteSpace: 'pre-wrap',
-                  background: msg.sender === 'user' ? '#1e1b4b' : '#ffffff',
-                  color: msg.sender === 'user' ? '#ffffff' : '#1e293b',
-                  border: msg.sender === 'user' ? 'none' : '1px solid #e2e8f0',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.04)'
-                }}>
+              <div 
+                key={msg.id} 
+                className={`${styles.messageRow} ${msg.sender === 'user' ? styles.msgUser : styles.msgBot}`}
+              >
+                <div className={styles.msgBubble}>
                   {msg.text}
                 </div>
               </div>
@@ -238,64 +192,103 @@ export default function AdminAiWidget() {
           </div>
 
           {/* Quick Prompts Horizontal Chips */}
-          <div style={{ padding: '0.6rem 0.8rem', background: '#ffffff', borderTop: '1px solid #e2e8f0', display: 'flex', gap: '0.4rem', overflowX: 'auto' }}>
+          <div className={styles.chipsContainer}>
             <button
+              type="button"
               onClick={() => handleSendMessage(aiLang === 'bn' ? 'স্লাইডারে কিভাবে পোস্ট দিব?' : 'How to add to home slider?')}
-              style={{ padding: '0.35rem 0.7rem', borderRadius: '20px', border: '1px solid #f59e0b', background: '#fffdf5', color: '#b45309', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+              className={styles.chipBtn}
+              style={{ border: '1px solid #f59e0b', background: '#fffdf5', color: '#b45309' }}
             >
               <Star size={12} /> {aiLang === 'bn' ? 'স্লাইডার অপশন' : 'Slider Option'}
             </button>
             <button
+              type="button"
               onClick={() => handleSendMessage(aiLang === 'bn' ? 'প্রিমিয়াম সিরিয়াল এবং LIFO র‍্যাংকিং কীভাবে কাজ করে?' : 'How does premium LIFO work?')}
-              style={{ padding: '0.35rem 0.7rem', borderRadius: '20px', border: '1px solid #6366f1', background: '#f5f3ff', color: '#4338ca', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+              className={styles.chipBtn}
+              style={{ border: '1px solid #6366f1', background: '#f5f3ff', color: '#4338ca' }}
             >
               <Award size={12} /> {aiLang === 'bn' ? 'প্রিমিয়াম & র‍্যাংক' : 'Premium Rank'}
             </button>
             <button
+              type="button"
               onClick={() => handleSendMessage(aiLang === 'bn' ? 'পেন্ডিং অ্যাড কিভাবে অনুমোদন করব?' : 'How to approve pending ads?')}
-              style={{ padding: '0.35rem 0.7rem', borderRadius: '20px', border: '1px solid #10b981', background: '#ecfdf5', color: '#047857', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+              className={styles.chipBtn}
+              style={{ border: '1px solid #10b981', background: '#ecfdf5', color: '#047857' }}
             >
               <CheckCircle size={12} /> {aiLang === 'bn' ? 'অ্যাড অনুমোদন' : 'Ad Approval'}
             </button>
             <button
+              type="button"
               onClick={() => handleSendMessage(aiLang === 'bn' ? 'বিকাশ নগদ পেমেন্ট কিভাবে চেক করব?' : 'How to verify bKash/Nagad payments?')}
-              style={{ padding: '0.35rem 0.7rem', borderRadius: '20px', border: '1px solid #0284c7', background: '#f0f9ff', color: '#0369a1', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+              className={styles.chipBtn}
+              style={{ border: '1px solid #0284c7', background: '#f0f9ff', color: '#0369a1' }}
             >
               <CreditCard size={12} /> {aiLang === 'bn' ? 'পেমেন্ট ভেরিফাই' : 'Payment Info'}
             </button>
             <button
+              type="button"
               onClick={() => handleSendMessage(aiLang === 'bn' ? 'মেম্বারশিপ ব্যাজ কিভাবে দেওয়া হয়?' : 'How to set seller memberships?')}
-              style={{ padding: '0.35rem 0.7rem', borderRadius: '20px', border: '1px solid #eab308', background: '#fefce8', color: '#a16207', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+              className={styles.chipBtn}
+              style={{ border: '1px solid #eab308', background: '#fefce8', color: '#a16207' }}
             >
               <Award size={12} /> {aiLang === 'bn' ? 'সেলার ব্যাজ' : 'Seller Badges'}
             </button>
             <button
+              type="button"
               onClick={() => handleSendMessage(aiLang === 'bn' ? 'লাইভ সাপোর্ট চ্যাট কিভাবে ব্যবহার করব?' : 'How to use Live Support chat?')}
-              style={{ padding: '0.35rem 0.7rem', borderRadius: '20px', border: '1px solid #ec4899', background: '#fdf2f8', color: '#be185d', fontSize: '0.72rem', fontWeight: 800, cursor: 'pointer', whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}
+              className={styles.chipBtn}
+              style={{ border: '1px solid #ec4899', background: '#fdf2f8', color: '#be185d' }}
             >
               <MessageSquare size={12} /> {aiLang === 'bn' ? 'লাইভ চ্যাট' : 'Live Chat'}
             </button>
           </div>
 
           {/* Input Footer */}
-          <div style={{ padding: '0.65rem 0.85rem', background: '#ffffff', borderTop: '1px solid #e2e8f0', display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <div className={styles.chatFooter}>
             <input
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
               placeholder={aiLang === 'bn' ? 'ড্যাশবোর্ড নিয়ে জিজ্ঞাসা করুন...' : 'Ask about admin controls...'}
-              style={{ flex: 1, padding: '0.55rem 0.8rem', border: '1.5px solid #cbd5e1', borderRadius: '10px', fontSize: '0.8rem', outline: 'none' }}
+              className={styles.inputField}
             />
             <button
+              type="button"
               onClick={() => handleSendMessage()}
-              style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#1e1b4b', color: '#f59e0b', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+              className={styles.sendBtn}
             >
               <Send size={16} />
             </button>
           </div>
         </div>
       )}
+
+      {/* 2. Floating Trigger Button — Always visible & toggleable */}
+      <button
+        type="button"
+        onClick={handleToggle}
+        className={`${styles.triggerBtn} ${isOpen ? styles.triggerBtnActive : ''}`}
+        aria-label="Toggle Admin AI Guide"
+      >
+        <div className={`${styles.iconWrapper} ${isOpen ? styles.iconRotate : ''}`}>
+          {isOpen ? (
+            <X size={20} color="#f59e0b" strokeWidth={2.5} />
+          ) : (
+            <div className={styles.adminBotIcon}>
+              <Bot size={16} />
+            </div>
+          )}
+        </div>
+        <div className={styles.triggerText}>
+          <span className={styles.triggerTitle}>
+            {isOpen 
+              ? (aiLang === 'bn' ? 'বন্ধ করুন' : 'Close') 
+              : (aiLang === 'bn' ? 'অ্যাডমিন AI' : 'Admin AI')}
+          </span>
+          {!isOpen && <span className={styles.greenDotSmall}></span>}
+        </div>
+      </button>
     </div>
   );
 }

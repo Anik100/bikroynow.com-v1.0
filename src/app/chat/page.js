@@ -4,9 +4,9 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 import { useLanguage } from '../../context/LanguageContext';
-import { getRelativeTime } from '../../lib/utils';
+import { getRelativeTime, formatLastSeen } from '../../lib/utils';
 import styles from './chat.module.css';
-import { MessageSquare, Search, ChevronLeft } from 'lucide-react';
+import { MessageSquare, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ChatListPage() {
@@ -16,102 +16,254 @@ export default function ChatListPage() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
-    const fetchChats = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/login');
+  const fetchChatsForUser = async (userId) => {
+    try {
+      // 1. Try server API
+      const res = await fetch(`/api/chats/list?user_id=${userId}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (Array.isArray(json.chats) && json.chats.length > 0) {
+          setChats(json.chats);
+          setLoading(false);
+          return;
+        }
+      }
+
+      // 2. Direct Supabase query fallback (with active user session)
+      const { data: directChats } = await supabase
+        .from('chats')
+        .select('*')
+        .or(`buyer_id.eq.${userId},seller_id.eq.${userId}`)
+        .order('updated_at', { ascending: false });
+
+      if (directChats && Array.isArray(directChats) && directChats.length > 0) {
+        const enriched = await Promise.all(directChats.map(async (c) => {
+          const partnerId = c.buyer_id === userId ? c.seller_id : c.buyer_id;
+          const [{ data: listing }, { data: partner }, { data: lastMsgs }] = await Promise.all([
+            supabase.from('listings').select('title, images, price').eq('id', c.listing_id).maybeSingle(),
+            supabase.from('profiles').select('full_name, avatar_url, last_seen').eq('id', partnerId).maybeSingle(),
+            supabase.from('messages').select('*').eq('chat_id', c.id).order('created_at', { ascending: false }).limit(1)
+          ]);
+
+          return {
+            ...c,
+            listing: listing || { title: 'BikroyNow Item', images: [] },
+            partner: partner || { full_name: 'ব্যবহারকারী (User)' },
+            lastMsg: lastMsgs?.[0] || null,
+            unreadCount: 0
+          };
+        }));
+
+        setChats(enriched);
+        setLoading(false);
         return;
       }
-      setUser(session.user);
 
-      try {
-        const res = await fetch(`/api/chats/list?user_id=${session.user.id}&t=${Date.now()}`, { cache: 'no-store' });
-        if (res.ok) {
-          const json = await res.json();
-          if (Array.isArray(json.chats)) {
-            setChats(json.chats);
-          }
+      setChats([]);
+    } catch (err) {
+      console.error('Chat list fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const isOnline = (lastSeen) => {
+    if (!lastSeen) return false;
+    const lastSeenDate = new Date(lastSeen);
+    const now = new Date();
+    return (now - lastSeenDate) < 180000; // 3 mins threshold
+  };
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    const checkSessionAndFetch = async () => {
+      let activeUser = null;
+
+      // 1. Check getSession
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        activeUser = session.user;
+      } else {
+        try {
+          const localUser = localStorage.getItem('bikroynow_demo_user');
+          if (localUser) activeUser = JSON.parse(localUser);
+        } catch (e) {}
+      }
+
+      // 2. If session not found immediately on mobile, give a 350ms grace period for Supabase to restore from storage
+      if (!activeUser) {
+        await new Promise(r => setTimeout(r, 350));
+        const retry = await supabase.auth.getSession();
+        if (retry.data.session?.user) {
+          activeUser = retry.data.session.user;
         }
-      } catch (err) {
-        console.error('Chat list fetch error:', err);
-      } finally {
-        setLoading(false);
+      }
+
+      if (!activeUser) {
+        if (!isCancelled) {
+          router.push('/login');
+        }
+        return;
+      }
+
+      if (!isCancelled) {
+        setUser(activeUser);
+        fetchChatsForUser(activeUser.id);
       }
     };
 
-    fetchChats();
+    checkSessionAndFetch();
 
     const interval = setInterval(() => {
-      fetchChats();
-    }, 3000);
+      if (!isCancelled && user?.id) {
+        fetchChatsForUser(user.id);
+      }
+    }, 3000); // 3s live polling
 
     return () => {
+      isCancelled = true;
       clearInterval(interval);
     };
-  }, [router, lang]);
+  }, [router, user?.id]);
 
   if (loading) return <div className="container" style={{padding: '5rem 0', textAlign: 'center'}}>{t('loading')}</div>;
 
   return (
-    <div className="container" style={{maxWidth: '800px', padding: '2rem 1rem'}}>
-      <div className={styles.listHeader} style={{border: 'none', padding: '0 0 2rem 0'}}>
-        <h2 style={{fontSize: '1.8rem', fontWeight: '800', color: '#1c2b38'}}>
+    <div className="container" style={{maxWidth: '850px', padding: '2rem 1rem'}}>
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem'}}>
+        <h2 style={{fontSize: '1.6rem', fontWeight: '850', color: '#0f172a', margin: 0}}>
           {t('myMessages')}
         </h2>
+        <span style={{fontSize: '0.85rem', color: '#64748b', fontWeight: 600}}>
+          {chats.length > 0 ? (lang === 'bn' ? `${chats.length}টি চ্যাট সক্রিয়` : `${chats.length} active chats`) : ''}
+        </span>
       </div>
 
-      <div className={styles.chatList} style={{width: '100%', border: '1px solid #eee', borderRadius: '16px', overflow: 'hidden'}}>
+      <div style={{background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '18px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.04)'}}>
         {chats.length > 0 ? (
           chats.map((chat) => {
             return (
-              <Link href={`/chat/${chat.id}`} key={chat.id} className={styles.chatItem} style={{position: 'relative'}}>
-                <img 
-                  src={chat.listing?.images?.[0] || 'https://via.placeholder.com/100'} 
-                  alt={chat.listing?.title} 
-                  className={styles.adImage}
-                />
-                <div className={styles.itemInfo}>
-                  <div className={styles.itemHeader}>
-                    <span className={styles.partnerName} style={{fontWeight: chat.unreadCount > 0 ? '800' : '700'}}>
-                      {chat.partner?.full_name || 'User'}
+              <Link 
+                href={`/chat/${chat.id}`} 
+                key={chat.id} 
+                className={styles.chatItem} 
+                style={{
+                  display: 'flex',
+                  padding: '1.1rem 1.3rem',
+                  gap: '1rem',
+                  borderBottom: '1px solid #f1f5f9',
+                  alignItems: 'center',
+                  textDecoration: 'none',
+                  color: 'inherit',
+                  transition: 'background 0.2s ease',
+                  background: chat.unreadCount > 0 ? '#fff5f5' : 'transparent'
+                }}
+              >
+                <div style={{ position: 'relative', flexShrink: 0 }}>
+                  <img 
+                    src={chat.listing?.images?.[0] || 'https://via.placeholder.com/100'} 
+                    alt={chat.listing?.title} 
+                    style={{width: '54px', height: '54px', borderRadius: '12px', objectFit: 'cover', border: '1px solid #e2e8f0', display: 'block'}}
+                  />
+                  {chat.unreadCount > 0 && (
+                    <span style={{
+                      position: 'absolute',
+                      top: '-5px',
+                      right: '-5px',
+                      background: '#ef4444',
+                      color: 'white',
+                      borderRadius: '50%',
+                      width: '22px',
+                      height: '22px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '0.72rem',
+                      fontWeight: '800',
+                      border: '2px solid white',
+                      boxShadow: '0 2px 6px rgba(239, 68, 68, 0.4)'
+                    }}>
+                      {chat.unreadCount > 9 ? '9+' : chat.unreadCount}
                     </span>
-                    <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                      <span className={styles.time}>{getRelativeTime(chat.lastMsg?.created_at || chat.created_at, lang)}</span>
-                      {chat.unreadCount > 0 && (
+                  )}
+                </div>
+                <div style={{flex: 1, minWidth: 0}}>
+                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', gap: '8px'}}>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0}}>
+                      <span style={{fontWeight: chat.unreadCount > 0 ? '850' : '750', fontSize: '0.98rem', color: '#0f172a'}}>
+                        {chat.partner?.full_name || 'User'}
+                      </span>
+                      <span style={{
+                        fontSize: '0.7rem',
+                        color: isOnline(chat.partner?.last_seen) ? '#16a34a' : '#64748b',
+                        fontWeight: '700',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        backgroundColor: isOnline(chat.partner?.last_seen) ? '#dcfce7' : '#f1f5f9',
+                        padding: '1px 7px',
+                        borderRadius: '10px'
+                      }}>
                         <span style={{
-                          background: '#008b5e',
-                          color: 'white',
+                          width: '6px',
+                          height: '6px',
                           borderRadius: '50%',
-                          width: '20px',
-                          height: '20px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '0.7rem',
-                          fontWeight: '800',
-                          flexShrink: 0,
-                        }}>
-                          {chat.unreadCount > 9 ? '9+' : chat.unreadCount}
-                        </span>
-                      )}
+                          backgroundColor: isOnline(chat.partner?.last_seen) ? '#22c55e' : '#94a3b8',
+                          boxShadow: isOnline(chat.partner?.last_seen) ? '0 0 4px rgba(34, 197, 94, 0.6)' : 'none'
+                        }} />
+                        <span>{formatLastSeen(chat.partner?.last_seen, lang, true)}</span>
+                      </span>
                     </div>
+                    <span style={{fontSize: '0.72rem', color: chat.unreadCount > 0 ? '#ef4444' : '#94a3b8', fontWeight: chat.unreadCount > 0 ? 700 : 500, flexShrink: 0}}>
+                      {getRelativeTime(chat.lastMsg?.created_at || chat.created_at, lang)}
+                    </span>
                   </div>
-                  <div style={{fontSize: '0.85rem', color: '#008b5e', fontWeight: '600', marginBottom: '2px'}}>
-                    {chat.listing?.title}
+                  <div style={{fontSize: '0.85rem', color: '#008b5e', fontWeight: '700', marginBottom: '3px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                    {chat.listing?.title} {chat.listing?.price ? `• Tk ${Number(chat.listing.price).toLocaleString()}` : ''}
                   </div>
-                  <p className={styles.lastMsg} style={{fontWeight: chat.unreadCount > 0 ? '600' : '400', color: chat.unreadCount > 0 ? '#1c2b38' : '#666'}}>
-                    {chat.lastMsg?.content || (chat.lastMsg?.image_url ? (lang === 'bn' ? 'ছবি পাঠানো হয়েছে' : 'Sent an image') : '')}
-                  </p>
+                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <p style={{
+                      fontSize: '0.84rem', 
+                      color: chat.unreadCount > 0 ? '#1e293b' : '#64748b', 
+                      fontWeight: chat.unreadCount > 0 ? '700' : '450',
+                      margin: 0,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      maxWidth: '75%'
+                    }}>
+                      {chat.lastMsg?.content || (chat.lastMsg?.image_url ? (lang === 'bn' ? '📷 ছবি' : '📷 Image') : (lang === 'bn' ? 'কথোপকথন শুরু হয়েছে' : 'Conversation started'))}
+                    </p>
+                    {chat.unreadCount > 0 && (
+                      <span style={{
+                        background: '#ef4444',
+                        color: 'white',
+                        borderRadius: '12px',
+                        padding: '0.15rem 0.55rem',
+                        fontSize: '0.72rem',
+                        fontWeight: '800',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                        boxShadow: '0 2px 5px rgba(239, 68, 68, 0.3)'
+                      }}>
+                        {chat.unreadCount} {lang === 'bn' ? 'টি নতুন' : 'new'}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </Link>
             );
           })
         ) : (
-          <div className={styles.emptyState} style={{padding: '5rem 0'}}>
-            <MessageSquare size={60} strokeWidth={1} />
-            <p>{t('noMessages')}</p>
-            <Link href="/ads" className="btn-primary" style={{marginTop: '1rem'}}>
-              {t('browseAds')}
+          <div style={{padding: '5rem 2rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: '#94a3b8'}}>
+            <MessageSquare size={54} strokeWidth={1.3} color="#cbd5e1" />
+            <p style={{fontSize: '1rem', color: '#64748b', margin: 0}}>{t('noMessages')}</p>
+            <Link href="/ads" className="btn-primary" style={{marginTop: '0.5rem', borderRadius: '10px', padding: '0.65rem 1.4rem', display: 'inline-flex', alignItems: 'center', gap: '0.4rem'}}>
+              <span>{t('browseAds')}</span>
+              <ArrowRight size={16} />
             </Link>
           </div>
         )}

@@ -18,6 +18,29 @@ export const getRelativeTime = (dateString, lang = 'en') => {
   });
 };
 
+export const formatLastSeen = (dateString, lang = 'en', short = false) => {
+  if (!dateString) return lang === 'bn' ? 'অফলাইন' : 'Offline';
+  const now = new Date();
+  const past = new Date(dateString);
+  const diffInMs = now - past;
+  if (isNaN(diffInMs)) return lang === 'bn' ? 'অফলাইন' : 'Offline';
+
+  const diffInMins = Math.floor(diffInMs / (1000 * 60));
+  const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+  if (diffInMins < 3) return lang === 'bn' ? 'অ্যাক্টিভ' : 'Active';
+  if (diffInMins < 60) return lang === 'bn' ? `${diffInMins} মিনিট আগে ${short ? 'অফলাইন' : 'অফলাইন ছিল'}` : `Offline ${diffInMins}m ago`;
+  if (diffInHours < 24) return lang === 'bn' ? `${diffInHours} ঘণ্টা আগে ${short ? 'অফলাইন' : 'অফলাইন ছিল'}` : `Offline ${diffInHours}h ago`;
+  if (diffInDays < 30) return lang === 'bn' ? `${diffInDays} দিন আগে ${short ? 'অফলাইন' : 'অফলাইন ছিল'}` : `Offline ${diffInDays}d ago`;
+
+  const formatted = past.toLocaleDateString(lang === 'bn' ? 'bn-BD' : 'en-US', {
+    day: 'numeric',
+    month: 'short'
+  });
+  return lang === 'bn' ? `${formatted} ${short ? 'অফলাইন' : 'অফলাইন ছিল'}` : `Offline on ${formatted}`;
+};
+
 export const formatFullDate = (dateString, lang = 'en') => {
   return new Date(dateString).toLocaleString(lang === 'bn' ? 'bn-BD' : 'en-US', {
     day: 'numeric',
