@@ -1,7 +1,10 @@
 import os
 
-# Earthquake Monitoring Settings
-USGS_FEED_URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson"
+# Real-Time Earthquake Data Feeds (USGS Instant Stream + EMSC Global Seismic Portal)
+USGS_FEED_URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"
+USGS_DAY_FEED_URL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_day.geojson"
+EMSC_FEED_URL = "https://www.seismicportal.eu/fdsnws/event/1/query?format=json&limit=40&minmag=4.0"
+
 MIN_MAGNITUDE = 4.0        # Fetch all earthquakes starting from M4.0
 VIDEO_MIN_MAGNITUDE = 4.5  # M4.5+ -> 3D Video Reels
 PHOTO_MAX_MAGNITUDE = 4.49 # M4.0 to M4.4 -> High-Resolution Infographic Photo + Text

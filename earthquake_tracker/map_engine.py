@@ -77,7 +77,7 @@ def get_surrounding_places_osm(lat, lon, radius_km=500):
     """
     headers = {"User-Agent": "EarthquakeTrackerMap/2.0"}
     try:
-        r = requests.post("https://overpass-api.de/api/interpreter", data={"data": query}, headers=headers, timeout=7)
+        r = requests.post("https://overpass-api.de/api/interpreter", data={"data": query}, headers=headers, timeout=2.5)
         if r.status_code == 200:
             places = []
             for elem in r.json().get("elements", []):
@@ -98,6 +98,8 @@ def draw_text_with_shadow(draw, xy, text, font, fill="#ffffff", shadow_fill="#00
     x, y = xy
     draw.text((x, y), text, fill=fill, font=font, stroke_width=4, stroke_fill=shadow_fill, anchor=anchor)
 
+import concurrent.futures
+
 def generate_reference_satellite_map(lat, lon, place_name, output_path, zoom=8, target_w=1080, target_h=1920):
     """
     Generates rich satellite map and plots ALL surrounding cities, towns, islands, seas with prominent white labels.
@@ -107,10 +109,21 @@ def generate_reference_satellite_map(lat, lon, place_name, output_path, zoom=8, 
     stitched = Image.new("RGB", (cols * 256, rows * 256))
     x_start, y_start = center_x - (cols // 2), center_y - (rows // 2)
 
-    for i in range(cols):
-        for j in range(rows):
-            tile = fetch_satellite_hybrid_tile(x_start + i, y_start + j, zoom)
-            stitched.paste(tile, (i * 256, j * 256))
+    # 🚀 Parallel Tile Fetching for Ultra-Fast Map Generation (<1.5 seconds)
+    tiles_to_fetch = [
+        (i, j, x_start + i, y_start + j)
+        for i in range(cols)
+        for j in range(rows)
+    ]
+
+    def fetch_single(item):
+        i, j, tx, ty = item
+        tile_img = fetch_satellite_hybrid_tile(tx, ty, zoom)
+        return i, j, tile_img
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=16) as executor:
+        for i, j, tile_img in executor.map(fetch_single, tiles_to_fetch):
+            stitched.paste(tile_img, (i * 256, j * 256))
 
     n = 2.0 ** zoom
     lat_rad = math.radians(lat)
