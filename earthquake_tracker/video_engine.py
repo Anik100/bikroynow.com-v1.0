@@ -110,10 +110,10 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     ep_x, ep_y = epicenter_coords
     impact_km = estimate_impact_radius_km(mag)
 
-    # 🚀 ENHANCED SMOOTH & FASTER CINEMATIC GLIDE-ZOOM (1.00x up to 2.25x)
-    # Starts with a swift cinematic glide and glides smoothly into the epicenter
-    ease_progress = math.pow(progress, 0.82)
-    zoom_scale = 1.0 + (ease_progress * 1.25)
+    # 🚀 3X FASTER & DEEP CINEMATIC PLUNGE ZOOM (1.00x up to 4.85x)
+    # Fast initial acceleration that dives deeply into the epicenter with high-speed dynamic motion
+    ease_progress = math.pow(progress, 0.65)
+    zoom_scale = 1.0 + (ease_progress * 3.85)
 
     orig_w, orig_h = base_map_img.size
     new_w = int(orig_w / zoom_scale)
@@ -133,8 +133,8 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     ol_draw = ImageDraw.Draw(overlay)
 
     # 🔴 1. HIGH-PRECISION GLOWING RED EARTHQUAKE IMPACT ZONE & PERIMETER
-    # Scaled proportionally to estimated km impact radius and map zoom
-    hazard_base_r = int((140 + (mag - 4.0) * 65) * zoom_scale * 0.70)
+    # Scaled gracefully so deep zoom keeps the hazard perimeter perfectly framed
+    hazard_base_r = int((125 + (mag - 4.0) * 45) * math.pow(zoom_scale, 0.45))
     
     # Outer Danger Aura Glow
     for glow_i in range(3):
