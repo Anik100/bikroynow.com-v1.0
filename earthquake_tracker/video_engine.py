@@ -132,99 +132,94 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, sentence
     overlay = Image.new("RGBA", (VIDEO_WIDTH, VIDEO_HEIGHT), (0, 0, 0, 0))
     ol_draw = ImageDraw.Draw(overlay)
 
-    # 🔴 1. HIGH-PRECISION GLOWING RED EARTHQUAKE IMPACT ZONE & PERIMETER
-    # Scaled gracefully so deep zoom keeps the hazard perimeter perfectly framed
-    hazard_base_r = int((125 + (mag - 4.0) * 45) * math.pow(zoom_scale, 0.45))
-    
-    # Outer Danger Aura Glow
-    for glow_i in range(3):
-        g_r = hazard_base_r + (glow_i * 12)
+    # 🔴 1. 3D ELEVATED RED EPICENTER LAND MARK (ম্যাপের স্থানটি থ্রিডি আকারে উঁচু করে রেড মার্ক)
+    # Smooth elevation pop-up effect as the camera plunges in
+    elev_anim = math.sin(min(1.0, progress * 3.0) * (math.pi / 2))
+    elev_px = int(28 * elev_anim) # Height of 3D extrusion / elevation
+    disc_rx = int(95 + (mag - 4.0) * 35) # Horizontal radius
+    disc_ry = int(disc_rx * 0.58) # Perspective isometric vertical radius
+
+    # A. 3D Deep Drop Shadow on the original ground below the elevated mark
+    ol_draw.ellipse(
+        [(curr_ep_x - disc_rx - 12, curr_ep_y - disc_ry + 18),
+         (curr_ep_x + disc_rx + 12, curr_ep_y + disc_ry + 32)],
+        fill=(0, 0, 0, 160)
+    )
+
+    # B. 3D Extruded Wall / Bevel (উঁচু করা লাল অংশ)
+    for wall_y in range(elev_px, 0, -2):
+        shade_alpha = int(140 + (wall_y / max(1, elev_px)) * 90)
         ol_draw.ellipse(
-            [(curr_ep_x - g_r, curr_ep_y - g_r - 20),
-             (curr_ep_x + g_r, curr_ep_y + g_r - 20)],
-            outline=(239, 68, 68, max(25, 90 - glow_i * 25)),
+            [(curr_ep_x - disc_rx, curr_ep_y - disc_ry - wall_y),
+             (curr_ep_x + disc_rx, curr_ep_y + disc_ry - wall_y)],
+            fill=(159, 18, 57, shade_alpha),
+            outline=(225, 29, 72, 180),
             width=2
         )
 
-    # Primary Semi-Transparent Red Hazard Field Fill
+    # C. Top Elevated Red Platform Surface
+    top_cy = curr_ep_y - elev_px
+    # Glowing Outer Rim
     ol_draw.ellipse(
-        [(curr_ep_x - hazard_base_r, curr_ep_y - hazard_base_r - 20),
-         (curr_ep_x + hazard_base_r, curr_ep_y + hazard_base_r - 20)],
-        fill=(220, 38, 38, 75),
-        outline=(239, 68, 68, 255),
-        width=5
-    )
-
-    # Inner Intense Danger Core
-    core_r = int(hazard_base_r * 0.38)
-    ol_draw.ellipse(
-        [(curr_ep_x - core_r, curr_ep_y - core_r - 20),
-         (curr_ep_x + core_r, curr_ep_y + core_r - 20)],
-        fill=(255, 0, 0, 140),
-        outline=(255, 255, 255, 220),
+        [(curr_ep_x - disc_rx - 4, top_cy - disc_ry - 4),
+         (curr_ep_x + disc_rx + 4, top_cy + disc_ry + 4)],
+        outline=(254, 202, 202, 220),
         width=3
     )
+    # Top Glowing Red Disc
+    ol_draw.ellipse(
+        [(curr_ep_x - disc_rx, top_cy - disc_ry),
+         (curr_ep_x + disc_rx, top_cy + disc_ry)],
+        fill=(225, 29, 72, 210),
+        outline=(255, 255, 255, 255),
+        width=4
+    )
+    # Inner Bright Red Core
+    core_rx = int(disc_rx * 0.45)
+    core_ry = int(disc_ry * 0.45)
+    ol_draw.ellipse(
+        [(curr_ep_x - core_rx, top_cy - core_ry),
+         (curr_ep_x + core_rx, top_cy + core_ry)],
+        fill=(255, 0, 0, 230),
+        outline=(255, 255, 255, 240),
+        width=2
+    )
 
-    # 2. Concentric White Seismograph Acoustic Rings
+    # 2. Concentric White Seismograph Acoustic Wave Rings
     t = (frame_num % FPS) / FPS
-    for ring_i in range(8):
-        r_dist = int(25 + (ring_i * 18))
-        alpha = max(20, int(220 - (ring_i * 22)))
+    for ring_i in range(6):
+        r_dist_x = int(disc_rx + (ring_i * 22))
+        r_dist_y = int(r_dist_x * 0.58)
+        alpha = max(15, int(180 - (ring_i * 28)))
         ol_draw.ellipse(
-            [(curr_ep_x - r_dist, curr_ep_y - r_dist - 20),
-             (curr_ep_x + r_dist, curr_ep_y + r_dist - 20)],
+            [(curr_ep_x - r_dist_x, top_cy - r_dist_y),
+             (curr_ep_x + r_dist_x, top_cy + r_dist_y)],
             outline=(255, 255, 255, alpha),
-            width=1
+            width=2
         )
 
     # 3. Expanding Red Seismic Shockwave Ripple
     for wave_i in range(2):
         w_phase = (t + (wave_i * 0.5)) % 1.0
-        w_radius = int(hazard_base_r + (w_phase * 260))
-        w_alpha = int((1.0 - w_phase) * 170)
+        w_radius_x = int(disc_rx + (w_phase * 260))
+        w_radius_y = int(w_radius_x * 0.58)
+        w_alpha = int((1.0 - w_phase) * 180)
         ol_draw.ellipse(
-            [(curr_ep_x - w_radius, curr_ep_y - w_radius - 20),
-             (curr_ep_x + w_radius, curr_ep_y + w_radius - 20)],
-            fill=(225, 29, 72, int(w_alpha * 0.22)),
-            outline=(225, 29, 72, w_alpha),
+            [(curr_ep_x - w_radius_x, top_cy - w_radius_y),
+             (curr_ep_x + w_radius_x, top_cy + w_radius_y)],
+            fill=(225, 29, 72, int(w_alpha * 0.20)),
+            outline=(239, 68, 68, w_alpha),
             width=4
         )
 
     frame.paste(overlay, (0, 0), overlay)
     draw = ImageDraw.Draw(frame)
 
-    # 📍 4. PROFESSIONAL IMPACT RADIUS BADGE (attached to the red hazard border)
-    f_km = get_font(26, bold=True)
-    km_text = f"🔴 IMPACT ZONE: ~{impact_km} KM"
-    bbox_km = draw.textbbox((0, 0), km_text, font=f_km)
-    km_w = bbox_km[2] - bbox_km[0] + 30
-    km_h = 42
-    badge_x = int(curr_ep_x)
-    badge_y = int(curr_ep_y + hazard_base_r + 5)
-    
-    # Keep badge inside frame bounds
-    if 50 <= badge_y <= VIDEO_HEIGHT - 350:
-        draw.rounded_rectangle(
-            [(badge_x - (km_w // 2) + 3, badge_y - (km_h // 2) + 3),
-             (badge_x + (km_w // 2) + 3, badge_y + (km_h // 2) + 3)],
-            radius=12,
-            fill="#000000bb"
-        )
-        draw.rounded_rectangle(
-            [(badge_x - (km_w // 2), badge_y - (km_h // 2)),
-             (badge_x + (km_w // 2), badge_y + (km_h // 2))],
-            radius=12,
-            fill="#991b1bfa",
-            outline="#fca5a5",
-            width=2
-        )
-        draw.text((badge_x, badge_y), km_text, fill="#ffffff", font=f_km, stroke_width=2, stroke_fill="#000000", anchor="mm")
+    # 4. Epicenter Seismograph Pin (placed on top of the elevated 3D platform)
+    draw_seismograph_pin(draw, curr_ep_x, top_cy)
 
-    # 5. Epicenter Seismograph Pin
-    draw_seismograph_pin(draw, curr_ep_x, curr_ep_y)
-
-    # 🌟 6. 3D ELEVATED COUNTRY BADGE RIGHT ABOVE THE RED EPICENTER MARK
-    draw_prominent_country_badge(draw, curr_ep_x, curr_ep_y, country_name)
+    # 🌟 5. 3D ELEVATED COUNTRY BADGE RIGHT ABOVE THE PIN
+    draw_prominent_country_badge(draw, curr_ep_x, top_cy, country_name)
 
     # 6. TOP HEADER
     f_mag = get_font(88, bold=True)
