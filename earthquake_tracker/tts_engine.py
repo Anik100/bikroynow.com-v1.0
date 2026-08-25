@@ -91,7 +91,12 @@ def generate_script(event):
     sentences = []
     sentences.append(opener)
     sentences.append(f"A magnitude {mag} earthquake has struck {place}.")
-    sentences.append(f"The tremor occurred at {local_time}, which corresponds to {utc_time}.")
+    
+    is_utc_same = event.get("is_utc_same", False)
+    if is_utc_same or "UTC" in str(local_time) or "GMT" in str(local_time) or str(event.get("tz_name", "")).upper() in ["UTC", "GMT"]:
+        sentences.append(f"The tremor occurred at {utc_time}.")
+    else:
+        sentences.append(f"The tremor occurred at {local_time}, which corresponds to {utc_time}.")
 
     if mode == 0:
         # Quick ~20s

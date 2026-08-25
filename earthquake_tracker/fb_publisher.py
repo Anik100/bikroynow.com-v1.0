@@ -78,6 +78,15 @@ def create_post_caption(event):
 
     tsunami = "⚠️ UNDER ASSESSMENT - COASTAL ADVISORY" if event["tsunami_alert"] else "✅ NO IMMEDIATE TSUNAMI THREAT"
 
+    is_utc_same = event.get("is_utc_same", False)
+    if is_utc_same or "UTC" in str(local_time) or "GMT" in str(local_time) or str(event.get("tz_name", "")).upper() in ["UTC", "GMT"]:
+        time_section = f"⏱️ Recorded Time (UTC): {utc_time}\n"
+    else:
+        time_section = (
+            f"⏱️ Local Time: {local_time}\n"
+            f"🌍 Universal Time: {utc_time}\n"
+        )
+
     caption = (
         f"{headline}\n\n"
         f"A seismic event of magnitude {mag} has been recorded by official global seismic monitoring networks.\n\n"
@@ -87,8 +96,7 @@ def create_post_caption(event):
         f"⚡ Magnitude: M {mag:.1f}\n"
         f"📏 Depth: {depth} km below surface\n"
         f"🌐 Coordinates: {event['latitude']}°, {event['longitude']}°\n"
-        f"⏱️ Local Time: {local_time}\n"
-        f"🌍 Universal Time: {utc_time}\n"
+        f"{time_section}"
         f"🌊 Tsunami Status: {tsunami}\n"
         f"🏛️ Source: USGS Official Monitoring Network\n"
         f"━━━━━━━━━━━━━━━━━━━━━\n\n"

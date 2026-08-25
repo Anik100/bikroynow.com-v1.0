@@ -173,6 +173,7 @@ def fetch_latest_earthquakes():
             "local_time_full": t_data["local_full"],
             "local_voice": t_data["local_voice"],
             "tz_name": t_data["tz_name"],
+            "is_utc_same": t_data.get("is_utc_same", False),
             "epoch_ms": cand["epoch_ms"],
             "tsunami_alert": cand["tsunami"],
             "url": cand["url"],

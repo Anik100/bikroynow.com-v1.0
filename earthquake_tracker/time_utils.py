@@ -27,16 +27,18 @@ def get_earthquake_times(epoch_ms, lat, lon):
 
     try:
         dt_local = dt_utc.astimezone(zoneinfo.ZoneInfo(tz_name))
-        local_time_short = dt_local.strftime("%I:%M %p local")
-        local_time_full = dt_local.strftime("%B %d, %Y at %I:%M %p (%z)")
+        is_utc_same = (dt_local.utcoffset() == datetime.timedelta(0))
+        local_time_short = dt_local.strftime("%I:%M %p UTC") if is_utc_same else dt_local.strftime("%I:%M %p local")
+        local_time_full = dt_local.strftime("%B %d, %Y at %I:%M %p UTC") if is_utc_same else dt_local.strftime("%B %d, %Y at %I:%M %p (%z)")
         local_voice_time = dt_local.strftime("%I:%M %p")
     except Exception:
         # Fallback based on longitude offset
         hours_offset = round(lon / 15.0)
         offset_delta = datetime.timedelta(hours=hours_offset)
         dt_local = dt_utc + offset_delta
-        local_time_short = dt_local.strftime("%I:%M %p local")
-        local_time_full = dt_local.strftime("%B %d, %Y at %I:%M %p local")
+        is_utc_same = (hours_offset == 0)
+        local_time_short = dt_local.strftime("%I:%M %p UTC") if is_utc_same else dt_local.strftime("%I:%M %p local")
+        local_time_full = dt_local.strftime("%B %d, %Y at %I:%M %p UTC") if is_utc_same else dt_local.strftime("%B %d, %Y at %I:%M %p local")
         local_voice_time = dt_local.strftime("%I:%M %p")
 
     return {
@@ -45,5 +47,6 @@ def get_earthquake_times(epoch_ms, lat, lon):
         "local_short": local_time_short,
         "local_full": local_time_full,
         "local_voice": local_voice_time,
-        "tz_name": tz_name
+        "tz_name": tz_name,
+        "is_utc_same": is_utc_same
     }

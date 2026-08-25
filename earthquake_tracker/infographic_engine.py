@@ -129,8 +129,13 @@ def create_earthquake_infographic_photo(event, output_image_path):
 
     local_t = event.get("local_time_short", "Local Time")
     utc_t = event.get("utc_short", event.get("time_utc", "UTC"))
-    draw.text((415, dash_y + 105), "RECORDED TIME (LOCAL & UTC):", fill="#94a3b8", font=f_stat_h)
-    draw.text((415, dash_y + 133), f"LOCAL: {local_t.upper()}  •  UTC: {utc_t.upper()}", fill="#facc15", font=f_stat_v)
+    is_utc_same = event.get("is_utc_same", False)
+    if is_utc_same or "UTC" in str(local_t) or "GMT" in str(local_t):
+        draw.text((415, dash_y + 105), "RECORDED TIME (UTC):", fill="#94a3b8", font=f_stat_h)
+        draw.text((415, dash_y + 133), f"RECORDED: {utc_t.upper()}", fill="#facc15", font=f_stat_v)
+    else:
+        draw.text((415, dash_y + 105), "RECORDED TIME (LOCAL & UTC):", fill="#94a3b8", font=f_stat_h)
+        draw.text((415, dash_y + 133), f"LOCAL: {local_t.upper()}  •  UTC: {utc_t.upper()}", fill="#facc15", font=f_stat_v)
 
     draw.text((415, dash_y + 170), "DEPTH & COORDINATES:", fill="#94a3b8", font=f_stat_h)
     draw.text((415, dash_y + 198), f"{event['depth_km']} km depth  •  {event['latitude']:.2f}°, {event['longitude']:.2f}°", fill="#38bdf8", font=f_stat_v)
