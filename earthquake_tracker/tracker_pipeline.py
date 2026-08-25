@@ -66,33 +66,39 @@ def process_single_event(event):
     mark_event_as_posted(event_id)
     print(f"✨ Finished processing: {place}\n")
 
+from auto_commenter import process_comment_auto_replies
 import concurrent.futures
 
 def run_pipeline():
-    """Main tracker loop with Smart Parallel Multiprocessing."""
+    """Main tracker loop with Smart Parallel Multiprocessing & Auto-Comment Engine."""
     print("🌍 Earthquake Tracker Bot starting run...")
     events = fetch_latest_earthquakes()
 
-    if not events:
+    if events:
+        # Sort events to prioritize newest and highest magnitude events
+        events.sort(key=lambda x: (x.get("mag", 0), x.get("epoch_ms", 0)), reverse=True)
+
+        # Process up to 10 earthquakes concurrently per run without delay
+        target_events = events[:10]
+        print(f"⚡ Dispatched {len(target_events)} earthquake(s) to Smart Parallel Worker Pool...")
+
+        # Parallel Execution: 3 concurrent workers for maximum speed, CPU safety & Facebook API compliance
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+            futures = {executor.submit(process_single_event, ev): ev for ev in target_events}
+            for future in concurrent.futures.as_completed(futures):
+                ev = futures[future]
+                try:
+                    future.result()
+                except Exception as e:
+                    print(f"❌ Error processing event {ev.get('id')}: {e}")
+    else:
         print("💤 No new earthquakes >= M4.0 found. All caught up!")
-        return
 
-    # Sort events to prioritize newest and highest magnitude events
-    events.sort(key=lambda x: (x.get("mag", 0), x.get("epoch_ms", 0)), reverse=True)
-
-    # Process up to 10 earthquakes concurrently per run without delay
-    target_events = events[:10]
-    print(f"⚡ Dispatched {len(target_events)} earthquake(s) to Smart Parallel Worker Pool...")
-
-    # Parallel Execution: 3 concurrent workers for maximum speed, CPU safety & Facebook API compliance
-    with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
-        futures = {executor.submit(process_single_event, ev): ev for ev in target_events}
-        for future in concurrent.futures.as_completed(futures):
-            ev = futures[future]
-            try:
-                future.result()
-            except Exception as e:
-                print(f"❌ Error processing event {ev.get('id')}: {e}")
+    # Check and Auto-Reply to new Facebook comments (1 reply per unique user)
+    try:
+        process_comment_auto_replies()
+    except Exception as e:
+        print(f"⚠️ Auto-commenter run note: {e}")
 
 if __name__ == "__main__":
     run_pipeline()
