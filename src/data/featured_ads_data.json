@@ -21,6 +21,13 @@
     "created_at": "2026-07-30T01:14:56.89596+00:00"
   },
   {
+    "id": "03b27534-2908-42c1-b13f-7df67a67a45f",
+    "listing_id": "84c17040-9337-4c0f-8caf-cdbf653bc154",
+    "is_active": true,
+    "sort_order": 0,
+    "created_at": "2026-08-25T19:56:32.50336+00:00"
+  },
+  {
     "id": "b435d2ed-4eca-4fed-b8ce-f08f1533ab93",
     "listing_id": "6b842afc-adb6-46b8-a06c-79f7b235c39b",
     "is_active": true,

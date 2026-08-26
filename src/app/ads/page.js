@@ -497,10 +497,10 @@ function AdsContent() {
             return (
               <main className={styles.adsMainFull}>
                 <div className={styles.pageHeader}>
-                  <h2 className={styles.pageTitle}>
+                  <h1 className={styles.pageTitle}>
                     {selectedCategory ? t(selectedCategory) : t('allAds').replace(' →', '')}
                     <span className={styles.resultsCount}>({filteredListings.length} {t('results')})</span>
-                  </h2>
+                  </h1>
                 </div>
 
                 {/* Quick Member & Promotion Filter Chips Bar */}

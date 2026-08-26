@@ -447,6 +447,34 @@ export default function AdDetails({ params }) {
 
   return (
     <div className={styles.pageWrapper}>
+      {ad && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Product',
+              name: ad.title,
+              image: Array.isArray(ad.images) && ad.images.length > 0 ? ad.images : undefined,
+              description: ad.description || ad.title,
+              category: ad.category_id,
+              offers: {
+                '@type': 'Offer',
+                url: `https://bikroynow.com/ad/${ad.id}`,
+                priceCurrency: 'BDT',
+                price: ad.price || '0',
+                itemCondition: ad.condition === 'Used' ? 'https://schema.org/UsedCondition' : 'https://schema.org/NewCondition',
+                availability: ad.status === 'active' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+                seller: {
+                  '@type': 'Person',
+                  name: seller?.full_name || 'BikroyNow Seller',
+                },
+              },
+            })
+          }}
+        />
+      )}
+
       {adminActionMessage && (
         <div className="container" style={{ paddingTop: '1rem' }}>
           <div style={{ background: adminActionMessage.type === 'error' ? '#fef2f2' : '#f0fdf4', color: adminActionMessage.type === 'error' ? '#991b1b' : '#166534', padding: '1rem', borderRadius: '8px', border: `1px solid ${adminActionMessage.type === 'error' ? '#fecaca' : '#bbf7d0'}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

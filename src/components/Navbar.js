@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Search, MessageCircle, User, PlusCircle, Globe, MapPin, X, Home as HomeIcon, ChevronRight } from 'lucide-react';
+import { Search, MessageCircle, User, PlusCircle, Globe, MapPin, X, Home as HomeIcon, ChevronRight, ArrowRight, Heart, Crown } from 'lucide-react';
 import { supabase } from '../lib/supabaseClient';
 import { useLanguage } from '../context/LanguageContext';
 import { LOCATIONS } from '../lib/constants';
@@ -19,6 +19,59 @@ export default function Navbar() {
   const [currentLocation, setCurrentLocation] = useState('All of Bangladesh');
   const [locationSearch, setLocationSearch] = useState('');
   const [locationType, setLocationType] = useState('division'); // 'division' or 'district'
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const searchWrapperRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchWrapperRef.current && !searchWrapperRef.current.contains(event.target)) {
+        setShowSearchDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Debounced live search
+  useEffect(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) {
+      setSearchResults([]);
+      setShowSearchDropdown(false);
+      return;
+    }
+
+    setSearchLoading(true);
+    const timeoutId = setTimeout(async () => {
+      try {
+        const res = await fetch('/api/listings');
+        if (res.ok) {
+          const json = await res.json();
+          const list = Array.isArray(json.listings) ? json.listings : [];
+          const filtered = list.filter(ad => {
+            if (ad.status && ad.status !== 'active') return false;
+            const matchTitle = (ad.title || '').toLowerCase().includes(query);
+            const matchCat = (ad.category_id || '').toLowerCase().includes(query);
+            const matchLoc = (ad.location || '').toLowerCase().includes(query);
+            const matchDesc = (ad.description || '').toLowerCase().includes(query);
+            return matchTitle || matchCat || matchLoc || matchDesc;
+          }).slice(0, 6);
+
+          setSearchResults(filtered);
+          setShowSearchDropdown(true);
+        }
+      } catch (err) {
+        console.error('Error during live search:', err);
+      } finally {
+        setSearchLoading(false);
+      }
+    }, 200);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery]);
 
   useEffect(() => {
     if (!showLocationModal) {
@@ -268,6 +321,20 @@ export default function Navbar() {
     router.refresh();
   };
 
+  const handleSearchSubmit = (e) => {
+    if (e) e.preventDefault();
+    const query = searchQuery.trim();
+    if (!query && currentLocation === 'All of Bangladesh') {
+      router.push('/ads');
+      return;
+    }
+    const params = new URLSearchParams();
+    if (query) params.set('search', query);
+    if (currentLocation && currentLocation !== 'All of Bangladesh') params.set('location', currentLocation);
+    setShowSearchDropdown(false);
+    router.push(`/ads?${params.toString()}`);
+  };
+
   return (
     <header className={styles.navbar}>
       <div className={`container ${styles.navContainer}`}>
@@ -287,6 +354,65 @@ export default function Navbar() {
         </div>
 
         <div className={styles.right}>
+          {/* Desktop Only Navigation Links (Left of Post Ad) */}
+          <div className={styles.desktopNavLinks}>
+            {/* 1. Profile / Login */}
+            <button
+              onClick={() => {
+                if (user) {
+                  setShowProfileMenu(true);
+                } else {
+                  router.push('/login');
+                }
+              }}
+              className={styles.desktopNavLink}
+              title={user ? (lang === 'bn' ? 'প্রোফাইল' : 'Profile') : (lang === 'bn' ? 'লগইন করুন' : 'Login')}
+            >
+              <User size={18} />
+              <span>{user ? (lang === 'bn' ? 'প্রোফাইল' : 'Profile') : (lang === 'bn' ? 'লগইন' : 'Login')}</span>
+              {unreadSupportCount > 0 && (
+                <span className={styles.desktopBadge}>
+                  {unreadSupportCount}
+                </span>
+              )}
+            </button>
+
+            {/* 2. Messages */}
+            <Link
+              href="/chat"
+              className={`${styles.desktopNavLink} ${pathname.startsWith('/chat') ? styles.activeDesktopNav : ''}`}
+              title={lang === 'bn' ? 'মেসেজ' : 'Messages'}
+            >
+              <MessageCircle size={18} />
+              <span>{lang === 'bn' ? 'মেসেজ' : 'Messages'}</span>
+              {unreadCount > 0 && (
+                <span className={styles.desktopBadge}>
+                  {unreadCount > 99 ? '99+' : unreadCount}
+                </span>
+              )}
+            </Link>
+
+            {/* 3. Favorites */}
+            <Link
+              href="/favorites"
+              className={`${styles.desktopNavLink} ${pathname === '/favorites' ? styles.activeDesktopNav : ''}`}
+              title={lang === 'bn' ? 'ফেভারিটস' : 'Favorites'}
+            >
+              <Heart size={18} />
+              <span>{lang === 'bn' ? 'ফেভারিটস' : 'Favorites'}</span>
+            </Link>
+
+            {/* 4. Membership */}
+            <Link
+              href="/membership"
+              className={`${styles.desktopNavLink} ${styles.membershipNavLink} ${pathname === '/membership' ? styles.activeDesktopNav : ''}`}
+              title={lang === 'bn' ? 'মেম্বারশিপ' : 'Membership'}
+            >
+              <Crown size={18} />
+              <span>{lang === 'bn' ? 'মেম্বারশিপ' : 'Membership'}</span>
+            </Link>
+          </div>
+
           {hasAdminAccess && (
             <Link href="/admin-dashboard" className={`${styles.postAdBtn} ${styles.adminPanelBtn}`}>
               {lang === 'bn' ? 'অ্যাডমিন প্যানেল' : 'Admin Panel'}
@@ -299,23 +425,88 @@ export default function Navbar() {
       </div>
 
       {/* Search section - shown on home page only */}
-      {isHomePage && <div className={styles.searchSection}>
-          <div className={`container ${styles.searchWrapper}`}>
-            <div className={styles.searchRow}>
+      {isHomePage && (
+        <div className={styles.searchSection}>
+          <div className={`container ${styles.searchWrapper}`} ref={searchWrapperRef}>
+            <form onSubmit={handleSearchSubmit} className={styles.searchRow}>
               <div className={styles.locationSelector} onClick={() => setShowLocationModal(true)}>
                 <MapPin size={16} color="#dc2626" />
                 <span className={styles.locationText}>{currentLocation === 'All of Bangladesh' ? t('allLocations') : t(currentLocation)}</span>
                 <span className={styles.arrowDown}>▼</span>
               </div>
               <div className={styles.searchBar}>
-                <input type="text" placeholder={t('searchPlaceholder')} className={styles.searchInput} />
-                <button className={styles.searchBtn}>
-                  {t('searchBtn')}
+                <input 
+                  type="text" 
+                  placeholder={t('searchPlaceholder') || 'কী খুঁজছেন? যেমন: মোবাইল, বাইক...'} 
+                  className={styles.searchInput}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => {
+                    if (searchResults.length > 0) setShowSearchDropdown(true);
+                  }}
+                />
+                <button type="submit" className={styles.searchBtn}>
+                  {t('searchBtn') || 'Search'}
                 </button>
               </div>
-            </div>
+            </form>
+
+            {/* Real-time Live Search Dropdown */}
+            {showSearchDropdown && (
+              <div className={styles.searchDropdown}>
+                {searchLoading ? (
+                  <div className={styles.searchResultEmpty}>
+                    <span>🔍 {lang === 'bn' ? 'অনুসন্ধান করা হচ্ছে...' : 'Searching...'}</span>
+                  </div>
+                ) : searchResults.length > 0 ? (
+                  <>
+                    {searchResults.map((ad) => {
+                      const firstImg = Array.isArray(ad.images) && ad.images.length > 0 
+                        ? ad.images[0] 
+                        : 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=200&auto=format&fit=crop&q=80';
+                      return (
+                        <Link 
+                          key={ad.id} 
+                          href={`/ad/${ad.id}`}
+                          className={styles.searchResultItem}
+                          onClick={() => setShowSearchDropdown(false)}
+                        >
+                          <img 
+                            src={firstImg} 
+                            alt={ad.title || 'Product'} 
+                            className={styles.searchResultThumb}
+                          />
+                          <div className={styles.searchResultInfo}>
+                            <span className={styles.searchResultTitle}>{ad.title}</span>
+                            <span className={styles.searchResultPrice}>Tk {Number(ad.price || 0).toLocaleString('en-BD')}</span>
+                            <div className={styles.searchResultMeta}>
+                              <span className={styles.searchResultCategory}>{ad.category_id || 'All'}</span>
+                              <span>•</span>
+                              <span>{ad.location || 'Bangladesh'}</span>
+                            </div>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                    <Link
+                      href={`/ads?search=${encodeURIComponent(searchQuery)}${currentLocation !== 'All of Bangladesh' ? `&location=${encodeURIComponent(currentLocation)}` : ''}`}
+                      className={styles.searchResultAll}
+                      onClick={() => setShowSearchDropdown(false)}
+                    >
+                      <span>{lang === 'bn' ? `"${searchQuery}" এর সকল ফলাফল দেখুন` : `See all results for "${searchQuery}"`}</span>
+                      <ArrowRight size={15} />
+                    </Link>
+                  </>
+                ) : (
+                  <div className={styles.searchResultEmpty}>
+                    <span>{lang === 'bn' ? 'কোনো বিজ্ঞাপন পাওয়া যায়নি' : 'No matching ads found'}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
-        </div>}
+        </div>
+      )}
 
 
 

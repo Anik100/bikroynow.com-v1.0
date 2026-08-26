@@ -308,6 +308,12 @@ export default function Home() {
 
   return (
     <div className={styles.homeContainer}>
+      <h1 className={styles.seoMainHeading}>
+        {lang === 'bn' 
+          ? 'বিক্রয়নও - বাংলাদেশের সবচেয়ে বড় ও বিশ্বস্ত অনলাইন মার্কেটপ্লেস' 
+          : 'BikroyNow - Largest Buy & Sell Marketplace in Bangladesh'}
+      </h1>
+
       <div className={`container ${styles.categorySection}`}>
         <div 
           className={styles.sectionTitleToggle} 
