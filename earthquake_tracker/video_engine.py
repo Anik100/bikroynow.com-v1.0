@@ -103,6 +103,28 @@ def estimate_impact_radius_km(mag):
     raw_r = math.pow(10, 0.42 * mag - 0.55)
     return int(max(50, min(750, round(raw_r / 10.0) * 10)))
 
+def wrap_text_lines(text, font, max_width, draw_obj):
+    """
+    Wraps text into clean, balanced subtitle lines that never exceed max_width.
+    """
+    words = text.split()
+    lines = []
+    current_line = []
+    for word in words:
+        test_line = " ".join(current_line + [word])
+        bbox = draw_obj.textbbox((0, 0), test_line, font=font)
+        if bbox[2] - bbox[0] <= max_width:
+            current_line.append(word)
+        else:
+            if current_line:
+                lines.append(" ".join(current_line))
+                current_line = [word]
+            else:
+                lines.append(word)
+    if current_line:
+        lines.append(" ".join(current_line))
+    return lines
+
 def render_reference_style_frame(event, base_map_img, epicenter_coords, places_list, sentences, frame_num, total_frames, audio_frames):
     progress = frame_num / max(1, total_frames)
     mag = event["mag"]
@@ -291,12 +313,12 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
     # 🌟 6. 3D ELEVATED COUNTRY BADGE RIGHT ABOVE THE PIN
     draw_prominent_country_badge(draw, curr_ep_x, top_cy, country_name)
 
-    # 7. TOP HEADER
-    f_mag = get_font(88, bold=True)
-    draw.text((VIDEO_WIDTH // 2, 140), f"M{mag:.1f}", fill="#eab308", font=f_mag, stroke_width=6, stroke_fill="#000000", anchor="mm")
+    # 7. TOP HEADER WITH DATE & TIME BADGE
+    f_mag = get_font(90, bold=True)
+    draw.text((VIDEO_WIDTH // 2, 130), f"M{mag:.1f}", fill="#facc15", font=f_mag, stroke_width=6, stroke_fill="#000000", anchor="mm")
 
-    f_eq = get_font(46, bold=True)
-    draw.text((VIDEO_WIDTH // 2, 215), "EARTHQUAKE", fill="#ffffff", font=f_eq, stroke_width=4, stroke_fill="#000000", anchor="mm")
+    f_eq = get_font(42, bold=True)
+    draw.text((VIDEO_WIDTH // 2, 195), "EARTHQUAKE ALERT", fill="#ffffff", font=f_eq, stroke_width=4, stroke_fill="#000000", anchor="mm")
 
     place_str = event["place"]
     if " of " in place_str:
@@ -307,21 +329,95 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
         line3 = place_str
         line4 = ""
 
-    f_loc = get_font(36, bold=True)
-    draw.text((VIDEO_WIDTH // 2, 275), line3, fill="#ffffff", font=f_loc, stroke_width=4, stroke_fill="#000000", anchor="mm")
+    f_loc = get_font(34, bold=True)
+    loc_y = 250
+    draw.text((VIDEO_WIDTH // 2, loc_y), line3, fill="#ffffff", font=f_loc, stroke_width=4, stroke_fill="#000000", anchor="mm")
     if line4:
-        draw.text((VIDEO_WIDTH // 2, 325), line4, fill="#ffffff", font=f_loc, stroke_width=4, stroke_fill="#000000", anchor="mm")
+        loc_y += 40
+        draw.text((VIDEO_WIDTH // 2, loc_y), line4, fill="#ffffff", font=f_loc, stroke_width=4, stroke_fill="#000000", anchor="mm")
 
-    # 8. BOTTOM SUBTITLES
+    # 📅 🕒 DATE & TIME PROMINENT BROADCAST BADGE
+    time_badge_y = loc_y + 44
+    date_str = ""
+    if event.get("time_utc") and "at" in str(event["time_utc"]):
+        date_str = event["time_utc"].split("at")[0].strip()
+    elif event.get("epoch_ms"):
+        import datetime
+        date_str = datetime.datetime.fromtimestamp(event["epoch_ms"] / 1000.0, tz=datetime.timezone.utc).strftime("%B %d, %Y")
+    else:
+        date_str = "Verified Report"
+
+    is_utc_same = event.get("is_utc_same", False)
+    local_t = event.get("local_time_short", "")
+    utc_t = event.get("utc_short", event.get("time_utc", ""))
+    
+    if is_utc_same or not local_t or "UTC" in local_t:
+        time_line_str = f"📅 {date_str}   •   ⏱️ {utc_t}"
+    else:
+        time_line_str = f"📅 {date_str}   •   ⏱️ {local_t} ({utc_t})"
+
+    f_time_badge = get_font(25, bold=True)
+    tb_box = draw.textbbox((0, 0), time_line_str, font=f_time_badge)
+    tb_w = tb_box[2] - tb_box[0] + 36
+    tb_h = tb_box[3] - tb_box[1] + 16
+
+    draw.rounded_rectangle(
+        [(VIDEO_WIDTH // 2 - tb_w // 2, time_badge_y - tb_h // 2),
+         (VIDEO_WIDTH // 2 + tb_w // 2, time_badge_y + tb_h // 2)],
+        radius=12,
+        fill="#070d1cf0",
+        outline="#38bdf8",
+        width=2
+    )
+    draw.text(
+        (VIDEO_WIDTH // 2, time_badge_y),
+        time_line_str,
+        fill="#38bdf8",
+        font=f_time_badge,
+        stroke_width=3,
+        stroke_fill="#000000",
+        anchor="mm"
+    )
+
+    # 8. BOTTOM SUBTITLES (Large, Professional Broadcast Style with Clean Backdrop)
     current_sub = get_current_subtitle(sentences, frame_num, audio_frames)
     if current_sub:
-        f_sub = get_font(38, bold=True)
-        # Subtitle background bar for ultra readability
-        bbox = draw.textbbox((0, 0), current_sub, font=f_sub)
-        sub_w = bbox[2] - bbox[0]
-        if sub_w > VIDEO_WIDTH - 80:
-            f_sub = get_font(30, bold=True)
-        draw.text((VIDEO_WIDTH // 2, 1680), current_sub, fill="#ffffff", font=f_sub, stroke_width=4, stroke_fill="#000000", anchor="mm")
+        f_sub = get_font(44, bold=True)
+        wrapped_lines = wrap_text_lines(current_sub, f_sub, VIDEO_WIDTH - 140, draw)
+        
+        line_height = 54
+        total_sub_h = len(wrapped_lines) * line_height
+        start_sub_y = 1680 - (total_sub_h // 2)
+
+        max_lw = 0
+        for l in wrapped_lines:
+            bbox = draw.textbbox((0, 0), l, font=f_sub)
+            lw = bbox[2] - bbox[0]
+            if lw > max_lw:
+                max_lw = lw
+
+        pad_x = 32
+        pad_y = 16
+        draw.rounded_rectangle(
+            [(VIDEO_WIDTH // 2 - max_lw // 2 - pad_x, start_sub_y - pad_y - 20),
+             (VIDEO_WIDTH // 2 + max_lw // 2 + pad_x, start_sub_y + total_sub_h + pad_y - 20)],
+            radius=16,
+            fill="#050811e6",
+            outline="#facc15cc",
+            width=2
+        )
+
+        for idx, line in enumerate(wrapped_lines):
+            ly = start_sub_y + idx * line_height
+            draw.text(
+                (VIDEO_WIDTH // 2, ly),
+                line,
+                fill="#ffffff",
+                font=f_sub,
+                stroke_width=5,
+                stroke_fill="#000000",
+                anchor="mm"
+            )
 
     return frame
 
