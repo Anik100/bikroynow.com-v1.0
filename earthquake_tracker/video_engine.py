@@ -33,15 +33,50 @@ def parse_country_name(place_str):
         return parts[-1].upper()
     return place_str.upper()
 
-def get_current_subtitle(sentences, frame_num, audio_frames):
-    if not sentences:
-        return ""
-    if frame_num >= audio_frames:
-        return "🔔 Follow Earthquake Tracker for 24/7 Live Updates"
-    num_sentences = len(sentences)
-    frames_per_sentence = max(1, audio_frames / num_sentences)
-    curr_idx = min(num_sentences - 1, int(frame_num / frames_per_sentence))
-    return sentences[curr_idx]
+def get_current_subtitle_data(sentences_or_timings, current_time_sec, audio_duration):
+    """
+    Returns (full_sentence_for_box_layout, typed_realtime_text)
+    Synchronized down to the exact millisecond with Edge-TTS AI voice.
+    """
+    if not sentences_or_timings:
+        return "", ""
+        
+    if current_time_sec >= audio_duration:
+        cta = "🔔 Follow Earthquake Tracker for 24/7 Live Alerts"
+        return cta, cta
+
+    # If list of timing dicts from edge_tts
+    if isinstance(sentences_or_timings[0], dict):
+        for item in sentences_or_timings:
+            st = item.get("start", 0.0)
+            en = item.get("end", 0.0)
+            dur = max(0.1, item.get("duration", en - st))
+            
+            if st <= current_time_sec <= en + 0.3:
+                full_text = item.get("text", "")
+                # Real-time progressive word typing based on exact speech time
+                prog = min(1.0, max(0.0, (current_time_sec - st) / dur))
+                words = full_text.split()
+                # Advance smoothly word-by-word
+                vis_count = max(1, min(len(words), int(len(words) * (prog * 1.15))))
+                typed_text = " ".join(words[:vis_count])
+                return full_text, typed_text
+
+        # In between sentence gaps:
+        for i in range(len(sentences_or_timings) - 1):
+            if sentences_or_timings[i]["end"] < current_time_sec < sentences_or_timings[i+1]["start"]:
+                next_text = sentences_or_timings[i+1]["text"]
+                return next_text, next_text.split()[0]
+                
+        last_item = sentences_or_timings[-1]
+        return last_item.get("text", ""), last_item.get("text", "")
+    else:
+        # Fallback for plain string list
+        num_s = len(sentences_or_timings)
+        dur_per = max(1.0, audio_duration / num_s)
+        curr_idx = min(num_s - 1, int(current_time_sec / dur_per))
+        full_text = sentences_or_timings[curr_idx]
+        return full_text, full_text
 
 def draw_seismograph_pin(draw, x, y, size=38):
     """
@@ -379,24 +414,28 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
         anchor="mm"
     )
 
-    # 8. BOTTOM SUBTITLES (Large, Professional Broadcast Style with Clean Backdrop)
-    current_sub = get_current_subtitle(sentences, frame_num, audio_frames)
-    if current_sub:
+    # 8. BOTTOM SUBTITLES (Millisecond-Synchronized Real-Time Word Typing)
+    current_time_sec = frame_num / float(FPS)
+    audio_dur = audio_frames / float(FPS)
+    full_sub, typed_sub = get_current_subtitle_data(sentences, current_time_sec, audio_dur)
+    
+    if full_sub and typed_sub:
         f_sub = get_font(44, bold=True)
-        wrapped_lines = wrap_text_lines(current_sub, f_sub, VIDEO_WIDTH - 140, draw)
+        wrapped_full = wrap_text_lines(full_sub, f_sub, VIDEO_WIDTH - 140, draw)
+        wrapped_typed = wrap_text_lines(typed_sub, f_sub, VIDEO_WIDTH - 140, draw)
         
         line_height = 54
-        total_sub_h = len(wrapped_lines) * line_height
+        total_sub_h = len(wrapped_full) * line_height
         start_sub_y = 1680 - (total_sub_h // 2)
 
         max_lw = 0
-        for l in wrapped_lines:
+        for l in wrapped_full:
             bbox = draw.textbbox((0, 0), l, font=f_sub)
             lw = bbox[2] - bbox[0]
             if lw > max_lw:
                 max_lw = lw
 
-        pad_x = 32
+        pad_x = 34
         pad_y = 16
         draw.rounded_rectangle(
             [(VIDEO_WIDTH // 2 - max_lw // 2 - pad_x, start_sub_y - pad_y - 20),
@@ -407,7 +446,7 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
             width=2
         )
 
-        for idx, line in enumerate(wrapped_lines):
+        for idx, line in enumerate(wrapped_typed):
             ly = start_sub_y + idx * line_height
             draw.text(
                 (VIDEO_WIDTH // 2, ly),

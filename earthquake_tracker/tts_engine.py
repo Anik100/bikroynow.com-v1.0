@@ -131,7 +131,7 @@ def generate_script(event):
 
 async def generate_voiceover_async(text, output_audio_path):
     """
-    Generates AI Voiceover using Microsoft Neural Edge-TTS and captures word timing.
+    Generates AI Voiceover using Microsoft Neural Edge-TTS and captures exact millisecond sentence timings.
     """
     communicate = edge_tts.Communicate(
         text=text,
@@ -140,19 +140,33 @@ async def generate_voiceover_async(text, output_audio_path):
         pitch=VOICE_PITCH
     )
     submaker = edge_tts.SubMaker()
-    
+    sentence_timings = []
+
     with open(output_audio_path, "wb") as file:
         async for chunk in communicate.stream():
             if chunk["type"] == "audio":
                 file.write(chunk["data"])
+            elif chunk["type"] == "SentenceBoundary":
+                start_s = chunk["offset"] / 10000000.0
+                dur_s = chunk["duration"] / 10000000.0
+                sentence_timings.append({
+                    "text": chunk.get("text", "").strip(),
+                    "start": start_s,
+                    "end": start_s + dur_s,
+                    "duration": dur_s
+                })
             elif chunk["type"] == "WordBoundary":
                 submaker.feed(chunk)
 
-    return submaker.get_srt()
+    return sentence_timings, submaker.get_srt()
 
 def create_audio_voiceover(event, output_audio_path):
-    """Sync wrapper to generate script, audio file, and subtitle timings."""
+    """Sync wrapper to generate script, audio file, and exact sentence timings."""
     full_script, sentences = generate_script(event)
     print(f"🎙️ Generating AI Voiceover ({len(sentences)} lines): \"{full_script[:65]}...\"")
-    srt_content = asyncio.run(generate_voiceover_async(full_script, output_audio_path))
-    return full_script, sentences, srt_content
+    sentence_timings, srt_content = asyncio.run(generate_voiceover_async(full_script, output_audio_path))
+    
+    if not sentence_timings and sentences:
+        sentence_timings = [{"text": s, "start": i * 4.0, "end": (i + 1) * 4.0, "duration": 4.0} for i, s in enumerate(sentences)]
+        
+    return full_script, sentence_timings, srt_content
