@@ -78,6 +78,8 @@ const getSellerBadge = (profile, lang) => {
   return null;
 };
 
+const isValidUUID = (str) => typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
+
 export default function AdDetails({ params }) {
   const routeParams = useParams();
   const effectiveId = routeParams?.id || params?.id;
@@ -224,13 +226,20 @@ export default function AdDetails({ params }) {
   const handleAdminApprove = async () => {
     try {
       const currentTime = new Date().toISOString();
-      const { error } = await supabase.from('listings').update({ 
-        status: 'active',
-        created_at: currentTime
-      }).eq('id', ad.id);
+      if (isValidUUID(ad.id)) {
+        const { error } = await supabase.from('listings').update({ 
+          status: 'active',
+          created_at: currentTime
+        }).eq('id', ad.id);
+        if (error) throw error;
+      }
       
-      if (error) throw error;
-      
+      try {
+        const localAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+        const updated = localAds.map(l => String(l.id) === String(ad.id) ? { ...l, status: 'active', created_at: currentTime } : l);
+        localStorage.setItem('bikroynow_public_ads', JSON.stringify(updated));
+      } catch (e) {}
+
       setAdminActionMessage({ type: 'success', text: lang === 'bn' ? 'বিজ্ঞাপনটি সফলভাবে অ্যাপ্রুভ করা হয়েছে।' : 'Ad approved successfully.' });
       setAd(prev => ({ ...prev, status: 'active', created_at: currentTime }));
     } catch (err) {
@@ -245,8 +254,17 @@ export default function AdDetails({ params }) {
         is_verified: nextVerify,
         created_at: new Date().toISOString()
       };
-      const { error } = await supabase.from('listings').update(updates).eq('id', ad.id);
-      if (error) throw error;
+      if (isValidUUID(ad.id)) {
+        const { error } = await supabase.from('listings').update(updates).eq('id', ad.id);
+        if (error) throw error;
+      }
+
+      try {
+        const localAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+        const updated = localAds.map(l => String(l.id) === String(ad.id) ? { ...l, ...updates } : l);
+        localStorage.setItem('bikroynow_public_ads', JSON.stringify(updated));
+      } catch (e) {}
+
       setAdminActionMessage({ type: 'success', text: lang === 'bn' ? 'বিজ্ঞাপনটি সফলভাবে আপডেট ও সবার ওপরে প্রমোট করা হয়েছে!' : 'Ad successfully updated and promoted to the very top!' });
       setAd(prev => ({ ...prev, is_verified: nextVerify, created_at: updates.created_at }));
     } catch (err) {
@@ -260,8 +278,23 @@ export default function AdDetails({ params }) {
 
   const executeAdminDelete = async () => {
     try {
-      const { error } = await supabase.from('listings').delete().eq('id', ad.id);
-      if (error) throw error;
+      if (isValidUUID(ad.id)) {
+        const { error } = await supabase.from('listings').delete().eq('id', ad.id);
+        if (error) throw error;
+      }
+
+      // Also clean up from local storage
+      try {
+        const localAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+        const filtered = localAds.filter(l => String(l.id) !== String(ad.id));
+        localStorage.setItem('bikroynow_public_ads', JSON.stringify(filtered));
+      } catch (e) {}
+
+      // Also delete from featured store API
+      try {
+        await fetch(`/api/admin/featured-ads?listing_id=${ad.id}`, { method: 'DELETE' });
+      } catch (e) {}
+
       router.push('/');
     } catch (err) {
       setAdminActionMessage({ type: 'error', text: 'Error deleting ad: ' + err.message });
