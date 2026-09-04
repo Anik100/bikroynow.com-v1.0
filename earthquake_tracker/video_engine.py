@@ -169,10 +169,10 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
     ep_x, ep_y = epicenter_coords
     impact_km = estimate_impact_radius_km(mag)
 
-    # 🚀 HIGH-PRECISION BROADCAST CINEMATIC ZOOM (1.00x up to 1.45x)
-    # Smooth glide to epicenter while keeping all ESRI & OSM map labels 100% crystal-clear!
-    zoom_progress = 1.0 - math.exp(-progress * 6.5)
-    zoom_scale = 1.0 + (zoom_progress * 0.45)
+    # 🚀 DYNAMIC BROADCAST PLUNGE & GLIDE ZOOM (1.00x up to 2.45x)
+    # Clear, dramatic camera dive into the epicenter with continuous smooth movement!
+    zoom_dive = 1.0 - math.exp(-progress * 3.8) # Smooth dive in the initial seconds
+    zoom_scale = 1.00 + (zoom_dive * 1.15) + (progress * 0.30) # Reaches ~2.45x smoothly!
 
     orig_w, orig_h = base_map_img.size
     new_w = int(orig_w / zoom_scale)
@@ -603,7 +603,7 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
             "-i", bgm_path,
             "-filter_complex", (
                 f"[1:a]apad=whole_dur={total_duration:.2f},volume=1.25,equalizer=f=120:t=q:w=1.2:g=3.0,equalizer=f=3500:t=q:w=1.5:g=2.0[voice]; "
-                f"[2:a]volume=0.22[bgm]; "
+                f"[2:a]volume=0.15[bgm]; "
                 f"[voice][bgm]amix=inputs=2:duration=first:dropout_transition=2:normalize=0[a]"
             ),
             "-map", "0:v",
