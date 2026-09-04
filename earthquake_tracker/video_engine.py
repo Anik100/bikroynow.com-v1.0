@@ -169,10 +169,10 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
     ep_x, ep_y = epicenter_coords
     impact_km = estimate_impact_radius_km(mag)
 
-    # 🚀 HIGH-SPEED BROADCAST PLUNGE ZOOM (1.00x up to 4.85x)
-    # Rapidly dives from continental view right to the epicenter in the first 3.5-4 seconds!
-    zoom_progress = 1.0 - math.exp(-progress * 7.5) # Reaches ~85% zoom depth in the first 4 seconds!
-    zoom_scale = 1.0 + (zoom_progress * 3.85)
+    # 🚀 HIGH-PRECISION BROADCAST CINEMATIC ZOOM (1.00x up to 1.45x)
+    # Smooth glide to epicenter while keeping all ESRI & OSM map labels 100% crystal-clear!
+    zoom_progress = 1.0 - math.exp(-progress * 6.5)
+    zoom_scale = 1.0 + (zoom_progress * 0.45)
 
     orig_w, orig_h = base_map_img.size
     new_w = int(orig_w / zoom_scale)
@@ -182,7 +182,7 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
     crop_top = max(0, min(orig_h - new_h, int(ep_y - (new_h / 2))))
 
     cropped_map = base_map_img.crop((crop_left, crop_top, crop_left + new_w, crop_top + new_h))
-    frame = cropped_map.resize((VIDEO_WIDTH, VIDEO_HEIGHT), Image.Resampling.BILINEAR)
+    frame = cropped_map.resize((VIDEO_WIDTH, VIDEO_HEIGHT), Image.Resampling.LANCZOS)
 
     curr_ep_x = (ep_x - crop_left) * (VIDEO_WIDTH / new_w)
     curr_ep_y = (ep_y - crop_top) * (VIDEO_HEIGHT / new_h)
@@ -536,7 +536,7 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
         event["longitude"],
         event["place"],
         map_temp_path,
-        zoom=8
+        zoom=9
     )
     base_map_img = Image.open(map_temp_path)
 
@@ -603,7 +603,7 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
             "-i", bgm_path,
             "-filter_complex", (
                 f"[1:a]apad=whole_dur={total_duration:.2f},volume=1.25,equalizer=f=120:t=q:w=1.2:g=3.0,equalizer=f=3500:t=q:w=1.5:g=2.0[voice]; "
-                f"[2:a]volume=0.38[bgm]; "
+                f"[2:a]volume=0.22[bgm]; "
                 f"[voice][bgm]amix=inputs=2:duration=first:dropout_transition=2:normalize=0[a]"
             ),
             "-map", "0:v",

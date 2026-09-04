@@ -100,12 +100,12 @@ def draw_text_with_shadow(draw, xy, text, font, fill="#ffffff", shadow_fill="#00
 
 import concurrent.futures
 
-def generate_reference_satellite_map(lat, lon, place_name, output_path, zoom=8, target_w=1080, target_h=1920):
+def generate_reference_satellite_map(lat, lon, place_name, output_path, zoom=9, target_w=1080, target_h=1920):
     """
     Generates rich satellite map and plots ALL surrounding cities, towns, islands, seas with prominent white labels.
     """
     center_x, center_y = deg2num(lat, lon, zoom)
-    cols, rows = 8, 12
+    cols, rows = 8, 14
     stitched = Image.new("RGB", (cols * 256, rows * 256))
     x_start, y_start = center_x - (cols // 2), center_y - (rows // 2)
 
@@ -135,11 +135,11 @@ def generate_reference_satellite_map(lat, lon, place_name, output_path, zoom=8, 
     left = max(0, min(stitched.width - crop_w, exact_x - (crop_w / 2)))
     top = max(0, min(stitched.height - crop_h, exact_y - (crop_h / 2)))
 
+    # 🌟 PRESERVE ULTRA HIGH DEFINITION: Keep full stitched resolution (approx 2016x3584)
+    # This ensures that when video_engine crops & zooms, each crop is sampled from razor-sharp native pixels!
     cropped = stitched.crop((left, top, left + crop_w, top + crop_h))
-    cropped = cropped.resize((target_w, target_h), Image.Resampling.LANCZOS)
-
-    final_x = (exact_x - left) * (target_w / crop_w)
-    final_y = (exact_y - top) * (target_h / crop_h)
+    final_x = exact_x - left
+    final_y = exact_y - top
 
     # 🏙️ Fetch and compute coordinates for all surrounding cities, towns, provinces, islands
     places = get_surrounding_places_osm(lat, lon, radius_km=600)
@@ -150,8 +150,8 @@ def generate_reference_satellite_map(lat, lon, place_name, output_path, zoom=8, 
         p_exact_x = ((p_lon + 180.0) / 360.0 * n - x_start) * 256.0
         p_exact_y = ((1.0 - math.asinh(math.tan(p_lat_rad)) / math.pi) / 2.0 * n - y_start) * 256.0
 
-        px = (p_exact_x - left) * (target_w / crop_w)
-        py = (p_exact_y - top) * (target_h / crop_h)
+        px = p_exact_x - left
+        py = p_exact_y - top
         places_data.append((px, py, p_name, p_type))
 
     cropped.save(output_path, quality=95)
