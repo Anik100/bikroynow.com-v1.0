@@ -467,7 +467,7 @@ export default function AdDetails({ params }) {
                 availability: ad.status === 'active' ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
                 seller: {
                   '@type': 'Person',
-                  name: seller?.full_name || 'BikroyNow Seller',
+                  name: profile?.full_name || 'BikroyNow Seller',
                 },
               },
             })
