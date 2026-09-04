@@ -350,12 +350,39 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
     # 🌟 6. 3D ELEVATED COUNTRY BADGE RIGHT ABOVE THE PIN
     draw_prominent_country_badge(draw, curr_ep_x, top_cy, country_name)
 
-    # 7. TOP HEADER WITH DATE & TIME BADGE
-    f_mag = get_font(90, bold=True)
-    draw.text((VIDEO_WIDTH // 2, 130), f"M{mag:.1f}", fill="#facc15", font=f_mag, stroke_width=6, stroke_fill="#000000", anchor="mm")
+    # 7. MODERN BROADCAST TV TOP HEADER WITH LIVE BADGE & CLEAN DATE
+    # A. Top Broadcast Live Badge
+    live_badge_text = "●  LIVE SEISMIC REPORT"
+    f_live = get_font(20, bold=True)
+    draw.rounded_rectangle(
+        [(VIDEO_WIDTH // 2 - 165, 48), (VIDEO_WIDTH // 2 + 165, 84)],
+        radius=8,
+        fill="#dc2626",
+        outline="#f87171",
+        width=2
+    )
+    draw.text((VIDEO_WIDTH // 2, 66), live_badge_text, fill="#ffffff", font=f_live, anchor="mm")
 
-    f_eq = get_font(42, bold=True)
-    draw.text((VIDEO_WIDTH // 2, 195), "EARTHQUAKE ALERT", fill="#ffffff", font=f_eq, stroke_width=4, stroke_fill="#000000", anchor="mm")
+    # B. Magnitude Card
+    f_mag = get_font(76, bold=True)
+    mag_str = f"M{mag:.1f}"
+    mag_box = draw.textbbox((0, 0), mag_str, font=f_mag)
+    mw = mag_box[2] - mag_box[0] + 44
+    mh = mag_box[3] - mag_box[1] + 16
+    my = 136
+    draw.rounded_rectangle(
+        [(VIDEO_WIDTH // 2 - mw // 2, my - mh // 2),
+         (VIDEO_WIDTH // 2 + mw // 2, my + mh // 2)],
+        radius=14,
+        fill="#0b0f19f2",
+        outline="#facc15",
+        width=3
+    )
+    draw.text((VIDEO_WIDTH // 2, my - 2), mag_str, fill="#facc15", font=f_mag, stroke_width=4, stroke_fill="#000000", anchor="mm")
+
+    # C. Earthquake Alert Subtitle
+    f_eq = get_font(36, bold=True)
+    draw.text((VIDEO_WIDTH // 2, 192), "EARTHQUAKE ALERT", fill="#ffffff", font=f_eq, stroke_width=4, stroke_fill="#000000", anchor="mm")
 
     place_str = event["place"]
     if " of " in place_str:
@@ -366,21 +393,21 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
         line3 = place_str
         line4 = ""
 
-    f_loc = get_font(34, bold=True)
-    loc_y = 250
+    f_loc = get_font(32, bold=True)
+    loc_y = 236
     draw.text((VIDEO_WIDTH // 2, loc_y), line3, fill="#ffffff", font=f_loc, stroke_width=4, stroke_fill="#000000", anchor="mm")
     if line4:
-        loc_y += 40
-        draw.text((VIDEO_WIDTH // 2, loc_y), line4, fill="#ffffff", font=f_loc, stroke_width=4, stroke_fill="#000000", anchor="mm")
+        loc_y += 36
+        draw.text((VIDEO_WIDTH // 2, loc_y), line4, fill="#fef08a", font=f_loc, stroke_width=4, stroke_fill="#000000", anchor="mm")
 
-    # 📅 🕒 DATE & TIME PROMINENT BROADCAST BADGE
-    time_badge_y = loc_y + 44
+    # D. Clean Date & Time Broadcast Pill (Universal text, ZERO missing emoji boxes)
+    time_badge_y = loc_y + 40
     date_str = ""
     if event.get("time_utc") and "at" in str(event["time_utc"]):
         date_str = event["time_utc"].split("at")[0].strip()
     elif event.get("epoch_ms"):
         import datetime
-        date_str = datetime.datetime.fromtimestamp(event["epoch_ms"] / 1000.0, tz=datetime.timezone.utc).strftime("%B %d, %Y")
+        date_str = datetime.datetime.fromtimestamp(event["epoch_ms"] / 1000.0, tz=datetime.timezone.utc).strftime("%d %b %Y")
     else:
         date_str = "Verified Report"
 
@@ -389,20 +416,20 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
     utc_t = event.get("utc_short", event.get("time_utc", ""))
     
     if is_utc_same or not local_t or "UTC" in local_t:
-        time_line_str = f"📅 {date_str}   •   ⏱️ {utc_t}"
+        time_line_str = f"{date_str.upper()}   |   {utc_t.upper()}"
     else:
-        time_line_str = f"📅 {date_str}   •   ⏱️ {local_t} ({utc_t})"
+        time_line_str = f"{date_str.upper()}   |   {local_t.upper()} ({utc_t.upper()})"
 
-    f_time_badge = get_font(25, bold=True)
+    f_time_badge = get_font(23, bold=True)
     tb_box = draw.textbbox((0, 0), time_line_str, font=f_time_badge)
     tb_w = tb_box[2] - tb_box[0] + 36
-    tb_h = tb_box[3] - tb_box[1] + 16
+    tb_h = tb_box[3] - tb_box[1] + 14
 
     draw.rounded_rectangle(
         [(VIDEO_WIDTH // 2 - tb_w // 2, time_badge_y - tb_h // 2),
          (VIDEO_WIDTH // 2 + tb_w // 2, time_badge_y + tb_h // 2)],
-        radius=12,
-        fill="#070d1cf0",
+        radius=10,
+        fill="#050a1af2",
         outline="#38bdf8",
         width=2
     )
@@ -411,7 +438,7 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
         time_line_str,
         fill="#38bdf8",
         font=f_time_badge,
-        stroke_width=3,
+        stroke_width=2,
         stroke_fill="#000000",
         anchor="mm"
     )
@@ -460,35 +487,42 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
                 stroke_fill="#000000",
                 anchor="mm"
             )
-    # 7.5 VIRAL ENGAGEMENT BADGE ("Did you feel it? Comment your city below 👇")
-    # Visible between 30% and 85% of video duration with gentle breathing gold pulse
-    if 0.30 <= progress <= 0.85:
-        cta_text = "💬 Did you feel it? Comment your city below 👇"
-        f_cta = get_font(26, bold=True)
-        cta_box = draw.textbbox((0, 0), cta_text, font=f_cta)
-        cta_w = cta_box[2] - cta_box[0] + 36
-        cta_h = cta_box[3] - cta_box[1] + 16
-        cta_y = 1380
 
-        pulse_alpha = int(180 + 75 * math.sin(progress * 15.0))
-        gold_outline = f"#facc15{pulse_alpha:02x}"
+    # 7.5 HIGH-IMPACT VIRAL COMMENT MAGNET CARD
+    # Active between 20% and 88% of video duration with dynamic glowing pulse
+    if 0.20 <= progress <= 0.88:
+        cta_y = 1330
+        pulse_val = 0.5 + 0.5 * math.sin(progress * 18.0)
+        border_col = f"#facc15{int(180 + 75 * pulse_val):02x}"
+        card_w = 780
+        card_h = 74
+        bx1 = VIDEO_WIDTH // 2 - card_w // 2
+        by1 = cta_y - card_h // 2
+        bx2 = VIDEO_WIDTH // 2 + card_w // 2
+        by2 = cta_y + card_h // 2
 
-        draw.rounded_rectangle(
-            [(VIDEO_WIDTH // 2 - cta_w // 2, cta_y - cta_h // 2),
-             (VIDEO_WIDTH // 2 + cta_w // 2, cta_y + cta_h // 2)],
-            radius=12,
-            fill="#090e1cf2",
-            outline=gold_outline,
-            width=2
-        )
+        # Glowing interactive backdrop card
+        draw.rounded_rectangle([(bx1, by1), (bx2, by2)], radius=16, fill="#070c1cf5", outline=border_col, width=3)
+
+        # Draw real vector speech bubble icon
+        icon_cx = bx1 + 46
+        icon_cy = cta_y
+        draw.rounded_rectangle([(icon_cx - 18, icon_cy - 13), (icon_cx + 18, icon_cy + 11)], radius=6, fill="#facc15")
+        draw.polygon([(icon_cx - 10, icon_cy + 9), (icon_cx - 2, icon_cy + 9), (icon_cx - 12, icon_cy + 18)], fill="#facc15")
+        draw.ellipse([(icon_cx - 10, icon_cy - 2), (icon_cx - 6, icon_cy + 2)], fill="#070c1c")
+        draw.ellipse([(icon_cx - 2, icon_cy - 2), (icon_cx + 2, icon_cy + 2)], fill="#070c1c")
+        draw.ellipse([(icon_cx + 6, icon_cy - 2), (icon_cx + 10, icon_cy + 2)], fill="#070c1c")
+
+        # Crisp High-Impact Typography
+        f_cta_main = get_font(27, bold=True)
         draw.text(
-            (VIDEO_WIDTH // 2, cta_y),
-            cta_text,
-            fill="#facc15",
-            font=f_cta,
+            (icon_cx + 34, cta_y),
+            "DID YOU FEEL IT?  COMMENT YOUR CITY BELOW",
+            fill="#ffffff",
+            font=f_cta_main,
             stroke_width=3,
             stroke_fill="#000000",
-            anchor="mm"
+            anchor="lm"
         )
 
     return frame
@@ -558,7 +592,7 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
     pipe.stdin.close()
     pipe.wait()
 
-    # Merge audio + video and mix subtle cinematic tension BGM underneath AI voice
+    # Merge audio + video and mix clear cinematic tension BGM underneath AI voice
     bgm_path = os.path.join(CURRENT_DIR, "assets", "cinematic_tension_bgm.mp3")
     if os.path.exists(bgm_path):
         final_cmd = [
@@ -568,15 +602,17 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
             "-stream_loop", "-1",
             "-i", bgm_path,
             "-filter_complex", (
-                f"[1:a]apad=whole_dur={total_duration:.2f},volume=1.0[voice]; "
-                f"[2:a]volume=0.14[bgm]; "
-                f"[voice][bgm]amix=inputs=2:duration=first:dropout_transition=2[a]"
+                f"[1:a]apad=whole_dur={total_duration:.2f},volume=1.25,equalizer=f=120:t=q:w=1.2:g=3.0,equalizer=f=3500:t=q:w=1.5:g=2.0[voice]; "
+                f"[2:a]volume=0.38[bgm]; "
+                f"[voice][bgm]amix=inputs=2:duration=first:dropout_transition=2:normalize=0[a]"
             ),
             "-map", "0:v",
             "-map", "[a]",
             "-c:v", "copy",
             "-c:a", "aac",
             "-b:a", "192k",
+            "-ar", "48000",
+            "-ac", "2",
             "-shortest",
             output_video_path
         ]
@@ -585,12 +621,14 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
             ffmpeg_exe, "-y",
             "-i", raw_video_path,
             "-i", audio_path,
-            "-filter_complex", f"[1:a]apad=whole_dur={total_duration:.2f}[a]",
+            "-filter_complex", f"[1:a]apad=whole_dur={total_duration:.2f},volume=1.25[a]",
             "-map", "0:v",
             "-map", "[a]",
             "-c:v", "copy",
             "-c:a", "aac",
             "-b:a", "192k",
+            "-ar", "48000",
+            "-ac", "2",
             "-shortest",
             output_video_path
         ]
