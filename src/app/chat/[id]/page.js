@@ -155,27 +155,23 @@ export default function ChatWindow({ params }) {
   const fetchMessages = async () => {
     if (!effectiveId) return;
     try {
-      // 1. Direct Supabase query (uses authenticated client session if UUID)
-      const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(effectiveId);
-      if (isValidUUID) {
-        const { data: directMsgs, error: directErr } = await supabase
-          .from('messages')
-          .select('*')
-          .eq('chat_id', effectiveId)
-          .order('created_at', { ascending: true });
-
-        if (!directErr && Array.isArray(directMsgs) && directMsgs.length > 0) {
-          setMessages(directMsgs);
-          return;
-        }
-      }
-
-      // 2. Fallback to API route
-      const res = await fetch(`/api/chats/${effectiveId}/messages`);
+      const res = await fetch(`/api/chats/${effectiveId}/messages?t=${Date.now()}`, {
+        cache: 'no-store'
+      });
       if (res.ok) {
         const json = await res.json();
         if (Array.isArray(json.messages)) {
-          setMessages(json.messages);
+          setMessages(prev => {
+            const tempMsgs = prev.filter(m => String(m.id).startsWith('temp-'));
+            const serverMsgs = json.messages;
+            const serverContents = new Set(serverMsgs.map(m => m.content).filter(Boolean));
+            const serverImgUrls = new Set(serverMsgs.map(m => m.image_url).filter(Boolean));
+            const pendingTemp = tempMsgs.filter(t => 
+              (t.content && !serverContents.has(t.content)) || 
+              (t.image_url && !serverImgUrls.has(t.image_url))
+            );
+            return [...serverMsgs, ...pendingTemp];
+          });
         }
       }
     } catch (err) {
@@ -365,33 +361,6 @@ export default function ChatWindow({ params }) {
     setSending(true);
 
     try {
-      // 1. Direct Supabase insert (if valid UUID)
-      const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(effectiveId);
-      if (isValidUUID) {
-        const { data: insertedMsg, error: insertErr } = await supabase
-          .from('messages')
-          .insert({
-            chat_id: effectiveId,
-            sender_id: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user.id) ? user.id : null,
-            content: content || null,
-            image_url: imageUrl || null,
-            is_read: false
-          })
-          .select()
-          .single();
-
-        if (!insertErr && insertedMsg) {
-          setMessages(prev => prev.map(m => m.id === tempId ? insertedMsg : m));
-          supabase
-            .from('chats')
-            .update({ updated_at: new Date().toISOString() })
-            .eq('id', effectiveId)
-            .then();
-          return;
-        }
-      }
-
-      // 2. Fallback to API route
       const res = await fetch(`/api/chats/${effectiveId}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -419,18 +388,23 @@ export default function ChatWindow({ params }) {
   };
 
   const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
     setSending(true);
     try {
       const compressed = await compressImage(file);
       const url = await uploadToImgBB(compressed);
-      await handleSend(null, url);
+      if (url) {
+        await handleSend(null, url);
+      }
     } catch (err) {
-      alert('Image upload failed');
+      console.error('Image upload failed:', err);
+      alert(lang === 'bn' ? 'ছবি আপলোড ব্যর্থ হয়েছে, আবার চেষ্টা করুন।' : 'Image upload failed, please try again.');
+    } finally {
+      setSending(false);
+      if (e.target) e.target.value = '';
     }
-    setSending(false);
   };
 
   if (loading || !user || !chat) return <div className="container" style={{padding: '5rem 0', textAlign: 'center'}}>Loading...</div>;

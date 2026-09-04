@@ -42,7 +42,11 @@ export async function GET(req, { params }) {
     });
 
     combined.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-    return NextResponse.json({ success: true, messages: combined });
+    return NextResponse.json({ success: true, messages: combined }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+      }
+    });
   } catch (e) {
     console.error('Error fetching messages:', e);
     return NextResponse.json({ error: e.message, messages: [] }, { status: 500 });
@@ -89,7 +93,11 @@ export async function POST(req, { params }) {
       } catch (e) {}
     }
 
-    return NextResponse.json({ success: true, message: newMsg });
+    return NextResponse.json({ success: true, message: newMsg }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+      }
+    });
   } catch (e) {
     console.error('Error inserting message:', e);
     return NextResponse.json({ error: e.message }, { status: 500 });

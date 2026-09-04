@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getGlobalListings, deleteGlobalListing } from '../../../lib/globalListingsStore';
+import { deleteChatsForListing } from '../../../lib/chatsStore';
 
 export const dynamic = 'force-dynamic';
 
@@ -106,6 +107,7 @@ export async function DELETE(req) {
 
     // 1. Delete from global persistent store
     deleteGlobalListing(id);
+    deleteChatsForListing(id);
 
     // 2. Invalidate in-memory cache
     cachedListings = null;

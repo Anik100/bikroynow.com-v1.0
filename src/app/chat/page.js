@@ -19,10 +19,12 @@ export default function ChatListPage() {
   const fetchChatsForUser = async (userId) => {
     try {
       // 1. Try server API
-      const res = await fetch(`/api/chats/list?user_id=${userId}`);
+      const res = await fetch(`/api/chats/list?user_id=${userId}&t=${Date.now()}`, {
+        cache: 'no-store'
+      });
       if (res.ok) {
         const json = await res.json();
-        if (Array.isArray(json.chats) && json.chats.length > 0) {
+        if (Array.isArray(json.chats)) {
           setChats(json.chats);
           setLoading(false);
           return;

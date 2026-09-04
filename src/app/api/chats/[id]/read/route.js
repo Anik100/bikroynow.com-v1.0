@@ -7,17 +7,16 @@ export const dynamic = 'force-dynamic';
 export async function POST(req, { params }) {
   try {
     const { id } = params;
-    const { user_id } = await req.json();
 
-    if (!id || !user_id) {
-      return NextResponse.json({ error: 'Missing chat id or user_id' }, { status: 400 });
+    if (!id) {
+      return NextResponse.json({ error: 'Missing chat id' }, { status: 400 });
     }
 
-    // 1. Mark local messages as read
+    // 1. Mark local messages as read for this chat room
     const allMsgs = getMessages();
     let updated = false;
     allMsgs.forEach(m => {
-      if (m.chat_id === id && m.sender_id !== user_id && !m.is_read) {
+      if (m.chat_id === id && !m.is_read) {
         m.is_read = true;
         updated = true;
       }
@@ -38,8 +37,7 @@ export async function POST(req, { params }) {
         await serverSupabase
           .from('messages')
           .update({ is_read: true })
-          .eq('chat_id', id)
-          .neq('sender_id', user_id);
+          .eq('chat_id', id);
       } catch (e) {
         console.error('Error marking messages as read in DB:', e);
       }

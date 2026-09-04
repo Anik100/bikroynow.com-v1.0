@@ -153,27 +153,36 @@ export async function GET(req) {
       let lastMsg = null;
       let unreadCount = 0;
 
-      const chatLocalMsgs = allLocalMsgs.filter(m => m.chat_id === chat.id);
-      if (chatLocalMsgs.length > 0) {
-        lastMsg = chatLocalMsgs[chatLocalMsgs.length - 1];
-        unreadCount = chatLocalMsgs.filter(m => !m.is_read && !currentViewerIds.has(m.sender_id)).length;
-      } else if (serverSupabase && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(chat.id)) {
+      let chatMsgs = [];
+      if (serverSupabase && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(chat.id)) {
         try {
           const { data: msgs } = await serverSupabase
             .from('messages')
             .select('*')
             .eq('chat_id', chat.id)
             .order('created_at', { ascending: true });
-          if (msgs && msgs.length > 0) {
-            lastMsg = msgs[msgs.length - 1];
-            unreadCount = msgs.filter(m => !m.is_read && !currentViewerIds.has(m.sender_id)).length;
-          }
+          if (Array.isArray(msgs)) chatMsgs = msgs;
         } catch (e) {}
+      }
+
+      const chatLocalMsgs = allLocalMsgs.filter(m => m.chat_id === chat.id);
+      const seenMsgIds = new Set(chatMsgs.map(m => m.id));
+      chatLocalMsgs.forEach(m => {
+        if (!seenMsgIds.has(m.id)) {
+          seenMsgIds.add(m.id);
+          chatMsgs.push(m);
+        }
+      });
+      chatMsgs.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+
+      if (chatMsgs.length > 0) {
+        lastMsg = chatMsgs[chatMsgs.length - 1];
+        unreadCount = chatMsgs.filter(m => !m.is_read && !currentViewerIds.has(m.sender_id)).length;
       }
 
       const partnerWithLiveStatus = chat.partner ? {
         ...chat.partner,
-        last_seen: getUserLastSeen(partnerId, chat.partner.email, chat.partner.last_seen)
+        last_seen: getUserLastSeen(partnerId, chat.partner?.email, chat.partner?.last_seen)
       } : null;
 
       return {
@@ -185,13 +194,24 @@ export async function GET(req) {
       };
     }));
 
-    const sorted = enriched.sort((a, b) => {
+    // Filter out chats linked to non-existent demo ads that have no active messages
+    const validChats = enriched.filter(chat => {
+      const isDemoId = String(chat.listing_id).startsWith('ad-1787678324480');
+      if (isDemoId && !chat.lastMsg) return false;
+      return true;
+    });
+
+    const sorted = validChats.sort((a, b) => {
       const tA = a.lastMsg?.created_at || a.updated_at || a.created_at;
       const tB = b.lastMsg?.created_at || b.updated_at || b.created_at;
       return new Date(tB) - new Date(tA);
     });
 
-    return NextResponse.json({ success: true, chats: sorted });
+    return NextResponse.json({ success: true, chats: sorted }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+      }
+    });
   } catch (e) {
     console.error('Error fetching chats list:', e);
     return NextResponse.json({ error: e.message, chats: [] }, { status: 500 });
