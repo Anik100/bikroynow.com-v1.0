@@ -39,19 +39,19 @@ history_lock = threading.Lock()
 def is_duplicate_event(candidate, existing_list):
     """
     Checks if a candidate earthquake is already present in existing_list
-    via geospatial proximity (<60km), magnitude match (+-0.4), and time proximity (<3 minutes).
-    Ensures separate quakes in different towns or aftershocks are never mistakenly filtered.
+    via geospatial proximity (<75km), magnitude match (+-0.5), and time proximity (<6 minutes).
+    Prevents duplicate reporting across agencies (USGS vs EMSC) and rapid recalculations.
     """
     c_lat, c_lon, c_time, c_mag = candidate["latitude"], candidate["longitude"], candidate["epoch_ms"], candidate["mag"]
     for ex in existing_list:
-        time_diff = abs(c_time - ex["epoch_ms"])
-        mag_diff = abs(c_mag - ex["mag"])
-        if time_diff < 180000 and mag_diff <= 0.4: # within 3 minutes and matching magnitude
+        time_diff = abs(c_time - ex.get("epoch_ms", 0))
+        mag_diff = abs(c_mag - ex.get("mag", 0))
+        if time_diff < 360000 and mag_diff <= 0.5: # within 6 minutes and matching magnitude
             # Approximate distance in km
-            d_lat = (c_lat - ex["latitude"]) * 111.0
-            d_lon = (c_lon - ex["longitude"]) * 111.0 * math.cos(math.radians(c_lat))
+            d_lat = (c_lat - ex.get("latitude", 0)) * 111.0
+            d_lon = (c_lon - ex.get("longitude", 0)) * 111.0 * math.cos(math.radians(c_lat))
             dist_km = math.hypot(d_lat, d_lon)
-            if dist_km < 60.0:
+            if dist_km < 75.0:
                 return True
     return False
 
@@ -137,6 +137,8 @@ def fetch_latest_earthquakes():
         print(f"⚠️ EMSC feed fetch note: {e}")
 
     new_events = []
+    recent_posted = history.get("recent_posted_events", [])
+    valid_recent = [ev for ev in recent_posted if (current_time_ms - ev.get("epoch_ms", 0)) < 3600000]
 
     for cand in raw_candidates:
         event_id = cand["id"]
@@ -151,8 +153,9 @@ def fetch_latest_earthquakes():
             history_updated = True
             continue
 
-        # Prevent duplicate reporting between USGS and EMSC for the exact same quake
-        if is_duplicate_event(cand, new_events):
+        # Prevent duplicate reporting across agencies (USGS vs EMSC) both in-batch and from recent runs
+        if is_duplicate_event(cand, new_events) or is_duplicate_event(cand, valid_recent):
+            print(f"⏩ Skipping cross-agency duplicate/revised event: M{cand['mag']} {cand['place']} (already reported within recent window)")
             history["posted_ids"].append(event_id)
             history_updated = True
             continue
@@ -180,6 +183,16 @@ def fetch_latest_earthquakes():
             "source": cand["source"]
         }
         new_events.append(event_data)
+        
+        # Add to recent_posted immediately to prevent in-flight race conditions
+        valid_recent.append({
+            "id": cand["id"],
+            "mag": cand["mag"],
+            "latitude": cand["latitude"],
+            "longitude": cand["longitude"],
+            "epoch_ms": cand["epoch_ms"],
+            "place": cand["place"]
+        })
 
     if history_updated:
         if len(history["posted_ids"]) > 500:
@@ -189,14 +202,36 @@ def fetch_latest_earthquakes():
     print(f"✅ Found {len(new_events)} new unposted earthquake(s) >= M{MIN_MAGNITUDE}")
     return new_events
 
-def mark_event_as_posted(event_id):
-    """Adds event_id to history so it won't be reposted (thread-safe)."""
+def mark_event_as_posted(event_or_id):
+    """Adds event to history and maintains recent_posted_events for spatial deduplication (thread-safe)."""
     with history_lock:
         history = load_history()
         if "posted_ids" not in history:
             history["posted_ids"] = []
-        if event_id not in history["posted_ids"]:
-            history["posted_ids"].append(event_id)
-            if len(history["posted_ids"]) > 500:
-                history["posted_ids"] = history["posted_ids"][-500:]
-            save_history(history)
+        if "recent_posted_events" not in history:
+            history["recent_posted_events"] = []
+
+        if isinstance(event_or_id, dict):
+            event_id = event_or_id.get("id")
+            if event_id and event_id not in history["posted_ids"]:
+                history["posted_ids"].append(event_id)
+            if event_id and not any(x.get("id") == event_id for x in history["recent_posted_events"]):
+                history["recent_posted_events"].append({
+                    "id": event_id,
+                    "mag": event_or_id.get("mag"),
+                    "place": event_or_id.get("place", ""),
+                    "latitude": event_or_id.get("latitude"),
+                    "longitude": event_or_id.get("longitude"),
+                    "epoch_ms": event_or_id.get("epoch_ms")
+                })
+        else:
+            event_id = str(event_or_id)
+            if event_id not in history["posted_ids"]:
+                history["posted_ids"].append(event_id)
+
+        if len(history["posted_ids"]) > 500:
+            history["posted_ids"] = history["posted_ids"][-500:]
+        if len(history["recent_posted_events"]) > 50:
+            history["recent_posted_events"] = history["recent_posted_events"][-50:]
+
+        save_history(history)

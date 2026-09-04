@@ -62,8 +62,8 @@ def process_single_event(event):
         except Exception as img_err:
             print(f"❌ Infographic Photo Error: {img_err}")
 
-    # Mark as posted
-    mark_event_as_posted(event_id)
+    # Mark as posted with spatial coordinates to prevent duplicate revisions
+    mark_event_as_posted(event)
     print(f"✨ Finished processing: {place}\n")
 
 from auto_commenter import process_comment_auto_replies

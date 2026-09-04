@@ -505,6 +505,8 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
         "-r", str(FPS),
         "-i", "-",
         "-c:v", "libx264",
+        "-preset", "veryfast",
+        "-threads", "0",
         "-pix_fmt", "yuv420p",
         "-profile:v", "baseline",
         "-level", "4.0",
