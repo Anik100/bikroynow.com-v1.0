@@ -89,6 +89,8 @@ def create_post_caption(event):
 
     caption = (
         f"{headline}\n\n"
+        f"📢 DID YOU FEEL THIS EARTHQUAKE? 📢\n"
+        f"👉 Drop a comment with your CITY and describe the shaking! Every ground report helps our real-time community track safety.\n\n"
         f"A seismic event of magnitude {mag} has been recorded by official global seismic monitoring networks.\n\n"
         f"📊 Official Seismic Report:\n"
         f"━━━━━━━━━━━━━━━━━━━━━\n"
@@ -100,11 +102,11 @@ def create_post_caption(event):
         f"🌊 Tsunami Status: {tsunami}\n"
         f"🏛️ Source: USGS Official Monitoring Network\n"
         f"━━━━━━━━━━━━━━━━━━━━━\n\n"
-        f"🔔 Follow Earthquake Tracker for 24/7 automated real-time worldwide seismic alerts.\n"
-        f"Stay informed and stay safe!\n\n"
+        f"🔔 Follow @earthquaketracker247 for 24/7 automated real-time worldwide seismic alerts.\n"
+        f"Stay informed, stay alert, and stay safe!\n\n"
         f"#Earthquake #Quake #EarthquakeAlert #SeismicActivity #BreakingNews "
         f"#DisasterAlert #USGS #EarthquakeTracker #LiveAlert #EmergencyUpdate "
-        f"#NaturalDisaster {country_tags}"
+        f"#DidYouFeelIt #NaturalDisaster {country_tags}"
     )
     return caption
 

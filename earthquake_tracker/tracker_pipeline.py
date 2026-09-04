@@ -38,8 +38,21 @@ def prepare_event_media(event):
     print(f"🚀 [Priority M{mag}] Rendering Media for [{event_id}]: {place}")
     print(f"==========================================")
 
-    if mag >= VIDEO_MIN_MAGNITUDE:
-        # 🎬 M4.5+ -> 3D Video Reel
+    # 🌊 Smart Uninhabited Ocean Filter:
+    # Earthquakes on remote uninhabited oceanic ridges/trenches (M < 5.2) generate 0 comments
+    # and cause Reels viewer fatigue. We render them as high-res infographic photos,
+    # reserving full 3D Video Reels for inhabited regions or strong M >= 5.2 seismic events.
+    uninhabited_ocean_zones = [
+        "ridge", "rise", "fracture zone", "south sandwich islands",
+        "balleny islands", "mid-indian", "kermadec islands",
+        "macquarie island", "prince edward", "mariana trench"
+    ]
+    place_lower = place.lower()
+    is_uninhabited_ocean = any(zone in place_lower for zone in uninhabited_ocean_zones)
+    should_render_video = (mag >= VIDEO_MIN_MAGNITUDE) and (not is_uninhabited_ocean or mag >= 5.2)
+
+    if should_render_video:
+        # 🎬 Inhabited or Strong M5.2+ -> 3D Video Reel
         audio_path = os.path.join(OUTPUT_DIR, f"audio_{event_id}.mp3")
         full_script, sentences, srt_content = create_audio_voiceover(event, audio_path)
 
@@ -59,7 +72,7 @@ def prepare_event_media(event):
             "media_type": "video"
         }
     else:
-        # 📸 M4.0 to M4.4 -> High-Resolution Infographic Photo + Text
+        # 📸 M4.0-M4.4 or Remote Oceanic M < 5.2 -> High-Resolution Infographic Photo + Text
         photo_path = os.path.join(OUTPUT_DIR, f"infographic_{event_id}.png")
         create_earthquake_infographic_photo(event, photo_path)
         return {

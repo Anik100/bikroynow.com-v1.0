@@ -17,6 +17,8 @@ if sys.platform == "win32":
 from config import VIDEO_WIDTH, VIDEO_HEIGHT, FPS, OUTPUT_DIR
 from map_engine import generate_reference_satellite_map
 
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 def get_font(size, bold=True):
     try:
         font_name = "arialbd.ttf" if bold else "arial.ttf"
@@ -458,6 +460,36 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
                 stroke_fill="#000000",
                 anchor="mm"
             )
+    # 7.5 VIRAL ENGAGEMENT BADGE ("Did you feel it? Comment your city below 👇")
+    # Visible between 30% and 85% of video duration with gentle breathing gold pulse
+    if 0.30 <= progress <= 0.85:
+        cta_text = "💬 Did you feel it? Comment your city below 👇"
+        f_cta = get_font(26, bold=True)
+        cta_box = draw.textbbox((0, 0), cta_text, font=f_cta)
+        cta_w = cta_box[2] - cta_box[0] + 36
+        cta_h = cta_box[3] - cta_box[1] + 16
+        cta_y = 1380
+
+        pulse_alpha = int(180 + 75 * math.sin(progress * 15.0))
+        gold_outline = f"#facc15{pulse_alpha:02x}"
+
+        draw.rounded_rectangle(
+            [(VIDEO_WIDTH // 2 - cta_w // 2, cta_y - cta_h // 2),
+             (VIDEO_WIDTH // 2 + cta_w // 2, cta_y + cta_h // 2)],
+            radius=12,
+            fill="#090e1cf2",
+            outline=gold_outline,
+            width=2
+        )
+        draw.text(
+            (VIDEO_WIDTH // 2, cta_y),
+            cta_text,
+            fill="#facc15",
+            font=f_cta,
+            stroke_width=3,
+            stroke_fill="#000000",
+            anchor="mm"
+        )
 
     return frame
 
@@ -526,20 +558,42 @@ def create_earthquake_video(event, audio_path, sentences, output_video_path):
     pipe.stdin.close()
     pipe.wait()
 
-    # Merge audio + video and pad audio with apad filter so audio and video match 100% in length
-    final_cmd = [
-        ffmpeg_exe, "-y",
-        "-i", raw_video_path,
-        "-i", audio_path,
-        "-filter_complex", f"[1:a]apad=whole_dur={total_duration:.2f}[a]",
-        "-map", "0:v",
-        "-map", "[a]",
-        "-c:v", "copy",
-        "-c:a", "aac",
-        "-b:a", "192k",
-        "-shortest",
-        output_video_path
-    ]
+    # Merge audio + video and mix subtle cinematic tension BGM underneath AI voice
+    bgm_path = os.path.join(CURRENT_DIR, "assets", "cinematic_tension_bgm.mp3")
+    if os.path.exists(bgm_path):
+        final_cmd = [
+            ffmpeg_exe, "-y",
+            "-i", raw_video_path,
+            "-i", audio_path,
+            "-stream_loop", "-1",
+            "-i", bgm_path,
+            "-filter_complex", (
+                f"[1:a]apad=whole_dur={total_duration:.2f},volume=1.0[voice]; "
+                f"[2:a]volume=0.14[bgm]; "
+                f"[voice][bgm]amix=inputs=2:duration=first:dropout_transition=2[a]"
+            ),
+            "-map", "0:v",
+            "-map", "[a]",
+            "-c:v", "copy",
+            "-c:a", "aac",
+            "-b:a", "192k",
+            "-shortest",
+            output_video_path
+        ]
+    else:
+        final_cmd = [
+            ffmpeg_exe, "-y",
+            "-i", raw_video_path,
+            "-i", audio_path,
+            "-filter_complex", f"[1:a]apad=whole_dur={total_duration:.2f}[a]",
+            "-map", "0:v",
+            "-map", "[a]",
+            "-c:v", "copy",
+            "-c:a", "aac",
+            "-b:a", "192k",
+            "-shortest",
+            output_video_path
+        ]
     subprocess.run(final_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
 
     # Cleanup temp files
