@@ -17,6 +17,10 @@ export default function ChatListPage() {
   const [user, setUser] = useState(null);
 
   const fetchChatsForUser = async (userId) => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
     try {
       // 1. Try server API
       const res = await fetch(`/api/chats/list?user_id=${userId}&t=${Date.now()}`, {
@@ -31,34 +35,43 @@ export default function ChatListPage() {
         }
       }
 
-      // 2. Direct Supabase query fallback (with active user session)
-      const { data: directChats } = await supabase
-        .from('chats')
-        .select('*')
-        .or(`buyer_id.eq.${userId},seller_id.eq.${userId}`)
-        .order('updated_at', { ascending: false });
+      // 2. Direct Supabase query fallback (with active user session if valid UUID)
+      const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+      if (isValidUUID) {
+        const { data: directChats } = await supabase
+          .from('chats')
+          .select('*')
+          .or(`buyer_id.eq.${userId},seller_id.eq.${userId}`)
+          .order('updated_at', { ascending: false });
 
-      if (directChats && Array.isArray(directChats) && directChats.length > 0) {
-        const enriched = await Promise.all(directChats.map(async (c) => {
-          const partnerId = c.buyer_id === userId ? c.seller_id : c.buyer_id;
-          const [{ data: listing }, { data: partner }, { data: lastMsgs }] = await Promise.all([
-            supabase.from('listings').select('title, images, price').eq('id', c.listing_id).maybeSingle(),
-            supabase.from('profiles').select('full_name, avatar_url, last_seen').eq('id', partnerId).maybeSingle(),
-            supabase.from('messages').select('*').eq('chat_id', c.id).order('created_at', { ascending: false }).limit(1)
-          ]);
+        if (directChats && Array.isArray(directChats) && directChats.length > 0) {
+          const enriched = await Promise.all(directChats.map(async (c) => {
+            const partnerId = c.buyer_id === userId ? c.seller_id : c.buyer_id;
+            const [{ data: listing }, { data: partner }, { data: lastMsgs }] = await Promise.all([
+              isValidUUID && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(c.listing_id)
+                ? supabase.from('listings').select('title, images, price').eq('id', c.listing_id).maybeSingle()
+                : Promise.resolve({ data: null }),
+              isValidUUID && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(partnerId)
+                ? supabase.from('profiles').select('full_name, avatar_url, last_seen').eq('id', partnerId).maybeSingle()
+                : Promise.resolve({ data: null }),
+              isValidUUID && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(c.id)
+                ? supabase.from('messages').select('*').eq('chat_id', c.id).order('created_at', { ascending: false }).limit(1)
+                : Promise.resolve({ data: null })
+            ]);
 
-          return {
-            ...c,
-            listing: listing || { title: 'BikroyNow Item', images: [] },
-            partner: partner || { full_name: 'ব্যবহারকারী (User)' },
-            lastMsg: lastMsgs?.[0] || null,
-            unreadCount: 0
-          };
-        }));
+            return {
+              ...c,
+              listing: listing || { title: 'BikroyNow Item', images: [] },
+              partner: partner || { full_name: 'ব্যবহারকারী (User)' },
+              lastMsg: lastMsgs?.[0] || null,
+              unreadCount: 0
+            };
+          }));
 
-        setChats(enriched);
-        setLoading(false);
-        return;
+          setChats(enriched);
+          setLoading(false);
+          return;
+        }
       }
 
       setChats([]);
@@ -78,6 +91,12 @@ export default function ChatListPage() {
 
   useEffect(() => {
     let isCancelled = false;
+    let activeUserId = null;
+
+    // Safety fallback: Never keep screen stuck on loading for more than 2 seconds
+    const safetyTimer = setTimeout(() => {
+      if (!isCancelled) setLoading(false);
+    }, 2000);
 
     const checkSessionAndFetch = async () => {
       let activeUser = null;
@@ -93,9 +112,9 @@ export default function ChatListPage() {
         } catch (e) {}
       }
 
-      // 2. If session not found immediately on mobile, give a 350ms grace period for Supabase to restore from storage
+      // 2. If session not found immediately on mobile, give a 250ms grace period for Supabase to restore from storage
       if (!activeUser) {
-        await new Promise(r => setTimeout(r, 350));
+        await new Promise(r => setTimeout(r, 250));
         const retry = await supabase.auth.getSession();
         if (retry.data.session?.user) {
           activeUser = retry.data.session.user;
@@ -104,32 +123,54 @@ export default function ChatListPage() {
 
       if (!activeUser) {
         if (!isCancelled) {
+          setLoading(false);
           router.push('/login');
         }
         return;
       }
 
       if (!isCancelled) {
+        activeUserId = activeUser.id;
         setUser(activeUser);
-        fetchChatsForUser(activeUser.id);
+        await fetchChatsForUser(activeUser.id);
       }
     };
 
     checkSessionAndFetch();
 
     const interval = setInterval(() => {
-      if (!isCancelled && user?.id) {
-        fetchChatsForUser(user.id);
+      if (!isCancelled && activeUserId) {
+        fetchChatsForUser(activeUserId);
       }
-    }, 3000); // 3s live polling
+    }, 4000); // 4s live polling
 
     return () => {
       isCancelled = true;
+      clearTimeout(safetyTimer);
       clearInterval(interval);
     };
-  }, [router, user?.id]);
+  }, [router]);
 
-  if (loading) return <div className="container" style={{padding: '5rem 0', textAlign: 'center'}}>{t('loading')}</div>;
+  if (loading) return (
+    <div className="container" style={{padding: '5rem 0', textAlign: 'center', color: '#64748b', fontSize: '1.05rem', fontWeight: 600}}>
+      {t('loading')}
+    </div>
+  );
+
+  if (!user) return (
+    <div className="container" style={{maxWidth: '500px', padding: '5rem 1.5rem', textAlign: 'center'}}>
+      <MessageSquare size={54} strokeWidth={1.3} color="#cbd5e1" style={{marginBottom: '1rem'}} />
+      <h3 style={{fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem'}}>
+        {lang === 'bn' ? 'মেসেজ দেখতে লগইন করুন' : 'Please login to view messages'}
+      </h3>
+      <p style={{fontSize: '0.9rem', color: '#64748b', marginBottom: '1.5rem'}}>
+        {lang === 'bn' ? 'বিক্রেতা এবং ক্রেতাদের সাথে যোগাযোগ করতে আপনার অ্যাকাউন্টে সাইন ইন করুন।' : 'Sign in to your account to communicate with buyers and sellers.'}
+      </p>
+      <Link href="/login" className="btn-primary" style={{borderRadius: '12px', padding: '0.75rem 2rem', textDecoration: 'none', display: 'inline-block'}}>
+        {lang === 'bn' ? 'লগইন করুন' : 'Login Now'}
+      </Link>
+    </div>
+  );
 
   return (
     <div className="container" style={{maxWidth: '850px', padding: '2rem 1rem'}}>

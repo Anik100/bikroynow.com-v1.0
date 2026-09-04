@@ -194,6 +194,11 @@ export default function ChatWindow({ params }) {
     let isCancelled = false;
     if (!effectiveId) return;
 
+    // Safety fallback: Never keep screen stuck on loading for more than 2.5s
+    const safetyTimer = setTimeout(() => {
+      if (!isCancelled) setLoading(false);
+    }, 2500);
+
     const setupChat = async () => {
       let activeUser = null;
       const { data: { session } } = await supabase.auth.getSession();
@@ -207,7 +212,7 @@ export default function ChatWindow({ params }) {
       }
 
       if (!activeUser) {
-        await new Promise(r => setTimeout(r, 350));
+        await new Promise(r => setTimeout(r, 250));
         const retry = await supabase.auth.getSession();
         if (retry.data.session?.user) {
           activeUser = retry.data.session.user;
@@ -215,7 +220,10 @@ export default function ChatWindow({ params }) {
       }
 
       if (!activeUser) {
-        if (!isCancelled) router.push('/login');
+        if (!isCancelled) {
+          setLoading(false);
+          router.push('/login');
+        }
         return;
       }
       if (!isCancelled) setUser(activeUser);
@@ -224,7 +232,9 @@ export default function ChatWindow({ params }) {
       markAsRead(activeUser.id);
 
       try {
-        const chatRes = await fetch(`/api/chats/${effectiveId}`);
+        const chatRes = await fetch(`/api/chats/${effectiveId}?t=${Date.now()}`, {
+          cache: 'no-store'
+        });
         if (chatRes.ok) {
           const chatJson = await chatRes.json();
           if (chatJson.chat && !isCancelled) {
@@ -239,8 +249,8 @@ export default function ChatWindow({ params }) {
       }
 
       if (!isCancelled) {
-        router.push('/chat');
         setLoading(false);
+        router.push('/chat');
       }
     };
 
@@ -268,7 +278,9 @@ export default function ChatWindow({ params }) {
 
     const fetchPartnerStatus = async () => {
       try {
-        const res = await fetch(`/api/chats/${effectiveId}`);
+        const res = await fetch(`/api/chats/${effectiveId}?t=${Date.now()}`, {
+          cache: 'no-store'
+        });
         if (res.ok) {
           const json = await res.json();
           if (json.chat && !isCancelled) {
@@ -295,10 +307,11 @@ export default function ChatWindow({ params }) {
 
     return () => {
       isCancelled = true;
+      clearTimeout(safetyTimer);
       clearInterval(interval);
       supabase.removeChannel(channel);
     };
-  }, [effectiveId, user?.id]);
+  }, [effectiveId, router]);
 
   useEffect(() => {
     scrollToBottom();
@@ -407,7 +420,40 @@ export default function ChatWindow({ params }) {
     }
   };
 
-  if (loading || !user || !chat) return <div className="container" style={{padding: '5rem 0', textAlign: 'center'}}>Loading...</div>;
+  if (loading) return (
+    <div className="container" style={{padding: '5rem 0', textAlign: 'center', color: '#64748b', fontSize: '1.05rem', fontWeight: 600}}>
+      {lang === 'bn' ? 'লোড হচ্ছে...' : 'Loading...'}
+    </div>
+  );
+
+  if (!user) return (
+    <div className="container" style={{maxWidth: '500px', padding: '5rem 1.5rem', textAlign: 'center'}}>
+      <UserIcon size={54} strokeWidth={1.3} color="#cbd5e1" style={{marginBottom: '1rem'}} />
+      <h3 style={{fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem'}}>
+        {lang === 'bn' ? 'চ্যাট করতে লগইন প্রয়োজন' : 'Please login to chat'}
+      </h3>
+      <p style={{fontSize: '0.9rem', color: '#64748b', marginBottom: '1.5rem'}}>
+        {lang === 'bn' ? 'বিক্রেতা বা ক্রেতার সাথে চ্যাট করতে আপনার অ্যাকাউন্টে সাইন ইন করুন।' : 'Sign in to your account to start chatting.'}
+      </p>
+      <Link href="/login" className="btn-primary" style={{borderRadius: '12px', padding: '0.75rem 2rem', textDecoration: 'none', display: 'inline-block'}}>
+        {lang === 'bn' ? 'লগইন করুন' : 'Login Now'}
+      </Link>
+    </div>
+  );
+
+  if (!chat) return (
+    <div className="container" style={{maxWidth: '500px', padding: '5rem 1.5rem', textAlign: 'center'}}>
+      <h3 style={{fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem'}}>
+        {lang === 'bn' ? 'চ্যাট সেশন পাওয়া যায়নি' : 'Chat session not found'}
+      </h3>
+      <p style={{fontSize: '0.9rem', color: '#64748b', marginBottom: '1.5rem'}}>
+        {lang === 'bn' ? 'বিজ্ঞাপনটি ডিলিট হয়ে গিয়ে থাকতে পারে।' : 'The listing or chat session may have been removed.'}
+      </p>
+      <Link href="/chat" className="btn-primary" style={{borderRadius: '12px', padding: '0.75rem 2rem', textDecoration: 'none', display: 'inline-block'}}>
+        {lang === 'bn' ? 'মেসেজ তালিকায় যান' : 'Go to Messages'}
+      </Link>
+    </div>
+  );
 
   const myIdentifiers = new Set([
     user?.id,
