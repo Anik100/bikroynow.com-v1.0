@@ -278,29 +278,32 @@ export default function AdDetails({ params }) {
 
   const executeAdminDelete = async () => {
     try {
+      // 1. Delete from global listings store and Supabase via server API
+      try {
+        await fetch(`/api/listings?id=${encodeURIComponent(ad.id)}`, { method: 'DELETE' });
+      } catch (e) {}
+
+      // 2. Also delete from Supabase if valid UUID
       if (isValidUUID(ad.id)) {
-        const { error } = await supabase.from('listings').delete().eq('id', ad.id);
-        if (error) throw error;
+        try {
+          await supabase.from('listings').delete().eq('id', ad.id);
+        } catch (e) {}
       }
 
-      // Also clean up from local storage
+      // 3. Also clean up from local storage
       try {
         const localAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
         const filtered = localAds.filter(l => String(l.id) !== String(ad.id));
         localStorage.setItem('bikroynow_public_ads', JSON.stringify(filtered));
       } catch (e) {}
 
-      // Also delete from global listings store API
-      try {
-        await fetch(`/api/listings?id=${encodeURIComponent(ad.id)}`, { method: 'DELETE' });
-      } catch (e) {}
-
-      // Also delete from featured store API
+      // 4. Also delete from featured store API
       try {
         await fetch(`/api/admin/featured-ads?listing_id=${encodeURIComponent(ad.id)}`, { method: 'DELETE' });
       } catch (e) {}
 
-      router.push('/');
+      // 5. Force hard navigate to homepage to completely bypass any browser/router cache
+      window.location.href = `/?refresh=${Date.now()}`;
     } catch (err) {
       setAdminActionMessage({ type: 'error', text: 'Error deleting ad: ' + err.message });
       setShowAdminDeleteModal(false);

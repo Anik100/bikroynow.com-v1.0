@@ -111,7 +111,7 @@ export default function Home() {
     const fetchListings = async () => {
       try {
         setLoading(true);
-        const apiRes = await fetch('/api/listings');
+        const apiRes = await fetch(`/api/listings?t=${Date.now()}`, { cache: 'no-store' });
         if (apiRes.ok) {
           const apiJson = await apiRes.json();
           if (Array.isArray(apiJson.listings) && !isCancelled) {

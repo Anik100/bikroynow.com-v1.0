@@ -17,7 +17,7 @@ export async function GET(req) {
     if (cachedListings && (now - cacheTime < CACHE_TTL_MS)) {
       return NextResponse.json({ listings: cachedListings }, {
         headers: {
-          'Cache-Control': 'public, max-age=15, stale-while-revalidate=60',
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
           'X-Cache': 'HIT'
         }
       });
@@ -85,7 +85,7 @@ export async function GET(req) {
 
     return NextResponse.json({ listings: combinedListings }, {
       headers: {
-        'Cache-Control': 'public, max-age=15, stale-while-revalidate=60',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
         'X-Cache': 'MISS'
       }
     });
