@@ -426,7 +426,8 @@ def render_reference_style_frame(event, base_map_img, epicenter_coords, places_l
         
         line_height = 54
         total_sub_h = len(wrapped_full) * line_height
-        start_sub_y = 1680 - (total_sub_h // 2)
+        # Elevated to Safe Zone (1500) above Facebook Reels page name and bottom overlay UI
+        start_sub_y = 1500 - (total_sub_h // 2)
 
         max_lw = 0
         for l in wrapped_full:
