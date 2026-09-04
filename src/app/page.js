@@ -10,6 +10,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { getRelativeTime, formatFullDate, formatPrice, getPromotionBadgeText, sortPremiumListings } from '../lib/utils';
 import { Heart, Smartphone, Laptop, Zap, Car, Home as HouseIcon, Briefcase, Box, ChevronDown } from 'lucide-react';
 import FeaturedSlider from '../components/FeaturedSlider';
+import SeoKeywordSection from '../components/SeoKeywordSection';
 
 const getSellerBadge = (profiles, lang) => {
   if (!profiles) return null;
@@ -642,6 +643,7 @@ export default function Home() {
           })()}
         </div>
       </div>
+      <SeoKeywordSection />
     </div>
   );
 }
