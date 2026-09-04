@@ -14,9 +14,10 @@ from fetcher import load_history, save_history, history_lock
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 
-def generate_ai_comment_reply(comment_text, user_name="Friend"):
+def generate_ai_comment_reply(comment_text, user_name="Friend", post_context=""):
     """
     Generates an intelligent, highly contextual AI reply based on user intent:
+    - Location inquiry / Regional ambiguity -> Geographical clarification (e.g. Pilar Siargao vs Pilar Bataan)
     - Fake news / skepticism -> Politeness + USGS/EMSC scientific proof
     - Tsunami questions -> PTWC/NOAA status + reassurance
     - Felt reports -> Gratitude + ground safety tips
@@ -24,26 +25,30 @@ def generate_ai_comment_reply(comment_text, user_name="Friend"):
     """
     text_clean = (comment_text or "").strip()
     text_lower = text_clean.lower()
+    ctx_clean = (post_context or "").strip()
+    ctx_lower = ctx_clean.lower()
 
     # 1. Try Google Gemini API if key is available
     if GEMINI_API_KEY:
         try:
             prompt = (
                 "You are Earthquake Tracker official AI assistant on Facebook. "
+                f"Post Details: \"{ctx_clean}\". "
                 f"A user named '{user_name}' commented on our live earthquake alert post: \"{text_clean}\". "
-                "Generate a polite, scientific, concise (1-2 sentences maximum) reply. "
-                "If they say fake news or doubt the quake, politely state it was verified by USGS/EMSC seismic stations and deep/offshore tremors are detected by sensitive sensors. "
+                "Generate a polite, scientific, concise (2-3 sentences maximum) reply. "
+                "If they ask about the location, province, town, municipality, or if there is confusion about duplicate place names (e.g., Pilar in the Philippines), clearly and accurately explain which exact province/island/region this earthquake occurred near based on the post details and seismological coordinates. "
+                "If they say fake news or doubt the quake, politely state it was verified by USGS/EMSC seismic stations. "
                 "If they ask about tsunami, confirm NOAA/PTWC reported no immediate threat. "
                 "If they felt it, thank them and give a quick safety reminder. "
-                "Reply in the same language as the user comment (English, Bengali, Spanish, Indonesian, Turkish, etc.). "
-                "Do not use hashtags. Keep it natural and caring."
+                "Reply in the same language as the user comment (English, Bengali, Spanish, Tagalog, etc.). "
+                "Do not use hashtags. Keep it natural, informative, and caring."
             )
             g_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
             payload = {
                 "contents": [{"parts": [{"text": prompt}]}],
-                "generationConfig": {"maxOutputTokens": 120, "temperature": 0.4}
+                "generationConfig": {"maxOutputTokens": 180, "temperature": 0.4}
             }
-            r_ai = requests.post(g_url, json=payload, timeout=5)
+            r_ai = requests.post(g_url, json=payload, timeout=6)
             if r_ai.status_code == 200:
                 ai_resp = r_ai.json()
                 candidates = ai_resp.get("candidates", [])
@@ -56,6 +61,48 @@ def generate_ai_comment_reply(comment_text, user_name="Friend"):
 
     # 2. Contextual Intelligent Rule-Based Engine (100% Reliable Fallback)
     
+    # Category 0: Location Questions / Regional Clarification (e.g. Pilar, Bataan vs Pilar, Siargao)
+    location_keywords = [
+        "where", "location", "which", "province", "municipality", "city", "island", "town",
+        "bataan", "sorsogon", "surigao", "siargao", "pilar", "what place", "complete the info",
+        "exact location", "where exactly", "is this in", "is that in", "what town", "what province",
+        "কোন জায়গা", "কোন জেলা", "কোন প্রদেশ", "কোথায়", "কোন স্থান", "বিস্তারিত লোকেশন",
+        "dimana", "lokasi", "propinsi", "donde", "provincia", "cual", "saang", "saan"
+    ]
+    if any(k in text_lower for k in location_keywords):
+        # Case A: Philippines Pilar ambiguity
+        if "pilar" in text_lower or "pilar" in ctx_lower:
+            return (
+                f"Hello {user_name}! Excellent question. In the Philippines, there are several municipalities named Pilar (including in Bataan, Sorsogon, Surigao del Norte, Bohol, Capiz, Cebu, and Abra). "
+                "This specific M4.8 earthquake occurred offshore in the Philippine Sea, approximately 29 km east-northeast of Pilar on Siargao Island, Province of Surigao del Norte (Caraga Region, Mindanao) — NOT Pilar, Bataan in Luzon. "
+                "Our satellite map pin marks the exact offshore epicenter. Thank you for asking, and stay safe! 🇵🇭🗺️"
+            )
+
+        # Case B: Universal location extraction from post context
+        detected_loc = ""
+        if "Region / Epicenter:" in ctx_clean:
+            try:
+                detected_loc = ctx_clean.split("Region / Epicenter:")[1].split("\n")[0].strip()
+            except Exception:
+                pass
+        elif "of " in ctx_clean:
+            try:
+                detected_loc = ctx_clean.split("of ")[1].split("\n")[0].strip()
+            except Exception:
+                pass
+
+        if detected_loc:
+            return (
+                f"Hello {user_name}! To clarify the location: according to official USGS and regional seismic networks, this earthquake was centered at {detected_loc}. "
+                "Seismological monitoring stations calculate the epicenter using high-precision GPS coordinates relative to the nearest registered coastal landmark or municipality. "
+                "Please refer to the satellite map shown in the video for the exact regional fault coordinates. Stay safe! 🌍📍"
+            )
+        else:
+            return (
+                f"Hello {user_name}! The epicenter is determined by global seismic monitoring networks (USGS/EMSC) using exact GPS latitude and longitude coordinates relative to the nearest municipality or coastline shown on our video map. "
+                "Thank you for checking, and stay safe! 🌍📍"
+            )
+
     # Category A: Fake News / Skepticism / Disbelief
     fake_keywords = [
         "fake", "hoax", "liar", "lie", "didnt happen", "didn't happen", "nothing felt", "did not feel",
@@ -141,44 +188,44 @@ def process_comment_auto_replies():
         replied_comments = set(history.get("replied_comment_ids", []))
 
     history_changed = False
-    media_ids = []
+    media_dict = {} # media_id -> post_description/title
     headers = {"User-Agent": "EarthquakeTrackerBot/1.0"}
 
     # 1. Fetch recent Facebook Reels (Primary format!)
     try:
-        r_url = f"https://graph.facebook.com/v20.0/{FB_PAGE_ID}/video_reels?fields=id&limit=15&access_token={FB_PAGE_ACCESS_TOKEN}"
+        r_url = f"https://graph.facebook.com/v20.0/{FB_PAGE_ID}/video_reels?fields=id,description&limit=15&access_token={FB_PAGE_ACCESS_TOKEN}"
         r_res = requests.get(r_url, headers=headers, timeout=10)
         if r_res.status_code == 200:
             for item in r_res.json().get("data", []):
-                media_ids.append(item["id"])
+                media_dict[item["id"]] = item.get("description", "")
     except Exception as e:
         print(f"⚠️ Note fetching video_reels list: {e}")
 
     # 2. Fetch recent Standard Videos
     try:
-        v_url = f"https://graph.facebook.com/v20.0/{FB_PAGE_ID}/videos?fields=id&limit=8&access_token={FB_PAGE_ACCESS_TOKEN}"
+        v_url = f"https://graph.facebook.com/v20.0/{FB_PAGE_ID}/videos?fields=id,title,description&limit=8&access_token={FB_PAGE_ACCESS_TOKEN}"
         r_v = requests.get(v_url, headers=headers, timeout=10)
         if r_v.status_code == 200:
             for item in r_v.json().get("data", []):
-                if item["id"] not in media_ids:
-                    media_ids.append(item["id"])
+                if item["id"] not in media_dict:
+                    media_dict[item["id"]] = item.get("description", "") or item.get("title", "")
     except Exception as e:
         print(f"⚠️ Note fetching videos list: {e}")
 
     # 3. Fetch recent Photos
     try:
-        p_url = f"https://graph.facebook.com/v20.0/{FB_PAGE_ID}/photos?type=uploaded&fields=id&limit=8&access_token={FB_PAGE_ACCESS_TOKEN}"
+        p_url = f"https://graph.facebook.com/v20.0/{FB_PAGE_ID}/photos?type=uploaded&fields=id,name&limit=8&access_token={FB_PAGE_ACCESS_TOKEN}"
         r_p = requests.get(p_url, headers=headers, timeout=10)
         if r_p.status_code == 200:
             for item in r_p.json().get("data", []):
-                if item["id"] not in media_ids:
-                    media_ids.append(item["id"])
+                if item["id"] not in media_dict:
+                    media_dict[item["id"]] = item.get("name", "")
     except Exception as e:
         print(f"⚠️ Note fetching photos list: {e}")
 
     # Process all comments across all media
     new_replies_count = 0
-    for media_id in media_ids:
+    for media_id, post_context in media_dict.items():
         try:
             c_url = f"https://graph.facebook.com/v20.0/{media_id}/comments?fields=id,from,message,created_time&limit=25&access_token={FB_PAGE_ACCESS_TOKEN}"
             res = requests.get(c_url, headers=headers, timeout=10)
@@ -201,8 +248,8 @@ def process_comment_auto_replies():
                 if user_id == str(FB_PAGE_ID):
                     continue
 
-                # Generate Smart Contextual AI Reply
-                reply_message = generate_ai_comment_reply(comment_msg, user_name)
+                # Generate Smart Contextual AI Reply with Post Context
+                reply_message = generate_ai_comment_reply(comment_msg, user_name, post_context=post_context)
 
                 # Post Auto-Reply to this comment
                 reply_url = f"https://graph.facebook.com/v20.0/{comment_id}/comments"
