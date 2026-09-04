@@ -525,49 +525,99 @@ export default function AdDetails({ params }) {
         </div>
       )}
 
-      {showAdminDeleteModal && (
+      {showAdminDeleteModal && isMounted && createPortal(
         <div style={{
-          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          zIndex: 9999, padding: '1rem'
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: 'rgba(0, 0, 0, 0.7)',
+          backdropFilter: 'blur(5px)',
+          WebkitBackdropFilter: 'blur(5px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999999,
+          padding: '1.25rem',
+          boxSizing: 'border-box'
         }}>
           <div style={{
-            background: 'white', borderRadius: '16px', padding: '2rem',
-            maxWidth: '360px', width: '100%', textAlign: 'center',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+            background: '#ffffff',
+            borderRadius: '20px',
+            padding: '1.8rem 1.5rem',
+            maxWidth: '380px',
+            width: '100%',
+            textAlign: 'center',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.35)',
+            border: '1px solid rgba(0, 0, 0, 0.08)'
           }}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#111' }}>
-              {lang === 'bn' ? 'ডিলিট করবেন?' : 'Delete Ad?'}
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '50%',
+              backgroundColor: '#fee2e2',
+              color: '#dc2626',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '1.6rem',
+              margin: '0 auto 1rem auto'
+            }}>
+              🗑️
+            </div>
+            <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '0.5rem', color: '#0f172a' }}>
+              {lang === 'bn' ? 'বিজ্ঞাপনটি মুছে ফেলবেন?' : 'Delete Advertisement?'}
             </h3>
-            <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-              {lang === 'bn' ? 'এই বিজ্ঞাপনটি স্থায়ীভাবে মুছে যাবে।' : 'This ad will be permanently deleted.'}
+            <p style={{ color: '#64748b', fontSize: '0.92rem', marginBottom: '1.6rem', lineHeight: 1.5 }}>
+              {lang === 'bn' 
+                ? 'আপনি কি নিশ্চিত যে এই বিজ্ঞাপনটি স্থায়ীভাবে ডিলিট করতে চান? এটি আর ফিরিয়ে আনা যাবে না।' 
+                : 'Are you sure you want to permanently delete this ad? This action cannot be undone.'}
             </p>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <div style={{ display: 'flex', gap: '0.8rem' }}>
               <button
+                type="button"
                 onClick={() => setShowAdminDeleteModal(false)}
                 style={{
-                  flex: 1, padding: '0.75rem', borderRadius: '10px',
-                  border: '1px solid #e5e7eb', background: 'white',
-                  fontWeight: 600, cursor: 'pointer', fontSize: '0.95rem',
-                  color: '#4b5563'
+                  flex: 1,
+                  padding: '0.85rem 1rem',
+                  borderRadius: '12px',
+                  border: '1.5px solid #e2e8f0',
+                  background: '#f8fafc',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  fontSize: '0.95rem',
+                  color: '#475569',
+                  transition: 'all 0.2s'
                 }}
               >
-                {lang === 'bn' ? 'না' : 'Cancel'}
+                {lang === 'bn' ? 'বাতিল (না)' : 'Cancel (No)'}
               </button>
               <button
+                type="button"
                 onClick={executeAdminDelete}
                 style={{
-                  flex: 1, padding: '0.75rem', borderRadius: '10px',
-                  border: 'none', background: '#dc2626',
-                  color: 'white', fontWeight: 700, cursor: 'pointer',
-                  fontSize: '0.95rem', transition: 'background 0.2s'
+                  flex: 1,
+                  padding: '0.85rem 1rem',
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                  color: '#ffffff',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  fontSize: '0.95rem',
+                  boxShadow: '0 4px 12px rgba(220, 38, 38, 0.35)',
+                  transition: 'all 0.2s'
                 }}
               >
-                {lang === 'bn' ? 'হ্যাঁ' : 'Delete'}
+                {lang === 'bn' ? 'ডিলিট (হ্যাঁ)' : 'Delete (Yes)'}
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {ad.status === 'pending' && (
