@@ -290,9 +290,14 @@ export default function AdDetails({ params }) {
         localStorage.setItem('bikroynow_public_ads', JSON.stringify(filtered));
       } catch (e) {}
 
+      // Also delete from global listings store API
+      try {
+        await fetch(`/api/listings?id=${encodeURIComponent(ad.id)}`, { method: 'DELETE' });
+      } catch (e) {}
+
       // Also delete from featured store API
       try {
-        await fetch(`/api/admin/featured-ads?listing_id=${ad.id}`, { method: 'DELETE' });
+        await fetch(`/api/admin/featured-ads?listing_id=${encodeURIComponent(ad.id)}`, { method: 'DELETE' });
       } catch (e) {}
 
       router.push('/');

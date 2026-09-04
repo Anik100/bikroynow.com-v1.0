@@ -59,20 +59,33 @@ export function getGlobalListings() {
   }
 }
 
-export function saveGlobalListing(newAd) {
+export function deleteGlobalListing(id) {
   try {
     const current = getGlobalListings();
-    // Filter duplicates
-    const filtered = current.filter(item => item.id !== newAd.id && item.title !== newAd.title);
-    const updated = [newAd, ...filtered];
-
+    const updated = current.filter(item => String(item.id) !== String(id));
     if (!fs.existsSync(STORE_DIR)) {
       fs.mkdirSync(STORE_DIR, { recursive: true });
     }
     fs.writeFileSync(STORE_FILE, JSON.stringify(updated, null, 2), 'utf8');
     return updated;
   } catch (err) {
-    console.error('Error saving global listing:', err);
+    console.error('Error deleting global listing:', err);
     return [];
   }
 }
+
+export function updateGlobalListing(id, updates) {
+  try {
+    const current = getGlobalListings();
+    const updated = current.map(item => String(item.id) === String(id) ? { ...item, ...updates } : item);
+    if (!fs.existsSync(STORE_DIR)) {
+      fs.mkdirSync(STORE_DIR, { recursive: true });
+    }
+    fs.writeFileSync(STORE_FILE, JSON.stringify(updated, null, 2), 'utf8');
+    return updated;
+  } catch (err) {
+    console.error('Error updating global listing:', err);
+    return [];
+  }
+}
+
