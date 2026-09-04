@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tc0p",
     "us7000tby9",
     "us7000tby1",
     "us7000tbxz",
@@ -499,7 +498,8 @@
     "emsc_20260904_0000188",
     "us7000tea7",
     "emsc_20260904_0000205",
-    "emsc_20260904_0000215"
+    "emsc_20260904_0000215",
+    "emsc_20260904_0000219"
   ],
   "replied_comment_ids": [
     "122104106805450344_1625711632494339",
@@ -533,6 +533,14 @@
       "latitude": 14.437,
       "longitude": -93.755,
       "epoch_ms": 1788532617000
+    },
+    {
+      "id": "emsc_20260904_0000219",
+      "mag": 4.1,
+      "place": "NEAR S COAST OF PAPUA, INDONESIA",
+      "latitude": -4.27,
+      "longitude": 136.99,
+      "epoch_ms": 1788534813000
     }
   ]
 }
