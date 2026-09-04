@@ -64,14 +64,8 @@ export const metadata = {
     description: 'The largest online marketplace in Bangladesh to buy, sell, and find electronics, mobiles, and more.',
     images: [`${siteUrl}/icon.svg`],
   },
-  icons: {
-    icon: [
-      { url: '/icon.svg', type: 'image/svg+xml' },
-      { url: '/icon', type: 'image/png' },
-    ],
-    apple: [
-      { url: '/apple-icon', type: 'image/png' },
-    ],
+  verification: {
+    google: 'fhC9HvJp-lIaXm3VnKC1W_EtPwoGY6dHeXWSTgYiAm0',
   },
 };
 
@@ -115,6 +109,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <meta name="google-site-verification" content="fhC9HvJp-lIaXm3VnKC1W_EtPwoGY6dHeXWSTgYiAm0" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
