@@ -111,7 +111,7 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
                 "6. If they ask about aftershocks, explain that minor fault readjustment is normal and quakes cannot be predicted. "
                 "7. If they claim it is fake news, explain it was verified by official USGS/EMSC seismic stations. "
                 "8. If they write prayers or blessings, respond with heartfelt empathy ('Amen!'). "
-                "9. Reply in the exact same language as the user comment (English, Bengali, Spanish, Tagalog, etc.). "
+                "9. IMPORTANT: Earthquake Tracker is an international, global page. Always reply strictly in professional, natural English only, regardless of the language used in the comment, so all international followers can understand it. "
                 "Do not use hashtags. Keep it natural, informative, caring, and engaging."
             )
             g_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
@@ -132,20 +132,20 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
 
     # 2. Contextual Intelligent Rule-Based Engine (100% Deterministic Fallback)
 
-    # A. Bengali Language Processing
+    # A. Multilingual / Bengali Input (Always reply strictly in English for global audience!)
     is_bengali = any('\u0980' <= ch <= '\u09ff' for ch in text_clean)
     if is_bengali:
         if any(k in text_clean for k in ["কোথায়", "কোন জায়গা", "কোন জেলা", "কোথা", "স্থান"]):
-            return f"আসসালামু আলাইকুম {user_name}! অফিসিয়াল সিসমিক তথ্য অনুযায়ী এই ভূমিকম্পটির কেন্দ্র ছিল {loc}। সঠিক ভৌগোলিক স্থানাঙ্ক আমাদের ম্যাপে দেখানো হয়েছে। নিরাপদে থাকুন! 🌍📍"
+            return f"Hello {user_name}! According to official seismic monitoring stations, this earthquake was centered at {loc} (USGS coordinates: {coords}). Stay safe! 🌍📍"
         if any(k in text_clean for k in ["টের", "কেঁপে", "ভয়", "ঝাঁকুনি", "অনুভব", "কাঁপ"]):
-            return f"ধন্যবাদ {user_name} তথ্যটি জানানোর জন্য! আপনার ও আপনার পরিবারের নিরাপত্তা কামনা করি। মৃদু আফটারশক হতে পারে, তাই সতর্ক থাকুন এবং জরুরি নিরাপত্তা প্রস্তুতি রাখুন। 🤝❤️"
+            return f"Thank you {user_name} for sharing your ground report! Experiencing shaking can be frightening. Please check your immediate surroundings for safety, keep emergency essentials handy, and stay alert for mild aftershocks. 🤝❤️"
         if any(k in text_clean for k in ["আল্লাহ", "আমিন", "দোয়া", "দোয়া", "রক্ষা", "হেফাজত"]):
-            return f"আমিন! মহান আল্লাহ সবাইকে নিরাপদে ও সুস্থ রাখুন। সবাই সতর্ক ও সচেতন থাকুন। 🙏❤️"
+            return f"Amen! Wishing safety, strength, and protection to everyone and their families in the affected regions. Stay alert and take care! 🙏❤️"
         if any(k in text_clean for k in ["ভুয়া", "ভুয়া", "মিথ্যা", "কিছু হয়নি", "গুজব"]):
-            return f"প্রিয় {user_name}, এটি আন্তর্জাতিক সিসমোলজি সংস্থা (USGS ও EMSC)-এর সিসমিক সেন্সরে আনুষ্ঠানিকভাবে রেকর্ডকৃত তথ্য। অনেক ভূমিকম্প গভীর ভূগর্ভে হওয়ায় দূরে অনুভূত নাও হতে পারে, তবে তা বৈজ্ঞানিকভাবে সত্য। নিরাপদে থাকুন! 🌍🔬"
+            return f"Hello {user_name}! This seismic event is 100% verified and recorded by official global seismic sensor stations from the USGS (US Geological Survey) and EMSC. We only report scientifically verified data. Stay safe! 🌍🔬"
         if any(k in text_clean for k in ["ধন্যবাদ", "থ্যাংকস", "ভালো", "সুন্দর", "সেরা"]):
-            return f"অসংখ্য ধন্যবাদ {user_name} পাশে থাকার জন্য! ২৪/৭ লাইভ রিয়েল-টাইম বিশ্বব্যাপী ভূমিকম্প সতর্কতার জন্য আমাদের পেজটি ফলো করে সাথে থাকুন। 🌍🔔"
-        return f"ধন্যবাদ {user_name}! যেকোনো দুর্যোগের তাৎক্ষণিক আপডেটের জন্য আমাদের পেজটির সাথে থাকুন। সবাই নিরাপদে থাকুন! 🌍❤️"
+            return f"Thank you so much {user_name} for your support! We are dedicated to providing 24/7 automated real-time seismic detection to help keep communities informed worldwide. 🔔 Follow @earthquaketracker247 for instant live alerts! 🌍✨"
+        return f"Thank you {user_name} for connecting with Earthquake Tracker 24/7! We monitor global seismic activity in real time to deliver early disaster awareness. Stay alert and stay safe! 🌍🔔"
 
     # B. Location / State / Map Disputes & Skepticism (e.g., 'that's California!', 'wrong state', 'idiots')
     has_dispute = any(k in text_lower for k in ["that's", "thats", "wrong", "idiot", "not in", "is in", "stupid", "dumb"]) or \

@@ -94,38 +94,39 @@ def process_priority_worker(idx, event, publish_locks):
         # 1. Parallel Render Stage: Generates media concurrently at full speed
         media_item = prepare_event_media(event)
         
-        # 2. Magnitude-First Publishing Gate:
-        # Wait for all higher-magnitude events (0 to idx-1) to publish to Facebook first
-        if idx > 0:
-            for prev_idx in range(idx):
-                # Wait up to 45s per higher priority event so nothing is ever permanently blocked
-                publish_locks[prev_idx].wait(timeout=45.0)
-
-        # 3. Publish to Facebook in strict magnitude order
-        print(f"📢 [PUBLISH GATE] Uploading M{mag} to Facebook: {place}...")
-        if media_item["media_type"] == "video":
-            upload_video_to_facebook(media_item["media_path"], event)
-        else:
+        # 2. Fast-Track Immediate Photo Dispatch vs Video Reels:
+        if media_item["media_type"] == "photo":
+            # 🚀 ZERO DELAY PHOTO PUBLISH:
+            # Infographic photos generate in <1.5s. Post IMMEDIATELY to beat all competitor pages!
+            print(f"⚡ [FAST-TRACK PHOTO] Instantly Uploading M{mag} to Facebook: {place}...", flush=True)
             upload_photo_to_facebook(media_item["media_path"], event)
+            mark_event_as_posted(event)
+            print(f"✨ [BEAT COMPETITION] Successfully published Infographic Photo M{mag} [{event_id}]: {place}\n", flush=True)
+        else:
+            # 3. Video Reels: Wait for any higher-priority video to finish, then upload
+            if idx > 0:
+                for prev_idx in range(idx):
+                    publish_locks[prev_idx].wait(timeout=30.0)
 
-        # Mark as posted with spatial coordinates
-        mark_event_as_posted(event)
-        print(f"✨ Successfully published M{mag} [{event_id}]: {place}\n")
+            print(f"📢 [VIDEO REEL] Uploading M{mag} Reel to Facebook: {place}...", flush=True)
+            upload_video_to_facebook(media_item["media_path"], event)
+            mark_event_as_posted(event)
+            print(f"✨ Successfully published Video Reel M{mag} [{event_id}]: {place}\n", flush=True)
 
     except Exception as e:
-        print(f"❌ Error in priority worker for M{mag} [{event_id}]: {e}")
+        print(f"❌ Error in priority worker for M{mag} [{event_id}]: {e}", flush=True)
     finally:
         # Always release lock so downstream events are never stalled
         publish_locks[idx].set()
 
 def run_pipeline():
-    """Main tracker loop with Magnitude-First Priority Parallel Engine & Auto-Commenter."""
-    print("🌍 Earthquake Tracker Bot starting run...")
+    """Main tracker loop with Instant Photo Fast-Track & Priority Parallel Engine."""
+    print("🌍 Earthquake Tracker Bot starting run...", flush=True)
     events = fetch_latest_earthquakes()
 
     if events:
-        # Sort events strictly descending by Magnitude first, then epoch time
-        events.sort(key=lambda x: (x.get("mag", 0), x.get("epoch_ms", 0)), reverse=True)
+        # ⏱️ Recency & Magnitude Prioritization: Freshest earthquakes get processed FIRST!
+        events.sort(key=lambda x: (x.get("epoch_ms", 0), x.get("mag", 0)), reverse=True)
 
         target_events = events[:10]
         num_events = len(target_events)

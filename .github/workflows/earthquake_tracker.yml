@@ -1,7 +1,9 @@
 name: 24/7 Earthquake Tracker Bot
 
 on:
-  workflow_dispatch: # Triggered externally by cron-job.org every 5 minutes
+  workflow_dispatch: # Triggered externally by cron-job.org
+  schedule:
+    - cron: '*/5 * * * *' # Redundant built-in fallback cron every 5 minutes
 
 permissions:
   contents: write

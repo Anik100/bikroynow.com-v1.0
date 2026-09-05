@@ -50,10 +50,17 @@ def create_earthquake_infographic_photo(event, output_image_path):
         map_temp_path,
         zoom=6,
         target_w=1080,
-        target_h=830
+        target_h=830,
+        fetch_osm=False
     )
     sat_map = Image.open(map_temp_path)
     canvas.paste(sat_map, (0, 0))
+    try:
+        sat_map.close()
+        if os.path.exists(map_temp_path):
+            os.remove(map_temp_path)
+    except Exception:
+        pass
 
     # Center of map
     cx = width // 2

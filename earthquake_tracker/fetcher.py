@@ -70,71 +70,86 @@ def fetch_latest_earthquakes():
 
     raw_candidates = []
 
-    # 1. Fetch USGS Instant Live Stream
-    for u_url in [USGS_FEED_URL, USGS_DAY_FEED_URL]:
+    def fetch_usgs():
+        results = []
+        for u_url in [USGS_FEED_URL, USGS_DAY_FEED_URL]:
+            try:
+                r = requests.get(u_url, timeout=6)
+                if r.status_code == 200:
+                    data = r.json()
+                    for item in data.get("features", []):
+                        event_id = str(item.get("id"))
+                        props = item.get("properties", {})
+                        coords = item.get("geometry", {}).get("coordinates", [0, 0, 0])
+                        mag = props.get("mag")
+                        if mag is None or mag < MIN_MAGNITUDE:
+                            continue
+                        epoch_ms = props.get("time", 0)
+                        results.append({
+                            "id": event_id,
+                            "source": "USGS",
+                            "mag": round(float(mag), 1),
+                            "place": props.get("place", "Unknown Location"),
+                            "latitude": coords[1],
+                            "longitude": coords[0],
+                            "depth_km": round(coords[2], 1) if len(coords) > 2 else 10.0,
+                            "epoch_ms": epoch_ms,
+                            "tsunami": props.get("tsunami", 0) == 1,
+                            "url": props.get("url", "")
+                        })
+                    break
+            except Exception as e:
+                print(f"⚠️ USGS feed fetch note: {e}")
+        return results
+
+    def fetch_emsc():
+        results = []
         try:
-            r = requests.get(u_url, timeout=10)
-            if r.status_code == 200:
-                data = r.json()
-                for item in data.get("features", []):
-                    event_id = str(item.get("id"))
-                    props = item.get("properties", {})
-                    coords = item.get("geometry", {}).get("coordinates", [0, 0, 0])
-                    mag = props.get("mag")
-                    if mag is None or mag < MIN_MAGNITUDE:
+            r_emsc = requests.get(EMSC_FEED_URL, timeout=6)
+            if r_emsc.status_code == 200:
+                e_data = r_emsc.json()
+                for item in e_data.get("features", []):
+                    p = item.get("properties", {})
+                    geom = item.get("geometry", {}).get("coordinates", [0, 0, 0])
+                    mag = p.get("mag")
+                    if mag is None or float(mag) < MIN_MAGNITUDE:
                         continue
-                    epoch_ms = props.get("time", 0)
-                    raw_candidates.append({
-                        "id": event_id,
-                        "source": "USGS",
+                    t_str = p.get("time")
+                    try:
+                        dt = datetime.fromisoformat(t_str.replace("Z", "+00:00"))
+                        epoch_ms = int(dt.timestamp() * 1000)
+                    except Exception:
+                        continue
+
+                    emsc_id = "emsc_" + str(item.get("id") or p.get("unid"))
+                    place_name = p.get("flynn_region") or "Unknown Region"
+
+                    results.append({
+                        "id": emsc_id,
+                        "source": "EMSC",
                         "mag": round(float(mag), 1),
-                        "place": props.get("place", "Unknown Location"),
-                        "latitude": coords[1],
-                        "longitude": coords[0],
-                        "depth_km": round(coords[2], 1) if len(coords) > 2 else 10.0,
+                        "place": place_name,
+                        "latitude": geom[1],
+                        "longitude": geom[0],
+                        "depth_km": round(abs(geom[2]), 1) if len(geom) > 2 else 10.0,
                         "epoch_ms": epoch_ms,
-                        "tsunami": props.get("tsunami", 0) == 1,
-                        "url": props.get("url", "")
+                        "tsunami": False,
+                        "url": f"https://www.emsc-csem.org/Earthquake/earthquake.php?id={p.get('unid')}"
                     })
-                break
         except Exception as e:
-            print(f"⚠️ USGS feed fetch note: {e}")
+            print(f"⚠️ EMSC feed fetch note: {e}")
+        return results
 
-    # 2. Fetch EMSC Real-Time Global Stream (often 2-4 minutes faster for global quakes)
-    try:
-        r_emsc = requests.get(EMSC_FEED_URL, timeout=8)
-        if r_emsc.status_code == 200:
-            e_data = r_emsc.json()
-            for item in e_data.get("features", []):
-                p = item.get("properties", {})
-                geom = item.get("geometry", {}).get("coordinates", [0, 0, 0])
-                mag = p.get("mag")
-                if mag is None or float(mag) < MIN_MAGNITUDE:
-                    continue
-                t_str = p.get("time")
-                try:
-                    dt = datetime.fromisoformat(t_str.replace("Z", "+00:00"))
-                    epoch_ms = int(dt.timestamp() * 1000)
-                except Exception:
-                    continue
+    # 🚀 Parallel Concurrent Ingestion: Query USGS and EMSC simultaneously in under 1 second
+    import concurrent.futures
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        f_usgs = executor.submit(fetch_usgs)
+        f_emsc = executor.submit(fetch_emsc)
+        raw_candidates.extend(f_usgs.result())
+        raw_candidates.extend(f_emsc.result())
 
-                emsc_id = "emsc_" + str(item.get("id") or p.get("unid"))
-                place_name = p.get("flynn_region") or "Unknown Region"
-                
-                raw_candidates.append({
-                    "id": emsc_id,
-                    "source": "EMSC",
-                    "mag": round(float(mag), 1),
-                    "place": place_name,
-                    "latitude": geom[1],
-                    "longitude": geom[0],
-                    "depth_km": round(abs(geom[2]), 1) if len(geom) > 2 else 10.0,
-                    "epoch_ms": epoch_ms,
-                    "tsunami": False,
-                    "url": f"https://www.emsc-csem.org/Earthquake/earthquake.php?id={p.get('unid')}"
-                })
-    except Exception as e:
-        print(f"⚠️ EMSC feed fetch note: {e}")
+    # ⏱️ Recency-First Priority: Sort by newest epoch time first!
+    raw_candidates.sort(key=lambda x: x.get("epoch_ms", 0), reverse=True)
 
     new_events = []
     recent_posted = history.get("recent_posted_events", [])
