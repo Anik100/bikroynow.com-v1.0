@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260827_0000341",
-    "us7000tcgh",
     "us7000tcgk",
     "emsc_20260828_0000008",
     "us7000tcgq",
@@ -499,7 +497,9 @@
     "emsc_20260905_0000187",
     "emsc_20260905_0000195",
     "us7000tek0",
-    "emsc_20260905_0000196"
+    "emsc_20260905_0000196",
+    "emsc_20260905_0000206",
+    "emsc_20260905_0000205"
   ],
   "replied_comment_ids": [
     "122106166137450344_1404682524936847",
@@ -798,6 +798,22 @@
       "latitude": -8.22,
       "longitude": 120.57,
       "epoch_ms": 1788629004000
+    },
+    {
+      "id": "emsc_20260905_0000206",
+      "mag": 4.2,
+      "place": "OFFSHORE GUERRERO, MEXICO",
+      "latitude": 17.616,
+      "longitude": -101.706,
+      "epoch_ms": 1788630855000
+    },
+    {
+      "id": "emsc_20260905_0000205",
+      "mag": 4.9,
+      "place": "FOX ISLANDS, ALEUTIAN ISLANDS",
+      "latitude": 52.2713,
+      "longitude": -169.329,
+      "epoch_ms": 1788631209215
     }
   ]
 }
