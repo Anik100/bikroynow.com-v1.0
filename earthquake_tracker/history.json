@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260828_0000060",
-    "emsc_20260828_0000061",
     "us7000tchl",
     "emsc_20260828_0000065",
     "us7000tcht",
@@ -499,7 +497,9 @@
     "emsc_20260905_0000243",
     "us7000tel1",
     "emsc_20260905_0000248",
-    "emsc_20260905_0000257"
+    "emsc_20260905_0000257",
+    "emsc_20260905_0000264",
+    "aka2026rpzydz"
   ],
   "replied_comment_ids": [
     "122106166137450344_1404682524936847",
@@ -863,6 +863,14 @@
       "latitude": 3.6,
       "longitude": 127.92,
       "epoch_ms": 1788647629000
+    },
+    {
+      "id": "aka2026rpzydz",
+      "mag": 4.0,
+      "place": "118 km SSE of Prudhoe Bay, Alaska",
+      "latitude": 69.287,
+      "longitude": -147.081,
+      "epoch_ms": 1788650116098
     }
   ]
 }
