@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260828_0000159",
     "us7000tcjf",
     "emsc_20260828_0000179",
     "emsc_20260828_0000192",
@@ -499,7 +498,8 @@
     "emsc_20260906_0000052",
     "us7000temi",
     "emsc_20260906_0000057",
-    "emsc_20260906_0000056"
+    "emsc_20260906_0000056",
+    "emsc_20260906_0000071"
   ],
   "replied_comment_ids": [
     "122106361383450344_1021555390937459",
@@ -513,14 +513,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260904_0000241",
-      "mag": 4.0,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.15,
-      "longitude": 120.58,
-      "epoch_ms": 1788541773000
-    },
     {
       "id": "us7000tede",
       "mag": 4.6,
@@ -912,6 +904,14 @@
       "latitude": -8.26,
       "longitude": 120.58,
       "epoch_ms": 1788669113000
+    },
+    {
+      "id": "emsc_20260906_0000071",
+      "mag": 5.0,
+      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
+      "latitude": 40.756,
+      "longitude": 142.916,
+      "epoch_ms": 1788671747870
     }
   ]
 }
