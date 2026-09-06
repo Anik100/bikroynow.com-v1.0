@@ -72,9 +72,13 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
     """
     Generates an intelligent, highly contextual, empathetic, and scientifically accurate AI reply
     matching ANY type of comment from users:
+    - Tectonic plates, fault systems, trenches, volcanoes & stopping quakes (e.g. Cecile's comment)
+    - Anxiety, fear, trauma & emotional comfort
+    - Magnitude doubts & seismological scale explanations
+    - Community safety inquiries & checking on loved ones
     - Location & state disputes / Skepticism of place (e.g., 'that's California', 'wrong state', 'idiots')
     - Regional ambiguity / Location inquiry (e.g. Pilar Siargao vs Pilar Bataan, 'where is this?')
-    - Felt reports & shaking experiences
+    - Felt reports & ground shaking experiences
     - Did not feel reports & distance queries
     - Tsunami & ocean hazard inquiries
     - Aftershock concerns & 'Big One' anxiety
@@ -82,7 +86,7 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
     - Fake news / Skepticism / Disbelief
     - Prayers, blessings & well wishes
     - Appreciation & compliments
-    - Multilingual support (Bengali, Spanish, Tagalog)
+    - Multilingual support (Strictly in English for global audience!)
     """
     text_clean = (comment_text or "").strip()
     text_lower = text_clean.lower()
@@ -93,26 +97,37 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
     coords = ctx_info["coords"] or "official USGS coordinates"
     depth = ctx_info["depth"] or "shallow depth"
 
+    # Clean Name Formatting (Never say robotic 'Friend'!)
+    clean_user = (user_name or "").strip()
+    if clean_user.lower() in ["friend", "there", "user", ""]:
+        prefix = "Hello! "
+        thanks_prefix = "Thank you so much "
+    else:
+        prefix = f"Hello {clean_user}! "
+        thanks_prefix = f"Thank you {clean_user} "
+
     # 1. Try Google Gemini API if key is available
     if GEMINI_API_KEY:
         try:
             prompt = (
                 "You are Earthquake Tracker official AI assistant on Facebook. "
+                "This is an international page with a worldwide global audience. "
                 f"Post Details: \"{ctx_clean}\". "
-                f"A user named '{user_name}' commented on our live earthquake alert post: \"{text_clean}\". "
-                "Generate a polite, scientific, concise (2-3 sentences maximum) reply. "
-                "Instructions based on comment intent: "
-                "1. If they dispute the location, state, or country (e.g. claiming it is California instead of New Mexico, or Pilar Bataan instead of Siargao, or calling the page idiots), "
-                "politely and warmly clarify that places often share identical names, state the exact verified location and USGS GPS coordinates from the post, and thank them. "
-                "2. If they ask about the location, explain which province, municipality, or region the epicenter was located near. "
-                "3. If they felt the quake, thank them for their ground report and advise basic safety precautions for aftershocks. "
-                "4. If they say they did not feel it, explain that seismic waves attenuate with distance and depth. "
-                "5. If they ask about a tsunami, reassure them based on NOAA/PTWC assessments. "
-                "6. If they ask about aftershocks, explain that minor fault readjustment is normal and quakes cannot be predicted. "
-                "7. If they claim it is fake news, explain it was verified by official USGS/EMSC seismic stations. "
-                "8. If they write prayers or blessings, respond with heartfelt empathy ('Amen!'). "
-                "9. IMPORTANT: Earthquake Tracker is an international, global page. Always reply strictly in professional, natural English only, regardless of the language used in the comment, so all international followers can understand it. "
-                "Do not use hashtags. Keep it natural, informative, caring, and engaging."
+                f"A user named '{clean_user or 'a follower'}' commented on our live earthquake alert post: \"{text_clean}\". "
+                "Generate a polite, scientific, concise (2-3 sentences maximum) reply matching their exact intent. "
+                "Instructions based on user intent: "
+                "1. If they discuss plate tectonics, fault lines, trenches, volcanoes, or wishing the quakes would stop/calm down: resonate with their wish for calm/peace, explain tectonic stress release gently, and wish safety. "
+                "2. If they express anxiety, fear, panic, or insomnia: offer warm comfort, calming empathy, and simple safety steps. "
+                "3. If they dispute the location or state (e.g. California vs New Mexico, or Pilar Bataan vs Siargao): warmly clarify that places share identical names and cite verified USGS GPS coordinates. "
+                "4. If they ask about the location: explain the exact region, nearest municipality, and fault line. "
+                "5. If they felt the quake: thank them for their ground report and advise basic aftershock preparedness. "
+                "6. If they say they did not feel it: explain seismic attenuation with distance and depth. "
+                "7. If they ask about a tsunami: reassure them based on official NOAA/PTWC assessments. "
+                "8. If they ask about aftershocks or 'the Big One': explain natural tectonic fault readjustment. "
+                "9. If they claim fake news: explain it was verified by USGS/EMSC seismic stations. "
+                "10. If they write prayers or blessings: respond with heartfelt empathy ('Amen!'). "
+                "11. IMPORTANT: Always reply strictly in natural, professional English only. "
+                "Do not use hashtags. Keep it natural, informative, caring, and engaging. Never address the user as 'Friend'."
             )
             g_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
             payload = {
@@ -136,18 +151,66 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
     is_bengali = any('\u0980' <= ch <= '\u09ff' for ch in text_clean)
     if is_bengali:
         if any(k in text_clean for k in ["কোথায়", "কোন জায়গা", "কোন জেলা", "কোথা", "স্থান"]):
-            return f"Hello {user_name}! According to official seismic monitoring stations, this earthquake was centered at {loc} (USGS coordinates: {coords}). Stay safe! 🌍📍"
+            return f"{prefix}According to official seismic monitoring stations, this earthquake was centered at {loc} (USGS coordinates: {coords}). Stay safe! 🌍📍"
         if any(k in text_clean for k in ["টের", "কেঁপে", "ভয়", "ঝাঁকুনি", "অনুভব", "কাঁপ"]):
-            return f"Thank you {user_name} for sharing your ground report! Experiencing shaking can be frightening. Please check your immediate surroundings for safety, keep emergency essentials handy, and stay alert for mild aftershocks. 🤝❤️"
+            return f"{thanks_prefix}for sharing your ground report! Shaking can be frightening. Please check your surroundings for safety, keep essentials handy, and stay alert for mild aftershocks. 🤝❤️"
         if any(k in text_clean for k in ["আল্লাহ", "আমিন", "দোয়া", "দোয়া", "রক্ষা", "হেফাজত"]):
             return f"Amen! Wishing safety, strength, and protection to everyone and their families in the affected regions. Stay alert and take care! 🙏❤️"
         if any(k in text_clean for k in ["ভুয়া", "ভুয়া", "মিথ্যা", "কিছু হয়নি", "গুজব"]):
-            return f"Hello {user_name}! This seismic event is 100% verified and recorded by official global seismic sensor stations from the USGS (US Geological Survey) and EMSC. We only report scientifically verified data. Stay safe! 🌍🔬"
+            return f"{prefix}This seismic event is 100% verified and recorded by official global seismic sensor stations from the USGS (US Geological Survey) and EMSC. We only report scientifically verified data. Stay safe! 🌍🔬"
         if any(k in text_clean for k in ["ধন্যবাদ", "থ্যাংকস", "ভালো", "সুন্দর", "সেরা"]):
-            return f"Thank you so much {user_name} for your support! We are dedicated to providing 24/7 automated real-time seismic detection to help keep communities informed worldwide. 🔔 Follow @earthquaketracker247 for instant live alerts! 🌍✨"
-        return f"Thank you {user_name} for connecting with Earthquake Tracker 24/7! We monitor global seismic activity in real time to deliver early disaster awareness. Stay alert and stay safe! 🌍🔔"
+            return f"{thanks_prefix}for your support! We are dedicated to providing 24/7 automated real-time seismic detection to keep communities informed worldwide. 🔔 Follow @earthquaketracker247 for instant live alerts! 🌍✨"
+        return f"{thanks_prefix}for connecting with Earthquake Tracker 24/7! We monitor global seismic activity in real time to deliver early disaster awareness. Stay alert and stay safe! 🌍🔔"
 
-    # B. Location / State / Map Disputes & Skepticism (e.g., 'that's California!', 'wrong state', 'idiots')
+    # B. Tectonic / Trench / Fault / Volcano / Calming Down (e.g. Cecile's exact comment!)
+    tectonic_keywords = [
+        "plate", "tectonic", "trench", "fault", "volcano", "dormant", "calm",
+        "stop immediately", "stop shaking", "ring of fire", "subduction", "rift",
+        "crust", "plates", "magma", "mantle"
+    ]
+    if any(k in text_lower for k in tectonic_keywords):
+        return (
+            f"{prefix}We truly share your heartfelt wish for calm and peace across the tectonic plates and fault systems. "
+            "While the Earth's dynamic crust continually releases strain along active subduction trenches and volcanic arcs, "
+            "we pray for safety, resilience, and minimal disruption for all communities in the region. Stay alert and stay safe! 🌍🕊️"
+        )
+
+    # C. Anxiety / Fear / Trauma / Panic
+    fear_keywords = [
+        "scared", "scary", "terrified", "panic", "panicking", "trauma", "traumatized",
+        "nervous", "anxious", "anxiety", "cant sleep", "can't sleep", "heart beating",
+        "dizzy", "crying", "terrifying"
+    ]
+    if any(k in text_lower for k in fear_keywords):
+        return (
+            f"{prefix}Experiencing an earthquake is deeply unsettling, and it is completely natural to feel anxious or on edge. "
+            "Please take slow, deep breaths, keep emergency footwear and flashlights nearby, and stay connected with family or neighbors. "
+            "You are not alone—stay alert and stay safe! 🤝❤️"
+        )
+
+    # D. Magnitude / Measurement Doubts / Intensity
+    mag_keywords = [
+        "downgraded", "upgraded", "only 5", "only 4", "felt like 6", "felt like 7",
+        "felt bigger", "felt stronger", "magnitude wrong", "richter", "scale"
+    ]
+    if any(k in text_lower for k in mag_keywords):
+        return (
+            f"{prefix}Seismic monitoring networks (USGS/EMSC) calculate preliminary magnitudes automatically from real-time seismometer wave amplitudes, which are then refined by seismologists as more station telemetry arrives. "
+            f"Focal depth ({depth}) and local bedrock geology also heavily influence how intense shaking feels at the surface. Stay safe! 🌍📡"
+        )
+
+    # E. Checking on Community / Casual Well-Wishing
+    community_keywords = [
+        "hope everyone", "everyone ok", "everyone okay", "is everyone safe", "check in",
+        "any casualties", "any damage", "how is everyone"
+    ]
+    if any(k in text_lower for k in community_keywords):
+        return (
+            f"{prefix}We sincerely hope and pray all residents and families across the affected regions are safe and unharmed. "
+            "If you have loved ones near the epicenter, checking in via text helps keep local voice lines open for emergency responders. Stay alert and stay safe! 🤝❤️"
+        )
+
+    # F. Location / State / Map Disputes & Skepticism (e.g., 'that's California!', 'wrong state', 'idiots')
     has_dispute = any(k in text_lower for k in ["that's", "thats", "wrong", "idiot", "not in", "is in", "stupid", "dumb"]) or \
                   ("california" in text_lower and "california" not in loc.lower()) or \
                   ("bataan" in text_lower and "bataan" not in loc.lower())
@@ -161,20 +224,20 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
 
         if disputed_mention:
             return (
-                f"Hello {user_name}! Easy mistake to make — while {disputed_mention} is very well known, "
+                f"{prefix}Easy mistake to make — while {disputed_mention} is very well known, "
                 f"this specific earthquake actually occurred at {loc} (official USGS coordinates: {coords}). "
                 f"Seismic monitoring stations verified the epicenter right here in {short_loc}, not in {disputed_mention}. "
                 "Thank you for checking, and have a wonderful day! 🌍📍"
             )
         else:
             return (
-                f"Hello {user_name}! To clarify the location: according to official USGS and EMSC seismic monitoring stations, "
+                f"{prefix}To clarify the location: according to official USGS and EMSC seismic monitoring stations, "
                 f"the epicenter was scientifically recorded at {loc} (coordinates: {coords}). "
                 "Global seismic sensors triangulate the exact GPS location independently of local administrative names. "
                 "Thank you for sharing your thoughts, and stay safe! 🌍📍"
             )
 
-    # C. Location Inquiries & Regional Clarification (e.g., Pilar Siargao vs Pilar Bataan, 'where is this?')
+    # G. Location Inquiries & Regional Clarification (e.g., Pilar Siargao vs Pilar Bataan, 'where is this?')
     location_keywords = [
         "where", "location", "which", "province", "municipality", "city", "island", "town",
         "what place", "exact location", "where exactly", "is this in", "what town", "what province",
@@ -183,16 +246,16 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
     if any(k in text_lower for k in location_keywords):
         if "pilar" in text_lower or "pilar" in ctx_clean.lower():
             return (
-                f"Hello {user_name}! In the Philippines, several municipalities share the name Pilar (including in Bataan, Sorsogon, Surigao del Norte, Bohol, and Cebu). "
+                f"{prefix}In the Philippines, several municipalities share the name Pilar (including in Bataan, Sorsogon, Surigao del Norte, Bohol, and Cebu). "
                 "This specific earthquake was centered offshore near Pilar on Siargao Island, Province of Surigao del Norte (Caraga Region, Mindanao) — NOT Pilar, Bataan in Luzon. "
                 "Our satellite map marks the exact offshore epicenter. Stay safe! 🇵🇭🗺️"
             )
         return (
-            f"Hello {user_name}! According to official USGS seismic data, this earthquake was centered at {loc} (coordinates: {coords}). "
+            f"{prefix}According to official USGS seismic data, this earthquake was centered at {loc} (coordinates: {coords}). "
             "Seismological stations calculate the epicenter relative to the nearest registered municipality or coastline shown on our video map. Stay safe! 🌍📍"
         )
 
-    # D. Did Not Feel / Distance Questions (Must check BEFORE felt reports!)
+    # H. Did Not Feel / Distance Questions (Must check BEFORE felt reports!)
     not_felt_keywords = [
         "didn't feel", "didnt feel", "did not feel", "nothing felt", "felt nothing",
         "no shake", "no shaking", "didn't notice", "didnt notice", "not feeling anything",
@@ -200,89 +263,93 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
     ]
     if any(k in text_lower for k in not_felt_keywords):
         return (
-            f"Hello {user_name}! Seismic wave intensity diminishes quickly with distance from the epicenter, focal depth ({depth}), and local bedrock geology. "
+            f"{prefix}Seismic wave intensity diminishes quickly with distance from the epicenter, focal depth ({depth}), and local bedrock geology. "
             "Moderate quakes are often felt only near the immediate epicenter or by sensitive instruments. Thank you for your ground observation! 🌍📡"
         )
 
-    # E. Felt Reports / Ground Shaking Experience
+    # I. Felt Reports / Ground Shaking Experience
     felt_keywords = [
         "felt", "feel", "shook", "shaking", "scary", "strong", "woke me", "rumbled", "bed moved", "house shook",
         "big jolt", "terasa", "goyang", "kencang", "hissedildi", "sintio", "temblor", "naramdaman", "lumindol"
     ]
     if any(k in text_lower for k in felt_keywords):
         return (
-            f"Thank you {user_name} for sharing your valuable ground report! Experiencing shaking can be frightening. "
+            f"{thanks_prefix}for sharing your valuable ground report! Experiencing shaking can be frightening. "
             "Please check your immediate surroundings for minor hazards, keep emergency supplies handy, and stay aware of possible mild aftershocks. "
             "Stay alert and stay safe! 🤝❤️"
         )
 
-    # F. Tsunami Inquiries
+    # J. Tsunami Inquiries
     tsunami_keywords = ["tsunami", "wave", "tidal", "waves", "maremoto", "gelombang"]
     if any(k in text_lower for k in tsunami_keywords):
         return (
-            f"Hello {user_name}! Based on official assessments from NOAA and the Pacific Tsunami Warning Center (PTWC), there is NO immediate destructive tsunami threat from this specific event. "
+            f"{prefix}Based on official assessments from NOAA and the Pacific Tsunami Warning Center (PTWC), there is NO immediate destructive tsunami threat from this specific event. "
             "Our automated network monitors live ocean buoy telemetry 24/7. Stay calm and stay safe! 🌊✅"
         )
 
-    # G. Aftershocks & Future Quake Fears ('Big One')
+    # K. Aftershocks & Future Quake Fears ('Big One')
     aftershock_keywords = ["aftershock", "aftershocks", "bigger one", "big one", "another one", "next quake", "predict", "coming soon"]
     if any(k in text_lower for k in aftershock_keywords):
         return (
-            f"Hello {user_name}! Minor aftershocks are a natural process as tectonic plates settle along the fault line. They typically decrease in frequency and strength over time. "
+            f"{prefix}Minor aftershocks are a natural process as tectonic plates settle along the fault line. They typically decrease in frequency and strength over time. "
             "While earthquakes cannot be predicted in advance, staying prepared with a basic family safety kit is always wise. Stay alert and stay safe! 🌍🛡️"
         )
 
-    # H. Safety Advice / What to do
+    # L. Safety Advice / What to do
     safety_keywords = ["what to do", "how to protect", "evacuate", "safety tip", "drop cover"]
     if any(k in text_lower for k in safety_keywords):
         return (
-            f"Hello {user_name}! If an earthquake occurs: DROP to the ground, take COVER under a sturdy table or desk, and HOLD ON until shaking stops. "
+            f"{prefix}If an earthquake occurs: DROP to the ground, take COVER under a sturdy table or desk, and HOLD ON until shaking stops. "
             "Stay away from glass, windows, and heavy furniture. Never use elevators during or immediately after a quake. Stay prepared and stay safe! 🛡️🤝"
         )
 
-    # I. Fake News / Skepticism / Disbelief
+    # M. Fake News / Skepticism / Disbelief
     fake_keywords = [
         "fake", "hoax", "liar", "lie", "bullshit", "clickbait", "stop lying", "cap", "scam", "rumor", "false",
         "bohong", "palsu", "yalan", "falso", "mentira"
     ]
     if any(k in text_lower for k in fake_keywords):
         return (
-            f"Hello {user_name}! This seismic event is 100% verified and recorded by official global seismic sensor stations from the USGS (US Geological Survey) and EMSC. "
+            f"{prefix}This seismic event is 100% verified and recorded by official global seismic sensor stations from the USGS (US Geological Survey) and EMSC. "
             "Many earthquakes occur deep beneath the Earth's crust or offshore, registering on sensitive seismometers even if shaking isn't felt across distant cities. "
             "We only publish verified scientific data. Stay safe! 🌍🔬"
         )
 
-    # J. Prayers & Blessings
+    # N. Prayers & Blessings
     prayer_keywords = ["pray", "prayers", "god", "allah", "bless", "lord", "amen", "amin", "safe", "semoga", "dios", "bendiga"]
     if any(k in text_lower for k in prayer_keywords):
         return f"Amen! Wishing safety, protection, and peace to everyone and their families in the affected regions. Stay alert and take care! 🙏❤️"
 
-    # K. Appreciation & Thanks
+    # O. Appreciation & Thanks
     thanks_keywords = [
         "thank", "thanks", "great", "fast", "good job", "awesome", "useful", "nice", "love", "good work",
         "terima kasih", "makasih", "tesekkur", "sagol", "gracias", "salamat"
     ]
     if any(k in text_lower for k in thanks_keywords):
         return (
-            f"Thank you so much {user_name} for your support! We are dedicated to providing 24/7 automated real-time seismic detection to help keep communities informed worldwide. "
+            f"{thanks_prefix}for your support! We are dedicated to providing 24/7 automated real-time seismic detection to help keep communities informed worldwide. "
             "🔔 Follow @earthquaketracker247 for instant live alerts! 🌍✨"
         )
 
-    # L. Casual Greetings
+    # P. Casual Greetings
     greeting_keywords = ["hi", "hello", "hey", "assalamu alaikum", "salam", "good morning", "good evening", "good afternoon", "hola", "kamusta"]
     if any(k in text_lower for k in greeting_keywords) and len(text_clean.split()) <= 4:
-        return f"Hello {user_name}! Welcome to Earthquake Tracker 24/7. We monitor global seismic activity in real time to deliver early disaster awareness. Stay safe and have a wonderful day! 🌍👋"
+        return f"{prefix}Welcome to Earthquake Tracker 24/7. We monitor global seismic activity in real time to deliver early disaster awareness. Stay safe and have a wonderful day! 🌍👋"
 
-    # M. Default Universal Engaging Reply
+    # Q. Default Universal Engaging Reply
     return (
-        f"Thank you {user_name} for connecting with Earthquake Tracker 24/7! We truly appreciate your support and ground updates. "
+        f"{thanks_prefix}for connecting with Earthquake Tracker 24/7! We monitor global seismic activity in real time to deliver early disaster awareness. "
         "Stay alert, stay safe, and follow @earthquaketracker247 for 24/7 instant verified seismic alerts worldwide. 🌍🔔"
     )
 
 def process_comment_auto_replies():
     """
     Scans all recent Facebook Reels, Videos, Photos, and Feed Posts for new unreplied comments.
-    Generates intelligent, contextual AI responses matching the user's intent.
+    Guaranteed zero duplicate replies via 4-tier protection:
+    1. Local history cache (replied_comment_ids)
+    2. In-memory run deduplication (seen_in_this_run)
+    3. Self-page comment ignore
+    4. LIVE FACEBOOK GRAPH API SHIELD: inspects sub-replies directly on Facebook. If our page already replied, skip immediately!
     """
     if not FB_PAGE_ACCESS_TOKEN or not FB_PAGE_ID:
         return
@@ -342,9 +409,12 @@ def process_comment_auto_replies():
 
     # Process all comments across all media items
     new_replies_count = 0
+    seen_in_this_run = set()
+
     for media_id, post_context in media_dict.items():
         try:
-            c_url = f"https://graph.facebook.com/v20.0/{media_id}/comments?fields=id,from,message,created_time&limit=25&access_token={FB_PAGE_ACCESS_TOKEN}"
+            # 🛡️ Request comments including sub-replies ({from,id}) for live Facebook verification!
+            c_url = f"https://graph.facebook.com/v20.0/{media_id}/comments?fields=id,from,message,created_time,comments{{from,id}}&limit=25&access_token={FB_PAGE_ACCESS_TOKEN}"
             res = requests.get(c_url, headers=headers, timeout=6)
             if res.status_code != 200:
                 continue
@@ -354,15 +424,30 @@ def process_comment_auto_replies():
                 comment_id = str(c.get("id"))
                 from_user = c.get("from", {})
                 user_id = str(from_user.get("id", ""))
-                user_name = from_user.get("name", "Friend")
+                raw_name = (from_user.get("name") or "").strip()
+                user_name = raw_name if raw_name.lower() != "friend" else ""
                 comment_msg = c.get("message", "")
 
-                # Skip if already replied to this comment
+                # 🛡️ SHIELD 1: Skip if already tracked in local history
                 if comment_id in replied_comments:
                     continue
 
-                # Skip comments made by our own page
+                # 🛡️ SHIELD 2: Skip if already processed in this current run
+                if comment_id in seen_in_this_run:
+                    continue
+                seen_in_this_run.add(comment_id)
+
+                # 🛡️ SHIELD 3: Skip comments made by our own page
                 if user_id == str(FB_PAGE_ID):
+                    continue
+
+                # 🛡️ SHIELD 4 (LIVE FACEBOOK SHIELD):
+                # Inspect sub-replies directly on Facebook. If our page already posted any reply, skip and cache!
+                sub_comments = c.get("comments", {}).get("data", [])
+                already_replied_on_fb = any(str(sub.get("from", {}).get("id", "")) == str(FB_PAGE_ID) for sub in sub_comments)
+                if already_replied_on_fb:
+                    replied_comments.add(comment_id)
+                    history_changed = True
                     continue
 
                 # Generate Smart Contextual AI Reply
@@ -376,7 +461,7 @@ def process_comment_auto_replies():
                 }
                 r_post = requests.post(reply_url, data=payload, headers=headers, timeout=10)
                 if r_post.status_code == 200:
-                    print(f"✅ AI-Replied to [{user_name}]: '{comment_msg[:25]}...' -> '{reply_message[:35]}...'", flush=True)
+                    print(f"✅ AI-Replied to [{user_name or 'user'}]: '{comment_msg[:25]}...' -> '{reply_message[:35]}...'", flush=True)
                     replied_comments.add(comment_id)
                     history_changed = True
                     new_replies_count += 1
@@ -396,4 +481,5 @@ def process_comment_auto_replies():
 
 if __name__ == "__main__":
     process_comment_auto_replies()
+
 
