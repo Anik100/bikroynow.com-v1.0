@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tcp5",
     "emsc_20260828_0000279",
     "emsc_20260828_0000280",
     "emsc_20260828_0000307",
@@ -499,7 +498,8 @@
     "emsc_20260906_0000135",
     "emsc_20260906_0000136",
     "us7000tepa",
-    "us7000tep0"
+    "us7000tep0",
+    "emsc_20260906_0000149"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -514,14 +514,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260904_0000346",
-      "mag": 4.1,
-      "place": "OFF COAST OF CENTRAL AMERICA",
-      "latitude": 6.5835,
-      "longitude": -83.8576,
-      "epoch_ms": 1788564933000
-    },
     {
       "id": "us7000teg7",
       "mag": 4.5,
@@ -913,6 +905,14 @@
       "latitude": -8.21,
       "longitude": 123.96,
       "epoch_ms": 1788693346000
+    },
+    {
+      "id": "emsc_20260906_0000149",
+      "mag": 5.2,
+      "place": "SOUTHERN EAST PACIFIC RISE",
+      "latitude": -24.2304,
+      "longitude": -115.8358,
+      "epoch_ms": 1788696016740
     }
   ]
 }
