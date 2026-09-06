@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tcjv",
     "emsc_20260828_0000193",
     "emsc_20260828_0000203",
     "emsc_20260828_0000214",
@@ -499,7 +498,8 @@
     "emsc_20260906_0000071",
     "us7000temt",
     "emsc_20260906_0000074",
-    "us7000temw"
+    "us7000temw",
+    "emsc_20260906_0000080"
   ],
   "replied_comment_ids": [
     "122106361383450344_1021555390937459",
@@ -513,14 +513,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tede",
-      "mag": 4.6,
-      "place": "32 km NW of Raumati Beach, New Zealand",
-      "latitude": -40.7112,
-      "longitude": 174.7119,
-      "epoch_ms": 1788546841487
-    },
     {
       "id": "emsc_20260904_0000295",
       "mag": 4.0,
@@ -912,6 +904,14 @@
       "latitude": 40.756,
       "longitude": 142.916,
       "epoch_ms": 1788671747870
+    },
+    {
+      "id": "emsc_20260906_0000080",
+      "mag": 4.2,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.05,
+      "longitude": 120.11,
+      "epoch_ms": 1788674764000
     }
   ]
 }
