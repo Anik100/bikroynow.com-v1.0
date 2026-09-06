@@ -14,9 +14,8 @@ from config import FB_PAGE_ID, FB_PAGE_ACCESS_TOKEN, HISTORY_FILE
 from fetcher import load_history, save_history, history_lock
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
-PAGE_USERNAME = "earthquaketracker247"
 PAGE_LINK = "facebook.com/earthquaketracker247"
-FOLLOW_CTA = f"Follow @{PAGE_USERNAME} ({PAGE_LINK})"
+FOLLOW_CTA = f"Follow {PAGE_LINK}"
 
 def parse_post_context(post_context):
     """
@@ -129,7 +128,7 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
                 "8. If they ask about aftershocks or 'the Big One': explain natural tectonic fault readjustment. "
                 "9. If they claim fake news: explain it was verified by USGS/EMSC seismic stations. "
                 "10. If they write prayers or blessings: respond with heartfelt empathy ('Amen!'). "
-                "11. MANDATORY PAGE MENTION & SAFETY GUIDELINES CALL-TO-ACTION: In every single reply, always advise following official safety guidelines and invite users to follow our page with the exact phrase: 'Follow @earthquaketracker247 (facebook.com/earthquaketracker247) for official safety guidelines and live updates'. The exact link facebook.com/earthquaketracker247 must be included so Facebook users can tap it to open the page and follow. "
+                "11. MANDATORY SAFETY & PAGE FOLLOW CALL-TO-ACTION: In every single reply, always advise following official safety guidelines and invite users to follow our page with the clean direct link: 'Follow facebook.com/earthquaketracker247 for official safety guidelines and live updates'. Do not write the @username handle separately, just use the clean link facebook.com/earthquaketracker247 so users can tap it directly to open the page and follow. "
                 "12. IMPORTANT: Always reply strictly in natural, professional English only. "
                 "Do not use hashtags. Keep it natural, informative, caring, and engaging. Never address the user as 'Friend'."
             )
