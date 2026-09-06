@@ -14,6 +14,9 @@ from config import FB_PAGE_ID, FB_PAGE_ACCESS_TOKEN, HISTORY_FILE
 from fetcher import load_history, save_history, history_lock
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
+PAGE_USERNAME = "earthquaketracker247"
+PAGE_LINK = "facebook.com/earthquaketracker247"
+FOLLOW_CTA = f"Follow @{PAGE_USERNAME} ({PAGE_LINK})"
 
 def parse_post_context(post_context):
     """
@@ -126,7 +129,7 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
                 "8. If they ask about aftershocks or 'the Big One': explain natural tectonic fault readjustment. "
                 "9. If they claim fake news: explain it was verified by USGS/EMSC seismic stations. "
                 "10. If they write prayers or blessings: respond with heartfelt empathy ('Amen!'). "
-                "11. MANDATORY SAFETY REMINDER: Always include a brief, natural reminder to follow official earthquake safety guidelines (such as staying alert, keeping emergency supplies ready, remembering 'Drop, Cover, and Hold On', or following local emergency management directives). "
+                "11. MANDATORY PAGE MENTION & SAFETY GUIDELINES CALL-TO-ACTION: In every single reply, always advise following official safety guidelines and invite users to follow our page with the exact phrase: 'Follow @earthquaketracker247 (facebook.com/earthquaketracker247) for official safety guidelines and live updates'. The exact link facebook.com/earthquaketracker247 must be included so Facebook users can tap it to open the page and follow. "
                 "12. IMPORTANT: Always reply strictly in natural, professional English only. "
                 "Do not use hashtags. Keep it natural, informative, caring, and engaging. Never address the user as 'Friend'."
             )
@@ -152,16 +155,16 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
     is_bengali = any('\u0980' <= ch <= '\u09ff' for ch in text_clean)
     if is_bengali:
         if any(k in text_clean for k in ["কোথায়", "কোন জায়গা", "কোন জেলা", "কোথা", "স্থান"]):
-            return f"{prefix}According to official seismic monitoring stations, this earthquake was centered at {loc} (USGS coordinates: {coords}). Please stay alert and always follow official safety guidelines! 🌍📍"
+            return f"{prefix}According to official seismic monitoring stations, this earthquake was centered at {loc} (USGS coordinates: {coords}). {FOLLOW_CTA} for official safety guidelines and live updates! 🌍📍"
         if any(k in text_clean for k in ["টের", "কেঁপে", "ভয়", "ঝাঁকুনি", "অনুভব", "কাঁপ"]):
-            return f"{thanks_prefix}for sharing your ground report! Shaking can be frightening. Please follow earthquake safety guidelines (Drop, Cover, and Hold On), keep essentials handy, and stay alert for aftershocks. 🤝❤️"
+            return f"{thanks_prefix}for sharing your ground report! Shaking can be frightening. Please follow earthquake safety guidelines (Drop, Cover, and Hold On), keep essentials handy, and {FOLLOW_CTA} for 24/7 live alerts. 🤝❤️"
         if any(k in text_clean for k in ["আল্লাহ", "আমিন", "দোয়া", "দোয়া", "রক্ষা", "হেফাজত"]):
-            return f"Amen! Wishing safety, strength, and protection to everyone in the affected regions. Stay alert, take care, and always follow official safety guidelines! 🙏❤️"
+            return f"Amen! Wishing safety, strength, and protection to everyone in the affected regions. {FOLLOW_CTA} for official safety guidelines and 24/7 live updates! 🙏❤️"
         if any(k in text_clean for k in ["ভুয়া", "ভুয়া", "মিথ্যা", "কিছু হয়নি", "গুজব"]):
-            return f"{prefix}This seismic event is 100% verified and recorded by official global seismic sensor stations from the USGS (US Geological Survey) and EMSC. We only report scientifically verified data. Stay prepared and follow official safety guidelines! 🌍🔬"
+            return f"{prefix}This seismic event is 100% verified and recorded by official global seismic sensor stations from the USGS (US Geological Survey) and EMSC. {FOLLOW_CTA} for verified scientific data and official safety guidelines! 🌍🔬"
         if any(k in text_clean for k in ["ধন্যবাদ", "থ্যাংকস", "ভালো", "সুন্দর", "সেরা"]):
-            return f"{thanks_prefix}for your support! We are dedicated to providing 24/7 automated real-time seismic detection. Remember to always follow official safety guidelines! 🔔 Follow @earthquaketracker247 for live alerts! 🌍✨"
-        return f"{thanks_prefix}for connecting with Earthquake Tracker 24/7! We monitor global seismic activity in real time. Please stay alert, follow official earthquake safety guidelines, and stay safe! 🌍🔔"
+            return f"{thanks_prefix}for your support! We are dedicated to providing 24/7 automated real-time seismic detection. 🔔 {FOLLOW_CTA} for official safety guidelines and live alerts! 🌍✨"
+        return f"{thanks_prefix}for connecting with Earthquake Tracker 24/7! We monitor global seismic activity in real time. 🔔 {FOLLOW_CTA} for official earthquake safety guidelines and 24/7 live alerts! 🌍🔔"
 
     # B. Tectonic / Trench / Fault / Volcano / Calming Down (e.g. Cecile's exact comment!)
     tectonic_keywords = [
@@ -173,7 +176,7 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
         return (
             f"{prefix}We truly share your heartfelt wish for calm and peace across the tectonic plates and fault systems. "
             "While the Earth's dynamic crust continually releases strain along active subduction trenches and volcanic arcs, "
-            "we pray for safety, resilience, and minimal disruption for all communities. Please stay alert and remember to follow local disaster safety guidelines! 🌍🕊️"
+            f"we pray for safety and minimal disruption. {FOLLOW_CTA} for official safety guidelines and 24/7 live updates! 🌍🕊️"
         )
 
     # C. Anxiety / Fear / Trauma / Panic
@@ -186,7 +189,7 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
         return (
             f"{prefix}Experiencing an earthquake is deeply unsettling, and it is completely natural to feel anxious or on edge. "
             "Please take slow, deep breaths, keep emergency footwear and flashlights nearby, and follow essential earthquake safety guidelines (Drop, Cover, and Hold On). "
-            "You are not alone—stay alert and follow official safety guidelines! 🤝❤️"
+            f"You are not alone—{FOLLOW_CTA} for official safety guidelines and live support. Stay safe! 🤝❤️"
         )
 
     # D. Magnitude / Measurement Doubts / Intensity
@@ -197,7 +200,7 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
     if any(k in text_lower for k in mag_keywords):
         return (
             f"{prefix}Seismic monitoring networks (USGS/EMSC) calculate preliminary magnitudes automatically from real-time seismometer wave amplitudes, which are then refined by seismologists as more station telemetry arrives. "
-            f"Focal depth ({depth}) and local bedrock geology also heavily influence how intense shaking feels at the surface. Please stay alert and always follow official safety guidelines. Stay safe! 🌍📡"
+            f"Focal depth ({depth}) and local bedrock geology also heavily influence how intense shaking feels at the surface. {FOLLOW_CTA} for official safety guidelines and 24/7 live updates! 🌍📡"
         )
 
     # E. Checking on Community / Casual Well-Wishing
@@ -209,7 +212,7 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
         return (
             f"{prefix}We sincerely hope and pray all residents and families across the affected regions are safe and unharmed. "
             "If you have loved ones near the epicenter, checking in via text helps keep local voice lines open for emergency responders. "
-            "Please ensure your household stays prepared and follows official earthquake safety guidelines! 🤝❤️"
+            f"{FOLLOW_CTA} to stay updated on official safety guidelines and live seismic reports. Stay safe! 🤝❤️"
         )
 
     # F. Location / State / Map Disputes & Skepticism (e.g., 'that's California!', 'wrong state', 'idiots')
@@ -229,14 +232,14 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
                 f"{prefix}Easy mistake to make — while {disputed_mention} is very well known, "
                 f"this specific earthquake actually occurred at {loc} (official USGS coordinates: {coords}). "
                 f"Seismic monitoring stations verified the epicenter right here in {short_loc}, not in {disputed_mention}. "
-                "Thank you for checking, stay safe, and remember to always follow official safety guidelines! 🌍📍"
+                f"Stay safe and {FOLLOW_CTA} for official safety guidelines and 24/7 live alerts! 🌍📍"
             )
         else:
             return (
                 f"{prefix}To clarify the location: according to official USGS and EMSC seismic monitoring stations, "
                 f"the epicenter was scientifically recorded at {loc} (coordinates: {coords}). "
                 "Global seismic sensors triangulate the exact GPS location independently of local administrative names. "
-                "Thank you for sharing your thoughts, stay safe, and always follow official safety guidelines! 🌍📍"
+                f"Stay safe and {FOLLOW_CTA} for official safety guidelines and 24/7 live alerts! 🌍📍"
             )
 
     # G. Location Inquiries & Regional Clarification (e.g., Pilar Siargao vs Pilar Bataan, 'where is this?')
@@ -250,12 +253,12 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
             return (
                 f"{prefix}In the Philippines, several municipalities share the name Pilar (including in Bataan, Sorsogon, Surigao del Norte, Bohol, and Cebu). "
                 "This specific earthquake was centered offshore near Pilar on Siargao Island, Province of Surigao del Norte (Caraga Region, Mindanao) — NOT Pilar, Bataan in Luzon. "
-                "Our satellite map marks the exact offshore epicenter. Stay safe and always follow official disaster safety guidelines! 🇵🇭🗺️"
+                f"Our satellite map marks the exact offshore epicenter. {FOLLOW_CTA} for official safety guidelines and 24/7 live alerts! 🇵🇭🗺️"
             )
         return (
             f"{prefix}According to official USGS seismic data, this earthquake was centered at {loc} (coordinates: {coords}). "
             "Seismological stations calculate the epicenter relative to the nearest registered municipality or coastline shown on our video map. "
-            "Stay safe and always remember to follow official safety guidelines! 🌍📍"
+            f"Stay safe and {FOLLOW_CTA} for official safety guidelines and 24/7 live alerts! 🌍📍"
         )
 
     # H. Did Not Feel / Distance Questions (Must check BEFORE felt reports!)
@@ -268,7 +271,7 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
         return (
             f"{prefix}Seismic wave intensity diminishes quickly with distance from the epicenter, focal depth ({depth}), and local bedrock geology. "
             "Moderate quakes are often felt only near the immediate epicenter or by sensitive instruments. "
-            "Thank you for your ground observation, and always keep official safety guidelines in mind! 🌍📡"
+            f"Thank you for your ground observation! {FOLLOW_CTA} for official safety guidelines and 24/7 live alerts! 🌍📡"
         )
 
     # I. Felt Reports / Ground Shaking Experience
@@ -280,7 +283,7 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
         return (
             f"{thanks_prefix}for sharing your valuable ground report! Experiencing shaking can be frightening. "
             "Please check your immediate surroundings for minor hazards, follow earthquake safety guidelines (Drop, Cover, and Hold On), and stay prepared for mild aftershocks. "
-            "Stay alert and stay safe! 🤝❤️"
+            f"Stay alert, stay safe, and {FOLLOW_CTA} for official safety guidelines and live updates! 🤝❤️"
         )
 
     # J. Tsunami Inquiries
@@ -288,7 +291,7 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
     if any(k in text_lower for k in tsunami_keywords):
         return (
             f"{prefix}Based on official assessments from NOAA and the Pacific Tsunami Warning Center (PTWC), there is NO immediate destructive tsunami threat from this specific event. "
-            "Our automated network monitors live ocean buoy telemetry 24/7. Stay calm, stay safe, and always follow official coastal safety guidelines! 🌊✅"
+            f"Our automated network monitors live ocean buoy telemetry 24/7. Stay calm, and {FOLLOW_CTA} for official coastal safety guidelines and live updates! 🌊✅"
         )
 
     # K. Aftershocks & Future Quake Fears ('Big One')
@@ -296,7 +299,7 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
     if any(k in text_lower for k in aftershock_keywords):
         return (
             f"{prefix}Minor aftershocks are a natural process as tectonic plates settle along the fault line. They typically decrease in frequency and strength over time. "
-            "While earthquakes cannot be predicted in advance, staying prepared and following official safety guidelines (Drop, Cover, and Hold On) is essential. Stay alert and stay safe! 🌍🛡️"
+            f"While earthquakes cannot be predicted in advance, staying prepared is key. {FOLLOW_CTA} for official safety guidelines and 24/7 live alerts! 🌍🛡️"
         )
 
     # L. Safety Advice / What to do
@@ -304,7 +307,8 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
     if any(k in text_lower for k in safety_keywords):
         return (
             f"{prefix}Always follow official earthquake safety guidelines: DROP to the ground, take COVER under a sturdy table or desk, and HOLD ON until shaking stops. "
-            "Stay away from glass, windows, and heavy furniture. Never use elevators during or immediately after a quake. Stay prepared and stay safe! 🛡️🤝"
+            "Stay away from glass, windows, and heavy furniture. Never use elevators during or immediately after a quake. "
+            f"{FOLLOW_CTA} for continuous disaster preparedness tips and 24/7 live seismic alerts! 🛡️🤝"
         )
 
     # M. Fake News / Skepticism / Disbelief
@@ -316,13 +320,16 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
         return (
             f"{prefix}This seismic event is 100% verified and recorded by official global seismic sensor stations from the USGS (US Geological Survey) and EMSC. "
             "Many earthquakes occur deep beneath the Earth's crust or offshore, registering on sensitive seismometers even if shaking isn't felt across distant cities. "
-            "We only publish verified scientific data. Stay prepared and always follow official safety guidelines! 🌍🔬"
+            f"{FOLLOW_CTA} for verified scientific data and official safety guidelines! 🌍🔬"
         )
 
     # N. Prayers & Blessings
     prayer_keywords = ["pray", "prayers", "god", "allah", "bless", "lord", "amen", "amin", "safe", "semoga", "dios", "bendiga"]
     if any(k in text_lower for k in prayer_keywords):
-        return f"Amen! Wishing safety, protection, and peace to everyone and their families in the affected regions. Stay alert, take care, and always follow official safety guidelines! 🙏❤️"
+        return (
+            "Amen! Wishing safety, protection, and peace to everyone and their families in the affected regions. "
+            f"Please stay alert, take care, and {FOLLOW_CTA} for official safety guidelines and live updates! 🙏❤️"
+        )
 
     # O. Appreciation & Thanks
     thanks_keywords = [
@@ -332,18 +339,21 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="")
     if any(k in text_lower for k in thanks_keywords):
         return (
             f"{thanks_prefix}for your support! We are dedicated to providing 24/7 automated real-time seismic detection to help keep communities informed worldwide. "
-            "Remember to always follow official earthquake safety guidelines. 🔔 Follow @earthquaketracker247 for instant live alerts! 🌍✨"
+            f"🔔 {FOLLOW_CTA} for official safety guidelines and instant live alerts! 🌍✨"
         )
 
     # P. Casual Greetings
     greeting_keywords = ["hi", "hello", "hey", "assalamu alaikum", "salam", "good morning", "good evening", "good afternoon", "hola", "kamusta"]
     if any(k in text_lower for k in greeting_keywords) and len(text_clean.split()) <= 4:
-        return f"{prefix}Welcome to Earthquake Tracker 24/7. We monitor global seismic activity in real time to deliver early disaster awareness. Always follow official safety guidelines, stay safe, and have a wonderful day! 🌍👋"
+        return (
+            f"{prefix}Welcome to Earthquake Tracker 24/7. We monitor global seismic activity in real time to deliver early disaster awareness. "
+            f"🔔 {FOLLOW_CTA} for official safety guidelines and 24/7 live alerts. Have a wonderful and safe day! 🌍👋"
+        )
 
     # Q. Default Universal Engaging Reply
     return (
         f"{thanks_prefix}for connecting with Earthquake Tracker 24/7! We monitor global seismic activity in real time to deliver early disaster awareness. "
-        "Stay alert, always follow official earthquake safety guidelines, and follow @earthquaketracker247 for 24/7 instant verified seismic alerts worldwide. 🌍🔔"
+        f"🔔 {FOLLOW_CTA} for official earthquake safety guidelines and 24/7 instant verified seismic alerts worldwide! 🌍🔔"
     )
 
 def process_comment_auto_replies():
