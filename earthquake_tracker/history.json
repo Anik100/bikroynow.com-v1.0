@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260828_0000140",
     "emsc_20260828_0000147",
     "emsc_20260828_0000159",
     "us7000tcjf",
@@ -499,7 +498,8 @@
     "emsc_20260906_0000050",
     "us7000teme",
     "emsc_20260906_0000052",
-    "us7000temi"
+    "us7000temi",
+    "emsc_20260906_0000057"
   ],
   "replied_comment_ids": [
     "122106361383450344_1021555390937459",
@@ -513,14 +513,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260904_0000236",
-      "mag": 5.1,
-      "place": "NORTHERN SUMATRA, INDONESIA",
-      "latitude": 1.1314,
-      "longitude": 98.9503,
-      "epoch_ms": 1788539078080
-    },
     {
       "id": "emsc_20260904_0000241",
       "mag": 4.0,
@@ -912,6 +904,14 @@
       "latitude": -10.9871,
       "longitude": 162.4901,
       "epoch_ms": 1788667531550
+    },
+    {
+      "id": "emsc_20260906_0000057",
+      "mag": 4.0,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.26,
+      "longitude": 120.58,
+      "epoch_ms": 1788669113000
     }
   ]
 }
