@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260829_0000101",
-    "emsc_20260829_0000120",
     "us7000tct6",
     "us7000tctg",
     "emsc_20260829_0000132",
@@ -499,7 +497,9 @@
     "emsc_20260907_0000026",
     "us7000tesx",
     "us7000tesr",
-    "emsc_20260907_0000029"
+    "emsc_20260907_0000029",
+    "emsc_20260907_0000030",
+    "us7000tet6"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -514,14 +514,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260905_0000136",
-      "mag": 4.2,
-      "place": "NEGROS- CEBU REG, PHILIPPINES",
-      "latitude": 10.92,
-      "longitude": 123.8,
-      "epoch_ms": 1788613822000
-    },
     {
       "id": "emsc_20260905_0000137",
       "mag": 4.3,
@@ -913,6 +905,14 @@
       "latitude": -9.47,
       "longitude": 112.88,
       "epoch_ms": 1788749319000
+    },
+    {
+      "id": "us7000tet6",
+      "mag": 4.7,
+      "place": "Kermadec Islands region",
+      "latitude": -31.2726,
+      "longitude": 178.6194,
+      "epoch_ms": 1788748221719
     }
   ]
 }
