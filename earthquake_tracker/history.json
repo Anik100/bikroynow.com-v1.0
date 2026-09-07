@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tct6",
     "us7000tctg",
     "emsc_20260829_0000132",
     "emsc_20260829_0000133",
@@ -499,7 +498,8 @@
     "us7000tesr",
     "emsc_20260907_0000029",
     "emsc_20260907_0000030",
-    "us7000tet6"
+    "us7000tet6",
+    "emsc_20260907_0000045"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260905_0000137",
-      "mag": 4.3,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.36,
-      "longitude": 121.22,
-      "epoch_ms": 1788614478000
-    },
     {
       "id": "emsc_20260905_0000159",
       "mag": 6.0,
@@ -914,6 +906,14 @@
       "latitude": -31.2726,
       "longitude": 178.6194,
       "epoch_ms": 1788748221719
+    },
+    {
+      "id": "emsc_20260907_0000045",
+      "mag": 4.1,
+      "place": "OFFSHORE GUERRERO, MEXICO",
+      "latitude": 16.178,
+      "longitude": -99.398,
+      "epoch_ms": 1788753653000
     }
   ]
 }
