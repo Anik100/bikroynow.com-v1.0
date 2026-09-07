@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tcsv",
     "emsc_20260829_0000101",
     "emsc_20260829_0000120",
     "us7000tct6",
@@ -499,7 +498,8 @@
     "us7000test",
     "emsc_20260907_0000026",
     "us7000tesx",
-    "us7000tesr"
+    "us7000tesr",
+    "emsc_20260907_0000029"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -514,14 +514,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tejc",
-      "mag": 4.4,
-      "place": "67 km N of Port-Olry, Vanuatu",
-      "latitude": -14.435,
-      "longitude": 167.1398,
-      "epoch_ms": 1788612905122
-    },
     {
       "id": "emsc_20260905_0000136",
       "mag": 4.2,
@@ -913,6 +905,14 @@
       "latitude": -31.1195,
       "longitude": 178.9001,
       "epoch_ms": 1788746806490
+    },
+    {
+      "id": "emsc_20260907_0000029",
+      "mag": 4.4,
+      "place": "SOUTH OF JAVA, INDONESIA",
+      "latitude": -9.47,
+      "longitude": 112.88,
+      "epoch_ms": 1788749319000
     }
   ]
 }
