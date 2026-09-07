@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260829_0000071",
     "us7000tcs7",
     "emsc_20260829_0000077",
     "us7000tcsc",
@@ -499,7 +498,8 @@
     "us7000tert",
     "emsc_20260906_0000261",
     "emsc_20260906_0000263",
-    "emsc_20260906_0000296"
+    "emsc_20260906_0000296",
+    "attkz06l"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -514,14 +514,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260905_0000114",
-      "mag": 5.0,
-      "place": "SOUTHERN SUMATRA, INDONESIA",
-      "latitude": -4.582,
-      "longitude": 102.53,
-      "epoch_ms": 1788605956240
-    },
     {
       "id": "emsc_20260905_0000122",
       "mag": 5.0,
@@ -913,6 +905,14 @@
       "latitude": 23.643,
       "longitude": 94.89,
       "epoch_ms": 1788729655000
+    },
+    {
+      "id": "attkz06l",
+      "mag": 4.6,
+      "place": "off the coast of Oregon",
+      "latitude": 43.832,
+      "longitude": -128.75,
+      "epoch_ms": 1788744621000
     }
   ]
 }
