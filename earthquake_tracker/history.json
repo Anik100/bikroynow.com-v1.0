@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tcwd",
     "emsc_20260830_0000059",
     "emsc_20260830_0000071",
     "us7000tcwp",
@@ -499,7 +498,8 @@
     "us7000tfr0",
     "emsc_20260908_0000049",
     "emsc_20260908_0000052",
-    "us7000tfr8"
+    "us7000tfr8",
+    "emsc_20260908_0000060"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260906_0000071",
-      "mag": 5.0,
-      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
-      "latitude": 40.756,
-      "longitude": 142.916,
-      "epoch_ms": 1788671747870
-    },
     {
       "id": "emsc_20260906_0000080",
       "mag": 4.2,
@@ -914,6 +906,14 @@
       "latitude": -8.193,
       "longitude": 120.658,
       "epoch_ms": 1788842430090
+    },
+    {
+      "id": "emsc_20260908_0000060",
+      "mag": 4.2,
+      "place": "GEORGIA (SAK'ART'VELO)",
+      "latitude": 41.584,
+      "longitude": 43.582,
+      "epoch_ms": 1788843136881
     }
   ]
 }
