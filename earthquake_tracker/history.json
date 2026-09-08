@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "aka2026rdaolu",
     "us7000tcvf",
     "us7000tcvg",
     "emsc_20260829_0000265",
@@ -499,7 +498,8 @@
     "emsc_20260908_0000013",
     "emsc_20260908_0000015",
     "emsc_20260908_0000018",
-    "us7000tfqi"
+    "us7000tfqi",
+    "emsc_20260908_0000021"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260906_0000044",
-      "mag": 4.0,
-      "place": "INDIA-BANGLADESH BORDER REGION",
-      "latitude": 24.616,
-      "longitude": 92.735,
-      "epoch_ms": 1788665780000
-    },
     {
       "id": "emsc_20260906_0000046",
       "mag": 4.4,
@@ -914,6 +906,14 @@
       "latitude": -22.3345,
       "longitude": -179.7628,
       "epoch_ms": 1788831575020
+    },
+    {
+      "id": "emsc_20260908_0000021",
+      "mag": 4.3,
+      "place": "NEAR COAST OF C. SIBERIA, RUSSIA",
+      "latitude": 76.901,
+      "longitude": 111.924,
+      "epoch_ms": 1788832269510
     }
   ]
 }
