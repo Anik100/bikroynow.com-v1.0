@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tcvg",
     "emsc_20260829_0000265",
     "emsc_20260829_0000272",
     "emsc_20260830_0000002",
@@ -499,7 +498,8 @@
     "emsc_20260908_0000018",
     "us7000tfqi",
     "emsc_20260908_0000021",
-    "emsc_20260908_0000039"
+    "emsc_20260908_0000039",
+    "us7000tfqz"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260906_0000050",
-      "mag": 4.5,
-      "place": "OFF THE COAST OF EL SALVADOR",
-      "latitude": 12.3142,
-      "longitude": -90.4217,
-      "epoch_ms": 1788667221725
-    },
     {
       "id": "emsc_20260906_0000052",
       "mag": 5.5,
@@ -914,6 +906,14 @@
       "latitude": 40.78,
       "longitude": 20.81,
       "epoch_ms": 1788838856000
+    },
+    {
+      "id": "us7000tfqz",
+      "mag": 4.3,
+      "place": "5 km WSW of Antirrio, Greece",
+      "latitude": 38.3149,
+      "longitude": 21.7065,
+      "epoch_ms": 1788837915019
     }
   ]
 }
