@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260829_0000258",
-    "emsc_20260829_0000259",
     "aka2026rdaolu",
     "us7000tcvf",
     "us7000tcvg",
@@ -499,7 +497,9 @@
     "emsc_20260908_0000010",
     "emsc_20260908_0000011",
     "emsc_20260908_0000013",
-    "emsc_20260908_0000015"
+    "emsc_20260908_0000015",
+    "emsc_20260908_0000018",
+    "us7000tfqi"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260906_0000041",
-      "mag": 4.1,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 14.105,
-      "longitude": -93.323,
-      "epoch_ms": 1788665311000
-    },
     {
       "id": "emsc_20260906_0000044",
       "mag": 4.0,
@@ -914,6 +906,14 @@
       "latitude": -34.291,
       "longitude": 177.6351,
       "epoch_ms": 1788831705016
+    },
+    {
+      "id": "us7000tfqi",
+      "mag": 4.5,
+      "place": "south of the Fiji Islands",
+      "latitude": -22.3345,
+      "longitude": -179.7628,
+      "epoch_ms": 1788831575020
     }
   ]
 }
