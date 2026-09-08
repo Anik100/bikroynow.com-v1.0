@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260830_0000247",
-    "emsc_20260830_0000248",
     "emsc_20260830_0000275",
     "emsc_20260831_0000009",
     "emsc_20260830_0000293",
@@ -499,7 +497,9 @@
     "us7000tfup",
     "emsc_20260908_0000216",
     "us7000tfur",
-    "emsc_20260908_0000225"
+    "emsc_20260908_0000225",
+    "emsc_20260908_0000287",
+    "us7000tfxd"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260906_0000228",
-      "mag": 4.2,
-      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
-      "latitude": -7.29,
-      "longitude": 128.59,
-      "epoch_ms": 1788715189000
-    },
     {
       "id": "emsc_20260906_0000242",
       "mag": 4.8,
@@ -914,6 +906,14 @@
       "latitude": 13.57,
       "longitude": -90.83,
       "epoch_ms": 1788886926000
+    },
+    {
+      "id": "us7000tfxd",
+      "mag": 4.6,
+      "place": "54 km NNE of Ruteng, Indonesia",
+      "latitude": -8.1535,
+      "longitude": 120.658,
+      "epoch_ms": 1788903742442
     }
   ]
 }
