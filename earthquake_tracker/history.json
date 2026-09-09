@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000td7k",
     "emsc_20260831_0000265",
     "us7000td7p",
     "emsc_20260831_0000278",
@@ -499,7 +498,8 @@
     "emsc_20260909_0000238",
     "emsc_20260909_0000244",
     "us7000tg4e",
-    "us7000tg4b"
+    "us7000tg4b",
+    "emsc_20260909_0000254"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260907_0000204",
-      "mag": 4.0,
-      "place": "SALTA, ARGENTINA",
-      "latitude": -25.86,
-      "longitude": -66.47,
-      "epoch_ms": 1788800971000
-    },
     {
       "id": "emsc_20260907_0000211",
       "mag": 4.0,
@@ -914,6 +906,14 @@
       "latitude": -20.6521,
       "longitude": -178.0932,
       "epoch_ms": 1788977942293
+    },
+    {
+      "id": "emsc_20260909_0000254",
+      "mag": 4.0,
+      "place": "NEAR N COAST OF PAPUA, INDONESIA",
+      "latitude": -1.76,
+      "longitude": 138.96,
+      "epoch_ms": 1788982153000
     }
   ]
 }
