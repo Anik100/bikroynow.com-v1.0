@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260901_0000076",
     "us7000tda7",
     "emsc_20260901_0000078",
     "attkoaq9",
@@ -499,7 +498,8 @@
     "aka2026rxwdbw",
     "emsc_20260910_0000062",
     "emsc_20260910_0000064",
-    "emsc_20260910_0000077"
+    "emsc_20260910_0000077",
+    "emsc_20260910_0000078"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260908_0000015",
-      "mag": 4.0,
-      "place": "NORTH OF NEW ZEALAND",
-      "latitude": -34.291,
-      "longitude": 177.6351,
-      "epoch_ms": 1788831705016
-    },
     {
       "id": "us7000tfqi",
       "mag": 4.5,
@@ -914,6 +906,14 @@
       "latitude": 14.587,
       "longitude": -92.891,
       "epoch_ms": 1789020532830
+    },
+    {
+      "id": "emsc_20260910_0000078",
+      "mag": 5.2,
+      "place": "PERU-ECUADOR BORDER REGION",
+      "latitude": -3.8061,
+      "longitude": -77.4466,
+      "epoch_ms": 1789022567830
     }
   ]
 }
