@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tdab",
     "emsc_20260901_0000089",
     "us7000tdag",
     "emsc_20260901_0000094",
@@ -499,7 +498,8 @@
     "us7000tg8v",
     "emsc_20260910_0000086",
     "emsc_20260910_0000096",
-    "us7000tg98"
+    "us7000tg98",
+    "emsc_20260910_0000101"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260908_0000039",
-      "mag": 4.0,
-      "place": "ALBANIA",
-      "latitude": 40.78,
-      "longitude": 20.81,
-      "epoch_ms": 1788838856000
-    },
     {
       "id": "us7000tfqz",
       "mag": 4.3,
@@ -914,6 +906,14 @@
       "latitude": 9.1684,
       "longitude": -83.9428,
       "epoch_ms": 1789028816970
+    },
+    {
+      "id": "emsc_20260910_0000101",
+      "mag": 4.0,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.31,
+      "longitude": 121.26,
+      "epoch_ms": 1789029715000
     }
   ]
 }
