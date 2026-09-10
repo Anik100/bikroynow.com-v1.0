@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000tdbc",
-    "emsc_20260901_0000156",
     "emsc_20260901_0000161",
     "emsc_20260901_0000170",
     "emsc_20260901_0000178",
@@ -499,7 +497,9 @@
     "emsc_20260910_0000198",
     "emsc_20260910_0000202",
     "us7000tgb4",
-    "emsc_20260910_0000231"
+    "emsc_20260910_0000231",
+    "emsc_20260910_0000294",
+    "us7000tgev"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tft5",
-      "mag": 4.1,
-      "place": "105 km SSE of King Cove, Alaska",
-      "latitude": 54.2361,
-      "longitude": -161.5285,
-      "epoch_ms": 1788864542312
-    },
     {
       "id": "emsc_20260908_0000147",
       "mag": 5.4,
@@ -914,6 +906,14 @@
       "latitude": 1.459,
       "longitude": -90.705,
       "epoch_ms": 1789047498610
+    },
+    {
+      "id": "us7000tgev",
+      "mag": 4.1,
+      "place": "13 km WSW of Nabat\u00eey\u00e9 et Tahta, Lebanon",
+      "latitude": 33.3321,
+      "longitude": 35.3544,
+      "epoch_ms": 1789063728933
     }
   ]
 }
