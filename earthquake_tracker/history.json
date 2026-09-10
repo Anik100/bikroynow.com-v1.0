@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tdag",
     "emsc_20260901_0000094",
     "us7000tdal",
     "emsc_20260831_0000303",
@@ -499,7 +498,8 @@
     "emsc_20260910_0000096",
     "us7000tg98",
     "emsc_20260910_0000101",
-    "emsc_20260910_0000104"
+    "emsc_20260910_0000104",
+    "emsc_20260910_0000141"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260908_0000049",
-      "mag": 4.1,
-      "place": "INDIA-BANGLADESH BORDER REGION",
-      "latitude": 25.972,
-      "longitude": 89.941,
-      "epoch_ms": 1788841642000
-    },
     {
       "id": "emsc_20260908_0000052",
       "mag": 5.2,
@@ -914,6 +906,14 @@
       "latitude": -0.19,
       "longitude": 125.21,
       "epoch_ms": 1789030293000
+    },
+    {
+      "id": "emsc_20260910_0000141",
+      "mag": 5.4,
+      "place": "PERU-ECUADOR BORDER REGION",
+      "latitude": -3.6677,
+      "longitude": -77.516,
+      "epoch_ms": 1789036779850
     }
   ]
 }
