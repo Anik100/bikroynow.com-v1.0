@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260901_0000270",
-    "us7000tdey",
     "emsc_20260901_0000275",
     "emsc_20260901_0000278",
     "emsc_20260901_0000280",
@@ -499,7 +497,9 @@
     "emsc_20260910_0000351",
     "emsc_20260910_0000375",
     "emsc_20260910_0000377",
-    "aka2026rzfqpv"
+    "aka2026rzfqpv",
+    "emsc_20260910_0000388",
+    "us7000tghk"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tfxd",
-      "mag": 4.6,
-      "place": "54 km NNE of Ruteng, Indonesia",
-      "latitude": -8.1535,
-      "longitude": 120.658,
-      "epoch_ms": 1788903742442
-    },
     {
       "id": "emsc_20260908_0000323",
       "mag": 4.9,
@@ -914,6 +906,14 @@
       "latitude": 65.244,
       "longitude": -166.793,
       "epoch_ms": 1789081390021
+    },
+    {
+      "id": "us7000tghk",
+      "mag": 4.9,
+      "place": "65 km NNW of Sola, Vanuatu",
+      "latitude": -13.3249,
+      "longitude": 167.3321,
+      "epoch_ms": 1789080854162
     }
   ]
 }
