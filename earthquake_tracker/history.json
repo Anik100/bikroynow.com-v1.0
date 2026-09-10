@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260901_0000094",
     "us7000tdal",
     "emsc_20260831_0000303",
     "emsc_20260831_0000305",
@@ -499,7 +498,8 @@
     "us7000tg98",
     "emsc_20260910_0000101",
     "emsc_20260910_0000104",
-    "emsc_20260910_0000141"
+    "emsc_20260910_0000141",
+    "us7000tg9q"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260908_0000052",
-      "mag": 5.2,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.193,
-      "longitude": 120.658,
-      "epoch_ms": 1788842430090
-    },
     {
       "id": "emsc_20260908_0000060",
       "mag": 4.2,
@@ -914,6 +906,14 @@
       "latitude": -3.6677,
       "longitude": -77.516,
       "epoch_ms": 1789036779850
+    },
+    {
+      "id": "us7000tg9q",
+      "mag": 4.7,
+      "place": "116 km WSW of Alianza Cristiana, Peru",
+      "latitude": -3.9669,
+      "longitude": -77.3635,
+      "epoch_ms": 1789036776283
     }
   ]
 }
