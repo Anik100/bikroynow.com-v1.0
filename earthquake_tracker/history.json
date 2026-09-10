@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260901_0000078",
     "attkoaq9",
     "aka2026rhiuzf",
     "us7000tdab",
@@ -499,7 +498,8 @@
     "emsc_20260910_0000064",
     "emsc_20260910_0000077",
     "emsc_20260910_0000078",
-    "us7000tg8v"
+    "us7000tg8v",
+    "emsc_20260910_0000086"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tfqi",
-      "mag": 4.5,
-      "place": "south of the Fiji Islands",
-      "latitude": -22.3345,
-      "longitude": -179.7628,
-      "epoch_ms": 1788831575020
-    },
     {
       "id": "emsc_20260908_0000021",
       "mag": 4.3,
@@ -914,6 +906,14 @@
       "latitude": -3.8061,
       "longitude": -77.4466,
       "epoch_ms": 1789022567830
+    },
+    {
+      "id": "emsc_20260910_0000086",
+      "mag": 4.1,
+      "place": "CELEBES SEA",
+      "latitude": 2.71,
+      "longitude": 123.13,
+      "epoch_ms": 1789025233000
     }
   ]
 }
