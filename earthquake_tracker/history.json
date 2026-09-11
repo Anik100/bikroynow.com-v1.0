@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260902_0000094",
     "us7000tdin",
     "us7000tdim",
     "emsc_20260902_0000103",
@@ -499,7 +498,8 @@
     "attl74mn",
     "aka2026sadcxu",
     "emsc_20260911_0000157",
-    "us7000tgky"
+    "us7000tgky",
+    "emsc_20260911_0000165"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260909_0000140",
-      "mag": 4.7,
-      "place": "SAMOA ISLANDS REGION",
-      "latitude": -14.8771,
-      "longitude": -173.1193,
-      "epoch_ms": 1788956294599
-    },
     {
       "id": "emsc_20260909_0000209",
       "mag": 5.0,
@@ -914,6 +906,14 @@
       "latitude": 51.157,
       "longitude": -178.502,
       "epoch_ms": 1789123631000
+    },
+    {
+      "id": "emsc_20260911_0000165",
+      "mag": 4.5,
+      "place": "TAIWAN",
+      "latitude": 23.38,
+      "longitude": 121.64,
+      "epoch_ms": 1789125896800
     }
   ]
 }
