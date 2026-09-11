@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260902_0000225",
     "emsc_20260902_0000227",
     "us7000tdmm",
     "us7000tdmp",
@@ -499,7 +498,8 @@
     "us7000tgrb",
     "us7000tgrk",
     "emsc_20260911_0000281",
-    "emsc_20260911_0000292"
+    "emsc_20260911_0000292",
+    "emsc_20260911_0000294"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260910_0000078",
-      "mag": 5.2,
-      "place": "PERU-ECUADOR BORDER REGION",
-      "latitude": -3.8061,
-      "longitude": -77.4466,
-      "epoch_ms": 1789022567830
-    },
     {
       "id": "emsc_20260910_0000086",
       "mag": 4.1,
@@ -914,6 +906,14 @@
       "latitude": 3.23,
       "longitude": 124.38,
       "epoch_ms": 1789165419000
+    },
+    {
+      "id": "emsc_20260911_0000294",
+      "mag": 4.9,
+      "place": "OFF COAST OF AISEN, CHILE",
+      "latitude": -45.7611,
+      "longitude": -75.3609,
+      "epoch_ms": 1789165949630
     }
   ]
 }
