@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260901_0000275",
     "emsc_20260901_0000278",
     "emsc_20260901_0000280",
     "us7000tdf1",
@@ -499,7 +498,8 @@
     "emsc_20260910_0000377",
     "aka2026rzfqpv",
     "emsc_20260910_0000388",
-    "us7000tghk"
+    "us7000tghk",
+    "emsc_20260911_0000005"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260908_0000323",
-      "mag": 4.9,
-      "place": "MARIANA ISLANDS REGION",
-      "latitude": 16.867,
-      "longitude": 148.418,
-      "epoch_ms": 1788909834790
-    },
     {
       "id": "emsc_20260909_0000001",
       "mag": 4.2,
@@ -914,6 +906,14 @@
       "latitude": -13.3249,
       "longitude": 167.3321,
       "epoch_ms": 1789080854162
+    },
+    {
+      "id": "emsc_20260911_0000005",
+      "mag": 4.4,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.15,
+      "longitude": 120.04,
+      "epoch_ms": 1789086569000
     }
   ]
 }
