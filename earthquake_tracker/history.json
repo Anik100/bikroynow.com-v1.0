@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260903_0000176",
-    "us7000tdw2",
     "us7000tdw6",
     "aka2026rlkdfo",
     "emsc_20260903_0000181",
@@ -499,7 +497,9 @@
     "emsc_20260912_0000295",
     "emsc_20260912_0000304",
     "us7000th1q",
-    "emsc_20260912_0000320"
+    "emsc_20260912_0000320",
+    "emsc_20260912_0000335",
+    "us7000th21"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -516,14 +516,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "aka2026rzvwxv",
-      "mag": 4.0,
-      "place": "41 km NNW of Glacier View, Alaska",
-      "latitude": 62.17,
-      "longitude": -147.835,
-      "epoch_ms": 1789110622460
-    },
     {
       "id": "emsc_20260911_0000117",
       "mag": 4.1,
@@ -915,6 +907,14 @@
       "latitude": 15.062,
       "longitude": -92.838,
       "epoch_ms": 1789248411000
+    },
+    {
+      "id": "us7000th21",
+      "mag": 4.3,
+      "place": "90 km NNE of Rabaul, Papua New Guinea",
+      "latitude": -3.4008,
+      "longitude": 152.3384,
+      "epoch_ms": 1789251243350
     }
   ]
 }
