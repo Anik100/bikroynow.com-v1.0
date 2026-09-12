@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260902_0000369",
     "emsc_20260902_0000372",
     "emsc_20260902_0000375",
     "us7000tdrv",
@@ -499,7 +498,8 @@
     "us7000tgx2",
     "emsc_20260912_0000081",
     "emsc_20260912_0000084",
-    "us7000tgxg"
+    "us7000tgxg",
+    "emsc_20260912_0000088"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -515,14 +515,6 @@
     "122104106805450344_1625711632494339"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260910_0000202",
-      "mag": 4.8,
-      "place": "GALAPAGOS ISLANDS REGION",
-      "latitude": 1.459,
-      "longitude": -90.705,
-      "epoch_ms": 1789047498610
-    },
     {
       "id": "us7000tgev",
       "mag": 4.1,
@@ -914,6 +906,14 @@
       "latitude": -6.0912,
       "longitude": 130.5082,
       "epoch_ms": 1789193670594
+    },
+    {
+      "id": "emsc_20260912_0000088",
+      "mag": 4.0,
+      "place": "CENTRAL ALASKA",
+      "latitude": 62.838,
+      "longitude": -149.016,
+      "epoch_ms": 1789195106673
     }
   ]
 }
