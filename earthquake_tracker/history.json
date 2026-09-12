@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260903_0000171",
     "aka2026rljynh",
     "us7000tdvt",
     "emsc_20260903_0000175",
@@ -499,7 +498,8 @@
     "emsc_20260912_0000277",
     "emsc_20260912_0000278",
     "us7000th16",
-    "emsc_20260912_0000286"
+    "emsc_20260912_0000286",
+    "emsc_20260912_0000295"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -516,14 +516,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260911_0000054",
-      "mag": 4.0,
-      "place": "NORTH ISLAND OF NEW ZEALAND",
-      "latitude": -38.9833,
-      "longitude": 175.2586,
-      "epoch_ms": 1789100703782
-    },
     {
       "id": "emsc_20260911_0000055",
       "mag": 4.1,
@@ -915,6 +907,14 @@
       "latitude": -25.01,
       "longitude": -68.76,
       "epoch_ms": 1789239065000
+    },
+    {
+      "id": "emsc_20260912_0000295",
+      "mag": 4.3,
+      "place": "IZU ISLANDS, JAPAN REGION",
+      "latitude": 33.8,
+      "longitude": 139.4,
+      "epoch_ms": 1789240710000
     }
   ]
 }
