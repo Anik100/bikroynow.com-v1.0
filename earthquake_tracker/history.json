@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260903_0000175",
     "emsc_20260903_0000176",
     "us7000tdw2",
     "us7000tdw6",
@@ -499,7 +498,8 @@
     "emsc_20260912_0000286",
     "emsc_20260912_0000295",
     "emsc_20260912_0000304",
-    "us7000th1q"
+    "us7000th1q",
+    "emsc_20260912_0000320"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -516,14 +516,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260911_0000074",
-      "mag": 4.3,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 13.735,
-      "longitude": -93.306,
-      "epoch_ms": 1789105475000
-    },
     {
       "id": "aka2026rzvwxv",
       "mag": 4.0,
@@ -915,6 +907,14 @@
       "latitude": 29.2864,
       "longitude": 130.5013,
       "epoch_ms": 1789245177020
+    },
+    {
+      "id": "emsc_20260912_0000320",
+      "mag": 4.0,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 15.062,
+      "longitude": -92.838,
+      "epoch_ms": 1789248411000
     }
   ]
 }
