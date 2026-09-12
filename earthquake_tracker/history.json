@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "attkscoz",
     "emsc_20260903_0000171",
     "aka2026rljynh",
     "us7000tdvt",
@@ -499,7 +498,8 @@
     "emsc_20260912_0000267",
     "emsc_20260912_0000277",
     "emsc_20260912_0000278",
-    "us7000th16"
+    "us7000th16",
+    "emsc_20260912_0000286"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -516,14 +516,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260911_0000053",
-      "mag": 4.2,
-      "place": "MINDANAO, PHILIPPINES",
-      "latitude": 5.77,
-      "longitude": 125.3,
-      "epoch_ms": 1789099782000
-    },
     {
       "id": "emsc_20260911_0000054",
       "mag": 4.0,
@@ -915,6 +907,14 @@
       "latitude": 15.937,
       "longitude": -94.814,
       "epoch_ms": 1789236173000
+    },
+    {
+      "id": "emsc_20260912_0000286",
+      "mag": 4.2,
+      "place": "ANTOFAGASTA, CHILE",
+      "latitude": -25.01,
+      "longitude": -68.76,
+      "epoch_ms": 1789239065000
     }
   ]
 }
