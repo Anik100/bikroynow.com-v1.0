@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tdw6",
     "aka2026rlkdfo",
     "emsc_20260903_0000181",
     "emsc_20260903_0000182",
@@ -499,7 +498,8 @@
     "us7000th1q",
     "emsc_20260912_0000320",
     "emsc_20260912_0000335",
-    "us7000th21"
+    "us7000th21",
+    "emsc_20260912_0000354"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -516,14 +516,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260911_0000117",
-      "mag": 4.1,
-      "place": "VERACRUZ, MEXICO",
-      "latitude": 17.191,
-      "longitude": -94.052,
-      "epoch_ms": 1789115026000
-    },
     {
       "id": "emsc_20260911_0000120",
       "mag": 5.0,
@@ -915,6 +907,14 @@
       "latitude": -3.4008,
       "longitude": 152.3384,
       "epoch_ms": 1789251243350
+    },
+    {
+      "id": "emsc_20260912_0000354",
+      "mag": 4.1,
+      "place": "PANAMA-COSTA RICA BORDER REGION",
+      "latitude": 9.674,
+      "longitude": -82.6443,
+      "epoch_ms": 1789256045000
     }
   ]
 }
