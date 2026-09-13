@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "aka2026rlkfau",
     "emsc_20260903_0000196",
     "emsc_20260903_0000199",
     "aka2026rlmrvm",
@@ -499,7 +498,8 @@
     "emsc_20260912_0000355",
     "emsc_20260912_0000358",
     "emsc_20260913_0000031",
-    "aka2026sddwmu"
+    "aka2026sddwmu",
+    "emsc_20260913_0000037"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -516,14 +516,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "attl74mn",
-      "mag": 5.2,
-      "place": "152 km WSW of Adak, Alaska",
-      "latitude": 51.157,
-      "longitude": -178.502,
-      "epoch_ms": 1789123631000
-    },
     {
       "id": "emsc_20260911_0000165",
       "mag": 4.5,
@@ -915,6 +907,14 @@
       "latitude": 51.118,
       "longitude": -178.556,
       "epoch_ms": 1789265321209
+    },
+    {
+      "id": "emsc_20260913_0000037",
+      "mag": 4.3,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.44,
+      "longitude": 121.44,
+      "epoch_ms": 1789269285000
     }
   ]
 }
