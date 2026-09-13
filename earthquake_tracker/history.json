@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000te2i",
     "aka2026rlyxjh",
     "emsc_20260903_0000314",
     "emsc_20260903_0000315",
@@ -499,7 +498,8 @@
     "emsc_20260913_0000262",
     "us7000th7y",
     "emsc_20260913_0000265",
-    "emsc_20260913_0000287"
+    "emsc_20260913_0000287",
+    "emsc_20260913_0000289"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -516,14 +516,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260912_0000024",
-      "mag": 5.3,
-      "place": "PANAMA-COSTA RICA BORDER REGION",
-      "latitude": 8.3058,
-      "longitude": -82.866,
-      "epoch_ms": 1789178393640
-    },
     {
       "id": "us7000tgw1",
       "mag": 4.7,
@@ -915,6 +907,14 @@
       "latitude": -8.1671,
       "longitude": 120.4234,
       "epoch_ms": 1789339207120
+    },
+    {
+      "id": "emsc_20260913_0000289",
+      "mag": 4.9,
+      "place": "TAIWAN REGION",
+      "latitude": 22.63,
+      "longitude": 121.55,
+      "epoch_ms": 1789339481500
     }
   ]
 }
