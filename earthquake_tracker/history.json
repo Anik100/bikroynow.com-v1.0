@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000te2m",
     "aka2026rmcccm",
     "emsc_20260903_0000357",
     "us7000te4b",
@@ -499,7 +498,8 @@
     "us7000th8u",
     "us7000th8v",
     "emsc_20260914_0000011",
-    "emsc_20260913_0000306"
+    "emsc_20260913_0000306",
+    "emsc_20260914_0000018"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -516,14 +516,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260912_0000046",
-      "mag": 4.4,
-      "place": "KEPULAUAN TALAUD, INDONESIA",
-      "latitude": 3.28,
-      "longitude": 127.47,
-      "epoch_ms": 1789184225000
-    },
     {
       "id": "emsc_20260912_0000047",
       "mag": 4.1,
@@ -915,6 +907,14 @@
       "latitude": -8.13,
       "longitude": 120.29,
       "epoch_ms": 1789347229000
+    },
+    {
+      "id": "emsc_20260914_0000018",
+      "mag": 5.0,
+      "place": "SOUTH OF JAVA, INDONESIA",
+      "latitude": -9.3763,
+      "longitude": 112.8841,
+      "epoch_ms": 1789350130970
     }
   ]
 }
