@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "aka2026rmnpwd",
     "attktivy",
     "emsc_20260904_0000036",
     "us7000te7l",
@@ -499,7 +498,8 @@
     "emsc_20260914_0000110",
     "emsc_20260914_0000113",
     "emsc_20260914_0000116",
-    "us7000thc6"
+    "us7000thc6",
+    "emsc_20260914_0000132"
   ],
   "replied_comment_ids": [
     "122109298797450344_1581385650386793",
@@ -517,14 +517,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260912_0000132",
-      "mag": 4.0,
-      "place": "OFF COAST OF COSTA RICA",
-      "latitude": 8.9444,
-      "longitude": -84.0622,
-      "epoch_ms": 1789207149000
-    },
     {
       "id": "us7000tgyw",
       "mag": 4.9,
@@ -916,6 +908,14 @@
       "latitude": -8.367,
       "longitude": 105.8994,
       "epoch_ms": 1789378062450
+    },
+    {
+      "id": "emsc_20260914_0000132",
+      "mag": 4.0,
+      "place": "KYUSHU, JAPAN",
+      "latitude": 32.4,
+      "longitude": 130.6,
+      "epoch_ms": 1789382190000
     }
   ]
 }
