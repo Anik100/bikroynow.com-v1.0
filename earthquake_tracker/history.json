@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260904_0000225",
     "emsc_20260904_0000233",
     "emsc_20260904_0000236",
     "us7000teck",
@@ -499,7 +498,8 @@
     "emsc_20260914_0000259",
     "us7000thgs",
     "emsc_20260914_0000268",
-    "us7000thh2"
+    "us7000thh2",
+    "emsc_20260914_0000274"
   ],
   "replied_comment_ids": [
     "122109298797450344_1581385650386793",
@@ -517,14 +517,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000th21",
-      "mag": 4.3,
-      "place": "90 km NNE of Rabaul, Papua New Guinea",
-      "latitude": -3.4008,
-      "longitude": 152.3384,
-      "epoch_ms": 1789251243350
-    },
     {
       "id": "emsc_20260912_0000354",
       "mag": 4.1,
@@ -916,6 +908,14 @@
       "latitude": 4.5258,
       "longitude": -76.8931,
       "epoch_ms": 1789420395924
+    },
+    {
+      "id": "emsc_20260914_0000274",
+      "mag": 5.1,
+      "place": "EASTERN NEW GUINEA REG., P.N.G.",
+      "latitude": -6.2553,
+      "longitude": 146.4571,
+      "epoch_ms": 1789423613310
     }
   ]
 }
