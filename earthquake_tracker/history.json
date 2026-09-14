@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260904_0000161",
     "us7000te9t",
     "emsc_20260904_0000176",
     "emsc_20260904_0000180",
@@ -499,7 +498,8 @@
     "emsc_20260914_0000227",
     "emsc_20260914_0000231",
     "us7000thfh",
-    "emsc_20260914_0000238"
+    "emsc_20260914_0000238",
+    "us7000thg5"
   ],
   "replied_comment_ids": [
     "122109298797450344_1581385650386793",
@@ -517,14 +517,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260912_0000278",
-      "mag": 4.1,
-      "place": "OFFSHORE OAXACA, MEXICO",
-      "latitude": 15.937,
-      "longitude": -94.814,
-      "epoch_ms": 1789236173000
-    },
     {
       "id": "emsc_20260912_0000286",
       "mag": 4.2,
@@ -916,6 +908,14 @@
       "latitude": -3.7125,
       "longitude": -77.2706,
       "epoch_ms": 1789413409830
+    },
+    {
+      "id": "us7000thg5",
+      "mag": 4.8,
+      "place": "106 km WSW of Alianza Cristiana, Peru",
+      "latitude": -3.7302,
+      "longitude": -77.3609,
+      "epoch_ms": 1789413409927
     }
   ]
 }
