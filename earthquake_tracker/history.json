@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "attktivy",
     "emsc_20260904_0000036",
     "us7000te7l",
     "emsc_20260904_0000045",
@@ -499,7 +498,8 @@
     "emsc_20260914_0000113",
     "emsc_20260914_0000116",
     "us7000thc6",
-    "emsc_20260914_0000132"
+    "emsc_20260914_0000132",
+    "emsc_20260914_0000135"
   ],
   "replied_comment_ids": [
     "122109298797450344_1581385650386793",
@@ -517,14 +517,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tgyw",
-      "mag": 4.9,
-      "place": "South Sandwich Islands region",
-      "latitude": -56.3022,
-      "longitude": -26.7513,
-      "epoch_ms": 1789211146000
-    },
     {
       "id": "emsc_20260912_0000160",
       "mag": 4.7,
@@ -916,6 +908,14 @@
       "latitude": 32.4,
       "longitude": 130.6,
       "epoch_ms": 1789382190000
+    },
+    {
+      "id": "emsc_20260914_0000135",
+      "mag": 4.2,
+      "place": "SOUTH OF KERMADEC ISLANDS",
+      "latitude": -34.4779,
+      "longitude": 179.0876,
+      "epoch_ms": 1789382615181
     }
   ]
 }
