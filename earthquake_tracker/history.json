@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260904_0000264",
     "us7000tede",
     "emsc_20260904_0000282",
     "emsc_20260904_0000295",
@@ -499,7 +498,8 @@
     "us7000thhd",
     "emsc_20260914_0000285",
     "emsc_20260914_0000286",
-    "us7000thhv"
+    "us7000thhv",
+    "emsc_20260914_0000287"
   ],
   "replied_comment_ids": [
     "122109298797450344_1581385650386793",
@@ -517,14 +517,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260913_0000031",
-      "mag": 4.2,
-      "place": "ANDREANOF ISLANDS, ALEUTIAN IS.",
-      "latitude": 51.118,
-      "longitude": -178.556,
-      "epoch_ms": 1789265321209
-    },
     {
       "id": "emsc_20260913_0000037",
       "mag": 4.3,
@@ -916,6 +908,14 @@
       "latitude": -5.79,
       "longitude": 130.13,
       "epoch_ms": 1789425800000
+    },
+    {
+      "id": "emsc_20260914_0000287",
+      "mag": 4.6,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 14.277,
+      "longitude": -93.207,
+      "epoch_ms": 1789425779000
     }
   ]
 }
