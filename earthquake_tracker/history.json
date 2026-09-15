@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260904_0000282",
     "emsc_20260904_0000295",
     "us7000teer",
     "us7000teew",
@@ -499,7 +498,8 @@
     "emsc_20260914_0000286",
     "us7000thhv",
     "emsc_20260914_0000287",
-    "emsc_20260914_0000292"
+    "emsc_20260914_0000292",
+    "emsc_20260914_0000304"
   ],
   "replied_comment_ids": [
     "122109298797450344_1581385650386793",
@@ -517,14 +517,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260913_0000045",
-      "mag": 4.9,
-      "place": "BONIN ISLANDS, JAPAN REGION",
-      "latitude": 26.3045,
-      "longitude": 142.2525,
-      "epoch_ms": 1789271432298
-    },
     {
       "id": "us7000th4y",
       "mag": 5.2,
@@ -916,6 +908,14 @@
       "latitude": -8.56,
       "longitude": 105.76,
       "epoch_ms": 1789427393000
+    },
+    {
+      "id": "emsc_20260914_0000304",
+      "mag": 4.0,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 14.37,
+      "longitude": -93.144,
+      "epoch_ms": 1789429262000
     }
   ]
 }
