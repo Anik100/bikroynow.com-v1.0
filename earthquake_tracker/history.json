@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260904_0000346",
     "us7000tefx",
     "emsc_20260905_0000003",
     "us7000teg7",
@@ -499,7 +498,8 @@
     "us7000thjj",
     "emsc_20260915_0000059",
     "us7000thjr",
-    "emsc_20260914_0000323"
+    "emsc_20260914_0000323",
+    "emsc_20260915_0000081"
   ],
   "replied_comment_ids": [
     "122109298797450344_1581385650386793",
@@ -517,14 +517,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260913_0000098",
-      "mag": 5.4,
-      "place": "SOUTHEAST OF LOYALTY ISLANDS",
-      "latitude": -22.3011,
-      "longitude": 171.3009,
-      "epoch_ms": 1789284622950
-    },
     {
       "id": "emsc_20260913_0000108",
       "mag": 4.2,
@@ -916,6 +908,14 @@
       "latitude": -6.6349,
       "longitude": 130.3422,
       "epoch_ms": 1789452472712
+    },
+    {
+      "id": "emsc_20260915_0000081",
+      "mag": 4.5,
+      "place": "KEPULAUAN TALAUD, INDONESIA",
+      "latitude": 3.49,
+      "longitude": 127.2,
+      "epoch_ms": 1789458825000
     }
   ]
 }
