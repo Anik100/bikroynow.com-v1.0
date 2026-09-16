@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260906_0000071",
     "us7000temt",
     "emsc_20260906_0000074",
     "us7000temw",
@@ -499,7 +498,8 @@
     "emsc_20260916_0000151",
     "emsc_20260916_0000159",
     "emsc_20260916_0000170",
-    "us7000thti"
+    "us7000thti",
+    "emsc_20260916_0000174"
   ],
   "replied_comment_ids": [
     "122109298797450344_1581385650386793",
@@ -517,14 +517,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260914_0000238",
-      "mag": 5.4,
-      "place": "PERU-ECUADOR BORDER REGION",
-      "latitude": -3.7125,
-      "longitude": -77.2706,
-      "epoch_ms": 1789413409830
-    },
     {
       "id": "us7000thg5",
       "mag": 4.8,
@@ -916,6 +908,14 @@
       "latitude": 7.668,
       "longitude": 126.9368,
       "epoch_ms": 1789559419060
+    },
+    {
+      "id": "emsc_20260916_0000174",
+      "mag": 4.2,
+      "place": "PAPUA, INDONESIA",
+      "latitude": -3.04,
+      "longitude": 140.01,
+      "epoch_ms": 1789561731000
     }
   ]
 }
