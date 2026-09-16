@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tenr",
     "emsc_20260906_0000128",
     "emsc_20260906_0000130",
     "us7000tep6",
@@ -499,7 +498,8 @@
     "emsc_20260916_0000224",
     "emsc_20260916_0000245",
     "emsc_20260916_0000268",
-    "us7000thxc"
+    "us7000thxc",
+    "emsc_20260916_0000271"
   ],
   "replied_comment_ids": [
     "122109298797450344_1581385650386793",
@@ -517,14 +517,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260914_0000274",
-      "mag": 5.1,
-      "place": "EASTERN NEW GUINEA REG., P.N.G.",
-      "latitude": -6.2553,
-      "longitude": 146.4571,
-      "epoch_ms": 1789423613310
-    },
     {
       "id": "emsc_20260914_0000285",
       "mag": 4.8,
@@ -916,6 +908,14 @@
       "latitude": 4.5241,
       "longitude": -76.8772,
       "epoch_ms": 1789589572070
+    },
+    {
+      "id": "emsc_20260916_0000271",
+      "mag": 5.1,
+      "place": "KERMADEC ISLANDS, NEW ZEALAND",
+      "latitude": -30.5208,
+      "longitude": -177.8318,
+      "epoch_ms": 1789589019010
     }
   ]
 }
