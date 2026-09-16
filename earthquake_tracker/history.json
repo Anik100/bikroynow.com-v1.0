@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260906_0000028",
-    "us7000tely",
     "emsc_20260906_0000026",
     "emsc_20260906_0000032",
     "us7000tem2",
@@ -499,7 +497,9 @@
     "us7000thse",
     "emsc_20260916_0000097",
     "emsc_20260916_0000101",
-    "us7000thsp"
+    "us7000thsp",
+    "emsc_20260916_0000104",
+    "nn00924508"
   ],
   "replied_comment_ids": [
     "122109298797450344_1581385650386793",
@@ -517,14 +517,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260914_0000144",
-      "mag": 4.3,
-      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
-      "latitude": 37.5,
-      "longitude": 141.6,
-      "epoch_ms": 1789383630000
-    },
     {
       "id": "us7000thd4",
       "mag": 4.2,
@@ -916,6 +908,14 @@
       "latitude": 6.0969,
       "longitude": -77.8115,
       "epoch_ms": 1789542133029
+    },
+    {
+      "id": "nn00924508",
+      "mag": 4.1,
+      "place": "20 km WSW of Gerlach, Nevada",
+      "latitude": 40.6069,
+      "longitude": -119.5899,
+      "epoch_ms": 1789543045899
     }
   ]
 }
