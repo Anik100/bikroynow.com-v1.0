@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260906_0000242",
     "us7000terb",
     "emsc_20260906_0000251",
     "emsc_20260906_0000259",
@@ -499,7 +498,8 @@
     "emsc_20260917_0000064",
     "us7000thzp",
     "emsc_20260917_0000068",
-    "us7000thzs"
+    "us7000thzs",
+    "emsc_20260917_0000072"
   ],
   "replied_comment_ids": [
     "122109298797450344_1581385650386793",
@@ -517,14 +517,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260915_0000081",
-      "mag": 4.5,
-      "place": "KEPULAUAN TALAUD, INDONESIA",
-      "latitude": 3.49,
-      "longitude": 127.2,
-      "epoch_ms": 1789458825000
-    },
     {
       "id": "emsc_20260915_0000091",
       "mag": 4.1,
@@ -916,6 +908,14 @@
       "latitude": -16.6626,
       "longitude": 167.5571,
       "epoch_ms": 1789626733046
+    },
+    {
+      "id": "emsc_20260917_0000072",
+      "mag": 5.3,
+      "place": "SAMOA ISLANDS REGION",
+      "latitude": -14.9032,
+      "longitude": -174.7627,
+      "epoch_ms": 1789627366560
     }
   ]
 }
