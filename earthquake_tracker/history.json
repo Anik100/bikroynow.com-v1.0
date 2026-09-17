@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tesx",
     "us7000tesr",
     "emsc_20260907_0000029",
     "emsc_20260907_0000030",
@@ -499,7 +498,8 @@
     "emsc_20260917_0000147",
     "emsc_20260917_0000152",
     "emsc_20260917_0000160",
-    "us7000ti15"
+    "us7000ti15",
+    "emsc_20260917_0000165"
   ],
   "replied_comment_ids": [
     "122109298797450344_1581385650386793",
@@ -517,14 +517,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260915_0000204",
-      "mag": 4.4,
-      "place": "OFFSHORE CHIAPAS, MEXICO",
-      "latitude": 14.254,
-      "longitude": -93.18,
-      "epoch_ms": 1789494253000
-    },
     {
       "id": "emsc_20260915_0000207",
       "mag": 4.3,
@@ -916,6 +908,14 @@
       "latitude": 49.6652,
       "longitude": -116.8318,
       "epoch_ms": 1789648297057
+    },
+    {
+      "id": "emsc_20260917_0000165",
+      "mag": 4.8,
+      "place": "NEAR N COAST OF NEW GUINEA, PNG.",
+      "latitude": -3.179,
+      "longitude": 145.94,
+      "epoch_ms": 1789649095440
     }
   ]
 }
