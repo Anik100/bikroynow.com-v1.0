@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000tfs3",
-    "emsc_20260908_0000081",
     "emsc_20260908_0000083",
     "us7000tfs1",
     "emsc_20260908_0000092",
@@ -499,7 +497,9 @@
     "emsc_20260918_0000116",
     "emsc_20260918_0000120",
     "emsc_20260918_0000122",
-    "emsc_20260918_0000139"
+    "emsc_20260918_0000139",
+    "emsc_20260918_0000176",
+    "us7000ti9a"
   ],
   "replied_comment_ids": [
     "122106361383450344_1021555390937459",
@@ -518,22 +518,6 @@
     "122109298797450344_1581385650386793"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260916_0000212",
-      "mag": 5.0,
-      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
-      "latitude": 36.0702,
-      "longitude": 140.3184,
-      "epoch_ms": 1789571255700
-    },
-    {
-      "id": "emsc_20260916_0000224",
-      "mag": 4.1,
-      "place": "NORTHERN SUMATRA, INDONESIA",
-      "latitude": 4.13,
-      "longitude": 97.49,
-      "epoch_ms": 1789574239000
-    },
     {
       "id": "emsc_20260916_0000245",
       "mag": 5.2,
@@ -917,6 +901,22 @@
       "latitude": 42.2171,
       "longitude": 80.8068,
       "epoch_ms": 1789717943600
+    },
+    {
+      "id": "emsc_20260918_0000176",
+      "mag": 4.3,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.28,
+      "longitude": 120.47,
+      "epoch_ms": 1789734057000
+    },
+    {
+      "id": "us7000ti9a",
+      "mag": 4.6,
+      "place": "204 km N of Daocheng, China",
+      "latitude": 30.8534,
+      "longitude": 99.922,
+      "epoch_ms": 1789733388959
     }
   ]
 }
