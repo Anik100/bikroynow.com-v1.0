@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260908_0000083",
-    "us7000tfs1",
     "emsc_20260908_0000092",
     "emsc_20260908_0000091",
     "emsc_20260908_0000105",
@@ -499,7 +497,9 @@
     "emsc_20260918_0000122",
     "emsc_20260918_0000139",
     "emsc_20260918_0000176",
-    "us7000ti9a"
+    "us7000ti9a",
+    "emsc_20260918_0000178",
+    "us7000ti97"
   ],
   "replied_comment_ids": [
     "122106361383450344_1021555390937459",
@@ -518,14 +518,6 @@
     "122109298797450344_1581385650386793"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260916_0000245",
-      "mag": 5.2,
-      "place": "ROTA REGION, N. MARIANA ISLANDS",
-      "latitude": 14.1682,
-      "longitude": 145.4047,
-      "epoch_ms": 1789582000820
-    },
     {
       "id": "us7000thxc",
       "mag": 5.0,
@@ -917,6 +909,14 @@
       "latitude": 30.8534,
       "longitude": 99.922,
       "epoch_ms": 1789733388959
+    },
+    {
+      "id": "us7000ti97",
+      "mag": 4.2,
+      "place": "34 km S of Jurm, Afghanistan",
+      "latitude": 36.5552,
+      "longitude": 70.8569,
+      "epoch_ms": 1789733258239
     }
   ]
 }
