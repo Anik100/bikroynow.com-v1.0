@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000tfqz",
-    "emsc_20260908_0000043",
     "emsc_20260908_0000044",
     "us7000tfr0",
     "emsc_20260908_0000049",
@@ -499,7 +497,9 @@
     "emsc_20260918_0000059",
     "emsc_20260918_0000084",
     "emsc_20260918_0000097",
-    "us7000ti7x"
+    "us7000ti7x",
+    "emsc_20260918_0000100",
+    "emsc_20260918_0000101"
   ],
   "replied_comment_ids": [
     "122106361383450344_1021555390937459",
@@ -518,22 +518,6 @@
     "122109298797450344_1581385650386793"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260916_0000127",
-      "mag": 5.1,
-      "place": "MARIANA ISLANDS REGION",
-      "latitude": 14.3886,
-      "longitude": 147.1141,
-      "epoch_ms": 1789547820012
-    },
-    {
-      "id": "emsc_20260916_0000139",
-      "mag": 4.6,
-      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
-      "latitude": -7.543,
-      "longitude": 128.549,
-      "epoch_ms": 1789551440750
-    },
     {
       "id": "us7000tht8",
       "mag": 4.7,
@@ -917,6 +901,22 @@
       "latitude": 4.3224,
       "longitude": -76.7931,
       "epoch_ms": 1789712223598
+    },
+    {
+      "id": "emsc_20260918_0000100",
+      "mag": 4.4,
+      "place": "AEGEAN SEA",
+      "latitude": 38.59,
+      "longitude": 24.39,
+      "epoch_ms": 1789713636100
+    },
+    {
+      "id": "emsc_20260918_0000101",
+      "mag": 4.5,
+      "place": "GREECE",
+      "latitude": 38.9404,
+      "longitude": 23.4529,
+      "epoch_ms": 1789713726002
     }
   ]
 }
