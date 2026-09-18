@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260908_0000147",
     "us7000tftd",
     "emsc_20260908_0000163",
     "emsc_20260908_0000164",
@@ -499,7 +498,8 @@
     "emsc_20260918_0000175",
     "pt26261050",
     "us7000tiar",
-    "emsc_20260918_0000194"
+    "emsc_20260918_0000194",
+    "emsc_20260918_0000196"
   ],
   "replied_comment_ids": [
     "122106361383450344_1021555390937459",
@@ -518,14 +518,6 @@
     "122109298797450344_1581385650386793"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260916_0000271",
-      "mag": 5.1,
-      "place": "KERMADEC ISLANDS, NEW ZEALAND",
-      "latitude": -30.5208,
-      "longitude": -177.8318,
-      "epoch_ms": 1789589019010
-    },
     {
       "id": "us7000thxg",
       "mag": 4.9,
@@ -917,6 +909,14 @@
       "latitude": 17.949,
       "longitude": -66.937,
       "epoch_ms": 1789737574000
+    },
+    {
+      "id": "emsc_20260918_0000196",
+      "mag": 4.6,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 14.558,
+      "longitude": -93.42,
+      "epoch_ms": 1789737171220
     }
   ]
 }
