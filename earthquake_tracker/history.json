@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260908_0000107",
     "emsc_20260908_0000125",
     "us7000tft5",
     "emsc_20260908_0000147",
@@ -499,7 +498,8 @@
     "us7000ti97",
     "us7000ti9c",
     "emsc_20260918_0000190",
-    "emsc_20260918_0000175"
+    "emsc_20260918_0000175",
+    "pt26261050"
   ],
   "replied_comment_ids": [
     "122106361383450344_1021555390937459",
@@ -518,14 +518,6 @@
     "122109298797450344_1581385650386793"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000thxc",
-      "mag": 5.0,
-      "place": "29 km WSW of Sip\u00ed, Colombia",
-      "latitude": 4.5241,
-      "longitude": -76.8772,
-      "epoch_ms": 1789589572070
-    },
     {
       "id": "emsc_20260916_0000271",
       "mag": 5.1,
@@ -917,6 +909,14 @@
       "latitude": 36.5552,
       "longitude": 70.8569,
       "epoch_ms": 1789733258239
+    },
+    {
+      "id": "pt26261050",
+      "mag": 4.6,
+      "place": "3 km SW of Gu\u00e1nica, Puerto Rico",
+      "latitude": 17.949,
+      "longitude": -66.937,
+      "epoch_ms": 1789737574000
     }
   ]
 }
