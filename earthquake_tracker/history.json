@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260909_0000140",
     "us7000tg1q",
     "emsc_20260909_0000111",
     "emsc_20260909_0000209",
@@ -499,7 +498,8 @@
     "us7000tii3",
     "emsc_20260919_0000080",
     "emsc_20260919_0000082",
-    "us7000tii4"
+    "us7000tii4",
+    "emsc_20260919_0000085"
   ],
   "replied_comment_ids": [
     "122110149885450344_1608313717512308",
@@ -519,14 +519,6 @@
     "122107480185450344_1993172514729995"
   ],
   "recent_posted_events": [
-    {
-      "id": "aka2026slmvhn",
-      "mag": 4.0,
-      "place": "187 km SW of Nikolski, Alaska",
-      "latitude": 51.78,
-      "longitude": -170.854,
-      "epoch_ms": 1789655657905
-    },
     {
       "id": "aka2026slngie",
       "mag": 4.0,
@@ -918,6 +910,14 @@
       "latitude": 30.1668,
       "longitude": 131.1901,
       "epoch_ms": 1789801703856
+    },
+    {
+      "id": "emsc_20260919_0000085",
+      "mag": 4.2,
+      "place": "PAPUA, INDONESIA",
+      "latitude": -2.38,
+      "longitude": 138.92,
+      "epoch_ms": 1789803529000
     }
   ]
 }
