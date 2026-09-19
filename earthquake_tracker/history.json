@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260909_0000113",
-    "emsc_20260909_0000124",
     "emsc_20260909_0000140",
     "us7000tg1q",
     "emsc_20260909_0000111",
@@ -499,7 +497,9 @@
     "emsc_20260919_0000073",
     "emsc_20260919_0000076",
     "us7000tii3",
-    "emsc_20260919_0000080"
+    "emsc_20260919_0000080",
+    "emsc_20260919_0000082",
+    "us7000tii4"
   ],
   "replied_comment_ids": [
     "122110149885450344_1608313717512308",
@@ -519,14 +519,6 @@
     "122107480185450344_1993172514729995"
   ],
   "recent_posted_events": [
-    {
-      "id": "attliih5",
-      "mag": 6.3,
-      "place": "167 km W of Nikolski, Alaska",
-      "latitude": 52.81,
-      "longitude": -171.341,
-      "epoch_ms": 1789654793000
-    },
     {
       "id": "aka2026slmvhn",
       "mag": 4.0,
@@ -918,6 +910,14 @@
       "latitude": 15.801,
       "longitude": -95.134,
       "epoch_ms": 1789802040000
+    },
+    {
+      "id": "us7000tii4",
+      "mag": 4.6,
+      "place": "57 km ESE of Koseda, Japan",
+      "latitude": 30.1668,
+      "longitude": 131.1901,
+      "epoch_ms": 1789801703856
     }
   ]
 }
