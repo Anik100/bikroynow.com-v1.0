@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260909_0000237",
     "emsc_20260909_0000238",
     "emsc_20260909_0000244",
     "us7000tg4e",
@@ -499,7 +498,8 @@
     "emsc_20260919_0000098",
     "emsc_20260919_0000112",
     "us7000tiim",
-    "emsc_20260919_0000116"
+    "emsc_20260919_0000116",
+    "us7000tiis"
   ],
   "replied_comment_ids": [
     "122107480185450344_1993172514729995",
@@ -520,14 +520,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260917_0000309",
-      "mag": 4.5,
-      "place": "ANTOFAGASTA, CHILE",
-      "latitude": -21.92,
-      "longitude": -69.18,
-      "epoch_ms": 1789683100000
-    },
     {
       "id": "emsc_20260917_0000317",
       "mag": 4.3,
@@ -919,6 +911,14 @@
       "latitude": 38.7179,
       "longitude": 23.4243,
       "epoch_ms": 1789811761093
+    },
+    {
+      "id": "us7000tiis",
+      "mag": 5.0,
+      "place": "South Sandwich Islands region",
+      "latitude": -55.6255,
+      "longitude": -28.1116,
+      "epoch_ms": 1789811999264
     }
   ]
 }
