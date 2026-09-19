@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260909_0000074",
     "us7000tg06",
     "emsc_20260909_0000078",
     "emsc_20260909_0000079",
@@ -499,7 +498,8 @@
     "emsc_20260918_0000380",
     "us7000tigd",
     "emsc_20260918_0000383",
-    "emsc_20260919_0000002"
+    "emsc_20260919_0000002",
+    "emsc_20260919_0000042"
   ],
   "replied_comment_ids": [
     "122110149885450344_1608313717512308",
@@ -519,14 +519,6 @@
     "122107480185450344_1993172514729995"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260917_0000099",
-      "mag": 4.0,
-      "place": "BABUYAN ISL REGION, PHILIPPINES",
-      "latitude": 19.92,
-      "longitude": 121.2,
-      "epoch_ms": 1789635000000
-    },
     {
       "id": "emsc_20260917_0000101",
       "mag": 4.4,
@@ -918,6 +910,14 @@
       "latitude": 31.8,
       "longitude": 131.9,
       "epoch_ms": 1789777770000
+    },
+    {
+      "id": "emsc_20260919_0000042",
+      "mag": 5.2,
+      "place": "NEAR N COAST OF PAPUA, INDONESIA",
+      "latitude": -1.8561,
+      "longitude": 138.8882,
+      "epoch_ms": 1789791515318
     }
   ]
 }
