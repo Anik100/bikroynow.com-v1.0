@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260910_0000192",
-    "us7000tgb6",
     "emsc_20260910_0000198",
     "emsc_20260910_0000202",
     "us7000tgb4",
@@ -499,7 +497,9 @@
     "us7000timw",
     "us7000timy",
     "emsc_20260919_0000296",
-    "emsc_20260919_0000303"
+    "emsc_20260919_0000303",
+    "emsc_20260920_0000040",
+    "us7000tinf"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -521,14 +521,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260918_0000120",
-      "mag": 4.4,
-      "place": "HARYANA - DELHI REGION, INDIA",
-      "latitude": 28.1997,
-      "longitude": 76.8572,
-      "epoch_ms": 1789718594000
-    },
     {
       "id": "emsc_20260918_0000122",
       "mag": 4.3,
@@ -920,6 +912,14 @@
       "latitude": -15.9606,
       "longitude": -174.5971,
       "epoch_ms": 1789864401417
+    },
+    {
+      "id": "us7000tinf",
+      "mag": 4.5,
+      "place": "54 km ENE of Sainte-Marie, Martinique",
+      "latitude": 15.0395,
+      "longitude": -60.5578,
+      "epoch_ms": 1789872261022
     }
   ]
 }
