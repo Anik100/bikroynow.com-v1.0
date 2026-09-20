@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tghk",
     "emsc_20260911_0000005",
     "emsc_20260911_0000004",
     "emsc_20260911_0000012",
@@ -499,7 +498,8 @@
     "emsc_20260920_0000092",
     "us7000tipl",
     "emsc_20260920_0000110",
-    "us7000tiq2"
+    "us7000tiq2",
+    "emsc_20260920_0000117"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -521,14 +521,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260918_0000280",
-      "mag": 4.3,
-      "place": "SOUTH OF JAVA, INDONESIA",
-      "latitude": -8.42,
-      "longitude": 105.85,
-      "epoch_ms": 1789753363000
-    },
     {
       "id": "emsc_20260918_0000315",
       "mag": 4.0,
@@ -920,6 +912,14 @@
       "latitude": -25.9832,
       "longitude": -66.6004,
       "epoch_ms": 1789894078750
+    },
+    {
+      "id": "emsc_20260920_0000117",
+      "mag": 4.1,
+      "place": "MINAHASA, SULAWESI, INDONESIA",
+      "latitude": 0.3,
+      "longitude": 122.14,
+      "epoch_ms": 1789895122000
     }
   ]
 }
