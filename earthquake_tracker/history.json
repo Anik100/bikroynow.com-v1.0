@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000tgf2",
-    "emsc_20260910_0000351",
     "emsc_20260910_0000375",
     "emsc_20260910_0000377",
     "aka2026rzfqpv",
@@ -499,7 +497,9 @@
     "us7000tip2",
     "emsc_20260920_0000076",
     "emsc_20260920_0000078",
-    "emsc_20260920_0000082"
+    "emsc_20260920_0000082",
+    "emsc_20260920_0000084",
+    "us7000tipi"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -521,14 +521,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260918_0000209",
-      "mag": 5.0,
-      "place": "SOUTH OF JAVA, INDONESIA",
-      "latitude": -8.5643,
-      "longitude": 105.8409,
-      "epoch_ms": 1789742181600
-    },
     {
       "id": "emsc_20260918_0000210",
       "mag": 4.0,
@@ -920,6 +912,14 @@
       "latitude": 13.452,
       "longitude": -90.485,
       "epoch_ms": 1789886337000
+    },
+    {
+      "id": "us7000tipi",
+      "mag": 4.9,
+      "place": "93 km ESE of Yigo Village, Guam",
+      "latitude": 13.2653,
+      "longitude": 145.7081,
+      "epoch_ms": 1789886876942
     }
   ]
 }
