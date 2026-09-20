@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260911_0000209",
-    "emsc_20260911_0000092",
     "emsc_20260911_0000225",
     "emsc_20260911_0000226",
     "emsc_20260911_0000227",
@@ -499,7 +497,9 @@
     "us7000tit5",
     "emsc_20260920_0000264",
     "aka2026srnyvl",
-    "emsc_20260920_0000273"
+    "emsc_20260920_0000273",
+    "emsc_20260920_0000284",
+    "us7000titt"
   ],
   "replied_comment_ids": [
     "122111086851450344_1620263499738510",
@@ -525,14 +525,6 @@
     "122104106805450344_1052218624389467"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260919_0000080",
-      "mag": 4.2,
-      "place": "OFFSHORE OAXACA, MEXICO",
-      "latitude": 15.801,
-      "longitude": -95.134,
-      "epoch_ms": 1789802040000
-    },
     {
       "id": "us7000tii4",
       "mag": 4.6,
@@ -924,6 +916,14 @@
       "latitude": 52.6425,
       "longitude": -162.4861,
       "epoch_ms": 1789938384800
+    },
+    {
+      "id": "us7000titt",
+      "mag": 4.7,
+      "place": "southeast of the Loyalty Islands",
+      "latitude": -22.967,
+      "longitude": 171.8514,
+      "epoch_ms": 1789942198876
     }
   ]
 }
