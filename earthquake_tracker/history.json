@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260910_0000425",
     "emsc_20260911_0000093",
     "aka2026rzvwxv",
     "emsc_20260911_0000108",
@@ -499,7 +498,8 @@
     "emsc_20260920_0000151",
     "emsc_20260920_0000155",
     "emsc_20260920_0000158",
-    "us7000tirf"
+    "us7000tirf",
+    "emsc_20260920_0000160"
   ],
   "replied_comment_ids": [
     "122111086851450344_1620263499738510",
@@ -525,14 +525,6 @@
     "122104106805450344_1052218624389467"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tigd",
-      "mag": 5.5,
-      "place": "Kermadec Islands region",
-      "latitude": -27.8581,
-      "longitude": -177.2286,
-      "epoch_ms": 1789773508306
-    },
     {
       "id": "emsc_20260919_0000002",
       "mag": 4.0,
@@ -924,6 +916,14 @@
       "latitude": -10.6446,
       "longitude": 164.9562,
       "epoch_ms": 1789907062144
+    },
+    {
+      "id": "emsc_20260920_0000160",
+      "mag": 5.7,
+      "place": "EASTERN NEW GUINEA REG., P.N.G.",
+      "latitude": -5.8375,
+      "longitude": 146.1216,
+      "epoch_ms": 1789908353630
     }
   ]
 }
