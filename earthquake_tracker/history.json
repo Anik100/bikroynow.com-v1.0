@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260910_0000294",
-    "us7000tgev",
     "emsc_20260910_0000295",
     "emsc_20260910_0000300",
     "us7000tgey",
@@ -499,7 +497,9 @@
     "emsc_20260919_0000304",
     "emsc_20260919_0000306",
     "emsc_20260920_0000049",
-    "us7000tinl"
+    "us7000tinl",
+    "emsc_20260920_0000052",
+    "emsc_20260920_0000053"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -521,22 +521,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000ti9a",
-      "mag": 4.6,
-      "place": "204 km N of Daocheng, China",
-      "latitude": 30.8534,
-      "longitude": 99.922,
-      "epoch_ms": 1789733388959
-    },
-    {
-      "id": "us7000ti97",
-      "mag": 4.2,
-      "place": "34 km S of Jurm, Afghanistan",
-      "latitude": 36.5552,
-      "longitude": 70.8569,
-      "epoch_ms": 1789733258239
-    },
     {
       "id": "pt26261050",
       "mag": 4.6,
@@ -920,6 +904,22 @@
       "latitude": 13.0568,
       "longitude": 145.7591,
       "epoch_ms": 1789875804649
+    },
+    {
+      "id": "emsc_20260920_0000052",
+      "mag": 4.3,
+      "place": "SULAWESI, INDONESIA",
+      "latitude": -0.21,
+      "longitude": 123.08,
+      "epoch_ms": 1789877103000
+    },
+    {
+      "id": "emsc_20260920_0000053",
+      "mag": 4.0,
+      "place": "MASBATE REGION, PHILIPPINES",
+      "latitude": 12.78,
+      "longitude": 123.32,
+      "epoch_ms": 1789877018000
     }
   ]
 }
