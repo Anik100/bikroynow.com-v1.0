@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260911_0000117",
     "emsc_20260911_0000120",
     "us7000tgkg",
     "emsc_20260911_0000123",
@@ -499,7 +498,8 @@
     "us7000tirh",
     "emsc_20260920_0000188",
     "us7000tirt",
-    "emsc_20260920_0000194"
+    "emsc_20260920_0000194",
+    "emsc_20260920_0000195"
   ],
   "replied_comment_ids": [
     "122111086851450344_1620263499738510",
@@ -525,14 +525,6 @@
     "122104106805450344_1052218624389467"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260919_0000058",
-      "mag": 4.3,
-      "place": "PANAMA-COSTA RICA BORDER REGION",
-      "latitude": 8.0366,
-      "longitude": -82.7409,
-      "epoch_ms": 1789796563000
-    },
     {
       "id": "emsc_20260919_0000059",
       "mag": 4.1,
@@ -924,6 +916,14 @@
       "latitude": -6.76,
       "longitude": 127.72,
       "epoch_ms": 1789918766000
+    },
+    {
+      "id": "emsc_20260920_0000195",
+      "mag": 4.2,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 9.11,
+      "longitude": 126.54,
+      "epoch_ms": 1789918667000
     }
   ]
 }
