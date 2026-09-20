@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "aka2026rzfqpv",
     "emsc_20260910_0000388",
     "us7000tghk",
     "emsc_20260911_0000005",
@@ -499,7 +498,8 @@
     "emsc_20260920_0000084",
     "us7000tipi",
     "emsc_20260920_0000092",
-    "us7000tipl"
+    "us7000tipl",
+    "emsc_20260920_0000110"
   ],
   "replied_comment_ids": [
     "122104882527450344_2168459427414337",
@@ -521,14 +521,6 @@
     "122106166137450344_1404682524936847"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260918_0000258",
-      "mag": 4.8,
-      "place": "REGION METROPOLITANA, CHILE",
-      "latitude": -33.3402,
-      "longitude": -70.4054,
-      "epoch_ms": 1789750327500
-    },
     {
       "id": "emsc_20260918_0000280",
       "mag": 4.3,
@@ -920,6 +912,14 @@
       "latitude": 28.4204,
       "longitude": 129.3713,
       "epoch_ms": 1789889300740
+    },
+    {
+      "id": "emsc_20260920_0000110",
+      "mag": 5.3,
+      "place": "SALTA, ARGENTINA",
+      "latitude": -25.9832,
+      "longitude": -66.6004,
+      "epoch_ms": 1789894078750
     }
   ]
 }
