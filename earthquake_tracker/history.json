@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000tgyw",
-    "emsc_20260912_0000160",
     "us7000tgyx",
     "emsc_20260912_0000185",
     "emsc_20260912_0000188",
@@ -499,7 +497,9 @@
     "emsc_20260921_0000322",
     "us7000tizg",
     "us7000tizh",
-    "emsc_20260921_0000336"
+    "emsc_20260921_0000336",
+    "emsc_20260921_0000343",
+    "us7000tizt"
   ],
   "replied_comment_ids": [
     "122104106805450344_1052218624389467",
@@ -527,14 +527,6 @@
     "122110149885450344_1608313717512308"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260920_0000053",
-      "mag": 4.0,
-      "place": "MASBATE REGION, PHILIPPINES",
-      "latitude": 12.78,
-      "longitude": 123.32,
-      "epoch_ms": 1789877018000
-    },
     {
       "id": "emsc_20260920_0000064",
       "mag": 5.2,
@@ -926,6 +918,14 @@
       "latitude": -8.06,
       "longitude": 119.86,
       "epoch_ms": 1790016642000
+    },
+    {
+      "id": "us7000tizt",
+      "mag": 4.5,
+      "place": "5 km SW of San Antonio, Colombia",
+      "latitude": 3.8759,
+      "longitude": -75.5116,
+      "epoch_ms": 1790016524774
     }
   ]
 }
