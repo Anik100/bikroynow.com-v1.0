@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tgqf",
     "emsc_20260911_0000253",
     "us7000tgqb",
     "emsc_20260911_0000272",
@@ -499,7 +498,8 @@
     "emsc_20260921_0000012",
     "us7000tiui",
     "emsc_20260921_0000025",
-    "us7000tiur"
+    "us7000tiur",
+    "emsc_20260921_0000037"
   ],
   "replied_comment_ids": [
     "122111086851450344_1620263499738510",
@@ -525,14 +525,6 @@
     "122104106805450344_1052218624389467"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260919_0000112",
-      "mag": 4.8,
-      "place": "NORTHWEST OF KURIL ISLANDS",
-      "latitude": 47.338,
-      "longitude": 146.4943,
-      "epoch_ms": 1789810443370
-    },
     {
       "id": "emsc_20260919_0000116",
       "mag": 4.0,
@@ -924,6 +916,14 @@
       "latitude": -8.1889,
       "longitude": 120.514,
       "epoch_ms": 1789954898550
+    },
+    {
+      "id": "emsc_20260921_0000037",
+      "mag": 4.1,
+      "place": "SEA OF OKHOTSK",
+      "latitude": 48.086,
+      "longitude": 145.89,
+      "epoch_ms": 1789955876181
     }
   ]
 }
