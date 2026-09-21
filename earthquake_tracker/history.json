@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260911_0000272",
     "emsc_20260911_0000279",
     "us7000tgrb",
     "us7000tgrk",
@@ -499,7 +498,8 @@
     "us7000tiur",
     "emsc_20260921_0000037",
     "us7000tiuu",
-    "emsc_20260920_0000319"
+    "emsc_20260920_0000319",
+    "emsc_20260921_0000066"
   ],
   "replied_comment_ids": [
     "122111086851450344_1620263499738510",
@@ -525,14 +525,6 @@
     "122104106805450344_1052218624389467"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260919_0000116",
-      "mag": 4.0,
-      "place": "GREECE",
-      "latitude": 38.7179,
-      "longitude": 23.4243,
-      "epoch_ms": 1789811761093
-    },
     {
       "id": "us7000tiis",
       "mag": 5.0,
@@ -924,6 +916,14 @@
       "latitude": 48.086,
       "longitude": 145.89,
       "epoch_ms": 1789955876181
+    },
+    {
+      "id": "emsc_20260921_0000066",
+      "mag": 4.0,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.418,
+      "longitude": -94.325,
+      "epoch_ms": 1789960180000
     }
   ]
 }
