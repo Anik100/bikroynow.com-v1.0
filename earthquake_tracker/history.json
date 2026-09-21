@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260911_0000279",
-    "us7000tgrb",
     "us7000tgrk",
     "emsc_20260911_0000281",
     "emsc_20260911_0000292",
@@ -499,7 +497,9 @@
     "emsc_20260921_0000037",
     "us7000tiuu",
     "emsc_20260920_0000319",
-    "emsc_20260921_0000066"
+    "emsc_20260921_0000066",
+    "emsc_20260921_0000076",
+    "us7000tivb"
   ],
   "replied_comment_ids": [
     "122111086851450344_1620263499738510",
@@ -525,14 +525,6 @@
     "122104106805450344_1052218624389467"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tiis",
-      "mag": 5.0,
-      "place": "South Sandwich Islands region",
-      "latitude": -55.6255,
-      "longitude": -28.1116,
-      "epoch_ms": 1789811999264
-    },
     {
       "id": "emsc_20260919_0000133",
       "mag": 4.8,
@@ -924,6 +916,14 @@
       "latitude": 14.418,
       "longitude": -94.325,
       "epoch_ms": 1789960180000
+    },
+    {
+      "id": "us7000tivb",
+      "mag": 4.5,
+      "place": "4 km W of Victor Raul, Peru",
+      "latitude": -8.397,
+      "longitude": -78.8646,
+      "epoch_ms": 1789963104483
     }
   ]
 }
