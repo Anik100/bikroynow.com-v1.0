@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260913_0000045",
-    "us7000th3a",
     "emsc_20260913_0000057",
     "us7000th4y",
     "emsc_20260913_0000097",
@@ -499,7 +497,9 @@
     "us7000tj3v",
     "emsc_20260922_0000138",
     "emsc_20260922_0000141",
-    "emsc_20260922_0000164"
+    "emsc_20260922_0000164",
+    "emsc_20260922_0000172",
+    "emsc_20260922_0000173"
   ],
   "replied_comment_ids": [
     "122104106805450344_1052218624389467",
@@ -527,22 +527,6 @@
     "122110149885450344_1608313717512308"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260920_0000160",
-      "mag": 5.7,
-      "place": "EASTERN NEW GUINEA REG., P.N.G.",
-      "latitude": -5.8375,
-      "longitude": 146.1216,
-      "epoch_ms": 1789908353630
-    },
-    {
-      "id": "emsc_20260920_0000188",
-      "mag": 4.6,
-      "place": "NEAR S. COAST OF HONSHU, JAPAN",
-      "latitude": 33.8743,
-      "longitude": 137.2658,
-      "epoch_ms": 1789912496560
-    },
     {
       "id": "emsc_20260920_0000194",
       "mag": 4.4,
@@ -926,6 +910,22 @@
       "latitude": -22.0,
       "longitude": -68.58,
       "epoch_ms": 1790069708000
+    },
+    {
+      "id": "emsc_20260922_0000172",
+      "mag": 4.2,
+      "place": "NEAR COAST OF SOUTHERN PERU",
+      "latitude": -16.6,
+      "longitude": -72.04,
+      "epoch_ms": 1790070967000
+    },
+    {
+      "id": "emsc_20260922_0000173",
+      "mag": 4.0,
+      "place": "GUERRERO, MEXICO",
+      "latitude": 18.437,
+      "longitude": -100.93,
+      "epoch_ms": 1790070158000
     }
   ]
 }
