@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260913_0000237",
-    "emsc_20260913_0000247",
     "us7000th7w",
     "emsc_20260913_0000252",
     "emsc_20260913_0000255",
@@ -499,7 +497,9 @@
     "emsc_20260922_0000224",
     "emsc_20260922_0000238",
     "emsc_20260922_0000280",
-    "emsc_20260922_0000278"
+    "emsc_20260922_0000278",
+    "emsc_20260922_0000282",
+    "emsc_20260922_0000281"
   ],
   "replied_comment_ids": [
     "122104106805450344_1052218624389467",
@@ -527,22 +527,6 @@
     "122110149885450344_1608313717512308"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000titt",
-      "mag": 4.7,
-      "place": "southeast of the Loyalty Islands",
-      "latitude": -22.967,
-      "longitude": 171.8514,
-      "epoch_ms": 1789942198876
-    },
-    {
-      "id": "emsc_20260920_0000298",
-      "mag": 5.2,
-      "place": "KURIL ISLANDS",
-      "latitude": 43.7263,
-      "longitude": 146.5035,
-      "epoch_ms": 1789946738520
-    },
     {
       "id": "emsc_20260921_0000001",
       "mag": 4.0,
@@ -926,6 +910,22 @@
       "latitude": 50.4009,
       "longitude": 156.4923,
       "epoch_ms": 1790085377690
+    },
+    {
+      "id": "emsc_20260922_0000282",
+      "mag": 4.3,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 13.928,
+      "longitude": -92.906,
+      "epoch_ms": 1790092330000
+    },
+    {
+      "id": "emsc_20260922_0000281",
+      "mag": 4.6,
+      "place": "SOUTHERN XINJIANG, CHINA",
+      "latitude": 41.94,
+      "longitude": 82.14,
+      "epoch_ms": 1790093350000
     }
   ]
 }
