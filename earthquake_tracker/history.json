@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000thea",
     "emsc_20260914_0000227",
     "emsc_20260914_0000231",
     "us7000thfh",
@@ -499,7 +498,8 @@
     "us6000tx3m",
     "emsc_20260923_0000188",
     "emsc_20260923_0000189",
-    "us6000tx3n"
+    "us6000tx3n",
+    "emsc_20260923_0000198"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tiz7",
-      "mag": 4.3,
-      "place": "20 km SW of Roncesvalles, Colombia",
-      "latitude": 3.8585,
-      "longitude": -75.7087,
-      "epoch_ms": 1790007800333
-    },
     {
       "id": "emsc_20260921_0000320",
       "mag": 4.1,
@@ -927,6 +919,14 @@
       "latitude": -23.9741,
       "longitude": 179.2578,
       "epoch_ms": 1790174735743
+    },
+    {
+      "id": "emsc_20260923_0000198",
+      "mag": 4.0,
+      "place": "OAXACA, MEXICO",
+      "latitude": 17.042,
+      "longitude": -93.909,
+      "epoch_ms": 1790176637000
     }
   ]
 }
