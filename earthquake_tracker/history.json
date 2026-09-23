@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260913_0000289",
     "us7000th8u",
     "us7000th8v",
     "emsc_20260914_0000011",
@@ -499,7 +498,8 @@
     "emsc_20260922_0000344",
     "us6000twys",
     "emsc_20260922_0000351",
-    "emsc_20260923_0000013"
+    "emsc_20260923_0000013",
+    "emsc_20260923_0000014"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260921_0000066",
-      "mag": 4.0,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 14.418,
-      "longitude": -94.325,
-      "epoch_ms": 1789960180000
-    },
     {
       "id": "us7000tivb",
       "mag": 4.5,
@@ -927,6 +919,14 @@
       "latitude": 4.0613,
       "longitude": -75.969,
       "epoch_ms": 1790126919570
+    },
+    {
+      "id": "emsc_20260923_0000014",
+      "mag": 4.1,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.21,
+      "longitude": 120.64,
+      "epoch_ms": 1790128965000
     }
   ]
 }
