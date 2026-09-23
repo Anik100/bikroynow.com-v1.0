@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000thge",
     "emsc_20260914_0000253",
     "us7000thgj",
     "emsc_20260914_0000258",
@@ -499,7 +498,8 @@
     "us6000tx53",
     "us6000tx58",
     "emsc_20260923_0000242",
-    "emsc_20260923_0000286"
+    "emsc_20260923_0000286",
+    "emsc_20260923_0000301"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tizt",
-      "mag": 4.5,
-      "place": "5 km SW of San Antonio, Colombia",
-      "latitude": 3.8759,
-      "longitude": -75.5116,
-      "epoch_ms": 1790016524774
-    },
     {
       "id": "us7000tj0r",
       "mag": 4.4,
@@ -927,6 +919,14 @@
       "latitude": 16.873,
       "longitude": -95.074,
       "epoch_ms": 1790198968000
+    },
+    {
+      "id": "emsc_20260923_0000301",
+      "mag": 4.0,
+      "place": "OAXACA, MEXICO",
+      "latitude": 16.746,
+      "longitude": -94.114,
+      "epoch_ms": 1790202834000
     }
   ]
 }
