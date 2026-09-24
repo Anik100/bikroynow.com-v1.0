@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260914_0000259",
     "us7000thgs",
     "emsc_20260914_0000268",
     "us7000thh2",
@@ -499,7 +498,8 @@
     "emsc_20260923_0000301",
     "emsc_20260923_0000302",
     "emsc_20260924_0000008",
-    "emsc_20260923_0000328"
+    "emsc_20260923_0000328",
+    "emsc_20260924_0000025"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tj0z",
-      "mag": 5.0,
-      "place": "South Sandwich Islands region",
-      "latitude": -56.4621,
-      "longitude": -23.969,
-      "epoch_ms": 1790026625134
-    },
     {
       "id": "emsc_20260921_0000392",
       "mag": 4.3,
@@ -927,6 +919,14 @@
       "latitude": -24.02,
       "longitude": -70.1,
       "epoch_ms": 1790211022000
+    },
+    {
+      "id": "emsc_20260924_0000025",
+      "mag": 4.2,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.182,
+      "longitude": -93.303,
+      "epoch_ms": 1790215257000
     }
   ]
 }
