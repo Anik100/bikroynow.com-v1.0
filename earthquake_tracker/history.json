@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260915_0000110",
     "emsc_20260915_0000134",
     "emsc_20260915_0000136",
     "emsc_20260915_0000140",
@@ -499,7 +498,8 @@
     "us6000txb3",
     "emsc_20260924_0000175",
     "emsc_20260924_0000178",
-    "us6000txbm"
+    "us6000txbm",
+    "emsc_20260924_0000190"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tj55",
-      "mag": 4.4,
-      "place": "38 km S of Jurm, Afghanistan",
-      "latitude": 36.5213,
-      "longitude": 70.898,
-      "epoch_ms": 1790076581886
-    },
     {
       "id": "emsc_20260922_0000209",
       "mag": 4.7,
@@ -927,6 +919,14 @@
       "latitude": -5.3396,
       "longitude": 151.4915,
       "epoch_ms": 1790252998824
+    },
+    {
+      "id": "emsc_20260924_0000190",
+      "mag": 4.0,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 13.962,
+      "longitude": -93.337,
+      "epoch_ms": 1790256035000
     }
   ]
 }
