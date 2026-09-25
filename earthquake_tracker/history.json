@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000thsx",
     "emsc_20260916_0000139",
     "emsc_20260916_0000140",
     "us7000tht8",
@@ -499,7 +498,8 @@
     "emsc_20260925_0000265",
     "emsc_20260925_0000267",
     "emsc_20260925_0000279",
-    "us6000txp8"
+    "us6000txp8",
+    "emsc_20260925_0000282"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tx3n",
-      "mag": 4.6,
-      "place": "south of the Fiji Islands",
-      "latitude": -23.9741,
-      "longitude": 179.2578,
-      "epoch_ms": 1790174735743
-    },
     {
       "id": "emsc_20260923_0000198",
       "mag": 4.0,
@@ -927,6 +919,14 @@
       "latitude": -11.7022,
       "longitude": 166.6797,
       "epoch_ms": 1790368869329
+    },
+    {
+      "id": "emsc_20260925_0000282",
+      "mag": 5.0,
+      "place": "EASTERN SICHUAN, CHINA",
+      "latitude": 28.6,
+      "longitude": 104.724,
+      "epoch_ms": 1790370087850
     }
   ]
 }
