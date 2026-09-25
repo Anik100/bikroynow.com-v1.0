@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260916_0000170",
-    "us7000thti",
     "emsc_20260916_0000174",
     "emsc_20260916_0000178",
     "us7000thts",
@@ -499,7 +497,9 @@
     "pt26268000",
     "us6000txpa",
     "emsc_20260925_0000289",
-    "us6000txpi"
+    "us6000txpi",
+    "emsc_20260925_0000302",
+    "us6000txq2"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260923_0000228",
-      "mag": 4.9,
-      "place": "SAMOA ISLANDS REGION",
-      "latitude": -14.6397,
-      "longitude": -175.0529,
-      "epoch_ms": 1790184032721
-    },
     {
       "id": "emsc_20260923_0000286",
       "mag": 4.2,
@@ -927,6 +919,14 @@
       "latitude": -21.246,
       "longitude": 168.453,
       "epoch_ms": 1790371385000
+    },
+    {
+      "id": "us6000txq2",
+      "mag": 5.1,
+      "place": "78 km ENE of Tadine, New Caledonia",
+      "latitude": -21.2728,
+      "longitude": 168.5744,
+      "epoch_ms": 1790374054791
     }
   ]
 }
