@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260917_0000205",
     "aka2026slmvhn",
     "emsc_20260917_0000208",
     "aka2026slngie",
@@ -499,7 +498,8 @@
     "us6000txtc",
     "emsc_20260926_0000162",
     "emsc_20260926_0000163",
-    "us6000txtn"
+    "us6000txtn",
+    "emsc_20260926_0000166"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260924_0000333",
-      "mag": 4.1,
-      "place": "NEUQUEN, ARGENTINA",
-      "latitude": -37.25,
-      "longitude": -71.15,
-      "epoch_ms": 1790291976000
-    },
     {
       "id": "emsc_20260924_0000334",
       "mag": 5.4,
@@ -927,6 +919,14 @@
       "latitude": -21.3884,
       "longitude": 168.5751,
       "epoch_ms": 1790434896433
+    },
+    {
+      "id": "emsc_20260926_0000166",
+      "mag": 4.0,
+      "place": "PAPUA, INDONESIA",
+      "latitude": -3.68,
+      "longitude": 136.72,
+      "epoch_ms": 1790436496000
     }
   ]
 }
