@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000thx7",
     "us7000thwt",
     "us7000thr4",
     "emsc_20260916_0000296",
@@ -499,7 +498,8 @@
     "us6000txqv",
     "emsc_20260926_0000015",
     "emsc_20260926_0000028",
-    "us6000txr0"
+    "us6000txr0",
+    "emsc_20260926_0000043"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260924_0000078",
-      "mag": 4.1,
-      "place": "OFFSHORE VALPARAISO, CHILE",
-      "latitude": -33.87,
-      "longitude": -72.12,
-      "epoch_ms": 1790233624000
-    },
     {
       "id": "emsc_20260924_0000080",
       "mag": 4.1,
@@ -927,6 +919,14 @@
       "latitude": 68.8565,
       "longitude": -16.9554,
       "epoch_ms": 1790391175988
+    },
+    {
+      "id": "emsc_20260926_0000043",
+      "mag": 4.1,
+      "place": "MYANMAR-INDIA BORDER REGION",
+      "latitude": 24.021,
+      "longitude": 94.532,
+      "epoch_ms": 1790395476000
     }
   ]
 }
