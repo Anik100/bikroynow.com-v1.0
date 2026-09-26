@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260916_0000308",
-    "emsc_20260917_0000034",
     "emsc_20260917_0000046",
     "us7000thz3",
     "emsc_20260917_0000056",
@@ -499,7 +497,9 @@
     "emsc_20260926_0000056",
     "us6000txrf",
     "emsc_20260926_0000057",
-    "emsc_20260926_0000060"
+    "emsc_20260926_0000060",
+    "emsc_20260926_0000061",
+    "us6000txrj"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000txa8",
-      "mag": 4.1,
-      "place": "31 km SW of Garden City, Texas",
-      "latitude": 31.6624,
-      "longitude": -101.7155,
-      "epoch_ms": 1790238969428
-    },
     {
       "id": "emsc_20260924_0000116",
       "mag": 4.2,
@@ -927,6 +919,14 @@
       "latitude": 15.644,
       "longitude": -95.002,
       "epoch_ms": 1790404112000
+    },
+    {
+      "id": "us6000txrj",
+      "mag": 4.6,
+      "place": "25 km W of Roncesvalles, Colombia",
+      "latitude": 4.018,
+      "longitude": -75.8315,
+      "epoch_ms": 1790404699029
     }
   ]
 }
