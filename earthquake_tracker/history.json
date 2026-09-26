@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260917_0000064",
     "us7000thzp",
     "emsc_20260917_0000068",
     "us7000thzs",
@@ -499,7 +498,8 @@
     "emsc_20260926_0000069",
     "us6000txrq",
     "us6000txrn",
-    "emsc_20260926_0000070"
+    "emsc_20260926_0000070",
+    "us6000txrs"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260924_0000137",
-      "mag": 4.3,
-      "place": "MOZAMBIQUE CHANNEL",
-      "latitude": -14.98,
-      "longitude": 43.34,
-      "epoch_ms": 1790245279600
-    },
     {
       "id": "emsc_20260924_0000148",
       "mag": 4.1,
@@ -927,6 +919,14 @@
       "latitude": -21.1653,
       "longitude": 168.5736,
       "epoch_ms": 1790407336960
+    },
+    {
+      "id": "us6000txrs",
+      "mag": 5.0,
+      "place": "78 km ENE of Tadine, New Caledonia",
+      "latitude": -21.2116,
+      "longitude": 168.5478,
+      "epoch_ms": 1790411098743
     }
   ]
 }
