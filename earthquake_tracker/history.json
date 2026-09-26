@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260917_0000309",
-    "emsc_20260917_0000310",
     "emsc_20260917_0000317",
     "emsc_20260917_0000323",
     "emsc_20260918_0000011",
@@ -499,7 +497,9 @@
     "emsc_20260926_0000189",
     "us6000txuc",
     "emsc_20260926_0000193",
-    "us6000txuf"
+    "us6000txuf",
+    "emsc_20260926_0000195",
+    "us6000txuj"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260925_0000039",
-      "mag": 5.0,
-      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
-      "latitude": -7.521,
-      "longitude": 125.693,
-      "epoch_ms": 1790310462270
-    },
     {
       "id": "emsc_20260925_0000047",
       "mag": 4.3,
@@ -927,6 +919,14 @@
       "latitude": -21.3627,
       "longitude": 168.5681,
       "epoch_ms": 1790447123929
+    },
+    {
+      "id": "us6000txuj",
+      "mag": 4.7,
+      "place": "5 km N of Bowangshan, China",
+      "latitude": 28.3596,
+      "longitude": 105.0553,
+      "epoch_ms": 1790447502679
     }
   ]
 }
