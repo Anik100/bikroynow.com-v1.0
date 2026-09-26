@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260917_0000072",
     "us7000thzw",
     "us7000thzz",
     "emsc_20260917_0000075",
@@ -499,7 +498,8 @@
     "us6000txrs",
     "emsc_20260926_0000081",
     "emsc_20260926_0000086",
-    "us6000txrz"
+    "us6000txrz",
+    "emsc_20260926_0000087"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260924_0000161",
-      "mag": 4.9,
-      "place": "KERMADEC ISLANDS, NEW ZEALAND",
-      "latitude": -30.2344,
-      "longitude": -177.8691,
-      "epoch_ms": 1790248104838
-    },
     {
       "id": "emsc_20260924_0000175",
       "mag": 4.1,
@@ -927,6 +919,14 @@
       "latitude": -21.0172,
       "longitude": 168.6325,
       "epoch_ms": 1790412843961
+    },
+    {
+      "id": "emsc_20260926_0000087",
+      "mag": 4.8,
+      "place": "LOYALTY ISLANDS",
+      "latitude": -21.0058,
+      "longitude": 168.6238,
+      "epoch_ms": 1790413685869
     }
   ]
 }
