@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260917_0000089",
-    "emsc_20260917_0000093",
     "emsc_20260917_0000099",
     "emsc_20260917_0000100",
     "emsc_20260917_0000101",
@@ -499,7 +497,9 @@
     "emsc_20260926_0000088",
     "us6000txs3",
     "us6000txs6",
-    "emsc_20260926_0000092"
+    "emsc_20260926_0000092",
+    "emsc_20260926_0000105",
+    "emsc_20260926_0000103"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,22 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260924_0000175",
-      "mag": 4.1,
-      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
-      "latitude": 38.2,
-      "longitude": 141.7,
-      "epoch_ms": 1790253030000
-    },
-    {
-      "id": "emsc_20260924_0000178",
-      "mag": 5.2,
-      "place": "NEW BRITAIN REGION, P.N.G.",
-      "latitude": -5.3396,
-      "longitude": 151.4915,
-      "epoch_ms": 1790252998824
-    },
     {
       "id": "emsc_20260924_0000190",
       "mag": 4.0,
@@ -927,6 +911,22 @@
       "latitude": -21.0058,
       "longitude": 168.6238,
       "epoch_ms": 1790413685869
+    },
+    {
+      "id": "emsc_20260926_0000105",
+      "mag": 4.0,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 5.43,
+      "longitude": 125.24,
+      "epoch_ms": 1790418318000
+    },
+    {
+      "id": "emsc_20260926_0000103",
+      "mag": 5.3,
+      "place": "LOYALTY ISLANDS",
+      "latitude": -21.2528,
+      "longitude": 168.1013,
+      "epoch_ms": 1790418075070
     }
   ]
 }
