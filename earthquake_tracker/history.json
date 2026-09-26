@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260916_0000268",
-    "us7000thxc",
     "emsc_20260916_0000271",
     "emsc_20260916_0000273",
     "us7000thxg",
@@ -499,7 +497,9 @@
     "us6000txqi",
     "emsc_20260925_0000316",
     "emsc_20260925_0000318",
-    "us6000txqk"
+    "us6000txqk",
+    "emsc_20260925_0000322",
+    "us6000txql"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260924_0000039",
-      "mag": 4.3,
-      "place": "GUERRERO, MEXICO",
-      "latitude": 16.585,
-      "longitude": -98.419,
-      "epoch_ms": 1790220519000
-    },
     {
       "id": "us6000tx8q",
       "mag": 4.5,
@@ -927,6 +919,14 @@
       "latitude": -21.2023,
       "longitude": 168.4346,
       "epoch_ms": 1790380355158
+    },
+    {
+      "id": "us6000txql",
+      "mag": 5.0,
+      "place": "15 km NNW of Xunchang, China",
+      "latitude": 28.5792,
+      "longitude": 104.6428,
+      "epoch_ms": 1790380653361
     }
   ]
 }
