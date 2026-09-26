@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260918_0000028",
     "emsc_20260918_0000029",
     "us7000ti79",
     "emsc_20260918_0000059",
@@ -499,7 +498,8 @@
     "emsc_20260926_0000202",
     "us6000txur",
     "emsc_20260926_0000206",
-    "us6000txut"
+    "us6000txut",
+    "emsc_20260926_0000220"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260925_0000117",
-      "mag": 4.0,
-      "place": "VERACRUZ, MEXICO",
-      "latitude": 17.703,
-      "longitude": -95.025,
-      "epoch_ms": 1790330577000
-    },
     {
       "id": "us6000txjy",
       "mag": 5.3,
@@ -927,6 +919,14 @@
       "latitude": -21.352,
       "longitude": -68.8675,
       "epoch_ms": 1790452091508
+    },
+    {
+      "id": "emsc_20260926_0000220",
+      "mag": 4.1,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 7.48,
+      "longitude": 126.76,
+      "epoch_ms": 1790457490000
     }
   ]
 }
