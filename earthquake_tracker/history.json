@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260917_0000296",
-    "emsc_20260917_0000305",
     "emsc_20260917_0000309",
     "emsc_20260917_0000310",
     "emsc_20260917_0000317",
@@ -499,7 +497,9 @@
     "emsc_20260926_0000188",
     "us6000txu6",
     "emsc_20260926_0000189",
-    "us6000txuc"
+    "us6000txuc",
+    "emsc_20260926_0000193",
+    "us6000txuf"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260925_0000038",
-      "mag": 4.4,
-      "place": "NEAR COAST OF CENTRAL PERU",
-      "latitude": -11.47,
-      "longitude": -77.85,
-      "epoch_ms": 1790310388000
-    },
     {
       "id": "emsc_20260925_0000039",
       "mag": 5.0,
@@ -927,6 +919,14 @@
       "latitude": -48.5563,
       "longitude": 31.1369,
       "epoch_ms": 1790445020706
+    },
+    {
+      "id": "us6000txuf",
+      "mag": 4.8,
+      "place": "74 km ENE of Tadine, New Caledonia",
+      "latitude": -21.3627,
+      "longitude": 168.5681,
+      "epoch_ms": 1790447123929
     }
   ]
 }
