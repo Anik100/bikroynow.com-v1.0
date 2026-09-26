@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000ti5b",
-    "us7000ti5c",
     "emsc_20260917_0000296",
     "emsc_20260917_0000305",
     "emsc_20260917_0000309",
@@ -499,7 +497,9 @@
     "us6000txu2",
     "emsc_20260926_0000186",
     "emsc_20260926_0000188",
-    "us6000txu6"
+    "us6000txu6",
+    "emsc_20260926_0000189",
+    "us6000txuc"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260925_0000024",
-      "mag": 4.1,
-      "place": "CAUCASUS REGION, RUSSIA",
-      "latitude": 43.5977,
-      "longitude": 39.4641,
-      "epoch_ms": 1790304151424
-    },
     {
       "id": "emsc_20260925_0000038",
       "mag": 4.4,
@@ -927,6 +919,14 @@
       "latitude": 14.2226,
       "longitude": -93.4109,
       "epoch_ms": 1790443817140
+    },
+    {
+      "id": "us6000txuc",
+      "mag": 4.6,
+      "place": "south of Africa",
+      "latitude": -48.5563,
+      "longitude": 31.1369,
+      "epoch_ms": 1790445020706
     }
   ]
 }
