@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260916_0000271",
     "emsc_20260916_0000273",
     "us7000thxg",
     "us7000thxb",
@@ -499,7 +498,8 @@
     "emsc_20260925_0000318",
     "us6000txqk",
     "emsc_20260925_0000322",
-    "us6000txql"
+    "us6000txql",
+    "emsc_20260926_0000010"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tx8q",
-      "mag": 4.5,
-      "place": "31 km NNW of Komodo, Indonesia",
-      "latitude": -8.33,
-      "longitude": 119.3665,
-      "epoch_ms": 1790220626013
-    },
     {
       "id": "emsc_20260924_0000053",
       "mag": 4.0,
@@ -927,6 +919,14 @@
       "latitude": 28.5792,
       "longitude": 104.6428,
       "epoch_ms": 1790380653361
+    },
+    {
+      "id": "emsc_20260926_0000010",
+      "mag": 5.3,
+      "place": "LOYALTY ISLANDS",
+      "latitude": -21.2883,
+      "longitude": 168.3721,
+      "epoch_ms": 1790385019430
     }
   ]
 }
