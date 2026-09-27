@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260918_0000362",
-    "emsc_20260918_0000363",
     "emsc_20260918_0000380",
     "us7000tigd",
     "emsc_20260918_0000383",
@@ -499,7 +497,9 @@
     "us6000ty0e",
     "emsc_20260927_0000282",
     "us6000ty0g",
-    "emsc_20260927_0000283"
+    "emsc_20260927_0000283",
+    "emsc_20260927_0000284",
+    "us6000ty0j"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,14 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000txrz",
-      "mag": 4.7,
-      "place": "97 km NE of Tadine, New Caledonia",
-      "latitude": -21.0172,
-      "longitude": 168.6325,
-      "epoch_ms": 1790412843961
-    },
     {
       "id": "emsc_20260926_0000087",
       "mag": 4.8,
@@ -928,6 +920,14 @@
       "latitude": -9.33,
       "longitude": 123.78,
       "epoch_ms": 1790543693000
+    },
+    {
+      "id": "us6000ty0j",
+      "mag": 5.0,
+      "place": "South Sandwich Islands region",
+      "latitude": -59.1357,
+      "longitude": -25.9354,
+      "epoch_ms": 1790543611803
     }
   ]
 }
