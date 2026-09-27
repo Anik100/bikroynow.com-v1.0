@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000ti83",
-    "emsc_20260918_0000107",
     "us7000ti89",
     "emsc_20260918_0000116",
     "emsc_20260918_0000120",
@@ -499,7 +497,9 @@
     "us6000txwf",
     "emsc_20260927_0000044",
     "us6000txwk",
-    "emsc_20260926_0000256"
+    "emsc_20260926_0000256",
+    "emsc_20260927_0000052",
+    "us6000txwy"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260925_0000228",
-      "mag": 4.1,
-      "place": "OFFSHORE OAXACA, MEXICO",
-      "latitude": 15.386,
-      "longitude": -94.77,
-      "epoch_ms": 1790356864000
-    },
     {
       "id": "emsc_20260925_0000244",
       "mag": 4.0,
@@ -927,6 +919,14 @@
       "latitude": -37.03,
       "longitude": -75.27,
       "epoch_ms": 1790482484000
+    },
+    {
+      "id": "us6000txwy",
+      "mag": 4.9,
+      "place": "159 km ESE of Gizo, Solomon Islands",
+      "latitude": -8.8929,
+      "longitude": 158.0533,
+      "epoch_ms": 1790485188847
     }
   ]
 }
