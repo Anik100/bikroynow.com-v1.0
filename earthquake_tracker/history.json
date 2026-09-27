@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260918_0000178",
     "us7000ti97",
     "us7000ti9c",
     "emsc_20260918_0000190",
@@ -499,7 +498,8 @@
     "emsc_20260927_0000084",
     "aka2026tdlmve",
     "us6000txxm",
-    "emsc_20260927_0000086"
+    "emsc_20260927_0000086",
+    "emsc_20260927_0000092"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,14 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260925_0000282",
-      "mag": 5.0,
-      "place": "EASTERN SICHUAN, CHINA",
-      "latitude": 28.6,
-      "longitude": 104.724,
-      "epoch_ms": 1790370087850
-    },
     {
       "id": "emsc_20260925_0000287",
       "mag": 6.4,
@@ -928,6 +920,14 @@
       "latitude": 50.908,
       "longitude": 179.335,
       "epoch_ms": 1790495292407
+    },
+    {
+      "id": "emsc_20260927_0000092",
+      "mag": 4.3,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 14.553,
+      "longitude": -92.421,
+      "epoch_ms": 1790497234000
     }
   ]
 }
