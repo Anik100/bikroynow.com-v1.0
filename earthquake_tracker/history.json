@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260918_0000059",
     "emsc_20260918_0000084",
     "emsc_20260918_0000097",
     "us7000ti7x",
@@ -499,7 +498,8 @@
     "us6000txut",
     "emsc_20260926_0000220",
     "emsc_20260926_0000228",
-    "us6000txv7"
+    "us6000txv7",
+    "us6000txvu"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260925_0000138",
-      "mag": 4.0,
-      "place": "EASTERN KASHMIR",
-      "latitude": 34.6443,
-      "longitude": 76.7427,
-      "epoch_ms": 1790337207000
-    },
     {
       "id": "us6000txk8",
       "mag": 4.9,
@@ -927,6 +919,14 @@
       "latitude": -4.67,
       "longitude": 152.8211,
       "epoch_ms": 1790459366670
+    },
+    {
+      "id": "us6000txvu",
+      "mag": 5.0,
+      "place": "61 km ENE of Tadine, New Caledonia",
+      "latitude": -21.4298,
+      "longitude": 168.4566,
+      "epoch_ms": 1790471905822
     }
   ]
 }
