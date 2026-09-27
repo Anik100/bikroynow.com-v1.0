@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260918_0000139",
     "emsc_20260918_0000176",
     "us7000ti9a",
     "emsc_20260918_0000178",
@@ -499,7 +498,8 @@
     "emsc_20260927_0000078",
     "us6000txxb",
     "nn00924930",
-    "emsc_20260927_0000084"
+    "emsc_20260927_0000084",
+    "aka2026tdlmve"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,14 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000txp8",
-      "mag": 4.6,
-      "place": "144 km SE of Lata, Solomon Islands",
-      "latitude": -11.7022,
-      "longitude": 166.6797,
-      "epoch_ms": 1790368869329
-    },
     {
       "id": "emsc_20260925_0000282",
       "mag": 5.0,
@@ -928,6 +920,14 @@
       "latitude": 23.7,
       "longitude": 121.61,
       "epoch_ms": 1790494382100
+    },
+    {
+      "id": "aka2026tdlmve",
+      "mag": 5.0,
+      "place": "Rat Islands, Aleutian Islands, Alaska",
+      "latitude": 50.908,
+      "longitude": 179.335,
+      "epoch_ms": 1790495292407
     }
   ]
 }
