@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260918_0000206",
     "emsc_20260918_0000209",
     "emsc_20260918_0000210",
     "us7000tib8",
@@ -499,7 +498,8 @@
     "aka2026tcqxxq",
     "us6000txty",
     "us6000txt8",
-    "emsc_20260927_0000113"
+    "emsc_20260927_0000113",
+    "us6000txya"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,14 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260925_0000314",
-      "mag": 5.4,
-      "place": "LOYALTY ISLANDS",
-      "latitude": -21.2147,
-      "longitude": 168.6249,
-      "epoch_ms": 1790379585240
-    },
     {
       "id": "emsc_20260925_0000315",
       "mag": 4.9,
@@ -928,6 +920,14 @@
       "latitude": 18.88,
       "longitude": -71.01,
       "epoch_ms": 1790503607000
+    },
+    {
+      "id": "us6000txya",
+      "mag": 4.2,
+      "place": "13 km SSW of Bayaguana, Dominican Republic",
+      "latitude": 18.647,
+      "longitude": -69.6988,
+      "epoch_ms": 1790503628075
     }
   ]
 }
