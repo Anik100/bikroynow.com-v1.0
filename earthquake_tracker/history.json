@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000ti9c",
-    "emsc_20260918_0000190",
     "emsc_20260918_0000175",
     "pt26261050",
     "us7000tiar",
@@ -499,7 +497,9 @@
     "us6000txxm",
     "emsc_20260927_0000086",
     "emsc_20260927_0000092",
-    "emsc_20260927_0000097"
+    "emsc_20260927_0000097",
+    "emsc_20260927_0000098",
+    "us6000txxy"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,14 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "pt26268000",
-      "mag": 7.0,
-      "place": "68 km ENE of Tadine, New Caledonia",
-      "latitude": -21.246,
-      "longitude": 168.453,
-      "epoch_ms": 1790371385000
-    },
     {
       "id": "us6000txq2",
       "mag": 5.1,
@@ -928,6 +920,14 @@
       "latitude": 16.887,
       "longitude": -93.791,
       "epoch_ms": 1790498205000
+    },
+    {
+      "id": "us6000txxy",
+      "mag": 4.1,
+      "place": "29 km W of Preston, Nevada",
+      "latitude": 38.9297,
+      "longitude": -115.3995,
+      "epoch_ms": 1790499246298
     }
   ]
 }
