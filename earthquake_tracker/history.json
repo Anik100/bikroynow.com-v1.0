@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260918_0000099",
     "hv75039212",
     "emsc_20260918_0000104",
     "us7000ti83",
@@ -499,7 +498,8 @@
     "us6000txw5",
     "emsc_20260927_0000028",
     "emsc_20260927_0000041",
-    "us6000txwf"
+    "us6000txwf",
+    "emsc_20260927_0000044"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -528,14 +528,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260925_0000223",
-      "mag": 4.0,
-      "place": "OFFSHORE OAXACA, MEXICO",
-      "latitude": 15.4,
-      "longitude": -94.778,
-      "epoch_ms": 1790355867000
-    },
     {
       "id": "emsc_20260925_0000228",
       "mag": 4.1,
@@ -927,6 +919,14 @@
       "latitude": 31.0968,
       "longitude": 14.8479,
       "epoch_ms": 1790479642270
+    },
+    {
+      "id": "emsc_20260927_0000044",
+      "mag": 4.3,
+      "place": "OFF COAST OF BIO-BIO, CHILE",
+      "latitude": -37.03,
+      "longitude": -75.27,
+      "epoch_ms": 1790482484000
     }
   ]
 }
