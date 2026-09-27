@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260918_0000325",
     "emsc_20260918_0000324",
     "emsc_20260918_0000333",
     "emsc_20260918_0000344",
@@ -499,7 +498,8 @@
     "emsc_20260927_0000256",
     "emsc_20260927_0000258",
     "us6000ty06",
-    "emsc_20260927_0000279"
+    "emsc_20260927_0000279",
+    "us6000ty0e"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,14 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000txrj",
-      "mag": 4.6,
-      "place": "25 km W of Roncesvalles, Colombia",
-      "latitude": 4.018,
-      "longitude": -75.8315,
-      "epoch_ms": 1790404699029
-    },
     {
       "id": "emsc_20260926_0000069",
       "mag": 5.5,
@@ -928,6 +920,14 @@
       "latitude": 16.364,
       "longitude": -98.283,
       "epoch_ms": 1790541412000
+    },
+    {
+      "id": "us6000ty0e",
+      "mag": 4.1,
+      "place": "28 km NNE of Whakatane, New Zealand",
+      "latitude": -37.7103,
+      "longitude": 177.0583,
+      "epoch_ms": 1790542160425
     }
   ]
 }
