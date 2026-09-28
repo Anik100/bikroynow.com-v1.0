@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "aka2026sotica",
     "us7000tihg",
     "us7000tifz",
     "us7000tiem",
@@ -499,7 +498,8 @@
     "emsc_20260928_0000116",
     "emsc_20260928_0000120",
     "emsc_20260928_0000122",
-    "emsc_20260928_0000121"
+    "emsc_20260928_0000121",
+    "emsc_20260928_0000125"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,14 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260926_0000201",
-      "mag": 5.0,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.1526,
-      "longitude": 120.3663,
-      "epoch_ms": 1790451426200
-    },
     {
       "id": "us6000txut",
       "mag": 4.4,
@@ -928,6 +920,14 @@
       "latitude": 3.7149,
       "longitude": -75.6455,
       "epoch_ms": 1790584799600
+    },
+    {
+      "id": "emsc_20260928_0000125",
+      "mag": 5.2,
+      "place": "VANCOUVER ISLAND, CANADA REGION",
+      "latitude": 50.227,
+      "longitude": -129.532,
+      "epoch_ms": 1790586822110
     }
   ]
 }
