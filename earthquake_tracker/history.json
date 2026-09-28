@@ -1,8 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260920_0000008",
-    "emsc_20260920_0000013",
-    "emsc_20260920_0000014",
     "us7000timw",
     "us7000timy",
     "emsc_20260919_0000296",
@@ -499,7 +496,10 @@
     "emsc_20260928_0000173",
     "us6000ty4w",
     "emsc_20260928_0000183",
-    "us6000ty57"
+    "us6000ty57",
+    "emsc_20260928_0000210",
+    "emsc_20260928_0000209",
+    "aka2026tfvugv"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,14 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260927_0000044",
-      "mag": 4.3,
-      "place": "OFF COAST OF BIO-BIO, CHILE",
-      "latitude": -37.03,
-      "longitude": -75.27,
-      "epoch_ms": 1790482484000
-    },
     {
       "id": "us6000txwy",
       "mag": 4.9,
@@ -928,6 +920,14 @@
       "latitude": 82.584,
       "longitude": -7.467,
       "epoch_ms": 1790601760420
+    },
+    {
+      "id": "aka2026tfvugv",
+      "mag": 4.2,
+      "place": "11 km ESE of Denali National Park, Alaska",
+      "latitude": 63.501,
+      "longitude": -151.507,
+      "epoch_ms": 1790607355390
     }
   ]
 }
