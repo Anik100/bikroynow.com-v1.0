@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000tihg",
-    "us7000tifz",
     "us7000tiem",
     "us7000tie4",
     "emsc_20260919_0000223",
@@ -499,7 +497,9 @@
     "emsc_20260928_0000120",
     "emsc_20260928_0000122",
     "emsc_20260928_0000121",
-    "emsc_20260928_0000125"
+    "emsc_20260928_0000125",
+    "attm2hmu",
+    "emsc_20260928_0000126"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,14 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000txut",
-      "mag": 4.4,
-      "place": "65 km WSW of Ollag\u00fce, Chile",
-      "latitude": -21.352,
-      "longitude": -68.8675,
-      "epoch_ms": 1790452091508
-    },
     {
       "id": "emsc_20260926_0000220",
       "mag": 4.1,
@@ -928,6 +920,14 @@
       "latitude": 50.227,
       "longitude": -129.532,
       "epoch_ms": 1790586822110
+    },
+    {
+      "id": "emsc_20260928_0000126",
+      "mag": 4.2,
+      "place": "EASTERN KAZAKHSTAN",
+      "latitude": 42.8165,
+      "longitude": 79.8958,
+      "epoch_ms": 1790585604800
     }
   ]
 }
