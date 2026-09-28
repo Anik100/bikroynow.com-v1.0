@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260919_0000306",
-    "emsc_20260920_0000049",
     "us7000tinl",
     "emsc_20260920_0000052",
     "emsc_20260920_0000053",
@@ -499,7 +497,9 @@
     "us6000ty5m",
     "emsc_20260928_0000224",
     "emsc_20260928_0000225",
-    "emsc_20260928_0000229"
+    "emsc_20260928_0000229",
+    "emsc_20260928_0000240",
+    "us6000ty71"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,14 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "aka2026tdlmve",
-      "mag": 5.0,
-      "place": "Rat Islands, Aleutian Islands, Alaska",
-      "latitude": 50.908,
-      "longitude": 179.335,
-      "epoch_ms": 1790495292407
-    },
     {
       "id": "emsc_20260927_0000092",
       "mag": 4.3,
@@ -928,6 +920,14 @@
       "latitude": 13.985,
       "longitude": -93.177,
       "epoch_ms": 1790615661000
+    },
+    {
+      "id": "us6000ty71",
+      "mag": 4.8,
+      "place": "155 km NNW of Kilmia, Yemen",
+      "latitude": 13.3879,
+      "longitude": 51.4935,
+      "epoch_ms": 1790617075108
     }
   ]
 }
