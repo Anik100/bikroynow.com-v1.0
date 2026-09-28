@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tiiz",
     "emsc_20260919_0000143",
     "us7000tijd",
     "emsc_20260919_0000146",
@@ -499,7 +498,8 @@
     "us6000ty2w",
     "emsc_20260928_0000064",
     "us6000ty2y",
-    "emsc_20260928_0000069"
+    "emsc_20260928_0000069",
+    "us6000ty33"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,14 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260926_0000166",
-      "mag": 4.0,
-      "place": "PAPUA, INDONESIA",
-      "latitude": -3.68,
-      "longitude": 136.72,
-      "epoch_ms": 1790436496000
-    },
     {
       "id": "emsc_20260926_0000172",
       "mag": 5.2,
@@ -928,6 +920,14 @@
       "latitude": -57.6502,
       "longitude": -25.347,
       "epoch_ms": 1790570493467
+    },
+    {
+      "id": "us6000ty33",
+      "mag": 5.1,
+      "place": "78 km ENE of Tadine, New Caledonia",
+      "latitude": -21.2065,
+      "longitude": 168.5459,
+      "epoch_ms": 1790573288891
     }
   ]
 }
