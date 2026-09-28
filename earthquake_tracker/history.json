@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tiim",
     "emsc_20260919_0000116",
     "us7000tiis",
     "emsc_20260919_0000129",
@@ -499,7 +498,8 @@
     "emsc_20260928_0000058",
     "emsc_20260928_0000060",
     "attm2513",
-    "us6000ty2u"
+    "us6000ty2u",
+    "emsc_20260928_0000063"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,14 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260926_0000162",
-      "mag": 4.1,
-      "place": "MINAHASA, SULAWESI, INDONESIA",
-      "latitude": -0.99,
-      "longitude": 120.68,
-      "epoch_ms": 1790434928000
-    },
     {
       "id": "us6000txtn",
       "mag": 5.1,
@@ -928,6 +920,14 @@
       "latitude": 50.249,
       "longitude": -129.915,
       "epoch_ms": 1790570487000
+    },
+    {
+      "id": "emsc_20260928_0000063",
+      "mag": 4.6,
+      "place": "NORTHWEST OF KURIL ISLANDS",
+      "latitude": 49.0259,
+      "longitude": 151.5708,
+      "epoch_ms": 1790570576780
     }
   ]
 }
