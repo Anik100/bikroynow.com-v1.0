@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "aka2026spbesg",
-    "us7000tiir",
     "aka2026sotica",
     "us7000tihg",
     "us7000tifz",
@@ -499,7 +497,9 @@
     "emsc_20260928_0000104",
     "emsc_20260928_0000111",
     "emsc_20260928_0000116",
-    "emsc_20260928_0000120"
+    "emsc_20260928_0000120",
+    "emsc_20260928_0000122",
+    "emsc_20260928_0000121"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,22 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000txuf",
-      "mag": 4.8,
-      "place": "74 km ENE of Tadine, New Caledonia",
-      "latitude": -21.3627,
-      "longitude": 168.5681,
-      "epoch_ms": 1790447123929
-    },
-    {
-      "id": "us6000txuj",
-      "mag": 4.7,
-      "place": "5 km N of Bowangshan, China",
-      "latitude": 28.3596,
-      "longitude": 105.0553,
-      "epoch_ms": 1790447502679
-    },
     {
       "id": "emsc_20260926_0000201",
       "mag": 5.0,
@@ -928,6 +912,22 @@
       "latitude": 15.244,
       "longitude": -92.597,
       "epoch_ms": 1790584600000
+    },
+    {
+      "id": "emsc_20260928_0000122",
+      "mag": 4.2,
+      "place": "OFF COAST OF CENTRAL AMERICA",
+      "latitude": 6.6723,
+      "longitude": -87.1987,
+      "epoch_ms": 1790584421000
+    },
+    {
+      "id": "emsc_20260928_0000121",
+      "mag": 4.5,
+      "place": "COLOMBIA",
+      "latitude": 3.7149,
+      "longitude": -75.6455,
+      "epoch_ms": 1790584799600
     }
   ]
 }
