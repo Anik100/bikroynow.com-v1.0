@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000timw",
-    "us7000timy",
     "emsc_20260919_0000296",
     "emsc_20260919_0000303",
     "emsc_20260920_0000040",
@@ -499,7 +497,9 @@
     "us6000ty57",
     "emsc_20260928_0000210",
     "emsc_20260928_0000209",
-    "aka2026tfvugv"
+    "aka2026tfvugv",
+    "emsc_20260928_0000215",
+    "emsc_20260928_0000216"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -529,22 +529,6 @@
     "122110667409450344_1630874651807460"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000txwy",
-      "mag": 4.9,
-      "place": "159 km ESE of Gizo, Solomon Islands",
-      "latitude": -8.8929,
-      "longitude": 158.0533,
-      "epoch_ms": 1790485188847
-    },
-    {
-      "id": "us6000txxb",
-      "mag": 4.1,
-      "place": "30 km W of Preston, Nevada",
-      "latitude": 38.9236,
-      "longitude": -115.4139,
-      "epoch_ms": 1790492500692
-    },
     {
       "id": "nn00924930",
       "mag": 4.8,
@@ -928,6 +912,22 @@
       "latitude": 63.501,
       "longitude": -151.507,
       "epoch_ms": 1790607355390
+    },
+    {
+      "id": "emsc_20260928_0000215",
+      "mag": 4.9,
+      "place": "PHILIPPINE ISLANDS REGION",
+      "latitude": 5.6602,
+      "longitude": 127.0586,
+      "epoch_ms": 1790607699540
+    },
+    {
+      "id": "emsc_20260928_0000216",
+      "mag": 4.8,
+      "place": "OFF W COAST OF NORTHERN SUMATRA",
+      "latitude": 4.949,
+      "longitude": 94.14,
+      "epoch_ms": 1790606585710
     }
   ]
 }
