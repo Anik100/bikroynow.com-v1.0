@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260920_0000225",
     "emsc_20260920_0000227",
     "us7000tisi",
     "emsc_20260920_0000234",
@@ -499,7 +498,8 @@
     "us6000tyc1",
     "emsc_20260929_0000169",
     "emsc_20260929_0000171",
-    "us6000tyc3"
+    "us6000tyc3",
+    "emsc_20260929_0000178"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -530,14 +530,6 @@
     "122111765577450344_1347621150789333"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260927_0000282",
-      "mag": 4.4,
-      "place": "EAST OF KURIL ISLANDS",
-      "latitude": 48.3813,
-      "longitude": 156.784,
-      "epoch_ms": 1790542162298
-    },
     {
       "id": "emsc_20260927_0000283",
       "mag": 4.3,
@@ -929,6 +921,14 @@
       "latitude": 12.201,
       "longitude": -89.821,
       "epoch_ms": 1790688121000
+    },
+    {
+      "id": "emsc_20260929_0000178",
+      "mag": 4.1,
+      "place": "PHILIPPINE ISLANDS REGION",
+      "latitude": 8.29,
+      "longitude": 127.15,
+      "epoch_ms": 1790689254000
     }
   ]
 }
