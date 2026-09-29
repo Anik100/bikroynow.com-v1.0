@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tipl",
     "emsc_20260920_0000110",
     "us7000tiq2",
     "emsc_20260920_0000117",
@@ -499,7 +498,8 @@
     "us6000ty9i",
     "emsc_20260929_0000036",
     "emsc_20260929_0000040",
-    "us6000tya5"
+    "us6000tya5",
+    "emsc_20260929_0000049"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -530,14 +530,6 @@
     "122111765577450344_1347621150789333"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260927_0000113",
-      "mag": 4.1,
-      "place": "DOMINICAN REPUBLIC",
-      "latitude": 18.88,
-      "longitude": -71.01,
-      "epoch_ms": 1790503607000
-    },
     {
       "id": "us6000txya",
       "mag": 4.2,
@@ -929,6 +921,14 @@
       "latitude": -20.9954,
       "longitude": 168.4414,
       "epoch_ms": 1790652238060
+    },
+    {
+      "id": "emsc_20260929_0000049",
+      "mag": 4.2,
+      "place": "VALPARAISO, CHILE",
+      "latitude": -32.81,
+      "longitude": -71.5,
+      "epoch_ms": 1790654566000
     }
   ]
 }
