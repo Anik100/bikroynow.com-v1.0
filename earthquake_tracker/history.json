@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tir6",
     "emsc_20260920_0000151",
     "emsc_20260920_0000155",
     "emsc_20260920_0000158",
@@ -499,7 +498,8 @@
     "emsc_20260929_0000117",
     "emsc_20260929_0000120",
     "us6000tybk",
-    "emsc_20260929_0000132"
+    "emsc_20260929_0000132",
+    "us6000tybr"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -530,14 +530,6 @@
     "122111765577450344_1347621150789333"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260927_0000209",
-      "mag": 5.0,
-      "place": "SOUTHERN QINGHAI, CHINA",
-      "latitude": 35.3822,
-      "longitude": 99.5996,
-      "epoch_ms": 1790527392510
-    },
     {
       "id": "emsc_20260927_0000232",
       "mag": 4.0,
@@ -929,6 +921,14 @@
       "latitude": 5.32,
       "longitude": 125.39,
       "epoch_ms": 1790678896000
+    },
+    {
+      "id": "us6000tybr",
+      "mag": 5.0,
+      "place": "77 km ENE of Tadine, New Caledonia",
+      "latitude": -21.3447,
+      "longitude": 168.5924,
+      "epoch_ms": 1790678577409
     }
   ]
 }
