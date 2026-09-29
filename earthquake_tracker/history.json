@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260920_0000284",
-    "us7000titt",
     "emsc_20260920_0000298",
     "us7000tiu3",
     "emsc_20260921_0000001",
@@ -499,7 +497,9 @@
     "emsc_20260929_0000239",
     "emsc_20260929_0000245",
     "emsc_20260929_0000246",
-    "emsc_20260929_0000254"
+    "emsc_20260929_0000254",
+    "emsc_20260929_0000281",
+    "emsc_20260929_0000282"
   ],
   "replied_comment_ids": [
     "122111765577450344_1347621150789333",
@@ -532,22 +532,6 @@
     "122111086851450344_1620263499738510"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260927_0000300",
-      "mag": 4.0,
-      "place": "NEAR N COAST OF PAPUA, INDONESIA",
-      "latitude": -2.11,
-      "longitude": 134.13,
-      "epoch_ms": 1790550664000
-    },
-    {
-      "id": "emsc_20260928_0000026",
-      "mag": 4.0,
-      "place": "OFF THE COAST OF GUATEMALA",
-      "latitude": 13.227,
-      "longitude": -92.506,
-      "epoch_ms": 1790559237000
-    },
     {
       "id": "emsc_20260928_0000038",
       "mag": 4.6,
@@ -931,6 +915,22 @@
       "latitude": -22.22,
       "longitude": -67.76,
       "epoch_ms": 1790706109000
+    },
+    {
+      "id": "emsc_20260929_0000281",
+      "mag": 4.2,
+      "place": "OFFSHORE GUERRERO, MEXICO",
+      "latitude": 16.523,
+      "longitude": -100.624,
+      "epoch_ms": 1790714183000
+    },
+    {
+      "id": "emsc_20260929_0000282",
+      "mag": 4.1,
+      "place": "OFFSHORE GUERRERO, MEXICO",
+      "latitude": 17.348,
+      "longitude": -101.129,
+      "epoch_ms": 1790713897000
     }
   ]
 }
