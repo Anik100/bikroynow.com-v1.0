@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260920_0000110",
-    "us7000tiq2",
     "emsc_20260920_0000117",
     "emsc_20260920_0000119",
     "emsc_20260920_0000122",
@@ -499,7 +497,9 @@
     "emsc_20260929_0000036",
     "emsc_20260929_0000040",
     "us6000tya5",
-    "emsc_20260929_0000049"
+    "emsc_20260929_0000049",
+    "emsc_20260929_0000052",
+    "us6000tyab"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -530,14 +530,6 @@
     "122111765577450344_1347621150789333"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000txya",
-      "mag": 4.2,
-      "place": "13 km SSW of Bayaguana, Dominican Republic",
-      "latitude": 18.647,
-      "longitude": -69.6988,
-      "epoch_ms": 1790503628075
-    },
     {
       "id": "emsc_20260927_0000119",
       "mag": 4.2,
@@ -929,6 +921,14 @@
       "latitude": -32.81,
       "longitude": -71.5,
       "epoch_ms": 1790654566000
+    },
+    {
+      "id": "us6000tyab",
+      "mag": 4.8,
+      "place": "South Sandwich Islands region",
+      "latitude": -55.3157,
+      "longitude": -28.2098,
+      "epoch_ms": 1790655387199
     }
   ]
 }
