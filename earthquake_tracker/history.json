@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260920_0000117",
     "emsc_20260920_0000119",
     "emsc_20260920_0000122",
     "us7000tiqc",
@@ -499,7 +498,8 @@
     "us6000tya5",
     "emsc_20260929_0000049",
     "emsc_20260929_0000052",
-    "us6000tyab"
+    "us6000tyab",
+    "emsc_20260929_0000053"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -530,14 +530,6 @@
     "122111765577450344_1347621150789333"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260927_0000119",
-      "mag": 4.2,
-      "place": "NORTH ISLAND OF NEW ZEALAND",
-      "latitude": -40.3101,
-      "longitude": 175.9097,
-      "epoch_ms": 1790505122287
-    },
     {
       "id": "us6000txye",
       "mag": 4.4,
@@ -929,6 +921,14 @@
       "latitude": -55.3157,
       "longitude": -28.2098,
       "epoch_ms": 1790655387199
+    },
+    {
+      "id": "emsc_20260929_0000053",
+      "mag": 4.3,
+      "place": "HALMAHERA, INDONESIA",
+      "latitude": 1.39,
+      "longitude": 127.12,
+      "epoch_ms": 1790656871000
     }
   ]
 }
