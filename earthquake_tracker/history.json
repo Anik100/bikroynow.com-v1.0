@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000tiui",
-    "emsc_20260921_0000025",
     "us7000tiur",
     "emsc_20260921_0000037",
     "us7000tiuu",
@@ -499,7 +497,9 @@
     "emsc_20260929_0000289",
     "uw714111952",
     "emsc_20260929_0000290",
-    "us6000tyf0"
+    "us6000tyf0",
+    "emsc_20260929_0000304",
+    "us6000tyfk"
   ],
   "replied_comment_ids": [
     "122110149885450344_1608313717512308",
@@ -546,14 +546,6 @@
     "122107480185450344_1993172514729995"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260928_0000046",
-      "mag": 5.2,
-      "place": "SOUTH SANDWICH ISLANDS REGION",
-      "latitude": -57.6751,
-      "longitude": -25.125,
-      "epoch_ms": 1790567024960
-    },
     {
       "id": "emsc_20260928_0000058",
       "mag": 4.3,
@@ -945,6 +937,14 @@
       "latitude": 17.5267,
       "longitude": 122.4136,
       "epoch_ms": 1790714750983
+    },
+    {
+      "id": "us6000tyfk",
+      "mag": 4.5,
+      "place": "15 km SW of San Antonio, Colombia",
+      "latitude": 3.8311,
+      "longitude": -75.5906,
+      "epoch_ms": 1790718629969
     }
   ]
 }
