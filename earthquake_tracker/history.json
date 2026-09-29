@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tirf",
     "emsc_20260920_0000160",
     "us7000tirh",
     "emsc_20260920_0000188",
@@ -499,7 +498,8 @@
     "us6000tybr",
     "emsc_20260929_0000133",
     "us6000tybl",
-    "emsc_20260929_0000138"
+    "emsc_20260929_0000138",
+    "ew1790681810"
   ],
   "replied_comment_ids": [
     "122111086851450344_2135533367039712",
@@ -530,14 +530,6 @@
     "122111765577450344_1347621150789333"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260927_0000232",
-      "mag": 4.0,
-      "place": "OFFSHORE MICHOACAN, MEXICO",
-      "latitude": 18.084,
-      "longitude": -103.261,
-      "epoch_ms": 1790532212000
-    },
     {
       "id": "emsc_20260927_0000251",
       "mag": 4.4,
@@ -929,6 +921,14 @@
       "latitude": -21.3447,
       "longitude": 168.5924,
       "epoch_ms": 1790678577409
+    },
+    {
+      "id": "ew1790681810",
+      "mag": 4.5,
+      "place": "156 km W of Ferndale, California",
+      "latitude": 40.3784,
+      "longitude": -126.0905,
+      "epoch_ms": 1790681790000
     }
   ]
 }
