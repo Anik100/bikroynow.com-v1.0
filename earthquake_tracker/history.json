@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260921_0000066",
     "emsc_20260921_0000076",
     "us7000tivb",
     "emsc_20260921_0000086",
@@ -499,7 +498,8 @@
     "emsc_20260929_0000321",
     "emsc_20260930_0000005",
     "emsc_20260930_0000017",
-    "us6000tygq"
+    "us6000tygq",
+    "emsc_20260930_0000019"
   ],
   "replied_comment_ids": [
     "122108866509450344_1571788777553770",
@@ -547,14 +547,6 @@
     "122113907097450344_1060066650173420"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000ty2y",
-      "mag": 4.9,
-      "place": "South Sandwich Islands region",
-      "latitude": -57.6502,
-      "longitude": -25.347,
-      "epoch_ms": 1790570493467
-    },
     {
       "id": "us6000ty33",
       "mag": 5.1,
@@ -946,6 +938,14 @@
       "latitude": -21.0085,
       "longitude": 168.3284,
       "epoch_ms": 1790731067844
+    },
+    {
+      "id": "emsc_20260930_0000019",
+      "mag": 4.4,
+      "place": "JAVA, INDONESIA",
+      "latitude": -7.24,
+      "longitude": 106.17,
+      "epoch_ms": 1790731996000
     }
   ]
 }
