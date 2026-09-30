@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260921_0000168",
     "emsc_20260921_0000178",
     "us7000tix2",
     "emsc_20260921_0000186",
@@ -499,7 +498,8 @@
     "us6000tyhk",
     "us6000tyhi",
     "emsc_20260930_0000050",
-    "emsc_20260930_0000052"
+    "emsc_20260930_0000052",
+    "us6000tyid"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,14 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260928_0000126",
-      "mag": 4.2,
-      "place": "EASTERN KAZAKHSTAN",
-      "latitude": 42.8165,
-      "longitude": 79.8958,
-      "epoch_ms": 1790585604800
-    },
     {
       "id": "emsc_20260928_0000144",
       "mag": 4.1,
@@ -947,6 +939,14 @@
       "latitude": 38.29,
       "longitude": 23.39,
       "epoch_ms": 1790745659600
+    },
+    {
+      "id": "us6000tyid",
+      "mag": 5.0,
+      "place": "83 km NE of Tadine, New Caledonia",
+      "latitude": -20.988,
+      "longitude": 168.4237,
+      "epoch_ms": 1790751003339
     }
   ]
 }
