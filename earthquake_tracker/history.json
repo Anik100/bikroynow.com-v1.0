@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tizt",
     "emsc_20260921_0000364",
     "us7000tj0r",
     "emsc_20260921_0000372",
@@ -499,7 +498,8 @@
     "emsc_20260930_0000212",
     "us6000tyke",
     "emsc_20260930_0000223",
-    "us6000tyku"
+    "us6000tyku",
+    "emsc_20260930_0000227"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,14 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260928_0000312",
-      "mag": 4.0,
-      "place": "OFFSHORE CHIAPAS, MEXICO",
-      "latitude": 14.279,
-      "longitude": -92.666,
-      "epoch_ms": 1790639479000
-    },
     {
       "id": "emsc_20260929_0000040",
       "mag": 5.7,
@@ -947,6 +939,14 @@
       "latitude": 52.3167,
       "longitude": 160.3332,
       "epoch_ms": 1790792479257
+    },
+    {
+      "id": "emsc_20260930_0000227",
+      "mag": 5.2,
+      "place": "OFF EAST COAST OF KAMCHATKA",
+      "latitude": 52.6162,
+      "longitude": 159.6664,
+      "epoch_ms": 1790793386340
     }
   ]
 }
