@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260921_0000336",
-    "emsc_20260921_0000343",
     "us7000tizt",
     "emsc_20260921_0000364",
     "us7000tj0r",
@@ -499,7 +497,9 @@
     "emsc_20260930_0000194",
     "emsc_20260930_0000208",
     "emsc_20260930_0000212",
-    "us6000tyke"
+    "us6000tyke",
+    "emsc_20260930_0000223",
+    "us6000tyku"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,14 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260928_0000261",
-      "mag": 5.1,
-      "place": "NEAR S. COAST OF HONSHU, JAPAN",
-      "latitude": 35.9519,
-      "longitude": 139.8642,
-      "epoch_ms": 1790624706190
-    },
     {
       "id": "emsc_20260928_0000312",
       "mag": 4.0,
@@ -947,6 +939,14 @@
       "latitude": 17.611,
       "longitude": -94.867,
       "epoch_ms": 1790786501000
+    },
+    {
+      "id": "us6000tyku",
+      "mag": 5.0,
+      "place": "142 km SE of Petropavlovsk-Kamchatsky, Russia",
+      "latitude": 52.3167,
+      "longitude": 160.3332,
+      "epoch_ms": 1790792479257
     }
   ]
 }
