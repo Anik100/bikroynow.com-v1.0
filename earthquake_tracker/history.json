@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260921_0000207",
-    "emsc_20260920_0000330",
     "emsc_20260921_0000229",
     "us7000tixp",
     "us7000tixu",
@@ -499,7 +497,9 @@
     "emsc_20260930_0000075",
     "us6000tyit",
     "emsc_20260930_0000078",
-    "emsc_20260930_0000079"
+    "emsc_20260930_0000079",
+    "emsc_20260930_0000089",
+    "emsc_20260930_0000090"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,22 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260928_0000183",
-      "mag": 5.0,
-      "place": "NORTH OF SVALBARD",
-      "latitude": 82.584,
-      "longitude": -7.467,
-      "epoch_ms": 1790601760420
-    },
-    {
-      "id": "aka2026tfvugv",
-      "mag": 4.2,
-      "place": "11 km ESE of Denali National Park, Alaska",
-      "latitude": 63.501,
-      "longitude": -151.507,
-      "epoch_ms": 1790607355390
-    },
     {
       "id": "emsc_20260928_0000215",
       "mag": 4.9,
@@ -947,6 +931,22 @@
       "latitude": 24.9011,
       "longitude": 84.0519,
       "epoch_ms": 1790757449000
+    },
+    {
+      "id": "emsc_20260930_0000089",
+      "mag": 4.1,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.123,
+      "longitude": -93.543,
+      "epoch_ms": 1790758225000
+    },
+    {
+      "id": "emsc_20260930_0000090",
+      "mag": 4.0,
+      "place": "OFFSHORE OAXACA, MEXICO",
+      "latitude": 15.864,
+      "longitude": -95.198,
+      "epoch_ms": 1790757605000
     }
   ]
 }
