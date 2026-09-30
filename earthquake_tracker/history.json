@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260921_0000291",
     "us7000tiya",
     "emsc_20260921_0000303",
     "us7000tiz7",
@@ -499,7 +498,8 @@
     "emsc_20260930_0000091",
     "emsc_20260930_0000111",
     "emsc_20260930_0000118",
-    "us6000tyjb"
+    "us6000tyjb",
+    "emsc_20260930_0000128"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,14 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260928_0000217",
-      "mag": 4.3,
-      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
-      "latitude": -7.46,
-      "longitude": 126.77,
-      "epoch_ms": 1790608487000
-    },
     {
       "id": "emsc_20260928_0000229",
       "mag": 4.1,
@@ -947,6 +939,14 @@
       "latitude": -10.0271,
       "longitude": 123.6767,
       "epoch_ms": 1790765935310
+    },
+    {
+      "id": "emsc_20260930_0000128",
+      "mag": 4.2,
+      "place": "LAOS-VIETNAM BORDER REGION",
+      "latitude": 15.056,
+      "longitude": 107.624,
+      "epoch_ms": 1790767491190
     }
   ]
 }
