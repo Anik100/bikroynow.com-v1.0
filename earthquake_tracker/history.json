@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tj37",
     "emsc_20260921_0000436",
     "emsc_20260922_0000077",
     "emsc_20260922_0000100",
@@ -499,7 +498,8 @@
     "us6000tyny",
     "emsc_20261001_0000027",
     "us6000typ0",
-    "emsc_20260930_0000309"
+    "emsc_20260930_0000309",
+    "emsc_20261001_0000031"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,14 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260929_0000132",
-      "mag": 4.2,
-      "place": "MINDANAO, PHILIPPINES",
-      "latitude": 5.32,
-      "longitude": 125.39,
-      "epoch_ms": 1790678896000
-    },
     {
       "id": "us6000tybr",
       "mag": 5.0,
@@ -947,6 +939,14 @@
       "latitude": -0.863,
       "longitude": 123.1839,
       "epoch_ms": 1790818283443
+    },
+    {
+      "id": "emsc_20261001_0000031",
+      "mag": 4.1,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.813,
+      "longitude": -94.573,
+      "epoch_ms": 1790820169000
     }
   ]
 }
