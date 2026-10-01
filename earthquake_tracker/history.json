@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tj3s",
     "emsc_20260922_0000122",
     "emsc_20260922_0000130",
     "us7000tj3v",
@@ -499,7 +498,8 @@
     "emsc_20261001_0000048",
     "emsc_20261001_0000069",
     "emsc_20261001_0000070",
-    "us6000tyq7"
+    "us6000tyq7",
+    "emsc_20261001_0000076"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,14 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tybs",
-      "mag": 4.8,
-      "place": "98 km SW of Port-Vila, Vanuatu",
-      "latitude": -18.2306,
-      "longitude": 167.5446,
-      "epoch_ms": 1790681268406
-    },
     {
       "id": "emsc_20260929_0000153",
       "mag": 4.0,
@@ -947,6 +939,14 @@
       "latitude": 6.0963,
       "longitude": 123.8234,
       "epoch_ms": 1790832855130
+    },
+    {
+      "id": "emsc_20261001_0000076",
+      "mag": 4.0,
+      "place": "OFFSHORE OAXACA, MEXICO",
+      "latitude": 16.01,
+      "longitude": -94.689,
+      "epoch_ms": 1790833920000
     }
   ]
 }
