@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tj1s",
     "emsc_20260922_0000003",
     "emsc_20260921_0000427",
     "emsc_20260921_0000428",
@@ -499,7 +498,8 @@
     "us6000tym9",
     "emsc_20260930_0000272",
     "emsc_20260930_0000275",
-    "us6000tymj"
+    "us6000tymj",
+    "emsc_20261001_0000005"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,14 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tyab",
-      "mag": 4.8,
-      "place": "South Sandwich Islands region",
-      "latitude": -55.3157,
-      "longitude": -28.2098,
-      "epoch_ms": 1790655387199
-    },
     {
       "id": "emsc_20260929_0000053",
       "mag": 4.3,
@@ -947,6 +939,14 @@
       "latitude": 10.0231,
       "longitude": -86.2824,
       "epoch_ms": 1790805331690
+    },
+    {
+      "id": "emsc_20261001_0000005",
+      "mag": 4.2,
+      "place": "OFFSHORE EL SALVADOR",
+      "latitude": 12.53,
+      "longitude": -88.155,
+      "epoch_ms": 1790814854000
     }
   ]
 }
