@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260921_0000428",
     "emsc_20260922_0000037",
     "emsc_20260922_0000032",
     "emsc_20260921_0000435",
@@ -499,7 +498,8 @@
     "us6000tymj",
     "emsc_20261001_0000005",
     "us6000tynp",
-    "emsc_20261001_0000015"
+    "emsc_20261001_0000015",
+    "emsc_20261001_0000024"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,14 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tyat",
-      "mag": 4.8,
-      "place": "South Sandwich Islands region",
-      "latitude": -55.2555,
-      "longitude": -28.4628,
-      "epoch_ms": 1790663929006
-    },
     {
       "id": "emsc_20260929_0000120",
       "mag": 5.0,
@@ -947,6 +939,14 @@
       "latitude": 19.2756,
       "longitude": -43.0353,
       "epoch_ms": 1790814502644
+    },
+    {
+      "id": "emsc_20261001_0000024",
+      "mag": 5.4,
+      "place": "HINDU KUSH REGION, AFGHANISTAN",
+      "latitude": 36.2491,
+      "longitude": 68.9719,
+      "epoch_ms": 1790818159910
     }
   ]
 }
