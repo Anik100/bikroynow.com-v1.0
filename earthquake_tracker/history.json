@@ -1,8 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260922_0000238",
-    "emsc_20260922_0000280",
-    "emsc_20260922_0000278",
     "emsc_20260922_0000282",
     "emsc_20260922_0000281",
     "emsc_20260922_0000329",
@@ -499,7 +496,10 @@
     "us6000tytg",
     "emsc_20261001_0000215",
     "emsc_20261001_0000218",
-    "emsc_20261001_0000232"
+    "emsc_20261001_0000232",
+    "emsc_20261001_0000238",
+    "emsc_20261001_0000239",
+    "us6000tyua"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,22 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "ew1790715960",
-      "mag": 4.0,
-      "place": "6 km W of Burley, Washington",
-      "latitude": 47.4139,
-      "longitude": -122.723,
-      "epoch_ms": 1790715958000
-    },
-    {
-      "id": "us6000tyf0",
-      "mag": 4.7,
-      "place": "49 km N of Dicabisagan, Philippines",
-      "latitude": 17.5267,
-      "longitude": 122.4136,
-      "epoch_ms": 1790714750983
-    },
     {
       "id": "us6000tyfk",
       "mag": 4.5,
@@ -947,6 +931,22 @@
       "latitude": -2.073,
       "longitude": 138.817,
       "epoch_ms": 1790861476520
+    },
+    {
+      "id": "emsc_20261001_0000239",
+      "mag": 4.0,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.33,
+      "longitude": 119.56,
+      "epoch_ms": 1790865079000
+    },
+    {
+      "id": "us6000tyua",
+      "mag": 5.0,
+      "place": "176 km NNE of Ruteng, Indonesia",
+      "latitude": -7.0805,
+      "longitude": 120.9136,
+      "epoch_ms": 1790864399078
     }
   ]
 }
