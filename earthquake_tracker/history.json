@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260922_0000003",
     "emsc_20260921_0000427",
     "emsc_20260921_0000428",
     "emsc_20260922_0000037",
@@ -499,7 +498,8 @@
     "emsc_20260930_0000272",
     "emsc_20260930_0000275",
     "us6000tymj",
-    "emsc_20261001_0000005"
+    "emsc_20261001_0000005",
+    "us6000tynp"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,14 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260929_0000053",
-      "mag": 4.3,
-      "place": "HALMAHERA, INDONESIA",
-      "latitude": 1.39,
-      "longitude": 127.12,
-      "epoch_ms": 1790656871000
-    },
     {
       "id": "us6000tyat",
       "mag": 4.8,
@@ -947,6 +939,14 @@
       "latitude": 12.53,
       "longitude": -88.155,
       "epoch_ms": 1790814854000
+    },
+    {
+      "id": "us6000tynp",
+      "mag": 4.9,
+      "place": "northern Mid-Atlantic Ridge",
+      "latitude": 19.2756,
+      "longitude": -43.0353,
+      "epoch_ms": 1790814502644
     }
   ]
 }
