@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260922_0000337",
-    "us6000twyf",
     "emsc_20260922_0000344",
     "us6000twys",
     "emsc_20260922_0000351",
@@ -499,7 +497,9 @@
     "emsc_20261001_0000247",
     "emsc_20261001_0000248",
     "us6000tyuf",
-    "emsc_20261001_0000263"
+    "emsc_20261001_0000263",
+    "emsc_20261001_0000275",
+    "emsc_20261001_0000280"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,22 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260930_0000019",
-      "mag": 4.4,
-      "place": "JAVA, INDONESIA",
-      "latitude": -7.24,
-      "longitude": 106.17,
-      "epoch_ms": 1790731996000
-    },
-    {
-      "id": "emsc_20260930_0000022",
-      "mag": 4.8,
-      "place": "MINDORO, PHILIPPINES",
-      "latitude": 13.0922,
-      "longitude": 120.4734,
-      "epoch_ms": 1790732045751
-    },
     {
       "id": "emsc_20260930_0000029",
       "mag": 4.2,
@@ -947,6 +931,22 @@
       "latitude": 28.615,
       "longitude": 87.239,
       "epoch_ms": 1790870183000
+    },
+    {
+      "id": "emsc_20261001_0000275",
+      "mag": 4.0,
+      "place": "NEAR N COAST OF PAPUA, INDONESIA",
+      "latitude": -1.86,
+      "longitude": 138.95,
+      "epoch_ms": 1790874579000
+    },
+    {
+      "id": "emsc_20261001_0000280",
+      "mag": 5.3,
+      "place": "OFF EAST COAST OF HONSHU, JAPAN",
+      "latitude": 39.899,
+      "longitude": 143.101,
+      "epoch_ms": 1790875037330
     }
   ]
 }
