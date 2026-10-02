@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260924_0000178",
     "us6000txbm",
     "emsc_20260924_0000190",
     "emsc_20260924_0000196",
@@ -499,7 +498,8 @@
     "emsc_20261002_0000302",
     "emsc_20261002_0000304",
     "emsc_20261002_0000305",
-    "us6000tz8q"
+    "us6000tz8q",
+    "emsc_20261002_0000314"
   ],
   "replied_comment_ids": [
     "122113907097450344_1479375214017522",
@@ -557,14 +557,6 @@
     "122111086851450344_1620263499738510"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261001_0000186",
-      "mag": 4.2,
-      "place": "MINAHASA, SULAWESI, INDONESIA",
-      "latitude": 1.02,
-      "longitude": 122.7,
-      "epoch_ms": 1790855500000
-    },
     {
       "id": "emsc_20261001_0000192",
       "mag": 5.1,
@@ -956,6 +948,14 @@
       "latitude": -5.72,
       "longitude": 129.58,
       "epoch_ms": 1790975763000
+    },
+    {
+      "id": "emsc_20261002_0000314",
+      "mag": 4.4,
+      "place": "OFF THE COAST OF EL SALVADOR",
+      "latitude": 12.644,
+      "longitude": -90.409,
+      "epoch_ms": 1790979285000
     }
   ]
 }
