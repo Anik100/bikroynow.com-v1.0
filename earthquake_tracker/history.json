@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000tx0s",
-    "emsc_20260923_0000050",
     "emsc_20260923_0000052",
     "us6000tx0t",
     "emsc_20260923_0000067",
@@ -499,7 +497,9 @@
     "emsc_20261002_0000037",
     "us6000tyzi",
     "us6000tyzg",
-    "emsc_20261002_0000039"
+    "emsc_20261002_0000039",
+    "emsc_20261002_0000043",
+    "us6000tyzl"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,14 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20260930_0000064",
-      "mag": 5.2,
-      "place": "BALLENY ISLANDS REGION",
-      "latitude": -63.653,
-      "longitude": 171.606,
-      "epoch_ms": 1790752037010
-    },
     {
       "id": "us6000tyit",
       "mag": 5.1,
@@ -947,6 +939,14 @@
       "latitude": -24.8026,
       "longitude": 178.7983,
       "epoch_ms": 1790915225120
+    },
+    {
+      "id": "us6000tyzl",
+      "mag": 5.1,
+      "place": "159 km SE of Gizo, Solomon Islands",
+      "latitude": -8.9326,
+      "longitude": 158.0215,
+      "epoch_ms": 1790916293423
     }
   ]
 }
