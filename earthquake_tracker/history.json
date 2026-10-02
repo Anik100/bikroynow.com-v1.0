@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000tx08",
     "emsc_20260922_0000394",
     "emsc_20260923_0000023",
     "us6000tx0f",
@@ -499,7 +498,8 @@
     "us6000tywu",
     "us6000tyx0",
     "emsc_20261001_0000315",
-    "emsc_20261001_0000318"
+    "emsc_20261001_0000318",
+    "emsc_20261002_0000005"
   ],
   "replied_comment_ids": [
     "122098941729450344_1410880417659723",
@@ -548,14 +548,6 @@
     "122110765929450344_1965195227505072"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tyhi",
-      "mag": 5.4,
-      "place": "Balleny Islands region",
-      "latitude": -63.0088,
-      "longitude": 169.2156,
-      "epoch_ms": 1790743686031
-    },
     {
       "id": "emsc_20260930_0000052",
       "mag": 4.0,
@@ -947,6 +939,14 @@
       "latitude": 13.608,
       "longitude": -92.535,
       "epoch_ms": 1790886013000
+    },
+    {
+      "id": "emsc_20261002_0000005",
+      "mag": 4.3,
+      "place": "BALI REGION, INDONESIA",
+      "latitude": -8.74,
+      "longitude": 114.93,
+      "epoch_ms": 1790902014000
     }
   ]
 }
