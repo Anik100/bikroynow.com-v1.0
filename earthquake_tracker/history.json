@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260925_0000228",
-    "emsc_20260925_0000244",
     "emsc_20260925_0000258",
     "us6000txnq",
     "emsc_20260925_0000265",
@@ -499,7 +497,9 @@
     "emsc_20261003_0000240",
     "us6000tzdz",
     "emsc_20261003_0000241",
-    "us6000tze2"
+    "us6000tze2",
+    "emsc_20261003_0000249",
+    "us6000tze6"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tyzx",
-      "mag": 4.8,
-      "place": "35 km SSW of El Colomo, Mexico",
-      "latitude": 18.7561,
-      "longitude": -104.3753,
-      "epoch_ms": 1790924015007
-    },
     {
       "id": "emsc_20261002_0000100",
       "mag": 4.2,
@@ -963,6 +955,14 @@
       "latitude": 51.9127,
       "longitude": 159.3136,
       "epoch_ms": 1791057651500
+    },
+    {
+      "id": "us6000tze6",
+      "mag": 4.5,
+      "place": "121 km SW of Puerto Madero, Mexico",
+      "latitude": 14.1052,
+      "longitude": -93.3523,
+      "epoch_ms": 1791059625577
     }
   ]
 }
