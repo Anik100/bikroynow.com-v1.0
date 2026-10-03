@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260925_0000279",
     "us6000txp8",
     "emsc_20260925_0000282",
     "us6000txpf",
@@ -499,7 +498,8 @@
     "emsc_20261003_0000251",
     "emsc_20261003_0000270",
     "us6000tzer",
-    "emsc_20261003_0000277"
+    "emsc_20261003_0000277",
+    "us6000tzf7"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261002_0000123",
-      "mag": 4.2,
-      "place": "OAXACA, MEXICO",
-      "latitude": 16.135,
-      "longitude": -97.157,
-      "epoch_ms": 1790934222000
-    },
     {
       "id": "emsc_20261002_0000128",
       "mag": 4.3,
@@ -963,6 +955,14 @@
       "latitude": 3.37,
       "longitude": 123.69,
       "epoch_ms": 1791069272000
+    },
+    {
+      "id": "us6000tzf7",
+      "mag": 4.5,
+      "place": "293 km SSE of Tabiauan, Philippines",
+      "latitude": 3.5895,
+      "longitude": 122.9296,
+      "epoch_ms": 1791069275782
     }
   ]
 }
