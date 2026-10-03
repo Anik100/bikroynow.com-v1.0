@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260925_0000138",
     "us6000txk0",
     "emsc_20260925_0000150",
     "emsc_20260925_0000151",
@@ -499,7 +498,8 @@
     "emsc_20261003_0000210",
     "emsc_20261003_0000212",
     "emsc_20261003_0000217",
-    "us6000tzdj"
+    "us6000tzdj",
+    "emsc_20261003_0000223"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tyzl",
-      "mag": 5.1,
-      "place": "159 km SE of Gizo, Solomon Islands",
-      "latitude": -8.9326,
-      "longitude": 158.0215,
-      "epoch_ms": 1790916293423
-    },
     {
       "id": "emsc_20261002_0000053",
       "mag": 4.1,
@@ -963,6 +955,14 @@
       "latitude": -6.0496,
       "longitude": 147.1678,
       "epoch_ms": 1791048252545
+    },
+    {
+      "id": "emsc_20261003_0000223",
+      "mag": 4.8,
+      "place": "INDIA-BANGLADESH BORDER REGION",
+      "latitude": 22.7001,
+      "longitude": 92.886,
+      "epoch_ms": 1791051194000
     }
   ]
 }
