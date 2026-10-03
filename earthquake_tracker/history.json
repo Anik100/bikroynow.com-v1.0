@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000txk8",
     "us6000txkc",
     "emsc_20260925_0000186",
     "emsc_20260925_0000199",
@@ -499,7 +498,8 @@
     "emsc_20261003_0000223",
     "emsc_20261003_0000224",
     "emsc_20261003_0000225",
-    "us6000tzdp"
+    "us6000tzdp",
+    "emsc_20261003_0000227"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261002_0000054",
-      "mag": 4.3,
-      "place": "NEUQUEN, ARGENTINA",
-      "latitude": -38.15,
-      "longitude": -68.53,
-      "epoch_ms": 1790918466000
-    },
     {
       "id": "emsc_20261002_0000059",
       "mag": 4.8,
@@ -963,6 +955,14 @@
       "latitude": 20.6061,
       "longitude": 93.3991,
       "epoch_ms": 1791051166916
+    },
+    {
+      "id": "emsc_20261003_0000227",
+      "mag": 4.0,
+      "place": "KEPULAUAN TALAUD, INDONESIA",
+      "latitude": 4.99,
+      "longitude": 127.0,
+      "epoch_ms": 1791052124000
     }
   ]
 }
