@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000txim",
     "us6000txil",
     "emsc_20260925_0000047",
     "us6000txiw",
@@ -499,7 +498,8 @@
     "us6000tzbz",
     "emsc_20261003_0000133",
     "us6000tzc5",
-    "emsc_20261003_0000142"
+    "emsc_20261003_0000142",
+    "emsc_20261003_0000149"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261001_0000312",
-      "mag": 5.2,
-      "place": "SANTA CRUZ ISLANDS",
-      "latitude": -12.3627,
-      "longitude": 165.9711,
-      "epoch_ms": 1790883493510
-    },
     {
       "id": "us6000tyx0",
       "mag": 5.1,
@@ -963,6 +955,14 @@
       "latitude": -5.6287,
       "longitude": 148.3446,
       "epoch_ms": 1791025545564
+    },
+    {
+      "id": "emsc_20261003_0000149",
+      "mag": 4.0,
+      "place": "KEP. MENTAWAI REGION, INDONESIA",
+      "latitude": -1.06,
+      "longitude": 98.8,
+      "epoch_ms": 1791032610000
     }
   ]
 }
