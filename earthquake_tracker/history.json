@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000txp8",
     "emsc_20260925_0000282",
     "us6000txpf",
     "emsc_20260925_0000287",
@@ -499,7 +498,8 @@
     "emsc_20261003_0000270",
     "us6000tzer",
     "emsc_20261003_0000277",
-    "us6000tzf7"
+    "us6000tzf7",
+    "emsc_20261003_0000282"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261002_0000128",
-      "mag": 4.3,
-      "place": "BANDA SEA",
-      "latitude": -6.93,
-      "longitude": 129.93,
-      "epoch_ms": 1790936028000
-    },
     {
       "id": "emsc_20261002_0000129",
       "mag": 4.0,
@@ -963,6 +955,14 @@
       "latitude": 3.5895,
       "longitude": 122.9296,
       "epoch_ms": 1791069275782
+    },
+    {
+      "id": "emsc_20261003_0000282",
+      "mag": 5.6,
+      "place": "NORTHERN SUMATRA, INDONESIA",
+      "latitude": 4.6437,
+      "longitude": 95.198,
+      "epoch_ms": 1791070653910
     }
   ]
 }
