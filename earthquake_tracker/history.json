@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260926_0000010",
     "us6000txqu",
     "us6000txqv",
     "emsc_20260926_0000015",
@@ -499,7 +498,8 @@
     "emsc_20261004_0000100",
     "emsc_20261004_0000104",
     "emsc_20261004_0000122",
-    "us6000tzhy"
+    "us6000tzhy",
+    "emsc_20261004_0000126"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tz1y",
-      "mag": 4.7,
-      "place": "5 km NNE of Korumburra, Australia",
-      "latitude": -38.3802,
-      "longitude": 145.8401,
-      "epoch_ms": 1790956899581
-    },
     {
       "id": "emsc_20261002_0000234",
       "mag": 5.0,
@@ -963,6 +955,14 @@
       "latitude": -3.0707,
       "longitude": -80.326,
       "epoch_ms": 1791104241555
+    },
+    {
+      "id": "emsc_20261004_0000126",
+      "mag": 4.4,
+      "place": "KEP. TANIMBAR REGION, INDONESIA",
+      "latitude": -6.28,
+      "longitude": 131.61,
+      "epoch_ms": 1791107104000
     }
   ]
 }
