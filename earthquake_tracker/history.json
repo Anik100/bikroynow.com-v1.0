@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000txr0",
     "emsc_20260926_0000043",
     "emsc_20260926_0000045",
     "emsc_20260926_0000056",
@@ -499,7 +498,8 @@
     "emsc_20261004_0000133",
     "us6000tzi5",
     "emsc_20261004_0000140",
-    "us6000tzi8"
+    "us6000tzi8",
+    "emsc_20261004_0000143"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261002_0000250",
-      "mag": 4.7,
-      "place": "OFFSHORE VALPARAISO, CHILE",
-      "latitude": -32.82,
-      "longitude": -71.71,
-      "epoch_ms": 1790962098000
-    },
     {
       "id": "emsc_20261002_0000253",
       "mag": 4.1,
@@ -963,6 +955,14 @@
       "latitude": -8.2236,
       "longitude": 120.5325,
       "epoch_ms": 1791111147344
+    },
+    {
+      "id": "emsc_20261004_0000143",
+      "mag": 5.3,
+      "place": "VOLCANO ISLANDS, JAPAN REGION",
+      "latitude": 22.8524,
+      "longitude": 144.6986,
+      "epoch_ms": 1791112373520
     }
   ]
 }
