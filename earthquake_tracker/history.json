@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260925_0000322",
     "us6000txql",
     "emsc_20260926_0000010",
     "us6000txqu",
@@ -499,7 +498,8 @@
     "us6000tzh0",
     "emsc_20261004_0000087",
     "emsc_20261004_0000100",
-    "emsc_20261004_0000104"
+    "emsc_20261004_0000104",
+    "emsc_20261004_0000122"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tz1q",
-      "mag": 4.8,
-      "place": "78 km WSW of San Nicolas, Philippines",
-      "latitude": 14.571,
-      "longitude": 119.4593,
-      "epoch_ms": 1790953819729
-    },
     {
       "id": "us6000tz1y",
       "mag": 4.7,
@@ -963,6 +955,14 @@
       "latitude": -8.23,
       "longitude": 120.47,
       "epoch_ms": 1791101421000
+    },
+    {
+      "id": "emsc_20261004_0000122",
+      "mag": 4.3,
+      "place": "PERU-ECUADOR BORDER REGION",
+      "latitude": -3.0707,
+      "longitude": -80.326,
+      "epoch_ms": 1791104241555
     }
   ]
 }
