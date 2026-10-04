@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000txs2",
     "emsc_20260926_0000088",
     "us6000txs3",
     "us6000txs6",
@@ -499,7 +498,8 @@
     "emsc_20261004_0000204",
     "emsc_20261004_0000209",
     "emsc_20261004_0000216",
-    "us6000tzj8"
+    "us6000tzj8",
+    "emsc_20261004_0000233"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261002_0000341",
-      "mag": 4.9,
-      "place": "NEAR EAST COAST OF KAMCHATKA",
-      "latitude": 52.1433,
-      "longitude": 158.9726,
-      "epoch_ms": 1790985253520
-    },
     {
       "id": "us6000tza4",
       "mag": 4.1,
@@ -963,6 +955,14 @@
       "latitude": 5.3059,
       "longitude": -82.5825,
       "epoch_ms": 1791122771740
+    },
+    {
+      "id": "emsc_20261004_0000233",
+      "mag": 4.3,
+      "place": "SUMBA REGION, INDONESIA",
+      "latitude": -9.59,
+      "longitude": 119.1,
+      "epoch_ms": 1791125985000
     }
   ]
 }
