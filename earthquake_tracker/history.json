@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000txrq",
     "us6000txrn",
     "emsc_20260926_0000070",
     "us6000txrs",
@@ -499,7 +498,8 @@
     "us6000tzif",
     "emsc_20261004_0000156",
     "us6000tzip",
-    "us6000tzil"
+    "us6000tzil",
+    "emsc_20261004_0000160"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261002_0000297",
-      "mag": 5.3,
-      "place": "OFF EAST COAST OF KAMCHATKA",
-      "latitude": 51.9122,
-      "longitude": 159.2947,
-      "epoch_ms": 1790974459020
-    },
     {
       "id": "emsc_20261002_0000304",
       "mag": 4.1,
@@ -963,6 +955,14 @@
       "latitude": 37.7,
       "longitude": 36.19,
       "epoch_ms": 1791114204750
+    },
+    {
+      "id": "emsc_20261004_0000160",
+      "mag": 4.1,
+      "place": "POTOSI, BOLIVIA",
+      "latitude": -21.29,
+      "longitude": -67.77,
+      "epoch_ms": 1791115674000
     }
   ]
 }
