@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000txrs",
     "emsc_20260926_0000081",
     "emsc_20260926_0000086",
     "us6000txrz",
@@ -499,7 +498,8 @@
     "us6000tzil",
     "emsc_20261004_0000160",
     "emsc_20261004_0000179",
-    "us6000tziz"
+    "us6000tziz",
+    "emsc_20261004_0000197"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261002_0000314",
-      "mag": 4.4,
-      "place": "OFF THE COAST OF EL SALVADOR",
-      "latitude": 12.644,
-      "longitude": -90.409,
-      "epoch_ms": 1790979285000
-    },
     {
       "id": "emsc_20261003_0000002",
       "mag": 5.0,
@@ -963,6 +955,14 @@
       "latitude": -9.2014,
       "longitude": 112.6395,
       "epoch_ms": 1791117407744
+    },
+    {
+      "id": "emsc_20261004_0000197",
+      "mag": 4.3,
+      "place": "ARAUCANIA, CHILE",
+      "latitude": -39.01,
+      "longitude": -72.69,
+      "epoch_ms": 1791122258000
     }
   ]
 }
