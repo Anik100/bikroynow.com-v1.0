@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260926_0000103",
     "us6000txse",
     "emsc_20260926_0000110",
     "us6000txsh",
@@ -499,7 +498,8 @@
     "emsc_20261004_0000277",
     "us6000tzjw",
     "emsc_20261004_0000281",
-    "us6000tzjy"
+    "us6000tzjy",
+    "emsc_20261004_0000300"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261003_0000072",
-      "mag": 4.8,
-      "place": "RYUKYU ISLANDS, JAPAN",
-      "latitude": 29.221,
-      "longitude": 130.6125,
-      "epoch_ms": 1791007521157
-    },
     {
       "id": "emsc_20261003_0000087",
       "mag": 4.2,
@@ -963,6 +955,14 @@
       "latitude": 13.898,
       "longitude": -91.348,
       "epoch_ms": 1791136806000
+    },
+    {
+      "id": "emsc_20261004_0000300",
+      "mag": 4.3,
+      "place": "SUMBAWA REGION, INDONESIA",
+      "latitude": -8.89,
+      "longitude": 118.9,
+      "epoch_ms": 1791141533000
     }
   ]
 }
