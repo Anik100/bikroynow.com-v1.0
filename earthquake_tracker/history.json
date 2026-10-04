@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260926_0000015",
     "emsc_20260926_0000028",
     "us6000txr0",
     "emsc_20260926_0000043",
@@ -499,7 +498,8 @@
     "us6000tzhy",
     "emsc_20261004_0000126",
     "emsc_20261004_0000133",
-    "us6000tzi5"
+    "us6000tzi5",
+    "emsc_20261004_0000140"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261002_0000236",
-      "mag": 5.9,
-      "place": "OFF EAST COAST OF KAMCHATKA",
-      "latitude": 51.7492,
-      "longitude": 159.5853,
-      "epoch_ms": 1790958877650
-    },
     {
       "id": "emsc_20261002_0000250",
       "mag": 4.7,
@@ -963,6 +955,14 @@
       "latitude": -8.2698,
       "longitude": 120.4532,
       "epoch_ms": 1791108787298
+    },
+    {
+      "id": "emsc_20261004_0000140",
+      "mag": 4.8,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.2236,
+      "longitude": 120.5325,
+      "epoch_ms": 1791111147344
     }
   ]
 }
