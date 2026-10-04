@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260926_0000061",
     "us6000txrj",
     "emsc_20260926_0000069",
     "us6000txrq",
@@ -499,7 +498,8 @@
     "us6000tzid",
     "emsc_20261004_0000150",
     "emsc_20261004_0000153",
-    "us6000tzif"
+    "us6000tzif",
+    "emsc_20261004_0000156"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261002_0000293",
-      "mag": 4.3,
-      "place": "OFF EAST COAST OF HONSHU, JAPAN",
-      "latitude": 39.9,
-      "longitude": 143.1,
-      "epoch_ms": 1790973270000
-    },
     {
       "id": "emsc_20261002_0000297",
       "mag": 5.3,
@@ -963,6 +955,14 @@
       "latitude": 37.73,
       "longitude": 36.18,
       "epoch_ms": 1791113786850
+    },
+    {
+      "id": "emsc_20261004_0000156",
+      "mag": 5.1,
+      "place": "CENTRAL TURKEY",
+      "latitude": 37.7,
+      "longitude": 36.19,
+      "epoch_ms": 1791114204750
     }
   ]
 }
