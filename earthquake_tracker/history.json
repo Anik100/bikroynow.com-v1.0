@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000txsh",
     "emsc_20260926_0000119",
     "us6000txsz",
     "emsc_20260926_0000126",
@@ -499,7 +498,8 @@
     "us6000tzjy",
     "emsc_20261004_0000300",
     "emsc_20261004_0000312",
-    "us6000tzkn"
+    "us6000tzkn",
+    "emsc_20261004_0000314"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261003_0000098",
-      "mag": 4.4,
-      "place": "AUCKLAND ISLANDS, N.Z. REGION",
-      "latitude": -49.7223,
-      "longitude": 163.7961,
-      "epoch_ms": 1791018881060
-    },
     {
       "id": "emsc_20261003_0000104",
       "mag": 4.3,
@@ -963,6 +955,14 @@
       "latitude": 36.704,
       "longitude": 71.101,
       "epoch_ms": 1791145644990
+    },
+    {
+      "id": "emsc_20261004_0000314",
+      "mag": 4.4,
+      "place": "KURIL ISLANDS",
+      "latitude": 45.8198,
+      "longitude": 151.3579,
+      "epoch_ms": 1791144987253
     }
   ]
 }
