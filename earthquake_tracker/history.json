@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000txpf",
     "emsc_20260925_0000287",
     "pt26268000",
     "us6000txpa",
@@ -499,7 +498,8 @@
     "emsc_20261003_0000277",
     "us6000tzf7",
     "emsc_20261003_0000282",
-    "us6000tzfg"
+    "us6000tzfg",
+    "emsc_20261004_0000003"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261002_0000129",
-      "mag": 4.0,
-      "place": "NEAR COAST OF NORTHERN PERU",
-      "latitude": -8.16,
-      "longitude": -79.38,
-      "epoch_ms": 1790935999000
-    },
     {
       "id": "emsc_20261002_0000145",
       "mag": 4.8,
@@ -963,6 +955,14 @@
       "latitude": 4.6437,
       "longitude": 95.198,
       "epoch_ms": 1791070653910
+    },
+    {
+      "id": "emsc_20261004_0000003",
+      "mag": 4.1,
+      "place": "SOUTH OF PANAMA",
+      "latitude": 7.8366,
+      "longitude": -82.9403,
+      "epoch_ms": 1791072409000
     }
   ]
 }
