@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000txtz",
     "emsc_20260926_0000181",
     "us6000txu2",
     "emsc_20260926_0000186",
@@ -499,7 +498,8 @@
     "us6000tzlz",
     "emsc_20261005_0000043",
     "emsc_20261005_0000067",
-    "us6000tzm7"
+    "us6000tzm7",
+    "emsc_20261005_0000081"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261003_0000223",
-      "mag": 4.8,
-      "place": "INDIA-BANGLADESH BORDER REGION",
-      "latitude": 22.7001,
-      "longitude": 92.886,
-      "epoch_ms": 1791051194000
-    },
     {
       "id": "us6000tzdp",
       "mag": 4.9,
@@ -963,6 +955,14 @@
       "latitude": 45.953,
       "longitude": 151.8684,
       "epoch_ms": 1791173783636
+    },
+    {
+      "id": "emsc_20261005_0000081",
+      "mag": 4.0,
+      "place": "SOUTH OF BALI, INDONESIA",
+      "latitude": -9.54,
+      "longitude": 115.28,
+      "epoch_ms": 1791177786000
     }
   ]
 }
