@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260926_0000220",
     "emsc_20260926_0000228",
     "us6000txv7",
     "us6000txvu",
@@ -499,7 +498,8 @@
     "emsc_20261005_0000179",
     "emsc_20261005_0000183",
     "emsc_20261005_0000194",
-    "us6000tznh"
+    "us6000tznh",
+    "emsc_20261005_0000209"
   ],
   "replied_comment_ids": [
     "122114840829450344_2201960097868769",
@@ -567,14 +567,6 @@
     "122111288121450344_1065870496270190"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tzf7",
-      "mag": 4.5,
-      "place": "293 km SSE of Tabiauan, Philippines",
-      "latitude": 3.5895,
-      "longitude": 122.9296,
-      "epoch_ms": 1791069275782
-    },
     {
       "id": "emsc_20261003_0000282",
       "mag": 5.6,
@@ -966,6 +958,14 @@
       "latitude": -15.7157,
       "longitude": 167.1484,
       "epoch_ms": 1791200827753
+    },
+    {
+      "id": "emsc_20261005_0000209",
+      "mag": 4.2,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.27,
+      "longitude": 120.6,
+      "epoch_ms": 1791205550000
     }
   ]
 }
