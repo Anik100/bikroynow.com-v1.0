@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260926_0000193",
     "us6000txuf",
     "emsc_20260926_0000195",
     "us6000txuj",
@@ -499,7 +498,8 @@
     "emsc_20261005_0000105",
     "us6000tzmk",
     "emsc_20261005_0000111",
-    "emsc_20261005_0000042"
+    "emsc_20261005_0000042",
+    "emsc_20261005_0000123"
   ],
   "replied_comment_ids": [
     "122110667409450344_1630874651807460",
@@ -565,14 +565,6 @@
     "122107211907450344_27907919375556685"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261003_0000232",
-      "mag": 4.0,
-      "place": "NEAR COAST OF ECUADOR",
-      "latitude": -1.35,
-      "longitude": -80.41,
-      "epoch_ms": 1791053583900
-    },
     {
       "id": "emsc_20261003_0000241",
       "mag": 5.4,
@@ -964,6 +956,14 @@
       "latitude": 4.48,
       "longitude": 127.1,
       "epoch_ms": 1791180856000
+    },
+    {
+      "id": "emsc_20261005_0000123",
+      "mag": 4.9,
+      "place": "VOLCANO ISLANDS, JAPAN REGION",
+      "latitude": 22.8488,
+      "longitude": 144.0442,
+      "epoch_ms": 1791184418006
     }
   ]
 }
