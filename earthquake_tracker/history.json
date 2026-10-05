@@ -1,8 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260926_0000256",
-    "emsc_20260927_0000052",
-    "us6000txwy",
     "emsc_20260927_0000078",
     "us6000txxb",
     "nn00924930",
@@ -499,7 +496,10 @@
     "emsc_20261005_0000294",
     "us6000tzpq",
     "us6000tzpz",
-    "emsc_20261005_0000308"
+    "emsc_20261005_0000308",
+    "emsc_20261005_0000327",
+    "emsc_20261005_0000319",
+    "us6000tzry"
   ],
   "replied_comment_ids": [
     "122114840829450344_2201960097868769",
@@ -567,14 +567,6 @@
     "122111288121450344_1065870496270190"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261004_0000043",
-      "mag": 4.2,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 14.173,
-      "longitude": -94.051,
-      "epoch_ms": 1791080058000
-    },
     {
       "id": "emsc_20261004_0000076",
       "mag": 4.4,
@@ -966,6 +958,14 @@
       "latitude": 51.0276,
       "longitude": -130.7301,
       "epoch_ms": 1791221439000
+    },
+    {
+      "id": "us6000tzry",
+      "mag": 4.6,
+      "place": "12 km ENE of Metah\u0101ra, Ethiopia",
+      "latitude": 8.9608,
+      "longitude": 40.0091,
+      "epoch_ms": 1791229675779
     }
   ]
 }
