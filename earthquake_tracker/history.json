@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260926_0000181",
     "us6000txu2",
     "emsc_20260926_0000186",
     "emsc_20260926_0000188",
@@ -499,7 +498,8 @@
     "emsc_20261005_0000043",
     "emsc_20261005_0000067",
     "us6000tzm7",
-    "emsc_20261005_0000081"
+    "emsc_20261005_0000081",
+    "us6000tzme"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tzdp",
-      "mag": 4.9,
-      "place": "72 km NE of Sittwe, Burma (Myanmar)",
-      "latitude": 20.6061,
-      "longitude": 93.3991,
-      "epoch_ms": 1791051166916
-    },
     {
       "id": "emsc_20261003_0000227",
       "mag": 4.0,
@@ -963,6 +955,14 @@
       "latitude": -9.54,
       "longitude": 115.28,
       "epoch_ms": 1791177786000
+    },
+    {
+      "id": "us6000tzme",
+      "mag": 5.0,
+      "place": "71 km E of \u2018Ohonua, Tonga",
+      "latitude": -21.4208,
+      "longitude": -174.2679,
+      "epoch_ms": 1791178004808
     }
   ]
 }
