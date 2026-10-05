@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260926_0000162",
     "emsc_20260926_0000163",
     "us6000txtn",
     "emsc_20260926_0000166",
@@ -499,7 +498,8 @@
     "emsc_20261005_0000020",
     "us6000tzlp",
     "emsc_20261005_0000024",
-    "us6000tzln"
+    "us6000tzln",
+    "emsc_20261005_0000035"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261003_0000191",
-      "mag": 4.0,
-      "place": "NORTH ISLAND OF NEW ZEALAND",
-      "latitude": -38.6792,
-      "longitude": 176.7522,
-      "epoch_ms": 1791041315384
-    },
     {
       "id": "emsc_20261003_0000212",
       "mag": 4.0,
@@ -963,6 +955,14 @@
       "latitude": -0.4038,
       "longitude": -19.9387,
       "epoch_ms": 1791163132200
+    },
+    {
+      "id": "emsc_20261005_0000035",
+      "mag": 4.4,
+      "place": "SOUTH OF JAVA, INDONESIA",
+      "latitude": -9.28,
+      "longitude": 113.04,
+      "epoch_ms": 1791166591000
     }
   ]
 }
