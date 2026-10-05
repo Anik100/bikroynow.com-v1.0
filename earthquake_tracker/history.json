@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000txuj",
-    "emsc_20260926_0000201",
     "emsc_20260926_0000202",
     "us6000txur",
     "emsc_20260926_0000206",
@@ -499,7 +497,9 @@
     "emsc_20261005_0000042",
     "emsc_20261005_0000123",
     "us6000tzmt",
-    "emsc_20261005_0000155"
+    "emsc_20261005_0000155",
+    "emsc_20261005_0000172",
+    "emsc_20261005_0000173"
   ],
   "replied_comment_ids": [
     "122110667409450344_1630874651807460",
@@ -565,22 +565,6 @@
     "122107211907450344_27907919375556685"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tze6",
-      "mag": 4.5,
-      "place": "121 km SW of Puerto Madero, Mexico",
-      "latitude": 14.1052,
-      "longitude": -93.3523,
-      "epoch_ms": 1791059625577
-    },
-    {
-      "id": "emsc_20261003_0000251",
-      "mag": 4.1,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 14.261,
-      "longitude": -93.512,
-      "epoch_ms": 1791060173000
-    },
     {
       "id": "emsc_20261003_0000270",
       "mag": 5.9,
@@ -964,6 +948,22 @@
       "latitude": -6.9,
       "longitude": 130.08,
       "epoch_ms": 1791191556000
+    },
+    {
+      "id": "emsc_20261005_0000172",
+      "mag": 4.2,
+      "place": "NEAR COAST OF SOUTHERN PERU",
+      "latitude": -16.19,
+      "longitude": -72.74,
+      "epoch_ms": 1791196369000
+    },
+    {
+      "id": "emsc_20261005_0000173",
+      "mag": 4.0,
+      "place": "OFFSHORE OAXACA, MEXICO",
+      "latitude": 15.822,
+      "longitude": -95.098,
+      "epoch_ms": 1791195651000
     }
   ]
 }
