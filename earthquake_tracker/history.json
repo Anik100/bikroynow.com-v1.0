@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000txtn",
     "emsc_20260926_0000166",
     "emsc_20260926_0000172",
     "us6000txtz",
@@ -499,7 +498,8 @@
     "emsc_20261005_0000024",
     "us6000tzln",
     "emsc_20261005_0000035",
-    "us6000tzlz"
+    "us6000tzlz",
+    "emsc_20261005_0000043"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -564,14 +564,6 @@
     "122113907097450344_1806045617062073"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261003_0000212",
-      "mag": 4.0,
-      "place": "NEAR COAST OF ECUADOR",
-      "latitude": 0.67,
-      "longitude": -79.23,
-      "epoch_ms": 1791048863800
-    },
     {
       "id": "emsc_20261003_0000217",
       "mag": 4.6,
@@ -963,6 +955,14 @@
       "latitude": -9.28,
       "longitude": 113.04,
       "epoch_ms": 1791166591000
+    },
+    {
+      "id": "emsc_20261005_0000043",
+      "mag": 4.2,
+      "place": "FLORES SEA",
+      "latitude": -7.85,
+      "longitude": 120.35,
+      "epoch_ms": 1791168279000
     }
   ]
 }
