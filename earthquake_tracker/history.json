@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000txxy",
-    "nn00924954",
     "emsc_20260927_0000100",
     "aka2026tcqxxq",
     "us6000txty",
@@ -499,7 +497,9 @@
     "emsc_20261005_0000412",
     "emsc_20261005_0000413",
     "emsc_20261006_0000042",
-    "us6000tzuj"
+    "us6000tzuj",
+    "emsc_20261006_0000051",
+    "us6000tzuq"
   ],
   "replied_comment_ids": [
     "122114840829450344_2201960097868769",
@@ -567,14 +567,6 @@
     "122111288121450344_1065870496270190"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261004_0000126",
-      "mag": 4.4,
-      "place": "KEP. TANIMBAR REGION, INDONESIA",
-      "latitude": -6.28,
-      "longitude": 131.61,
-      "epoch_ms": 1791107104000
-    },
     {
       "id": "us6000tzi5",
       "mag": 5.0,
@@ -966,6 +958,14 @@
       "latitude": -7.8323,
       "longitude": 120.3932,
       "epoch_ms": 1791258163999
+    },
+    {
+      "id": "us6000tzuq",
+      "mag": 4.6,
+      "place": "Izu Islands, Japan region",
+      "latitude": 29.02,
+      "longitude": 142.845,
+      "epoch_ms": 1791260916912
     }
   ]
 }
