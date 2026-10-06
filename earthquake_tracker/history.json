@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "aka2026tdlmve",
     "us6000txxm",
     "emsc_20260927_0000086",
     "emsc_20260927_0000092",
@@ -499,7 +498,8 @@
     "emsc_20261005_0000340",
     "us6000tzsc",
     "emsc_20261005_0000382",
-    "emsc_20261006_0000007"
+    "emsc_20261006_0000007",
+    "us6000tzu2"
   ],
   "replied_comment_ids": [
     "122114840829450344_2201960097868769",
@@ -567,14 +567,6 @@
     "122111288121450344_1065870496270190"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261004_0000104",
-      "mag": 4.0,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.23,
-      "longitude": 120.47,
-      "epoch_ms": 1791101421000
-    },
     {
       "id": "emsc_20261004_0000122",
       "mag": 4.3,
@@ -966,6 +958,14 @@
       "latitude": -19.86,
       "longitude": -69.52,
       "epoch_ms": 1791247289000
+    },
+    {
+      "id": "us6000tzu2",
+      "mag": 4.3,
+      "place": "42 km SW of Urakawa, Japan",
+      "latitude": 41.9416,
+      "longitude": 142.3552,
+      "epoch_ms": 1791251303727
     }
   ]
 }
