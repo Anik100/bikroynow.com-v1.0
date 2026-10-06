@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260927_0000125",
     "us6000txyd",
     "us6000txyf",
     "emsc_20260927_0000159",
@@ -499,7 +498,8 @@
     "emsc_20261005_0000417",
     "emsc_20261006_0000080",
     "emsc_20261006_0000082",
-    "us6000tzva"
+    "us6000tzva",
+    "emsc_20261006_0000087"
   ],
   "replied_comment_ids": [
     "122114840829450344_2201960097868769",
@@ -567,14 +567,6 @@
     "122111288121450344_1065870496270190"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261004_0000147",
-      "mag": 4.1,
-      "place": "OFFSHORE GUERRERO, MEXICO",
-      "latitude": 15.957,
-      "longitude": -98.841,
-      "epoch_ms": 1791112174000
-    },
     {
       "id": "emsc_20261004_0000150",
       "mag": 4.8,
@@ -966,6 +958,14 @@
       "latitude": -20.027,
       "longitude": -67.492,
       "epoch_ms": 1791269649000
+    },
+    {
+      "id": "emsc_20261006_0000087",
+      "mag": 4.0,
+      "place": "OFFSHORE OAXACA, MEXICO",
+      "latitude": 15.52,
+      "longitude": -95.605,
+      "epoch_ms": 1791272141000
     }
   ]
 }
