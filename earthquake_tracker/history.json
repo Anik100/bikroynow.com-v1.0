@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260927_0000100",
-    "aka2026tcqxxq",
     "us6000txty",
     "us6000txt8",
     "emsc_20260927_0000113",
@@ -499,7 +497,9 @@
     "emsc_20261006_0000042",
     "us6000tzuj",
     "emsc_20261006_0000051",
-    "us6000tzuq"
+    "us6000tzuq",
+    "emsc_20261006_0000053",
+    "us6000tzus"
   ],
   "replied_comment_ids": [
     "122114840829450344_2201960097868769",
@@ -567,14 +567,6 @@
     "122111288121450344_1065870496270190"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tzi5",
-      "mag": 5.0,
-      "place": "37 km N of Ruteng, Indonesia",
-      "latitude": -8.2698,
-      "longitude": 120.4532,
-      "epoch_ms": 1791108787298
-    },
     {
       "id": "emsc_20261004_0000140",
       "mag": 4.8,
@@ -966,6 +958,14 @@
       "latitude": 29.02,
       "longitude": 142.845,
       "epoch_ms": 1791260916912
+    },
+    {
+      "id": "us6000tzus",
+      "mag": 4.9,
+      "place": "State of Yap, Federated States of Micronesia",
+      "latitude": 6.7818,
+      "longitude": 144.4068,
+      "epoch_ms": 1791261628098
     }
   ]
 }
