@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000ty2u",
     "emsc_20260928_0000063",
     "us6000ty2w",
     "emsc_20260928_0000064",
@@ -499,7 +498,8 @@
     "emsc_20261007_0000035",
     "emsc_20261007_0000039",
     "emsc_20261007_0000043",
-    "us6000u0ns"
+    "us6000u0ns",
+    "emsc_20261007_0000046"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -569,14 +569,6 @@
     "122107480185450344_1993172514729995"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261005_0000105",
-      "mag": 4.4,
-      "place": "KEPULAUAN TALAUD, INDONESIA",
-      "latitude": 4.48,
-      "longitude": 127.1,
-      "epoch_ms": 1791180856000
-    },
     {
       "id": "emsc_20261005_0000123",
       "mag": 4.9,
@@ -968,6 +960,14 @@
       "latitude": -20.979,
       "longitude": 169.0011,
       "epoch_ms": 1791341399426
+    },
+    {
+      "id": "emsc_20261007_0000046",
+      "mag": 4.5,
+      "place": "OFFSHORE EL SALVADOR",
+      "latitude": 13.1503,
+      "longitude": -89.7607,
+      "epoch_ms": 1791341880000
     }
   ]
 }
