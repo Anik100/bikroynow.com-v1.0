@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260928_0000060",
-    "attm2513",
     "us6000ty2u",
     "emsc_20260928_0000063",
     "us6000ty2w",
@@ -499,7 +497,9 @@
     "us6000u0nb",
     "emsc_20261007_0000034",
     "emsc_20261007_0000035",
-    "emsc_20261007_0000039"
+    "emsc_20261007_0000039",
+    "emsc_20261007_0000043",
+    "us6000u0ns"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -569,14 +569,6 @@
     "122107480185450344_1993172514729995"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tzme",
-      "mag": 5.0,
-      "place": "71 km E of \u2018Ohonua, Tonga",
-      "latitude": -21.4208,
-      "longitude": -174.2679,
-      "epoch_ms": 1791178004808
-    },
     {
       "id": "emsc_20261005_0000105",
       "mag": 4.4,
@@ -968,6 +960,14 @@
       "latitude": 37.7727,
       "longitude": 29.4222,
       "epoch_ms": 1791341797100
+    },
+    {
+      "id": "us6000u0ns",
+      "mag": 4.8,
+      "place": "132 km ENE of Tadine, New Caledonia",
+      "latitude": -20.979,
+      "longitude": 169.0011,
+      "epoch_ms": 1791341399426
     }
   ]
 }
