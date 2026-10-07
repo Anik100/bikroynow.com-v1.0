@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260928_0000080",
-    "emsc_20260928_0000081",
     "us6000ty38",
     "emsc_20260927_0000278",
     "emsc_20260928_0000088",
@@ -499,7 +497,9 @@
     "emsc_20261007_0000053",
     "emsc_20261007_0000062",
     "us6000u0pb",
-    "emsc_20261007_0000075"
+    "emsc_20261007_0000075",
+    "emsc_20261007_0000092",
+    "emsc_20261007_0000093"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -569,22 +569,6 @@
     "122107480185450344_1993172514729995"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261005_0000155",
-      "mag": 4.2,
-      "place": "BANDA SEA",
-      "latitude": -6.9,
-      "longitude": 130.08,
-      "epoch_ms": 1791191556000
-    },
-    {
-      "id": "emsc_20261005_0000172",
-      "mag": 4.2,
-      "place": "NEAR COAST OF SOUTHERN PERU",
-      "latitude": -16.19,
-      "longitude": -72.74,
-      "epoch_ms": 1791196369000
-    },
     {
       "id": "emsc_20261005_0000173",
       "mag": 4.0,
@@ -968,6 +952,22 @@
       "latitude": 23.33,
       "longitude": 95.254,
       "epoch_ms": 1791343773000
+    },
+    {
+      "id": "emsc_20261007_0000092",
+      "mag": 4.1,
+      "place": "OFFSHORE OAXACA, MEXICO",
+      "latitude": 15.621,
+      "longitude": -95.835,
+      "epoch_ms": 1791353779000
+    },
+    {
+      "id": "emsc_20261007_0000093",
+      "mag": 4.0,
+      "place": "OFF COAST OF JALISCO, MEXICO",
+      "latitude": 18.428,
+      "longitude": -105.494,
+      "epoch_ms": 1791353476000
     }
   ]
 }
