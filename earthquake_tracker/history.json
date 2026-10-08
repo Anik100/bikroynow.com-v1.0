@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "ew1790681810",
-    "nc75444322",
     "emsc_20260929_0000144",
     "us6000tybs",
     "emsc_20260929_0000147",
@@ -499,7 +497,9 @@
     "emsc_20261008_0000167",
     "emsc_20261008_0000174",
     "emsc_20261008_0000175",
-    "emsc_20261008_0000186"
+    "emsc_20261008_0000186",
+    "emsc_20261008_0000191",
+    "emsc_20261008_0000192"
   ],
   "replied_comment_ids": [
     "122111084541450344_1658726592540886",
@@ -573,22 +573,6 @@
     "122113907097450344_1077297488412711"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261006_0000225",
-      "mag": 5.7,
-      "place": "KURIL ISLANDS",
-      "latitude": 48.3607,
-      "longitude": 154.7334,
-      "epoch_ms": 1791305305160
-    },
-    {
-      "id": "us6000u0hz",
-      "mag": 5.1,
-      "place": "34 km NNW of B\u0101geshwar, India",
-      "latitude": 30.1171,
-      "longitude": 79.6148,
-      "epoch_ms": 1791305591296
-    },
     {
       "id": "emsc_20261006_0000246",
       "mag": 4.8,
@@ -972,6 +956,22 @@
       "latitude": 6.34,
       "longitude": 125.8,
       "epoch_ms": 1791462874000
+    },
+    {
+      "id": "emsc_20261008_0000191",
+      "mag": 4.1,
+      "place": "NORTH ISLAND OF NEW ZEALAND",
+      "latitude": -38.9915,
+      "longitude": 175.2382,
+      "epoch_ms": 1791467597585
+    },
+    {
+      "id": "emsc_20261008_0000192",
+      "mag": 4.0,
+      "place": "OFFSHORE GUATEMALA",
+      "latitude": 13.955,
+      "longitude": -91.503,
+      "epoch_ms": 1791467632000
     }
   ]
 }
