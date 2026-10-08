@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000tyab",
     "emsc_20260929_0000053",
     "emsc_20260929_0000071",
     "us6000tyat",
@@ -499,7 +498,8 @@
     "us6000u0ws",
     "emsc_20261008_0000105",
     "emsc_20261008_0000107",
-    "us6000u0x2"
+    "us6000u0x2",
+    "emsc_20261008_0000110"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -569,14 +569,6 @@
     "122107480185450344_1993172514729995"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tzvn",
-      "mag": 4.9,
-      "place": "55 km ESE of Kokopo, Papua New Guinea",
-      "latitude": -4.4773,
-      "longitude": 152.7519,
-      "epoch_ms": 1791276326946
-    },
     {
       "id": "emsc_20261006_0000138",
       "mag": 4.2,
@@ -968,6 +960,14 @@
       "latitude": 5.35,
       "longitude": 94.73,
       "epoch_ms": 1791445512000
+    },
+    {
+      "id": "emsc_20261008_0000110",
+      "mag": 5.7,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 5.6894,
+      "longitude": 125.3553,
+      "epoch_ms": 1791446879170
     }
   ]
 }
