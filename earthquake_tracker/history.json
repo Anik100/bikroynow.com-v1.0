@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000ty71",
     "emsc_20260928_0000249",
     "us6000ty73",
     "emsc_20260928_0000261",
@@ -499,7 +498,8 @@
     "emsc_20261008_0000036",
     "us6000u0vw",
     "emsc_20261008_0000044",
-    "us6000u0w0"
+    "us6000u0w0",
+    "emsc_20261008_0000059"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -569,14 +569,6 @@
     "122107480185450344_1993172514729995"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000tzus",
-      "mag": 4.9,
-      "place": "State of Yap, Federated States of Micronesia",
-      "latitude": 6.7818,
-      "longitude": 144.4068,
-      "epoch_ms": 1791261628098
-    },
     {
       "id": "emsc_20261006_0000071",
       "mag": 4.8,
@@ -968,6 +960,14 @@
       "latitude": 39.1161,
       "longitude": 14.2555,
       "epoch_ms": 1791430973290
+    },
+    {
+      "id": "emsc_20261008_0000059",
+      "mag": 4.0,
+      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
+      "latitude": -7.57,
+      "longitude": 128.23,
+      "epoch_ms": 1791433579000
     }
   ]
 }
