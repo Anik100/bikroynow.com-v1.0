@@ -1,8 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20260929_0000331",
-    "emsc_20260930_0000029",
-    "emsc_20260930_0000030",
     "us6000tygz",
     "us6000tyh0",
     "emsc_20260930_0000042",
@@ -499,7 +496,10 @@
     "emsc_20261009_0000116",
     "us6000u14i",
     "emsc_20261008_0000358",
-    "emsc_20261009_0000129"
+    "emsc_20261009_0000129",
+    "emsc_20261009_0000135",
+    "us6000u14u",
+    "emsc_20261009_0000138"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -575,22 +575,6 @@
     "122113786737450344_1624492635919425"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261007_0000092",
-      "mag": 4.1,
-      "place": "OFFSHORE OAXACA, MEXICO",
-      "latitude": 15.621,
-      "longitude": -95.835,
-      "epoch_ms": 1791353779000
-    },
-    {
-      "id": "emsc_20261007_0000093",
-      "mag": 4.0,
-      "place": "OFF COAST OF JALISCO, MEXICO",
-      "latitude": 18.428,
-      "longitude": -105.494,
-      "epoch_ms": 1791353476000
-    },
     {
       "id": "emsc_20261007_0000112",
       "mag": 5.0,
@@ -974,6 +958,22 @@
       "latitude": 13.69,
       "longitude": 120.51,
       "epoch_ms": 1791537454000
+    },
+    {
+      "id": "us6000u14u",
+      "mag": 4.8,
+      "place": "northern Mid-Atlantic Ridge",
+      "latitude": 35.3331,
+      "longitude": -35.5737,
+      "epoch_ms": 1791538158117
+    },
+    {
+      "id": "emsc_20261009_0000138",
+      "mag": 4.0,
+      "place": "OFF COAST OF OAXACA, MEXICO",
+      "latitude": 15.268,
+      "longitude": -94.618,
+      "epoch_ms": 1791538904000
     }
   ]
 }
