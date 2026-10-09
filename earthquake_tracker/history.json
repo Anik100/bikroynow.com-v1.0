@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000tyid",
-    "emsc_20260930_0000060",
     "emsc_20260930_0000064",
     "us6000tyik",
     "emsc_20260930_0000075",
@@ -499,7 +497,9 @@
     "emsc_20261009_0000164",
     "us6000u15g",
     "emsc_20261009_0000174",
-    "us6000u15l"
+    "us6000u15l",
+    "emsc_20261009_0000177",
+    "us6000u15k"
   ],
   "replied_comment_ids": [
     "122106803127450344_1086917357131446",
@@ -575,14 +575,6 @@
     "122113786737450344_1624492635919425"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261007_0000176",
-      "mag": 4.0,
-      "place": "OFFSHORE GUERRERO, MEXICO",
-      "latitude": 17.69,
-      "longitude": -102.233,
-      "epoch_ms": 1791374515000
-    },
     {
       "id": "emsc_20261007_0000188",
       "mag": 4.3,
@@ -974,6 +966,14 @@
       "latitude": 11.5951,
       "longitude": -86.0613,
       "epoch_ms": 1791549223985
+    },
+    {
+      "id": "us6000u15k",
+      "mag": 4.4,
+      "place": "58 km ENE of Petropavlovsk-Kamchatsky, Russia",
+      "latitude": 53.2585,
+      "longitude": 159.4434,
+      "epoch_ms": 1791548859901
     }
   ]
 }
