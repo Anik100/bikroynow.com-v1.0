@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261003_0000277",
-    "us6000tzf7",
     "emsc_20261003_0000282",
     "us6000tzfg",
     "emsc_20261004_0000003",
@@ -499,7 +497,9 @@
     "emsc_20261010_0000254",
     "emsc_20261010_0000316",
     "emsc_20261010_0000312",
-    "emsc_20261010_0000324"
+    "emsc_20261010_0000324",
+    "emsc_20261010_0000328",
+    "emsc_20261010_0000327"
   ],
   "replied_comment_ids": [
     "122104106805450344_1625711632494339",
@@ -576,22 +576,6 @@
     "122113907097450344_2283952032446461"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261010_0000080",
-      "mag": 4.2,
-      "place": "NEAR COAST OF ECUADOR",
-      "latitude": 0.64,
-      "longitude": -80.6,
-      "epoch_ms": 1791605888900
-    },
-    {
-      "id": "emsc_20261010_0000084",
-      "mag": 4.3,
-      "place": "KEPULAUAN ALOR, INDONESIA",
-      "latitude": -8.91,
-      "longitude": 124.21,
-      "epoch_ms": 1791607509000
-    },
     {
       "id": "us6000u1ck",
       "mag": 4.5,
@@ -975,6 +959,22 @@
       "latitude": 8.5085,
       "longitude": -82.4506,
       "epoch_ms": 1791654016000
+    },
+    {
+      "id": "emsc_20261010_0000328",
+      "mag": 4.0,
+      "place": "PANAMA",
+      "latitude": 7.4474,
+      "longitude": -80.6349,
+      "epoch_ms": 1791657002000
+    },
+    {
+      "id": "emsc_20261010_0000327",
+      "mag": 4.6,
+      "place": "PANAMA",
+      "latitude": 7.642,
+      "longitude": -81.6267,
+      "epoch_ms": 1791657916000
     }
   ]
 }
