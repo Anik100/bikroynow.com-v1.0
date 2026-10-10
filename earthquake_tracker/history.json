@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000tz1c",
     "emsc_20261002_0000205",
     "emsc_20261002_0000207",
     "us6000tz1q",
@@ -499,7 +498,8 @@
     "emsc_20261010_0000101",
     "us6000u1cv",
     "us6000u1cs",
-    "emsc_20261010_0000105"
+    "emsc_20261010_0000105",
+    "emsc_20261010_0000106"
   ],
   "replied_comment_ids": [
     "122104106805450344_1625711632494339",
@@ -576,14 +576,6 @@
     "122113907097450344_2283952032446461"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000u15k",
-      "mag": 4.4,
-      "place": "58 km ENE of Petropavlovsk-Kamchatsky, Russia",
-      "latitude": 53.2585,
-      "longitude": 159.4434,
-      "epoch_ms": 1791548859901
-    },
     {
       "id": "us6000u197",
       "mag": 5.0,
@@ -975,6 +967,14 @@
       "latitude": 1.4149,
       "longitude": 126.395,
       "epoch_ms": 1791610326520
+    },
+    {
+      "id": "emsc_20261010_0000106",
+      "mag": 4.4,
+      "place": "PANAMA",
+      "latitude": 7.8117,
+      "longitude": -81.056,
+      "epoch_ms": 1791612260000
     }
   ]
 }
