@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261002_0000205",
-    "emsc_20261002_0000207",
     "us6000tz1q",
     "emsc_20261002_0000223",
     "us6000tz1y",
@@ -499,7 +497,9 @@
     "us6000u1cv",
     "us6000u1cs",
     "emsc_20261010_0000105",
-    "emsc_20261010_0000106"
+    "emsc_20261010_0000106",
+    "emsc_20261010_0000109",
+    "us6000u1d2"
   ],
   "replied_comment_ids": [
     "122104106805450344_1625711632494339",
@@ -576,14 +576,6 @@
     "122113907097450344_2283952032446461"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000u197",
-      "mag": 5.0,
-      "place": "14 km SE of R\u00edo Grande, Panama",
-      "latitude": 7.6161,
-      "longitude": -81.2492,
-      "epoch_ms": 1791572689305
-    },
     {
       "id": "us6000u198",
       "mag": 4.8,
@@ -975,6 +967,14 @@
       "latitude": 7.8117,
       "longitude": -81.056,
       "epoch_ms": 1791612260000
+    },
+    {
+      "id": "us6000u1d2",
+      "mag": 4.9,
+      "place": "10 km SSW of Ca\u00f1as, Panama",
+      "latitude": 7.3663,
+      "longitude": -80.3171,
+      "epoch_ms": 1791613135288
     }
   ]
 }
