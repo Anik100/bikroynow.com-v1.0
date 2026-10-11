@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000tzi8",
-    "emsc_20261004_0000143",
     "emsc_20261004_0000144",
     "emsc_20261004_0000147",
     "us6000tzid",
@@ -499,7 +497,9 @@
     "emsc_20261011_0000009",
     "emsc_20261011_0000011",
     "us6000u1hj",
-    "emsc_20261011_0000014"
+    "emsc_20261011_0000014",
+    "emsc_20261011_0000020",
+    "emsc_20261011_0000018"
   ],
   "replied_comment_ids": [
     "122104106805450344_1625711632494339",
@@ -576,22 +576,6 @@
     "122113907097450344_2283952032446461"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261010_0000158",
-      "mag": 4.1,
-      "place": "NEAR N COAST OF PAPUA, INDONESIA",
-      "latitude": -2.25,
-      "longitude": 139.85,
-      "epoch_ms": 1791623834000
-    },
-    {
-      "id": "us6000u1dw",
-      "mag": 4.1,
-      "place": "south of the Fiji Islands",
-      "latitude": -25.778,
-      "longitude": 179.3372,
-      "epoch_ms": 1791624875086
-    },
     {
       "id": "emsc_20261010_0000162",
       "mag": 4.4,
@@ -975,6 +959,22 @@
       "latitude": 7.7621,
       "longitude": -81.1577,
       "epoch_ms": 1791679334000
+    },
+    {
+      "id": "emsc_20261011_0000020",
+      "mag": 4.3,
+      "place": "PANAMA",
+      "latitude": 7.7312,
+      "longitude": -81.2903,
+      "epoch_ms": 1791680687000
+    },
+    {
+      "id": "emsc_20261011_0000018",
+      "mag": 4.0,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 14.464,
+      "longitude": -92.803,
+      "epoch_ms": 1791679234000
     }
   ]
 }
