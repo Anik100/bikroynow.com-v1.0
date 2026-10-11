@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000tzry",
     "emsc_20261005_0000340",
     "us6000tzsc",
     "emsc_20261005_0000382",
@@ -499,7 +498,8 @@
     "us6000u1lf",
     "emsc_20261011_0000281",
     "emsc_20261011_0000280",
-    "emsc_20261011_0000283"
+    "emsc_20261011_0000283",
+    "emsc_20261011_0000288"
   ],
   "replied_comment_ids": [
     "122104406259450344_1725633185338703",
@@ -580,14 +580,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261011_0000018",
-      "mag": 4.0,
-      "place": "OFFSHORE CHIAPAS, MEXICO",
-      "latitude": 14.464,
-      "longitude": -92.803,
-      "epoch_ms": 1791679234000
-    },
     {
       "id": "emsc_20261011_0000038",
       "mag": 4.2,
@@ -979,6 +971,14 @@
       "latitude": 7.5457,
       "longitude": -80.1574,
       "epoch_ms": 1791742378000
+    },
+    {
+      "id": "emsc_20261011_0000288",
+      "mag": 4.7,
+      "place": "PANAMA-COSTA RICA BORDER REGION",
+      "latitude": 8.5653,
+      "longitude": -82.5121,
+      "epoch_ms": 1791743410000
     }
   ]
 }
