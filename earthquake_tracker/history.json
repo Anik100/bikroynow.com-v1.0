@@ -1,8 +1,5 @@
 {
   "posted_ids": [
-    "us6000tzlz",
-    "emsc_20261005_0000043",
-    "emsc_20261005_0000067",
     "us6000tzm7",
     "emsc_20261005_0000081",
     "us6000tzme",
@@ -499,7 +496,10 @@
     "us6000u1jv",
     "emsc_20261011_0000172",
     "emsc_20261011_0000177",
-    "emsc_20261011_0000178"
+    "emsc_20261011_0000178",
+    "emsc_20261011_0000181",
+    "emsc_20261011_0000179",
+    "us6000u1k3"
   ],
   "replied_comment_ids": [
     "122104106805450344_1625711632494339",
@@ -576,22 +576,6 @@
     "122113907097450344_2283952032446461"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261010_0000312",
-      "mag": 4.5,
-      "place": "PANAMA-COSTA RICA BORDER REGION",
-      "latitude": 8.5085,
-      "longitude": -82.4506,
-      "epoch_ms": 1791654016000
-    },
-    {
-      "id": "emsc_20261010_0000328",
-      "mag": 4.0,
-      "place": "PANAMA",
-      "latitude": 7.4474,
-      "longitude": -80.6349,
-      "epoch_ms": 1791657002000
-    },
     {
       "id": "emsc_20261010_0000327",
       "mag": 4.6,
@@ -975,6 +959,22 @@
       "latitude": -7.07,
       "longitude": 129.9,
       "epoch_ms": 1791716326000
+    },
+    {
+      "id": "emsc_20261011_0000179",
+      "mag": 4.3,
+      "place": "PANAMA",
+      "latitude": 7.673,
+      "longitude": -81.7893,
+      "epoch_ms": 1791718348000
+    },
+    {
+      "id": "us6000u1k3",
+      "mag": 4.6,
+      "place": "82 km E of Petropavlovsk-Kamchatsky, Russia",
+      "latitude": 53.0788,
+      "longitude": 159.8624,
+      "epoch_ms": 1791717507916
     }
   ]
 }
