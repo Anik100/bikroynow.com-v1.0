@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000tzva",
-    "emsc_20261006_0000087",
     "emsc_20261006_0000099",
     "emsc_20261006_0000100",
     "us6000tzvn",
@@ -499,7 +497,9 @@
     "emsc_20261012_0000005",
     "emsc_20261011_0000386",
     "emsc_20261012_0000007",
-    "emsc_20261012_0000016"
+    "emsc_20261012_0000016",
+    "emsc_20261012_0000021",
+    "emsc_20261012_0000020"
   ],
   "replied_comment_ids": [
     "122113907097450344_1806045617062073",
@@ -583,22 +583,6 @@
     "122117057115450344_1416278657237303"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261011_0000113",
-      "mag": 4.3,
-      "place": "PANAMA",
-      "latitude": 7.2691,
-      "longitude": -80.4285,
-      "epoch_ms": 1791700372000
-    },
-    {
-      "id": "emsc_20261011_0000117",
-      "mag": 4.0,
-      "place": "PANAMA",
-      "latitude": 7.3447,
-      "longitude": -80.7643,
-      "epoch_ms": 1791701654000
-    },
     {
       "id": "us6000u1iz",
       "mag": 4.2,
@@ -982,6 +966,22 @@
       "latitude": 13.98,
       "longitude": -93.103,
       "epoch_ms": 1791766197000
+    },
+    {
+      "id": "emsc_20261012_0000021",
+      "mag": 4.0,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 15.047,
+      "longitude": -94.46,
+      "epoch_ms": 1791766978000
+    },
+    {
+      "id": "emsc_20261012_0000020",
+      "mag": 4.9,
+      "place": "VOLCANO ISLANDS, JAPAN REGION",
+      "latitude": 25.172,
+      "longitude": 141.222,
+      "epoch_ms": 1791766392450
     }
   ]
 }
