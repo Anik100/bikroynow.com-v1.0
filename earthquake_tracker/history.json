@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261008_0000330",
-    "emsc_20261009_0000011",
     "emsc_20261008_0000335",
     "emsc_20261009_0000014",
     "emsc_20261009_0000018",
@@ -499,7 +497,9 @@
     "emsc_20261013_0000137",
     "emsc_20261013_0000146",
     "us6000u1zh",
-    "emsc_20261013_0000160"
+    "emsc_20261013_0000160",
+    "emsc_20261013_0000170",
+    "emsc_20261013_0000168"
   ],
   "replied_comment_ids": [
     "122115799275450344_1064185639752312",
@@ -590,22 +590,6 @@
     "122106803127450344_1086917357131446"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261012_0000021",
-      "mag": 4.0,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 15.047,
-      "longitude": -94.46,
-      "epoch_ms": 1791766978000
-    },
-    {
-      "id": "emsc_20261012_0000020",
-      "mag": 4.9,
-      "place": "VOLCANO ISLANDS, JAPAN REGION",
-      "latitude": 25.172,
-      "longitude": 141.222,
-      "epoch_ms": 1791766392450
-    },
     {
       "id": "emsc_20261012_0000024",
       "mag": 4.2,
@@ -989,6 +973,22 @@
       "latitude": 7.6311,
       "longitude": -81.4712,
       "epoch_ms": 1791868953000
+    },
+    {
+      "id": "emsc_20261013_0000170",
+      "mag": 4.2,
+      "place": "PANAMA",
+      "latitude": 7.7209,
+      "longitude": -81.4033,
+      "epoch_ms": 1791879995000
+    },
+    {
+      "id": "emsc_20261013_0000168",
+      "mag": 4.4,
+      "place": "WESTERN NEI MONGOL, CHINA",
+      "latitude": 38.75,
+      "longitude": 104.68,
+      "epoch_ms": 1791879303000
     }
   ]
 }
