@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u1ai",
-    "emsc_20261009_0000357",
     "emsc_20261009_0000355",
     "emsc_20261009_0000358",
     "emsc_20261009_0000359",
@@ -499,7 +497,9 @@
     "emsc_20261014_0000232",
     "emsc_20261014_0000243",
     "emsc_20261014_0000261",
-    "us6000u2a6"
+    "us6000u2a6",
+    "emsc_20261014_0000274",
+    "emsc_20261014_0000273"
   ],
   "replied_comment_ids": [
     "122115799275450344_1064185639752312",
@@ -590,22 +590,6 @@
     "122106803127450344_1086917357131446"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261013_0000209",
-      "mag": 4.4,
-      "place": "SOUTH OF JAVA, INDONESIA",
-      "latitude": -9.06,
-      "longitude": 111.37,
-      "epoch_ms": 1791886922000
-    },
-    {
-      "id": "emsc_20261013_0000218",
-      "mag": 4.0,
-      "place": "PHILIPPINE ISLANDS REGION",
-      "latitude": 11.87,
-      "longitude": 126.08,
-      "epoch_ms": 1791887849000
-    },
     {
       "id": "emsc_20261013_0000223",
       "mag": 4.4,
@@ -989,6 +973,22 @@
       "latitude": -29.13,
       "longitude": -71.11,
       "epoch_ms": 1791988924000
+    },
+    {
+      "id": "emsc_20261014_0000274",
+      "mag": 4.0,
+      "place": "PANAMA",
+      "latitude": 7.455,
+      "longitude": -80.2207,
+      "epoch_ms": 1791992113000
+    },
+    {
+      "id": "emsc_20261014_0000273",
+      "mag": 4.2,
+      "place": "MOLUCCA SEA",
+      "latitude": 0.09,
+      "longitude": 126.7,
+      "epoch_ms": 1791992317000
     }
   ]
 }
