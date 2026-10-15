@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u1bl",
     "emsc_20261010_0000017",
     "emsc_20261010_0000021",
     "emsc_20261010_0000026",
@@ -499,7 +498,8 @@
     "emsc_20261015_0000074",
     "emsc_20261015_0000125",
     "emsc_20261015_0000128",
-    "emsc_20261015_0000130"
+    "emsc_20261015_0000130",
+    "aka2026ukynnb"
   ],
   "replied_comment_ids": [
     "122107219047450344_1119008047229015",
@@ -598,14 +598,6 @@
     "122117057115450344_1613331236953593"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261013_0000326",
-      "mag": 5.0,
-      "place": "NEW BRITAIN REGION, P.N.G.",
-      "latitude": -5.374,
-      "longitude": 152.251,
-      "epoch_ms": 1791908892520
-    },
     {
       "id": "emsc_20261013_0000340",
       "mag": 4.2,
@@ -997,6 +989,14 @@
       "latitude": -6.76,
       "longitude": 106.6,
       "epoch_ms": 1792061902000
+    },
+    {
+      "id": "aka2026ukynnb",
+      "mag": 5.4,
+      "place": "43 km NNW of Lake Minchumina, Alaska",
+      "latitude": 64.231,
+      "longitude": -152.706,
+      "epoch_ms": 1792062421747
     }
   ]
 }
