@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261010_0000197",
     "emsc_20261010_0000202",
     "us6000u1ej",
     "us6000u1em",
@@ -499,7 +498,8 @@
     "emsc_20261016_0000199",
     "emsc_20261016_0000204",
     "emsc_20261016_0000203",
-    "us6000u2qn"
+    "us6000u2qn",
+    "emsc_20261016_0000215"
   ],
   "replied_comment_ids": [
     "122117756493450344_1804240284051158",
@@ -622,14 +622,6 @@
     "122116742133450344_1148857934480833"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261015_0000066",
-      "mag": 5.4,
-      "place": "NORTH ISLAND OF NEW ZEALAND",
-      "latitude": -38.5799,
-      "longitude": 175.3656,
-      "epoch_ms": 1792041931960
-    },
     {
       "id": "emsc_20261015_0000125",
       "mag": 4.0,
@@ -1021,6 +1013,14 @@
       "latitude": -5.524,
       "longitude": 35.1303,
       "epoch_ms": 1792167445793
+    },
+    {
+      "id": "emsc_20261016_0000215",
+      "mag": 4.1,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.152,
+      "longitude": -93.331,
+      "epoch_ms": 1792170048000
     }
   ]
 }
