@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261010_0000310",
     "emsc_20261010_0000313",
     "emsc_20261010_0000284",
     "emsc_20261010_0000314",
@@ -499,7 +498,8 @@
     "us6000u2yx",
     "emsc_20261017_0000103",
     "us6000u2yz",
-    "emsc_20261017_0000109"
+    "emsc_20261017_0000109",
+    "emsc_20261017_0000111"
   ],
   "replied_comment_ids": [
     "122117057115450344_1517748380118706",
@@ -623,14 +623,6 @@
     "122117973015450344_1419476739756974"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261016_0000019",
-      "mag": 4.6,
-      "place": "PANAMA-COSTA RICA BORDER REGION",
-      "latitude": 8.5792,
-      "longitude": -82.4595,
-      "epoch_ms": 1792115469000
-    },
     {
       "id": "us6000u2me",
       "mag": 4.4,
@@ -1022,6 +1014,14 @@
       "latitude": 9.057,
       "longitude": -80.8636,
       "epoch_ms": 1792225144000
+    },
+    {
+      "id": "emsc_20261017_0000111",
+      "mag": 4.1,
+      "place": "NEAR N COAST OF PAPUA, INDONESIA",
+      "latitude": -0.7,
+      "longitude": 131.43,
+      "epoch_ms": 1792225251000
     }
   ]
 }
