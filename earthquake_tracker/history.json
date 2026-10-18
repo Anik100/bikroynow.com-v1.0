@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261011_0000132",
     "us6000u1j3",
     "tx2026uacobs",
     "emsc_20261011_0000150",
@@ -499,7 +498,8 @@
     "emsc_20261018_0000211",
     "emsc_20261018_0000221",
     "emsc_20261018_0000231",
-    "us6000u37h"
+    "us6000u37h",
+    "emsc_20261018_0000241"
   ],
   "replied_comment_ids": [
     "122117756493450344_2616247475469982",
@@ -624,14 +624,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261017_0000022",
-      "mag": 4.4,
-      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
-      "latitude": -7.53,
-      "longitude": 125.9,
-      "epoch_ms": 1792204787000
-    },
     {
       "id": "aka2026uobltl",
       "mag": 4.0,
@@ -1023,6 +1015,14 @@
       "latitude": -21.5627,
       "longitude": -174.8444,
       "epoch_ms": 1792351956250
+    },
+    {
+      "id": "emsc_20261018_0000241",
+      "mag": 4.3,
+      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
+      "latitude": -7.52,
+      "longitude": 128.74,
+      "epoch_ms": 1792355051000
     }
   ]
 }
