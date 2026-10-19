@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u1kt",
     "emsc_20261011_0000209",
     "emsc_20261011_0000218",
     "us6000u1kv",
@@ -499,7 +498,8 @@
     "emsc_20261019_0000010",
     "emsc_20261019_0000012",
     "emsc_20261019_0000058",
-    "us6000u3a8"
+    "us6000u3a8",
+    "emsc_20261019_0000074"
   ],
   "replied_comment_ids": [
     "122113907097450344_1451366753598006",
@@ -626,14 +626,6 @@
     "122114858073450344_1093014773427118"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261017_0000131",
-      "mag": 4.3,
-      "place": "OFFSHORE GUERRERO, MEXICO",
-      "latitude": 17.602,
-      "longitude": -101.588,
-      "epoch_ms": 1792229790000
-    },
     {
       "id": "emsc_20261017_0000142",
       "mag": 4.2,
@@ -1025,6 +1017,14 @@
       "latitude": 11.119,
       "longitude": -86.41,
       "epoch_ms": 1792387117880
+    },
+    {
+      "id": "emsc_20261019_0000074",
+      "mag": 4.0,
+      "place": "MYANMAR-INDIA BORDER REGION",
+      "latitude": 23.564,
+      "longitude": 93.462,
+      "epoch_ms": 1792391385000
     }
   ]
 }
