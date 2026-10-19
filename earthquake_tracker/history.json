@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u1nx",
     "emsc_20261012_0000037",
     "emsc_20261012_0000042",
     "emsc_20261012_0000048",
@@ -499,7 +498,8 @@
     "us6000u3d2",
     "emsc_20261019_0000235",
     "emsc_20261019_0000245",
-    "us6000u3db"
+    "us6000u3db",
+    "aka2026usthoq"
   ],
   "replied_comment_ids": [
     "122113907097450344_1071440968825966",
@@ -627,14 +627,6 @@
     "122104882527450344_2168459427414337"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261018_0000081",
-      "mag": 4.3,
-      "place": "NEAR EAST COAST OF KAMCHATKA",
-      "latitude": 53.1714,
-      "longitude": 159.6209,
-      "epoch_ms": 1792308025909
-    },
     {
       "id": "emsc_20261018_0000088",
       "mag": 5.3,
@@ -1026,6 +1018,14 @@
       "latitude": -23.5497,
       "longitude": 179.8713,
       "epoch_ms": 1792426433665
+    },
+    {
+      "id": "aka2026usthoq",
+      "mag": 4.5,
+      "place": "Rat Islands, Aleutian Islands, Alaska",
+      "latitude": 51.354,
+      "longitude": 178.218,
+      "epoch_ms": 1792427264382
     }
   ]
 }
