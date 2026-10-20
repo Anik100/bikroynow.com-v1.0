@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261012_0000275",
     "emsc_20261012_0000285",
     "us6000u1s8",
     "emsc_20261012_0000291",
@@ -499,7 +498,8 @@
     "emsc_20261020_0000106",
     "us6000u3l0",
     "emsc_20261020_0000111",
-    "us6000u3l3"
+    "us6000u3l3",
+    "attn7cbt"
   ],
   "replied_comment_ids": [
     "122116185351450344_956850226984960",
@@ -629,14 +629,6 @@
     "122113907097450344_1071440968825966"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261019_0000010",
-      "mag": 4.0,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 13.895,
-      "longitude": -92.966,
-      "epoch_ms": 1792370652000
-    },
     {
       "id": "emsc_20261019_0000012",
       "mag": 4.2,
@@ -1028,6 +1020,14 @@
       "latitude": -15.1895,
       "longitude": -178.4273,
       "epoch_ms": 1792486715430
+    },
+    {
+      "id": "attn7cbt",
+      "mag": 5.0,
+      "place": "80 km SSE of Sand Point, Alaska",
+      "latitude": 54.634,
+      "longitude": -160.218,
+      "epoch_ms": 1792492841000
     }
   ]
 }
