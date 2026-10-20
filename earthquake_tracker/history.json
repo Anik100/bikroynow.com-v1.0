@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261012_0000291",
     "emsc_20261012_0000294",
     "emsc_20261012_0000300",
     "us6000u1sn",
@@ -499,7 +498,8 @@
     "us6000u3l3",
     "attn7cbt",
     "emsc_20261020_0000142",
-    "us6000u3lf"
+    "us6000u3lf",
+    "emsc_20261020_0000153"
   ],
   "replied_comment_ids": [
     "122116185351450344_956850226984960",
@@ -629,14 +629,6 @@
     "122113907097450344_1071440968825966"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261019_0000012",
-      "mag": 4.2,
-      "place": "OFF COAST OF CENTRAL AMERICA",
-      "latitude": 10.434,
-      "longitude": -88.7098,
-      "epoch_ms": 1792372489000
-    },
     {
       "id": "emsc_20261019_0000058",
       "mag": 5.0,
@@ -1028,6 +1020,14 @@
       "latitude": 54.634,
       "longitude": -160.218,
       "epoch_ms": 1792492841000
+    },
+    {
+      "id": "emsc_20261020_0000153",
+      "mag": 4.1,
+      "place": "NEAR COAST OF NICARAGUA",
+      "latitude": 12.8903,
+      "longitude": -87.8137,
+      "epoch_ms": 1792495818000
     }
   ]
 }
