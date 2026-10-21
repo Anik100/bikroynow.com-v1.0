@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u1z5",
     "emsc_20261013_0000130",
     "emsc_20261012_0000465",
     "emsc_20261013_0000137",
@@ -499,7 +498,8 @@
     "emsc_20261021_0000195",
     "emsc_20261021_0000205",
     "emsc_20261021_0000213",
-    "us6000u3ue"
+    "us6000u3ue",
+    "emsc_20261021_0000217"
   ],
   "replied_comment_ids": [
     "122117756493450344_1140630248914187",
@@ -630,14 +630,6 @@
     "122113907097450344_1408801070660114"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000u3ic",
-      "mag": 4.9,
-      "place": "52 km S of Kokopo, Papua New Guinea",
-      "latitude": -4.8147,
-      "longitude": 152.1972,
-      "epoch_ms": 1792449767298
-    },
     {
       "id": "emsc_20261019_0000369",
       "mag": 4.1,
@@ -1029,6 +1021,14 @@
       "latitude": -13.8808,
       "longitude": 165.9133,
       "epoch_ms": 1792594592680
+    },
+    {
+      "id": "emsc_20261021_0000217",
+      "mag": 4.1,
+      "place": "KASHMIR-XINJIANG BORDER REGION",
+      "latitude": 35.991,
+      "longitude": 77.709,
+      "epoch_ms": 1792595868000
     }
   ]
 }
