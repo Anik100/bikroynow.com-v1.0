@@ -1,8 +1,5 @@
 {
   "posted_ids": [
-    "us6000u2ec",
-    "us6000u2eh",
-    "emsc_20261015_0000055",
     "emsc_20261015_0000066",
     "us6000u2ev",
     "emsc_20261015_0000068",
@@ -499,7 +496,10 @@
     "emsc_20261023_0000001",
     "us6000u491",
     "emsc_20261023_0000016",
-    "emsc_20261023_0000024"
+    "emsc_20261023_0000024",
+    "emsc_20261023_0000028",
+    "emsc_20261023_0000026",
+    "us6000u49a"
   ],
   "replied_comment_ids": [
     "122117756493450344_28974081758892469",
@@ -632,22 +632,6 @@
     "122104106805450344_1052218624389467"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261021_0000235",
-      "mag": 4.0,
-      "place": "GUATEMALA",
-      "latitude": 14.516,
-      "longitude": -91.837,
-      "epoch_ms": 1792600505000
-    },
-    {
-      "id": "emsc_20261021_0000256",
-      "mag": 4.1,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 13.919,
-      "longitude": -93.082,
-      "epoch_ms": 1792604724000
-    },
     {
       "id": "emsc_20261021_0000262",
       "mag": 4.4,
@@ -1031,6 +1015,22 @@
       "latitude": -24.28,
       "longitude": -67.3,
       "epoch_ms": 1792714175000
+    },
+    {
+      "id": "emsc_20261023_0000026",
+      "mag": 4.0,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.416,
+      "longitude": -93.798,
+      "epoch_ms": 1792720995000
+    },
+    {
+      "id": "us6000u49a",
+      "mag": 4.5,
+      "place": "18 km NNW of Yongning, China",
+      "latitude": 27.9986,
+      "longitude": 100.6189,
+      "epoch_ms": 1792721821507
     }
   ]
 }
