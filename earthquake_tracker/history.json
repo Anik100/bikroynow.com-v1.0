@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u2wn",
-    "emsc_20261016_0000295",
     "emsc_20261016_0000298",
     "emsc_20261016_0000300",
     "us6000u2ww",
@@ -499,7 +497,9 @@
     "emsc_20261024_0000121",
     "us6000u4kj",
     "emsc_20261024_0000127",
-    "us6000u4kq"
+    "us6000u4kq",
+    "emsc_20261024_0000133",
+    "us6000u4ku"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -634,14 +634,6 @@
     "122118986871450344_1763463708271281"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261022_0000362",
-      "mag": 4.2,
-      "place": "OFFSHORE CHIAPAS, MEXICO",
-      "latitude": 14.851,
-      "longitude": -93.319,
-      "epoch_ms": 1792704631000
-    },
     {
       "id": "emsc_20261022_0000361",
       "mag": 4.5,
@@ -1033,6 +1025,14 @@
       "latitude": -14.5887,
       "longitude": 167.2593,
       "epoch_ms": 1792824188100
+    },
+    {
+      "id": "us6000u4ku",
+      "mag": 5.0,
+      "place": "219 km NW of Port-Olry, Vanuatu",
+      "latitude": -13.8777,
+      "longitude": 165.4237,
+      "epoch_ms": 1792824724142
     }
   ]
 }
