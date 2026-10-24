@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261018_0000020",
-    "emsc_20261017_0000307",
     "emsc_20261017_0000308",
     "emsc_20261018_0000027",
     "emsc_20261018_0000031",
@@ -499,7 +497,9 @@
     "emsc_20261024_0000354",
     "us6000u4ny",
     "emsc_20261024_0000355",
-    "us6000u4p1"
+    "us6000u4p1",
+    "emsc_20261024_0000366",
+    "emsc_20261024_0000373"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -634,22 +634,6 @@
     "122118986871450344_1763463708271281"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261023_0000217",
-      "mag": 4.3,
-      "place": "PANAMA",
-      "latitude": 7.0772,
-      "longitude": -81.5914,
-      "epoch_ms": 1792762435000
-    },
-    {
-      "id": "emsc_20261023_0000267",
-      "mag": 4.3,
-      "place": "EASTERN XIZANG",
-      "latitude": 30.7313,
-      "longitude": 93.1926,
-      "epoch_ms": 1792768727000
-    },
     {
       "id": "emsc_20261023_0000286",
       "mag": 5.0,
@@ -1033,6 +1017,22 @@
       "latitude": 28.737,
       "longitude": 88.393,
       "epoch_ms": 1792870458000
+    },
+    {
+      "id": "emsc_20261024_0000366",
+      "mag": 4.4,
+      "place": "KEPULAUAN BABAR, INDONESIA",
+      "latitude": -7.36,
+      "longitude": 129.38,
+      "epoch_ms": 1792873402000
+    },
+    {
+      "id": "emsc_20261024_0000373",
+      "mag": 5.5,
+      "place": "NEAR EAST COAST OF KAMCHATKA",
+      "latitude": 52.1913,
+      "longitude": 158.8718,
+      "epoch_ms": 1792874102890
     }
   ]
 }
