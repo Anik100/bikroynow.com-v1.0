@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u2x7",
-    "emsc_20261017_0000015",
     "emsc_20261017_0000022",
     "emsc_20261017_0000038",
     "aka2026uobltl",
@@ -499,7 +497,9 @@
     "us6000u4kt",
     "emsc_20261024_0000134",
     "emsc_20261024_0000142",
-    "us6000u4kw"
+    "us6000u4kw",
+    "emsc_20261024_0000143",
+    "us6000u4kz"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -634,14 +634,6 @@
     "122118986871450344_1763463708271281"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261022_0000361",
-      "mag": 4.5,
-      "place": "ANTOFAGASTA, CHILE",
-      "latitude": -21.6294,
-      "longitude": -68.3089,
-      "epoch_ms": 1792705077428
-    },
     {
       "id": "emsc_20261022_0000366",
       "mag": 4.0,
@@ -1033,6 +1025,14 @@
       "latitude": -13.8777,
       "longitude": 165.4237,
       "epoch_ms": 1792824724142
+    },
+    {
+      "id": "us6000u4kz",
+      "mag": 4.4,
+      "place": "74 km SSW of Puerto Madero, Mexico",
+      "latitude": 14.1588,
+      "longitude": -92.7995,
+      "epoch_ms": 1792827084597
     }
   ]
 }
