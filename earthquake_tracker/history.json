@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261016_0000166",
-    "emsc_20261016_0000190",
     "us6000u2qd",
     "emsc_20261016_0000199",
     "emsc_20261016_0000204",
@@ -499,7 +497,9 @@
     "emsc_20261024_0000082",
     "us6000u4jr",
     "emsc_20261024_0000086",
-    "us6000u4ju"
+    "us6000u4ju",
+    "emsc_20261024_0000091",
+    "us6000u4jw"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -634,14 +634,6 @@
     "122118986871450344_1763463708271281"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261022_0000280",
-      "mag": 4.3,
-      "place": "SOUTHERN YUKON TERRITORY, CANADA",
-      "latitude": 64.9735,
-      "longitude": -134.0648,
-      "epoch_ms": 1792687885000
-    },
     {
       "id": "us6000u459",
       "mag": 4.8,
@@ -1033,6 +1025,14 @@
       "latitude": -13.757,
       "longitude": 165.688,
       "epoch_ms": 1792814737180
+    },
+    {
+      "id": "us6000u4jw",
+      "mag": 5.8,
+      "place": "203 km NW of Port-Olry, Vanuatu",
+      "latitude": -13.9017,
+      "longitude": 165.5967,
+      "epoch_ms": 1792815125337
     }
   ]
 }
