@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "aka2026uobltl",
-    "emsc_20261017_0000034",
     "emsc_20261017_0000050",
     "us6000u2xs",
     "emsc_20261017_0000053",
@@ -499,7 +497,9 @@
     "emsc_20261024_0000143",
     "us6000u4kz",
     "emsc_20261024_0000161",
-    "us6000u4l9"
+    "us6000u4l9",
+    "emsc_20261024_0000165",
+    "emsc_20261024_0000164"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -634,22 +634,6 @@
     "122118986871450344_1763463708271281"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261022_0000370",
-      "mag": 4.4,
-      "place": "SOUTH OF PANAMA",
-      "latitude": 7.446,
-      "longitude": -79.9769,
-      "epoch_ms": 1792706930000
-    },
-    {
-      "id": "emsc_20261022_0000397",
-      "mag": 4.2,
-      "place": "SOUTH OF PANAMA",
-      "latitude": 7.1481,
-      "longitude": -79.4145,
-      "epoch_ms": 1792712191000
-    },
     {
       "id": "emsc_20261022_0000401",
       "mag": 4.9,
@@ -1033,6 +1017,22 @@
       "latitude": -13.833,
       "longitude": 165.4664,
       "epoch_ms": 1792830166296
+    },
+    {
+      "id": "emsc_20261024_0000165",
+      "mag": 5.2,
+      "place": "XIZANG-QINGHAI BORDER REGION",
+      "latitude": 32.5404,
+      "longitude": 94.0114,
+      "epoch_ms": 1792831197650
+    },
+    {
+      "id": "emsc_20261024_0000164",
+      "mag": 4.5,
+      "place": "FOX ISLANDS, ALEUTIAN ISLANDS",
+      "latitude": 53.5186,
+      "longitude": -165.0962,
+      "epoch_ms": 1792830828499
     }
   ]
 }
