@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261016_0000204",
     "emsc_20261016_0000203",
     "us6000u2qn",
     "emsc_20261016_0000215",
@@ -499,7 +498,8 @@
     "emsc_20261024_0000091",
     "us6000u4jw",
     "emsc_20261024_0000094",
-    "us6000u4jy"
+    "us6000u4jy",
+    "us6000u4k2"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -634,14 +634,6 @@
     "122118986871450344_1763463708271281"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261022_0000285",
-      "mag": 4.7,
-      "place": "XIZANG-QINGHAI BORDER REGION",
-      "latitude": 32.3305,
-      "longitude": 93.7595,
-      "epoch_ms": 1792688278060
-    },
     {
       "id": "us6000u45j",
       "mag": 5.0,
@@ -1033,6 +1025,14 @@
       "latitude": -13.7325,
       "longitude": 165.551,
       "epoch_ms": 1792815578628
+    },
+    {
+      "id": "us6000u4k2",
+      "mag": 5.0,
+      "place": "161 km NW of Port-Olry, Vanuatu",
+      "latitude": -14.165,
+      "longitude": 165.8739,
+      "epoch_ms": 1792817085324
     }
   ]
 }
