@@ -1,9 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261016_0000132",
-    "us6000u2pl",
-    "emsc_20261016_0000134",
-    "emsc_20261016_0000135",
     "emsc_20261016_0000142",
     "us6000u2pp",
     "emsc_20261016_0000145",
@@ -499,7 +495,11 @@
     "us6000u4jb",
     "emsc_20261024_0000058",
     "us6000u4j2",
-    "emsc_20261024_0000059"
+    "emsc_20261024_0000059",
+    "emsc_20261024_0000069",
+    "emsc_20261024_0000065",
+    "us6000u4ji",
+    "us6000u4jl"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -634,22 +634,6 @@
     "122118986871450344_1763463708271281"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000u44w",
-      "mag": 4.9,
-      "place": "western Xizang",
-      "latitude": 33.7966,
-      "longitude": 86.2316,
-      "epoch_ms": 1792683937094
-    },
-    {
-      "id": "emsc_20261022_0000260",
-      "mag": 4.4,
-      "place": "AZORES ISLANDS, PORTUGAL",
-      "latitude": 37.836,
-      "longitude": -26.283,
-      "epoch_ms": 1792685653500
-    },
     {
       "id": "emsc_20261022_0000272",
       "mag": 4.6,
@@ -1033,6 +1017,22 @@
       "latitude": -14.027,
       "longitude": 165.9737,
       "epoch_ms": 1792809358300
+    },
+    {
+      "id": "us6000u4ji",
+      "mag": 5.1,
+      "place": "170 km NW of Port-Olry, Vanuatu",
+      "latitude": -14.1211,
+      "longitude": 165.8052,
+      "epoch_ms": 1792811325463
+    },
+    {
+      "id": "us6000u4jl",
+      "mag": 5.2,
+      "place": "202 km NW of Port-Olry, Vanuatu",
+      "latitude": -13.8805,
+      "longitude": 165.6161,
+      "epoch_ms": 1792811875755
     }
   ]
 }
