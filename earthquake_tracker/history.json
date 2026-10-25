@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u37h",
     "emsc_20261018_0000241",
     "us6000u37s",
     "emsc_20261017_0000232",
@@ -499,7 +498,8 @@
     "emsc_20261025_0000041",
     "us6000u4rr",
     "emsc_20261025_0000043",
-    "us6000u4ru"
+    "us6000u4ru",
+    "emsc_20261025_0000051"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -634,14 +634,6 @@
     "122118986871450344_1763463708271281"
   ],
   "recent_posted_events": [
-    {
-      "id": "attne4d5",
-      "mag": 7.2,
-      "place": "200 km W of Sola, Vanuatu",
-      "latitude": -13.8,
-      "longitude": 165.7,
-      "epoch_ms": 1792809113000
-    },
     {
       "id": "emsc_20261024_0000059",
       "mag": 6.3,
@@ -1033,6 +1025,14 @@
       "latitude": 27.8771,
       "longitude": 139.7294,
       "epoch_ms": 1792896469856
+    },
+    {
+      "id": "emsc_20261025_0000051",
+      "mag": 5.5,
+      "place": "EASTERN NEW GUINEA REG., P.N.G.",
+      "latitude": -6.2732,
+      "longitude": 147.1504,
+      "epoch_ms": 1792898952160
     }
   ]
 }
