@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u38g",
     "emsc_20261018_0000275",
     "emsc_20261018_0000278",
     "us6000u38i",
@@ -499,7 +498,8 @@
     "emsc_20261025_0000100",
     "emsc_20261025_0000101",
     "emsc_20261025_0000102",
-    "us6000u4t4"
+    "us6000u4t4",
+    "aka2026vddzqy"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -634,14 +634,6 @@
     "122118986871450344_1763463708271281"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261024_0000086",
-      "mag": 5.6,
-      "place": "VANUATU",
-      "latitude": -13.757,
-      "longitude": 165.688,
-      "epoch_ms": 1792814737180
-    },
     {
       "id": "us6000u4jw",
       "mag": 5.8,
@@ -1033,6 +1025,14 @@
       "latitude": -16.0676,
       "longitude": -74.747,
       "epoch_ms": 1792912309640
+    },
+    {
+      "id": "aka2026vddzqy",
+      "mag": 4.5,
+      "place": "89 km SSE of Akutan, Alaska",
+      "latitude": 53.453,
+      "longitude": -165.051,
+      "epoch_ms": 1792914269869
     }
   ]
 }
