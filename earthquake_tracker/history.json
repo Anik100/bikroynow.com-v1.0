@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u3c1",
-    "us6000u3bz",
     "emsc_20261019_0000133",
     "emsc_20261019_0000135",
     "emsc_20261019_0000141",
@@ -499,7 +497,9 @@
     "emsc_20261025_0000238",
     "us6000u4va",
     "emsc_20261025_0000245",
-    "us6000u4vb"
+    "us6000u4vb",
+    "emsc_20261025_0000274",
+    "us6000u4vp"
   ],
   "replied_comment_ids": [
     "122117057115450344_1085572937724580",
@@ -638,14 +638,6 @@
     "122117756493450344_1127846146278172"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000u4m5",
-      "mag": 4.9,
-      "place": "196 km W of Sola, Vanuatu",
-      "latitude": -13.8212,
-      "longitude": 165.7345,
-      "epoch_ms": 1792840440121
-    },
     {
       "id": "us6000u4m6",
       "mag": 4.9,
@@ -1037,6 +1029,14 @@
       "latitude": 52.1923,
       "longitude": -178.8056,
       "epoch_ms": 1792950598419
+    },
+    {
+      "id": "us6000u4vp",
+      "mag": 4.4,
+      "place": "267 km WSW of Tual, Indonesia",
+      "latitude": -6.172,
+      "longitude": 130.3943,
+      "epoch_ms": 1792956372258
     }
   ]
 }
