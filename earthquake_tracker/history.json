@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u3be",
-    "emsc_20261019_0000103",
     "us6000u3bi",
     "emsc_20261019_0000106",
     "us6000u3bk",
@@ -499,7 +497,9 @@
     "us6000u4ty",
     "us6000u4tx",
     "emsc_20261025_0000156",
-    "emsc_20261025_0000174"
+    "emsc_20261025_0000174",
+    "emsc_20261025_0000176",
+    "emsc_20261025_0000177"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -637,22 +637,6 @@
     "122098941729450344_1410880417659723"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261024_0000165",
-      "mag": 5.2,
-      "place": "XIZANG-QINGHAI BORDER REGION",
-      "latitude": 32.5404,
-      "longitude": 94.0114,
-      "epoch_ms": 1792831197650
-    },
-    {
-      "id": "emsc_20261024_0000164",
-      "mag": 4.5,
-      "place": "FOX ISLANDS, ALEUTIAN ISLANDS",
-      "latitude": 53.5186,
-      "longitude": -165.0962,
-      "epoch_ms": 1792830828499
-    },
     {
       "id": "emsc_20261024_0000171",
       "mag": 4.8,
@@ -1036,6 +1020,22 @@
       "latitude": -23.01,
       "longitude": -68.0,
       "epoch_ms": 1792934595000
+    },
+    {
+      "id": "emsc_20261025_0000176",
+      "mag": 4.3,
+      "place": "SINALOA, MEXICO",
+      "latitude": 26.811,
+      "longitude": -108.449,
+      "epoch_ms": 1792934555000
+    },
+    {
+      "id": "emsc_20261025_0000177",
+      "mag": 4.2,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 14.653,
+      "longitude": -92.409,
+      "epoch_ms": 1792935952000
     }
   ]
 }
