@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261019_0000135",
-    "emsc_20261019_0000141",
     "emsc_20261019_0000142",
     "us6000u3c6",
     "us6000u3c5",
@@ -499,7 +497,9 @@
     "us6000u4vb",
     "emsc_20261025_0000274",
     "us6000u4vp",
-    "emsc_20261025_0000282"
+    "emsc_20261025_0000282",
+    "emsc_20261025_0000286",
+    "us6000u4vy"
   ],
   "replied_comment_ids": [
     "122117057115450344_1081611464740028",
@@ -639,14 +639,6 @@
     "122119013241450344_1786639339121188"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261024_0000225",
-      "mag": 4.5,
-      "place": "BABUYAN ISL REGION, PHILIPPINES",
-      "latitude": 19.31,
-      "longitude": 121.63,
-      "epoch_ms": 1792842499000
-    },
     {
       "id": "emsc_20261024_0000241",
       "mag": 4.2,
@@ -1038,6 +1030,14 @@
       "latitude": 13.979,
       "longitude": -93.19,
       "epoch_ms": 1792959202000
+    },
+    {
+      "id": "us6000u4vy",
+      "mag": 4.8,
+      "place": "167 km WNW of Port-Olry, Vanuatu",
+      "latitude": -14.2065,
+      "longitude": 165.7734,
+      "epoch_ms": 1792960242515
     }
   ]
 }
