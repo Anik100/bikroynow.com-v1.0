@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261018_0000248",
     "emsc_20261018_0000261",
     "emsc_20261018_0000262",
     "emsc_20261018_0000269",
@@ -499,7 +498,8 @@
     "emsc_20261025_0000051",
     "us6000u4s5",
     "emsc_20261025_0000073",
-    "us6000u4sm"
+    "us6000u4sm",
+    "emsc_20261025_0000087"
   ],
   "replied_comment_ids": [
     "122115757263450344_4444456902433340",
@@ -634,14 +634,6 @@
     "122118986871450344_1763463708271281"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000u4ji",
-      "mag": 5.1,
-      "place": "170 km NW of Port-Olry, Vanuatu",
-      "latitude": -14.1211,
-      "longitude": 165.8052,
-      "epoch_ms": 1792811325463
-    },
     {
       "id": "us6000u4jl",
       "mag": 5.2,
@@ -1033,6 +1025,14 @@
       "latitude": 37.6738,
       "longitude": 21.1069,
       "epoch_ms": 1792905345564
+    },
+    {
+      "id": "emsc_20261025_0000087",
+      "mag": 4.2,
+      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
+      "latitude": 37.8,
+      "longitude": 141.8,
+      "epoch_ms": 1792908270000
     }
   ]
 }
