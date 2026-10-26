@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u3ft",
     "emsc_20261019_0000288",
     "us6000u3g6",
     "emsc_20261019_0000293",
@@ -499,7 +498,8 @@
     "emsc_20261026_0000075",
     "us6000u4y2",
     "emsc_20261026_0000083",
-    "emsc_20261026_0000086"
+    "emsc_20261026_0000086",
+    "emsc_20261026_0000089"
   ],
   "replied_comment_ids": [
     "122114858073450344_1079597248397006",
@@ -640,14 +640,6 @@
     "122117756493450344_28974081758892469"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000u4rr",
-      "mag": 4.8,
-      "place": "Bonin Islands, Japan region",
-      "latitude": 27.6872,
-      "longitude": 139.7389,
-      "epoch_ms": 1792895792787
-    },
     {
       "id": "us6000u4ru",
       "mag": 4.2,
@@ -1039,6 +1031,14 @@
       "latitude": 24.8613,
       "longitude": 82.5243,
       "epoch_ms": 1792996224000
+    },
+    {
+      "id": "emsc_20261026_0000089",
+      "mag": 4.4,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 5.56,
+      "longitude": 126.67,
+      "epoch_ms": 1792997004000
     }
   ]
 }
