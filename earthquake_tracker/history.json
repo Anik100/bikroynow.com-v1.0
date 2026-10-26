@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261019_0000324",
-    "emsc_20261019_0000329",
     "us6000u3i2",
     "emsc_20261019_0000351",
     "emsc_20261019_0000363",
@@ -499,7 +497,9 @@
     "emsc_20261026_0000118",
     "us6000u4yr",
     "emsc_20261026_0000125",
-    "us6000u4yw"
+    "us6000u4yw",
+    "emsc_20261026_0000128",
+    "emsc_20261026_0000129"
   ],
   "replied_comment_ids": [
     "122114858073450344_1079597248397006",
@@ -640,22 +640,6 @@
     "122117756493450344_28974081758892469"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261025_0000073",
-      "mag": 4.5,
-      "place": "SOUTHERN GREECE",
-      "latitude": 37.6738,
-      "longitude": 21.1069,
-      "epoch_ms": 1792905345564
-    },
-    {
-      "id": "emsc_20261025_0000087",
-      "mag": 4.2,
-      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
-      "latitude": 37.8,
-      "longitude": 141.8,
-      "epoch_ms": 1792908270000
-    },
     {
       "id": "emsc_20261025_0000100",
       "mag": 4.0,
@@ -1039,6 +1023,22 @@
       "latitude": -18.3187,
       "longitude": -177.9801,
       "epoch_ms": 1793010622297
+    },
+    {
+      "id": "emsc_20261026_0000128",
+      "mag": 4.2,
+      "place": "OFFSHORE OAXACA, MEXICO",
+      "latitude": 15.612,
+      "longitude": -95.494,
+      "epoch_ms": 1793010625000
+    },
+    {
+      "id": "emsc_20261026_0000129",
+      "mag": 5.8,
+      "place": "TONGA REGION",
+      "latitude": -17.087,
+      "longitude": -172.083,
+      "epoch_ms": 1793010533000
     }
   ]
 }
