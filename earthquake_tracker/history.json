@@ -1,10 +1,5 @@
 {
   "posted_ids": [
-    "us6000u3i2",
-    "emsc_20261019_0000351",
-    "emsc_20261019_0000363",
-    "us6000u3ic",
-    "emsc_20261019_0000369",
     "emsc_20261020_0000007",
     "us6000u3j1",
     "emsc_20261020_0000011",
@@ -499,7 +494,12 @@
     "emsc_20261026_0000125",
     "us6000u4yw",
     "emsc_20261026_0000128",
-    "emsc_20261026_0000129"
+    "emsc_20261026_0000129",
+    "emsc_20261026_0000143",
+    "emsc_20261026_0000139",
+    "emsc_20261026_0000142",
+    "us6000u4z6",
+    "us6000u4z7"
   ],
   "replied_comment_ids": [
     "122114858073450344_1079597248397006",
@@ -640,30 +640,6 @@
     "122117756493450344_28974081758892469"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261025_0000100",
-      "mag": 4.0,
-      "place": "NEPAL-INDIA BORDER REGION",
-      "latitude": 29.66,
-      "longitude": 80.64,
-      "epoch_ms": 1792912896900
-    },
-    {
-      "id": "emsc_20261025_0000101",
-      "mag": 4.0,
-      "place": "CHHATTISGARH, INDIA",
-      "latitude": 22.9741,
-      "longitude": 83.0639,
-      "epoch_ms": 1792913344000
-    },
-    {
-      "id": "us6000u4t4",
-      "mag": 4.6,
-      "place": "50 km SW of Atiquipa, Peru",
-      "latitude": -16.0676,
-      "longitude": -74.747,
-      "epoch_ms": 1792912309640
-    },
     {
       "id": "aka2026vddzqy",
       "mag": 4.5,
@@ -1039,6 +1015,30 @@
       "latitude": -17.087,
       "longitude": -172.083,
       "epoch_ms": 1793010533000
+    },
+    {
+      "id": "emsc_20261026_0000142",
+      "mag": 4.2,
+      "place": "MYANMAR",
+      "latitude": 18.674,
+      "longitude": 96.372,
+      "epoch_ms": 1793014574000
+    },
+    {
+      "id": "us6000u4z6",
+      "mag": 5.0,
+      "place": "218 km NW of Port-Olry, Vanuatu",
+      "latitude": -13.9396,
+      "longitude": 165.3858,
+      "epoch_ms": 1793013475055
+    },
+    {
+      "id": "us6000u4z7",
+      "mag": 4.6,
+      "place": "81 km SSE of Akutan, Alaska",
+      "latitude": 53.5071,
+      "longitude": -165.1239,
+      "epoch_ms": 1793014686778
     }
   ]
 }
