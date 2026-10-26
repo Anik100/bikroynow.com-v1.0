@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261019_0000235",
     "emsc_20261019_0000245",
     "us6000u3db",
     "aka2026usthoq",
@@ -499,7 +498,8 @@
     "emsc_20261026_0000041",
     "emsc_20261026_0000049",
     "emsc_20261026_0000058",
-    "us6000u4xp"
+    "us6000u4xp",
+    "us6000u4xv"
   ],
   "replied_comment_ids": [
     "122117057115450344_1081611464740028",
@@ -639,14 +639,6 @@
     "122119013241450344_1786639339121188"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261024_0000424",
-      "mag": 5.3,
-      "place": "KYUSHU, JAPAN",
-      "latitude": 31.7003,
-      "longitude": 131.723,
-      "epoch_ms": 1792886381060
-    },
     {
       "id": "emsc_20261025_0000006",
       "mag": 4.1,
@@ -1038,6 +1030,14 @@
       "latitude": -10.0437,
       "longitude": 123.2505,
       "epoch_ms": 1792987162208
+    },
+    {
+      "id": "us6000u4xv",
+      "mag": 4.2,
+      "place": "37 km E of Hachinohe, Japan",
+      "latitude": 40.5558,
+      "longitude": 141.9305,
+      "epoch_ms": 1792987945224
     }
   ]
 }
