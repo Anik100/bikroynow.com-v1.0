@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u3l3",
-    "attn7cbt",
     "emsc_20261020_0000142",
     "us6000u3lf",
     "emsc_20261020_0000153",
@@ -499,7 +497,9 @@
     "us7000ttd1",
     "emsc_20261026_0000303",
     "emsc_20261026_0000306",
-    "emsc_20261026_0000330"
+    "emsc_20261026_0000330",
+    "emsc_20261027_0000008",
+    "us7000ttdt"
   ],
   "replied_comment_ids": [
     "122114858073450344_1079597248397006",
@@ -640,14 +640,6 @@
     "122117756493450344_28974081758892469"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261025_0000153",
-      "mag": 5.9,
-      "place": "XIZANG-QINGHAI BORDER REGION",
-      "latitude": 32.5307,
-      "longitude": 94.0599,
-      "epoch_ms": 1792927561600
-    },
     {
       "id": "us6000u4tx",
       "mag": 5.1,
@@ -1039,6 +1031,14 @@
       "latitude": 2.4,
       "longitude": 127.93,
       "epoch_ms": 1793055137000
+    },
+    {
+      "id": "us7000ttdt",
+      "mag": 4.8,
+      "place": "54 km E of Tomioka, Japan",
+      "latitude": 37.3869,
+      "longitude": 141.625,
+      "epoch_ms": 1793060708167
     }
   ]
 }
