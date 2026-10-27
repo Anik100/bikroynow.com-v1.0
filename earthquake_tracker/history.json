@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261021_0000050",
     "emsc_20261021_0000067",
     "us6000u3sj",
     "emsc_20261020_0000362",
@@ -499,7 +498,8 @@
     "emsc_20261027_0000235",
     "emsc_20261027_0000248",
     "emsc_20261027_0000259",
-    "us7000ttis"
+    "us7000ttis",
+    "emsc_20261027_0000285"
   ],
   "replied_comment_ids": [
     "122114858073450344_1448764867169382",
@@ -642,14 +642,6 @@
     "122117756493450344_1140630248914187"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000u4wc",
-      "mag": 4.4,
-      "place": "170 km ENE of Nagqu, China",
-      "latitude": 32.1648,
-      "longitude": 93.672,
-      "epoch_ms": 1792965696115
-    },
     {
       "id": "emsc_20261025_0000313",
       "mag": 5.2,
@@ -1041,6 +1033,14 @@
       "latitude": 32.5635,
       "longitude": 93.9446,
       "epoch_ms": 1793127477620
+    },
+    {
+      "id": "emsc_20261027_0000285",
+      "mag": 4.0,
+      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
+      "latitude": -7.27,
+      "longitude": 125.87,
+      "epoch_ms": 1793131919000
     }
   ]
 }
