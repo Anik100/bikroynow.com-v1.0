@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u3nz",
     "us6000u3nn",
     "us6000u3m7",
     "us6000u3lx",
@@ -499,7 +498,8 @@
     "us7000ttju",
     "emsc_20261027_0000317",
     "emsc_20261027_0000345",
-    "us7000ttke"
+    "us7000ttke",
+    "emsc_20261027_0000350"
   ],
   "replied_comment_ids": [
     "122114858073450344_1448764867169382",
@@ -642,14 +642,6 @@
     "122117756493450344_1140630248914187"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261025_0000350",
-      "mag": 4.0,
-      "place": "OAXACA, MEXICO",
-      "latitude": 16.896,
-      "longitude": -94.896,
-      "epoch_ms": 1792971750000
-    },
     {
       "id": "emsc_20261026_0000008",
       "mag": 4.1,
@@ -1041,6 +1033,14 @@
       "latitude": 12.6372,
       "longitude": 142.6875,
       "epoch_ms": 1793142854130
+    },
+    {
+      "id": "emsc_20261027_0000350",
+      "mag": 5.1,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 5.6324,
+      "longitude": 125.3438,
+      "epoch_ms": 1793144630960
     }
   ]
 }
