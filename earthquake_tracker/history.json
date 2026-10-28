@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u3yj",
     "emsc_20261021_0000318",
     "us6000u3yp",
     "emsc_20261021_0000351",
@@ -499,7 +498,8 @@
     "emsc_20261027_0000373",
     "emsc_20261028_0000133",
     "emsc_20261028_0000134",
-    "us7000ttmz"
+    "us7000ttmz",
+    "emsc_20261028_0000142"
   ],
   "replied_comment_ids": [
     "122114858073450344_1448764867169382",
@@ -642,14 +642,6 @@
     "122117756493450344_1140630248914187"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261026_0000128",
-      "mag": 4.2,
-      "place": "OFFSHORE OAXACA, MEXICO",
-      "latitude": 15.612,
-      "longitude": -95.494,
-      "epoch_ms": 1793010625000
-    },
     {
       "id": "emsc_20261026_0000129",
       "mag": 5.8,
@@ -1041,6 +1033,14 @@
       "latitude": 5.1603,
       "longitude": 125.3119,
       "epoch_ms": 1793179972520
+    },
+    {
+      "id": "emsc_20261028_0000142",
+      "mag": 4.4,
+      "place": "KEP. TANIMBAR REGION, INDONESIA",
+      "latitude": -6.14,
+      "longitude": 131.12,
+      "epoch_ms": 1793182219000
     }
   ]
 }
