@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u42q",
-    "emsc_20261022_0000184",
     "emsc_20261022_0000202",
     "emsc_20261022_0000221",
     "emsc_20261022_0000223",
@@ -499,7 +497,9 @@
     "emsc_20261028_0000275",
     "emsc_20261028_0000280",
     "emsc_20261028_0000291",
-    "emsc_20261028_0000289"
+    "emsc_20261028_0000289",
+    "emsc_20261028_0000288",
+    "emsc_20261028_0000292"
   ],
   "replied_comment_ids": [
     "122114858073450344_1448764867169382",
@@ -642,22 +642,6 @@
     "122117756493450344_1140630248914187"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tte0",
-      "mag": 4.6,
-      "place": "203 km SSE of Tateyama, Japan",
-      "latitude": 33.2845,
-      "longitude": 140.7128,
-      "epoch_ms": 1793063873898
-    },
-    {
-      "id": "us7000tteg",
-      "mag": 4.1,
-      "place": "5 km SW of Azogues, Ecuador",
-      "latitude": -2.7707,
-      "longitude": -78.8864,
-      "epoch_ms": 1793073323686
-    },
     {
       "id": "emsc_20261027_0000078",
       "mag": 4.3,
@@ -1041,6 +1025,22 @@
       "latitude": 58.031,
       "longitude": -32.0735,
       "epoch_ms": 1793213072450
+    },
+    {
+      "id": "emsc_20261028_0000288",
+      "mag": 4.0,
+      "place": "PANAMA",
+      "latitude": 7.4623,
+      "longitude": -80.5593,
+      "epoch_ms": 1793214290000
+    },
+    {
+      "id": "emsc_20261028_0000292",
+      "mag": 4.3,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.002,
+      "longitude": -93.354,
+      "epoch_ms": 1793214367000
     }
   ]
 }
