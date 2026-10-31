@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261023_0000421",
-    "us6000u4hi",
     "emsc_20261024_0000007",
     "us6000u4i8",
     "emsc_20261023_0000444",
@@ -499,7 +497,9 @@
     "emsc_20261031_0000012",
     "us7000tugd",
     "emsc_20261031_0000013",
-    "us7000tugg"
+    "us7000tugg",
+    "emsc_20261031_0000023",
+    "us7000tugl"
   ],
   "replied_comment_ids": [
     "122114858073450344_1448764867169382",
@@ -642,14 +642,6 @@
     "122117756493450344_1140630248914187"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261028_0000253",
-      "mag": 4.4,
-      "place": "PAPUA REGION, INDONESIA",
-      "latitude": -1.08,
-      "longitude": 129.33,
-      "epoch_ms": 1793205911000
-    },
     {
       "id": "emsc_20261028_0000269",
       "mag": 4.5,
@@ -1041,6 +1033,14 @@
       "latitude": 39.66,
       "longitude": 24.24,
       "epoch_ms": 1793408519100
+    },
+    {
+      "id": "us7000tugl",
+      "mag": 4.3,
+      "place": "84 km S of Severo-Kuril\u2019sk, Russia",
+      "latitude": 49.9164,
+      "longitude": 156.0245,
+      "epoch_ms": 1793409696013
     }
   ]
 }
