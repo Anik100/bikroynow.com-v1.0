@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4k5",
     "emsc_20261023_0000460",
     "us6000u4k6",
     "emsc_20261024_0000109",
@@ -499,7 +498,8 @@
     "us7000tuk4",
     "emsc_20261031_0000169",
     "emsc_20261031_0000276",
-    "us7000tukm"
+    "us7000tukm",
+    "emsc_20261031_0000288"
   ],
   "replied_comment_ids": [
     "122114858073450344_1448764867169382",
@@ -642,14 +642,6 @@
     "122117756493450344_1140630248914187"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tu5q",
-      "mag": 5.1,
-      "place": "97 km NNE of Finschhafen, Papua New Guinea",
-      "latitude": -5.8137,
-      "longitude": 148.3151,
-      "epoch_ms": 1793329457406
-    },
     {
       "id": "emsc_20261030_0000054",
       "mag": 4.1,
@@ -1041,6 +1033,14 @@
       "latitude": 28.1271,
       "longitude": 51.52,
       "epoch_ms": 1793481639770
+    },
+    {
+      "id": "emsc_20261031_0000288",
+      "mag": 6.0,
+      "place": "NEAR S. COAST OF HONSHU, JAPAN",
+      "latitude": 33.765,
+      "longitude": 137.117,
+      "epoch_ms": 1793484902400
     }
   ]
 }
