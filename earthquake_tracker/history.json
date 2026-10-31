@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4i8",
     "emsc_20261023_0000444",
     "emsc_20261023_0000445",
     "us6000u4ib",
@@ -499,7 +498,8 @@
     "us7000tugg",
     "emsc_20261031_0000023",
     "us7000tugl",
-    "emsc_20261031_0000039"
+    "emsc_20261031_0000039",
+    "emsc_20261031_0000041"
   ],
   "replied_comment_ids": [
     "122114858073450344_1448764867169382",
@@ -642,14 +642,6 @@
     "122117756493450344_1140630248914187"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261028_0000269",
-      "mag": 4.5,
-      "place": "XIZANG-QINGHAI BORDER REGION",
-      "latitude": 32.656,
-      "longitude": 94.064,
-      "epoch_ms": 1793209705000
-    },
     {
       "id": "emsc_20261028_0000275",
       "mag": 4.0,
@@ -1041,6 +1033,14 @@
       "latitude": 49.9164,
       "longitude": 156.0245,
       "epoch_ms": 1793409696013
+    },
+    {
+      "id": "emsc_20261031_0000041",
+      "mag": 4.5,
+      "place": "CENTRAL MID-ATLANTIC RIDGE",
+      "latitude": 7.087,
+      "longitude": -34.6828,
+      "epoch_ms": 1793414239894
     }
   ]
 }
