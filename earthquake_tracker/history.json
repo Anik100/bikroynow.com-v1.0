@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4m6",
-    "emsc_20261024_0000225",
     "us6000u4m9",
     "emsc_20261024_0000237",
     "emsc_20261024_0000241",
@@ -499,7 +497,9 @@
     "us7000tupq",
     "emsc_20261101_0000144",
     "emsc_20261101_0000154",
-    "emsc_20261101_0000201"
+    "emsc_20261101_0000201",
+    "emsc_20261101_0000208",
+    "us7000tuqk"
   ],
   "replied_comment_ids": [
     "122117756493450344_1798643104718712",
@@ -645,14 +645,6 @@
     "122111086851450344_2135533367039712"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261030_0000191",
-      "mag": 4.0,
-      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
-      "latitude": 40.3,
-      "longitude": 142.7,
-      "epoch_ms": 1793366310000
-    },
     {
       "id": "emsc_20261030_0000196",
       "mag": 4.3,
@@ -1044,6 +1036,14 @@
       "latitude": -35.8852,
       "longitude": 178.9559,
       "epoch_ms": 1793552649434
+    },
+    {
+      "id": "us7000tuqk",
+      "mag": 5.1,
+      "place": "South Sandwich Islands region",
+      "latitude": -56.2566,
+      "longitude": -27.1985,
+      "epoch_ms": 1793553116053
     }
   ]
 }
