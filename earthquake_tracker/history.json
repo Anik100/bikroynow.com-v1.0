@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4na",
-    "us6000u4nv",
     "emsc_20261024_0000351",
     "emsc_20261024_0000354",
     "us6000u4ny",
@@ -499,7 +497,9 @@
     "emsc_20261101_0000250",
     "emsc_20261101_0000256",
     "emsc_20261101_0000269",
-    "us7000turj"
+    "us7000turj",
+    "emsc_20261101_0000283",
+    "us7000turv"
   ],
   "replied_comment_ids": [
     "122113907097450344_1071440968825966",
@@ -647,14 +647,6 @@
     "122119632273450344_4520507774864442"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261030_0000338",
-      "mag": 4.1,
-      "place": "ANTOFAGASTA, CHILE",
-      "latitude": -23.07,
-      "longitude": -69.05,
-      "epoch_ms": 1793393655000
-    },
     {
       "id": "emsc_20261030_0000343",
       "mag": 4.0,
@@ -1046,6 +1038,14 @@
       "latitude": -27.291,
       "longitude": -177.8708,
       "epoch_ms": 1793568417524
+    },
+    {
+      "id": "us7000turv",
+      "mag": 4.6,
+      "place": "Mid-Indian Ridge",
+      "latitude": -35.403,
+      "longitude": 78.404,
+      "epoch_ms": 1793571764414
     }
   ]
 }
