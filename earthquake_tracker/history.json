@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261024_0000167",
     "us6000u4lg",
     "emsc_20261024_0000171",
     "us6000u4lc",
@@ -499,7 +498,8 @@
     "emsc_20261101_0000093",
     "us7000tung",
     "emsc_20261101_0000103",
-    "us7000tunq"
+    "us7000tunq",
+    "emsc_20261101_0000111"
   ],
   "replied_comment_ids": [
     "122114858073450344_1448764867169382",
@@ -642,14 +642,6 @@
     "122117756493450344_1140630248914187"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261030_0000118",
-      "mag": 4.1,
-      "place": "OFFSHORE OAXACA, MEXICO",
-      "latitude": 15.91,
-      "longitude": -98.266,
-      "epoch_ms": 1793349725000
-    },
     {
       "id": "emsc_20261030_0000125",
       "mag": 4.2,
@@ -1041,6 +1033,14 @@
       "latitude": 24.8805,
       "longitude": 122.0621,
       "epoch_ms": 1793521207549
+    },
+    {
+      "id": "emsc_20261101_0000111",
+      "mag": 4.2,
+      "place": "PHILIPPINE ISLANDS REGION",
+      "latitude": 8.34,
+      "longitude": 127.41,
+      "epoch_ms": 1793524341000
     }
   ]
 }
