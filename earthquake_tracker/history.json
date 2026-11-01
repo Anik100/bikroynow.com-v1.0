@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4lm",
     "emsc_20261024_0000177",
     "us6000u4l8",
     "us6000u4lb",
@@ -499,7 +498,8 @@
     "emsc_20261101_0000125",
     "us7000tup4",
     "us7000tup7",
-    "emsc_20261101_0000126"
+    "emsc_20261101_0000126",
+    "emsc_20261101_0000129"
   ],
   "replied_comment_ids": [
     "122114858073450344_1448764867169382",
@@ -642,14 +642,6 @@
     "122117756493450344_1140630248914187"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261030_0000125",
-      "mag": 4.2,
-      "place": "OFFSHORE EL SALVADOR",
-      "latitude": 12.9382,
-      "longitude": -88.8642,
-      "epoch_ms": 1793351460000
-    },
     {
       "id": "emsc_20261030_0000140",
       "mag": 4.3,
@@ -1041,6 +1033,14 @@
       "latitude": 8.34,
       "longitude": 127.41,
       "epoch_ms": 1793524341000
+    },
+    {
+      "id": "emsc_20261101_0000129",
+      "mag": 4.3,
+      "place": "HINDU KUSH REGION, AFGHANISTAN",
+      "latitude": 36.2745,
+      "longitude": 70.0514,
+      "epoch_ms": 1793531026375
     }
   ]
 }
