@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4ku",
     "us6000u4kt",
     "emsc_20261024_0000134",
     "emsc_20261024_0000142",
@@ -499,7 +498,8 @@
     "emsc_20261031_0000315",
     "emsc_20261031_0000324",
     "emsc_20261101_0000067",
-    "us7000tumy"
+    "us7000tumy",
+    "emsc_20261101_0000070"
   ],
   "replied_comment_ids": [
     "122114858073450344_1448764867169382",
@@ -642,14 +642,6 @@
     "122117756493450344_1140630248914187"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261030_0000061",
-      "mag": 4.0,
-      "place": "OFFSHORE GUERRERO, MEXICO",
-      "latitude": 16.969,
-      "longitude": -100.469,
-      "epoch_ms": 1793333496000
-    },
     {
       "id": "emsc_20261030_0000068",
       "mag": 4.1,
@@ -1041,6 +1033,14 @@
       "latitude": -23.54,
       "longitude": -66.69,
       "epoch_ms": 1793511114000
+    },
+    {
+      "id": "emsc_20261101_0000070",
+      "mag": 4.2,
+      "place": "NORTHERN SUMATRA, INDONESIA",
+      "latitude": 4.87,
+      "longitude": 96.13,
+      "epoch_ms": 1793511538000
     }
   ]
 }
