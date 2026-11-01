@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261024_0000186",
-    "us6000u4lr",
     "emsc_20261024_0000188",
     "emsc_20261024_0000195",
     "emsc_20261024_0000217",
@@ -499,7 +497,9 @@
     "emsc_20261101_0000131",
     "us7000tupa",
     "emsc_20261101_0000135",
-    "us7000tupl"
+    "us7000tupl",
+    "emsc_20261101_0000139",
+    "us7000tupp"
   ],
   "replied_comment_ids": [
     "122117057115450344_1527723785829120",
@@ -643,14 +643,6 @@
     "122113786737450344_2511853552628625"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261030_0000144",
-      "mag": 4.1,
-      "place": "PHILIPPINE ISLANDS REGION",
-      "latitude": 8.51,
-      "longitude": 127.69,
-      "epoch_ms": 1793355850000
-    },
     {
       "id": "emsc_20261030_0000148",
       "mag": 4.9,
@@ -1042,6 +1034,14 @@
       "latitude": -14.145,
       "longitude": 165.906,
       "epoch_ms": 1793533624880
+    },
+    {
+      "id": "us7000tupp",
+      "mag": 4.8,
+      "place": "176 km NW of Port-Olry, Vanuatu",
+      "latitude": -14.0776,
+      "longitude": 165.767,
+      "epoch_ms": 1793534211778
     }
   ]
 }
