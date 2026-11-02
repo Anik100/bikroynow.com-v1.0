@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261025_0000051",
-    "us6000u4s5",
     "emsc_20261025_0000073",
     "us6000u4sm",
     "emsc_20261025_0000087",
@@ -499,7 +497,9 @@
     "emsc_20261102_0000111",
     "us7000tuv5",
     "emsc_20261102_0000134",
-    "emsc_20261102_0000151"
+    "emsc_20261102_0000151",
+    "emsc_20261102_0000177",
+    "emsc_20261102_0000178"
   ],
   "replied_comment_ids": [
     "122117756493450344_1804240284051158",
@@ -650,22 +650,6 @@
     "122114858073450344_1980339942651276"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261031_0000168",
-      "mag": 4.3,
-      "place": "LUZON, PHILIPPINES",
-      "latitude": 18.95,
-      "longitude": 121.29,
-      "epoch_ms": 1793453476000
-    },
-    {
-      "id": "emsc_20261031_0000203",
-      "mag": 5.7,
-      "place": "PANAMA",
-      "latitude": 7.5711,
-      "longitude": -80.2349,
-      "epoch_ms": 1793461823200
-    },
     {
       "id": "us7000tujw",
       "mag": 4.3,
@@ -1049,6 +1033,22 @@
       "latitude": 7.546,
       "longitude": -80.6809,
       "epoch_ms": 1793622991000
+    },
+    {
+      "id": "emsc_20261102_0000177",
+      "mag": 4.1,
+      "place": "COQUIMBO, CHILE",
+      "latitude": -29.24,
+      "longitude": -71.23,
+      "epoch_ms": 1793628482000
+    },
+    {
+      "id": "emsc_20261102_0000178",
+      "mag": 5.0,
+      "place": "SOUTH OF FIJI ISLANDS",
+      "latitude": -25.4761,
+      "longitude": 179.844,
+      "epoch_ms": 1793628321580
     }
   ]
 }
