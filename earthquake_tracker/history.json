@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4pa",
     "emsc_20261024_0000378",
     "us6000u4pq",
     "emsc_20261024_0000395",
@@ -499,7 +498,8 @@
     "us7000tusp",
     "emsc_20261102_0000012",
     "emsc_20261102_0000014",
-    "us7000tusv"
+    "us7000tusv",
+    "us7000tut4"
   ],
   "replied_comment_ids": [
     "122114840829450344_2187538238833967",
@@ -648,14 +648,6 @@
     "122117057115450344_1588204012789088"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261031_0000012",
-      "mag": 4.8,
-      "place": "VANUATU",
-      "latitude": -14.8091,
-      "longitude": 167.9478,
-      "epoch_ms": 1793406395699
-    },
     {
       "id": "emsc_20261031_0000013",
       "mag": 4.1,
@@ -1047,6 +1039,14 @@
       "latitude": -9.17,
       "longitude": 110.43,
       "epoch_ms": 1793581462000
+    },
+    {
+      "id": "us7000tut4",
+      "mag": 5.1,
+      "place": "Kermadec Islands region",
+      "latitude": -31.2244,
+      "longitude": -177.7236,
+      "epoch_ms": 1793582296369
     }
   ]
 }
