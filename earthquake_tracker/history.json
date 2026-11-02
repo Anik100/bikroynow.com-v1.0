@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4qq",
-    "emsc_20261025_0000006",
     "emsc_20261024_0000430",
     "us6000u4r3",
     "emsc_20261025_0000029",
@@ -499,7 +497,9 @@
     "emsc_20261102_0000049",
     "emsc_20261102_0000059",
     "emsc_20261102_0000061",
-    "us7000tutt"
+    "us7000tutt",
+    "emsc_20261102_0000063",
+    "us7000tutv"
   ],
   "replied_comment_ids": [
     "122113907097450344_2283952032446461",
@@ -649,14 +649,6 @@
     "122114840829450344_1053230594381446"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tugv",
-      "mag": 4.6,
-      "place": "Izu Islands, Japan region",
-      "latitude": 30.9098,
-      "longitude": 142.5186,
-      "epoch_ms": 1793416453580
-    },
     {
       "id": "emsc_20261031_0000071",
       "mag": 4.4,
@@ -1048,6 +1040,14 @@
       "latitude": -18.1834,
       "longitude": -178.4135,
       "epoch_ms": 1793593714296
+    },
+    {
+      "id": "us7000tutv",
+      "mag": 4.6,
+      "place": "201 km NE of Kuril\u2019sk, Russia",
+      "latitude": 46.6019,
+      "longitude": 149.5786,
+      "epoch_ms": 1793594748110
     }
   ]
 }
