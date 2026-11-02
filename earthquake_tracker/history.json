@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4q8",
     "emsc_20261024_0000409",
     "emsc_20261024_0000419",
     "emsc_20261024_0000421",
@@ -499,7 +498,8 @@
     "us7000tut4",
     "emsc_20261102_0000022",
     "emsc_20261102_0000027",
-    "us7000tuta"
+    "us7000tuta",
+    "emsc_20261102_0000036"
   ],
   "replied_comment_ids": [
     "122113907097450344_2283952032446461",
@@ -649,14 +649,6 @@
     "122114840829450344_1053230594381446"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tugl",
-      "mag": 4.3,
-      "place": "84 km S of Severo-Kuril\u2019sk, Russia",
-      "latitude": 49.9164,
-      "longitude": 156.0245,
-      "epoch_ms": 1793409696013
-    },
     {
       "id": "emsc_20261031_0000041",
       "mag": 4.5,
@@ -1048,6 +1040,14 @@
       "latitude": 30.8406,
       "longitude": 135.1987,
       "epoch_ms": 1793584495186
+    },
+    {
+      "id": "emsc_20261102_0000036",
+      "mag": 4.1,
+      "place": "SOUTH ISLAND OF NEW ZEALAND",
+      "latitude": -44.8451,
+      "longitude": 167.5343,
+      "epoch_ms": 1793587843285
     }
   ]
 }
