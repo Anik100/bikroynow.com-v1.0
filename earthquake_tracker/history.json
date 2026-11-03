@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4v1",
-    "emsc_20261025_0000237",
     "emsc_20261025_0000238",
     "us6000u4va",
     "emsc_20261025_0000245",
@@ -499,7 +497,9 @@
     "emsc_20261102_0000254",
     "emsc_20261102_0000292",
     "emsc_20261103_0000048",
-    "emsc_20261103_0000008"
+    "emsc_20261103_0000008",
+    "emsc_20261103_0000071",
+    "emsc_20261103_0000072"
   ],
   "replied_comment_ids": [
     "122120210835450344_1129097422833677",
@@ -651,22 +651,6 @@
     "122111765577450344_1347621150789333"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261101_0000103",
-      "mag": 4.8,
-      "place": "TAIWAN REGION",
-      "latitude": 24.8805,
-      "longitude": 122.0621,
-      "epoch_ms": 1793521207549
-    },
-    {
-      "id": "emsc_20261101_0000111",
-      "mag": 4.2,
-      "place": "PHILIPPINE ISLANDS REGION",
-      "latitude": 8.34,
-      "longitude": 127.41,
-      "epoch_ms": 1793524341000
-    },
     {
       "id": "emsc_20261101_0000129",
       "mag": 4.3,
@@ -1050,6 +1034,22 @@
       "latitude": 7.6924,
       "longitude": -81.4621,
       "epoch_ms": 1793679102000
+    },
+    {
+      "id": "emsc_20261103_0000071",
+      "mag": 5.0,
+      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
+      "latitude": 35.6231,
+      "longitude": 140.5625,
+      "epoch_ms": 1793684418020
+    },
+    {
+      "id": "emsc_20261103_0000072",
+      "mag": 4.9,
+      "place": "MYANMAR",
+      "latitude": 23.534,
+      "longitude": 94.671,
+      "epoch_ms": 1793683425110
     }
   ]
 }
