@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4xx",
-    "emsc_20261026_0000069",
     "emsc_20261026_0000072",
     "us6000u4y1",
     "emsc_20261026_0000075",
@@ -499,7 +497,9 @@
     "us7000tvs3",
     "emsc_20261103_0000277",
     "emsc_20261103_0000281",
-    "emsc_20261103_0000282"
+    "emsc_20261103_0000282",
+    "emsc_20261103_0000295",
+    "emsc_20261103_0000294"
   ],
   "replied_comment_ids": [
     "122120210835450344_1129097422833677",
@@ -651,22 +651,6 @@
     "122111765577450344_1347621150789333"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261102_0000014",
-      "mag": 4.2,
-      "place": "SOUTH OF JAVA, INDONESIA",
-      "latitude": -9.17,
-      "longitude": 110.43,
-      "epoch_ms": 1793581462000
-    },
-    {
-      "id": "us7000tut4",
-      "mag": 5.1,
-      "place": "Kermadec Islands region",
-      "latitude": -31.2244,
-      "longitude": -177.7236,
-      "epoch_ms": 1793582296369
-    },
     {
       "id": "emsc_20261102_0000027",
       "mag": 4.5,
@@ -1050,6 +1034,22 @@
       "latitude": 44.38,
       "longitude": 86.75,
       "epoch_ms": 1793737171000
+    },
+    {
+      "id": "emsc_20261103_0000295",
+      "mag": 4.1,
+      "place": "SULAWESI, INDONESIA",
+      "latitude": -0.83,
+      "longitude": 123.76,
+      "epoch_ms": 1793741935000
+    },
+    {
+      "id": "emsc_20261103_0000294",
+      "mag": 5.2,
+      "place": "KYRGYZSTAN",
+      "latitude": 39.5396,
+      "longitude": 73.3494,
+      "epoch_ms": 1793741650080
     }
   ]
 }
