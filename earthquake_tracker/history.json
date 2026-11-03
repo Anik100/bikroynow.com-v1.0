@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4xv",
-    "emsc_20261026_0000062",
     "us6000u4xx",
     "emsc_20261026_0000069",
     "emsc_20261026_0000072",
@@ -499,7 +497,9 @@
     "emsc_20261103_0000253",
     "emsc_20261103_0000259",
     "us7000tvs3",
-    "emsc_20261103_0000277"
+    "emsc_20261103_0000277",
+    "emsc_20261103_0000281",
+    "emsc_20261103_0000282"
   ],
   "replied_comment_ids": [
     "122120210835450344_1129097422833677",
@@ -651,22 +651,6 @@
     "122111765577450344_1347621150789333"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261102_0000005",
-      "mag": 4.2,
-      "place": "FLORES SEA",
-      "latitude": -7.51,
-      "longitude": 120.52,
-      "epoch_ms": 1793579383000
-    },
-    {
-      "id": "emsc_20261102_0000012",
-      "mag": 5.2,
-      "place": "BANDA SEA",
-      "latitude": -6.9785,
-      "longitude": 130.0592,
-      "epoch_ms": 1793580792500
-    },
     {
       "id": "emsc_20261102_0000014",
       "mag": 4.2,
@@ -1050,6 +1034,22 @@
       "latitude": -35.5301,
       "longitude": 78.3009,
       "epoch_ms": 1793730074270
+    },
+    {
+      "id": "emsc_20261103_0000281",
+      "mag": 4.1,
+      "place": "SULAWESI, INDONESIA",
+      "latitude": -2.07,
+      "longitude": 121.02,
+      "epoch_ms": 1793737716000
+    },
+    {
+      "id": "emsc_20261103_0000282",
+      "mag": 4.7,
+      "place": "NORTHERN XINJIANG, CHINA",
+      "latitude": 44.38,
+      "longitude": 86.75,
+      "epoch_ms": 1793737171000
     }
   ]
 }
