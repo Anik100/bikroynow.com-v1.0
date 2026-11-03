@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us6000u4xa",
     "emsc_20261026_0000031",
     "emsc_20261026_0000033",
     "emsc_20261026_0000036",
@@ -499,7 +498,8 @@
     "us7000tvie",
     "emsc_20261103_0000231",
     "us7000tvpc",
-    "emsc_20261103_0000234"
+    "emsc_20261103_0000234",
+    "emsc_20261103_0000240"
   ],
   "replied_comment_ids": [
     "122120210835450344_1129097422833677",
@@ -651,14 +651,6 @@
     "122111765577450344_1347621150789333"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000turj",
-      "mag": 4.7,
-      "place": "Kermadec Islands region",
-      "latitude": -27.291,
-      "longitude": -177.8708,
-      "epoch_ms": 1793568417524
-    },
     {
       "id": "us7000turv",
       "mag": 4.6,
@@ -1050,6 +1042,14 @@
       "latitude": 4.66,
       "longitude": 125.24,
       "epoch_ms": 1793725300000
+    },
+    {
+      "id": "emsc_20261103_0000240",
+      "mag": 4.1,
+      "place": "SOUTH OF JAVA, INDONESIA",
+      "latitude": -10.43,
+      "longitude": 111.69,
+      "epoch_ms": 1793728265000
     }
   ]
 }
