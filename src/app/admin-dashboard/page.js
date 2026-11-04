@@ -11,7 +11,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { 
   Check, Trash2, ExternalLink, Star, LogOut, LayoutDashboard, Package, 
   Bell, Settings, Users, CheckCircle2, XCircle, AlertTriangle, RefreshCw, Eye, Search, Shield,
-  MessageSquare, Send, Camera
+  MessageSquare, Send, Camera, Heart
 } from 'lucide-react';
 import MembershipManager from './MembershipManager';
 import AdminAiWidget from '../../components/AdminAiWidget';
@@ -91,6 +91,8 @@ export default function AdminDashboard() {
   const [adsLoading, setAdsLoading] = useState(false);
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [favoriteAdIds, setFavoriteAdIds] = useState(new Set());
+  const [favoriteCounts, setFavoriteCounts] = useState({});
   const [actionLoading, setActionLoading] = useState(null);
 
   // Restructured states
@@ -478,6 +480,23 @@ export default function AdminDashboard() {
             combinedList.push(item);
           }
         });
+      }
+    } catch (e) {}
+
+    // Fetch favorites data
+    try {
+      const { data: favs } = await supabase.from('favorites').select('listing_id, user_id');
+      if (favs && Array.isArray(favs)) {
+        const fSet = new Set();
+        const fCounts = {};
+        favs.forEach(f => {
+          if (f.listing_id) {
+            fSet.add(String(f.listing_id));
+            fCounts[String(f.listing_id)] = (fCounts[String(f.listing_id)] || 0) + 1;
+          }
+        });
+        setFavoriteAdIds(fSet);
+        setFavoriteCounts(fCounts);
       }
     } catch (e) {}
 
@@ -1614,8 +1633,13 @@ export default function AdminDashboard() {
   const pendingAds = listings.filter(ad => ad.status === 'pending').length;
   const activeAds = listings.filter(ad => ad.status === 'active').length;
   const rejectedAds = listings.filter(ad => ad.status === 'rejected').length;
+  const favoriteAdsCount = listings.filter(ad => favoriteAdIds.has(String(ad.id))).length;
 
-  const displayedAds = adFilter === 'all' ? listings : listings.filter(ad => ad.status === adFilter);
+  const displayedAds = adFilter === 'all' 
+    ? listings 
+    : adFilter === 'favorite'
+      ? listings.filter(ad => favoriteAdIds.has(String(ad.id)))
+      : listings.filter(ad => ad.status === adFilter);
 
   const isTabAllowed = (tab) => {
     if (!isModerator) return true;
@@ -1732,7 +1756,7 @@ export default function AdminDashboard() {
                   style={getTabButtonStyle('ads', 'linear-gradient(135deg, #008b5e 0%, #059669 100%)', '#008b5e', '0 4px 14px rgba(0, 139, 94, 0.35)')}
                 >
                   <LayoutDashboard size={16} color={activeTab === 'ads' ? '#ffffff' : '#008b5e'} /> 
-                  <span>{lang === 'bn' ? 'অ্যাড মডারেশন' : 'Ads Moderation'}</span>
+                  <span>{lang === 'bn' ? 'অ্যাডস (Ads)' : 'Ads'}</span>
                   {pendingAds > 0 && (
                     <span style={{
                       position: 'absolute',
@@ -1756,6 +1780,18 @@ export default function AdminDashboard() {
                       {pendingAds > 99 ? '99+' : pendingAds}
                     </span>
                   )}
+                </button>
+              )}
+
+              {/* Add Moderation Tab Button */}
+              {!isModerator && (
+                <button
+                  onClick={() => handleTabChange('moderators')}
+                  className={styles.tabNavButton}
+                  style={getTabButtonStyle('moderators', 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', '#4f46e5', '0 4px 14px rgba(99, 102, 241, 0.35)')}
+                >
+                  <Shield size={16} color={activeTab === 'moderators' ? '#ffffff' : '#4f46e5'} /> 
+                  <span>{lang === 'bn' ? 'অ্যাড মডারেশন (Add Moderation)' : 'Add Moderation'}</span>
                 </button>
               )}
 
@@ -1863,17 +1899,7 @@ export default function AdminDashboard() {
                 </button>
               )}
 
-              {/* Moderators Control Tab Button */}
-              {!isModerator && (
-                <button
-                  onClick={() => handleTabChange('moderators')}
-                  className={styles.tabNavButton}
-                  style={getTabButtonStyle('moderators', 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', '#4f46e5', '0 4px 14px rgba(99, 102, 241, 0.35)')}
-                >
-                  <Shield size={16} color={activeTab === 'moderators' ? '#ffffff' : '#4f46e5'} /> 
-                  <span>{lang === 'bn' ? 'মডারেটর কন্ট্রোল' : 'Moderator Control'}</span>
-                </button>
-              )}
+
             </div>
 
         {/* Scroll Target Element */}
@@ -2463,10 +2489,10 @@ export default function AdminDashboard() {
             }}>
               <div>
                 <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.4rem 0' }}>
-                  📢 {lang === 'bn' ? 'বিজ্ঞাপন মডারেশন কন্ট্রোল' : 'Ads Moderation Control'}
+                  📢 {lang === 'bn' ? 'বিজ্ঞাপন ব্যবস্থাপনা ও কন্ট্রোল (Ads Control)' : 'Ads Management & Control'}
                 </h3>
                 <p style={{ color: '#64748b', fontSize: '0.75rem', margin: 0, fontWeight: 500 }}>
-                  {lang === 'bn' ? 'নতুন পোস্ট করা বিজ্ঞাপনগুলো অনুমোদন বা বাতিল করুন।' : 'Approve or reject newly posted classified listings here.'}
+                  {lang === 'bn' ? 'সকল পোস্ট করা বিজ্ঞাপন যাচাই, অনুমোদন, বাতিল ও প্রিয় বিজ্ঞাপনসমূহ পরিচালনা করুন।' : 'Review, approve, reject and view favorite classified listings here.'}
                 </p>
               </div>
               <button
@@ -2576,6 +2602,27 @@ export default function AdminDashboard() {
                 </span>
                 <span style={{ fontSize: '1.4rem', fontWeight: 900 }}>{toBengaliNumber(rejectedAds, lang)}</span>
               </button>
+
+              <button 
+                onClick={() => setAdFilter('favorite')}
+                style={{
+                  background: adFilter === 'favorite' ? 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)' : '#fdf2f8',
+                  color: adFilter === 'favorite' ? '#ffffff' : '#be185d',
+                  border: adFilter === 'favorite' ? '1.5px solid transparent' : '1.5px solid #fbcfe8',
+                  borderRadius: '12px', padding: '0.75rem 1rem',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: adFilter === 'favorite' ? '0 6px 18px rgba(219, 39, 119, 0.35)' : '0 2px 6px rgba(0,0,0,0.02)',
+                  transition: 'all 0.25s ease',
+                  transform: adFilter === 'favorite' ? 'scale(1.02)' : 'scale(1)',
+                  outline: 'none'
+                }}
+              >
+                <span style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.25rem', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  ❤️ {lang === 'bn' ? 'ফেভারিট অ্যাড' : 'Favorite Ads'}
+                </span>
+                <span style={{ fontSize: '1.4rem', fontWeight: 900 }}>{toBengaliNumber(favoriteAdsCount, lang)}</span>
+              </button>
             </div>
 
             <div className={styles.adGrid}>
@@ -2595,6 +2642,11 @@ export default function AdminDashboard() {
                         {ad.is_verified && (
                           <span style={{ background: '#fef08a', color: '#854d0e', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 800 }}>
                             ★ {lang === 'bn' ? 'ভেরিফাইড' : 'Verified'}
+                          </span>
+                        )}
+                        {favoriteCounts[String(ad.id)] > 0 && (
+                          <span style={{ background: '#fdf2f8', color: '#db2777', border: '1px solid #fbcfe8', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '0.2rem' }}>
+                            ❤️ {toBengaliNumber(favoriteCounts[String(ad.id)], lang)} {lang === 'bn' ? 'ফেভারিট' : 'Favs'}
                           </span>
                         )}
                       </div>
@@ -2828,9 +2880,19 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               ))}
-              {listings.length === 0 && (
-                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '5rem 0', color: '#718096', fontWeight: 600 }}>
-                  {lang === 'bn' ? 'কোনো বিজ্ঞাপন পাওয়া যায়নি।' : 'No ads found in the database.'}
+              {displayedAds.length === 0 && (
+                <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4.5rem 1rem', background: '#f8fafc', borderRadius: '14px', border: '1px dashed #cbd5e1', color: '#64748b', fontWeight: 600 }}>
+                  <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{adFilter === 'favorite' ? '❤️' : '📭'}</div>
+                  <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#1e293b', marginBottom: '0.25rem' }}>
+                    {adFilter === 'favorite' 
+                      ? (lang === 'bn' ? 'কোনো বিজ্ঞাপন এখনো ফেভারিট করা হয়নি' : 'No Favorite Ads Yet')
+                      : (lang === 'bn' ? 'কোনো বিজ্ঞাপন পাওয়া যায়নি' : 'No Ads Found')}
+                  </div>
+                  <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                    {adFilter === 'favorite' 
+                      ? (lang === 'bn' ? 'ইউজাররা যখন কোনো বিজ্ঞাপন তাদের প্রিয় তালিকায় যুক্ত করবে, তা এখানে দেখা যাবে।' : 'When users favorite an ad on the website, it will show up here.')
+                      : (lang === 'bn' ? 'এই ফিল্টারে বর্তমানে প্রদর্শনের মতো কোনো বিজ্ঞাপন নেই।' : 'No ads found under this selected filter status.')}
+                  </div>
                 </div>
               )}
             </div>
@@ -3089,10 +3151,10 @@ export default function AdminDashboard() {
             marginBottom: '2rem'
           }}>
             <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', margin: '0 0 0.5rem 0' }}>
-              🛡️ {lang === 'bn' ? 'মডারেটর কন্ট্রোল ও অ্যাক্সেস পারমিশন' : 'Moderator Control & Access Permissions'}
+              🛡️ {lang === 'bn' ? 'অ্যাড মডারেশন ও ওয়েবসাইট কন্ট্রোল অ্যাক্সেস' : 'Add Moderation & Website Access Control'}
             </h3>
             <p style={{ color: '#64748b', fontSize: '0.78rem', margin: '0 0 1.5rem 0', fontWeight: 500 }}>
-              {lang === 'bn' ? 'এখানে আপনি ইমেইল দিয়ে নতুন মডারেটর যুক্ত করতে পারবেন এবং নির্দিষ্ট সেকশনে তাদের কাজের অনুমতি নিয়ন্ত্রণ করতে পারবেন।' : 'Add moderators using their email and precisely customize which panels they are allowed to access.'}
+              {lang === 'bn' ? 'আপনার ওয়েবসাইটটি কন্ট্রোলের জন্য এখান থেকে মডারেশন এর অ্যাক্সেস ও পারমিশন দিতে পারেন।' : 'Add moderators using their email and precisely grant access permissions to control this website.'}
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
@@ -3154,7 +3216,7 @@ export default function AdminDashboard() {
                           onChange={e => setModSections({ ...modSections, ads: e.target.checked })}
                           style={{ accentColor: '#008b5e', cursor: 'pointer' }}
                         />
-                        📢 {lang === 'bn' ? 'অ্যাড মডারেশন' : 'Ads Moderation'}
+                        📢 {lang === 'bn' ? 'বিজ্ঞাপন ব্যবস্থাপনা (Ads)' : 'Ads Management'}
                       </label>
 
                       <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.75rem', fontWeight: 600, color: '#334155', cursor: 'pointer' }}>
