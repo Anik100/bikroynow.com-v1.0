@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getGlobalFeaturedAds, saveGlobalFeaturedAds } from '../../../../lib/globalFeaturedAdsStore';
 import { getGlobalListings } from '../../../../lib/globalListingsStore';
+import { cleanupExpiredMembershipsAndBoosts } from '../../../../lib/membershipManagerHelper';
 import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
@@ -19,6 +20,9 @@ function getSupabaseClient() {
 
 export async function GET() {
   try {
+    // 0. Automatically clean up any expired memberships/boosts from top slider
+    await cleanupExpiredMembershipsAndBoosts();
+
     const supabase = getSupabaseClient();
     let featured = getGlobalFeaturedAds();
 
@@ -29,7 +33,8 @@ export async function GET() {
       try {
         const { data: dbListings } = await supabase
           .from('listings')
-          .select('id, title, price, location, images, user_id, status');
+          .select('id, title, price, location, images, user_id, status, promotion_type, profiles:user_id(membership_type, membership_expires_at)')
+          .neq('status', 'deleted');
         if (dbListings) {
           dbListings.forEach(l => listingsMap.set(l.id, l));
         }
@@ -37,7 +42,8 @@ export async function GET() {
         // Also fetch from db featured_ads if available
         const { data: dbFeatured } = await supabase
           .from('featured_ads')
-          .select('*');
+          .select('*')
+          .eq('is_active', true);
         if (dbFeatured && dbFeatured.length > 0) {
           // Merge unique entries
           const merged = [...dbFeatured];
@@ -61,11 +67,19 @@ export async function GET() {
       }
     });
 
+    const now = new Date();
     const populated = featured
       .map(item => ({
         ...item,
         listing: listingsMap.get(item.listing_id) || null
       }))
+      .filter(item => {
+        if (!item.is_active || !item.listing || item.listing.status === 'deleted') return false;
+        // Verify expiration date
+        const exp = item.listing.profiles?.membership_expires_at;
+        if (exp && new Date(exp) <= now) return false;
+        return true;
+      })
       .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
 
     return NextResponse.json({ success: true, data: populated });

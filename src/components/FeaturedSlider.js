@@ -25,12 +25,25 @@ export default function FeaturedSlider({ lang = 'en' }) {
 
   const fetchFeaturedAds = async () => {
     try {
-      // 1. Try server endpoint
-      const res = await fetch('/api/admin/featured-ads');
+      let deletedIds = new Set();
+      try {
+        deletedIds = new Set(JSON.parse(localStorage.getItem('bikroynow_deleted_ad_ids') || '[]').map(String));
+      } catch (e) {}
+
+      // 1. Try server endpoint with fresh cache
+      const res = await fetch(`/api/admin/featured-ads?t=${Date.now()}`, { cache: 'no-store' });
       if (res.ok) {
         const json = await res.json();
         if (Array.isArray(json.data) && json.data.length > 0) {
-          const active = json.data.filter(ad => ad.is_active && ad.listing && !ad.listing.error);
+          const now = new Date();
+          const active = json.data.filter(ad => {
+            if (!ad.is_active || !ad.listing || ad.listing.error || ad.listing.status === 'deleted') return false;
+            if (deletedIds.has(String(ad.listing_id || ad.listing.id))) return false;
+            // Filter out if user membership is expired
+            const exp = ad.listing.profiles?.membership_expires_at;
+            if (exp && new Date(exp) <= now) return false;
+            return true;
+          });
           setFeaturedAds(active);
           setLoading(false);
           return;
@@ -43,14 +56,19 @@ export default function FeaturedSlider({ lang = 'en' }) {
         .select(`
           *,
           listing:listing_id (
-            id, title, price, location, images, user_id
+            id, title, price, location, images, user_id, status
           )
         `)
         .eq('is_active', true)
         .order('sort_order', { ascending: true });
 
       if (data && !error) {
-        const valid = data.filter(ad => ad.listing && !ad.listing.error);
+        const valid = data.filter(ad => 
+          ad.listing && 
+          !ad.listing.error && 
+          ad.listing.status !== 'deleted' &&
+          !deletedIds.has(String(ad.listing_id || ad.listing.id))
+        );
         setFeaturedAds(valid);
       }
     } catch (err) {

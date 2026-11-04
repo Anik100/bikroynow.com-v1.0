@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { getGlobalListings, deleteGlobalListing, updateGlobalListing } from '../../../lib/globalListingsStore';
 import { deleteChatsForListing } from '../../../lib/chatsStore';
 import { notifySearchEngines } from '../../../lib/seoPinger';
+import { cleanupExpiredMembershipsAndBoosts } from '../../../lib/membershipManagerHelper';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,6 +14,9 @@ const CACHE_TTL_MS = 15000; // 15 seconds cache
 
 export async function GET(req) {
   try {
+    // Automatically purge expired memberships/boosts
+    await cleanupExpiredMembershipsAndBoosts();
+
     const { searchParams } = new URL(req.url);
     const includeAll = searchParams.get('all') === 'true' || searchParams.get('include_pending') === 'true';
     const statusParam = searchParams.get('status');

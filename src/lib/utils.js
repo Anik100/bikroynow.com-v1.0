@@ -134,19 +134,25 @@ export const getPromotionBadgeText = (promoType, lang = 'en') => {
 
 export const sortPremiumListings = (dataArr) => {
   if (!Array.isArray(dataArr)) return [];
+  const now = new Date();
+
+  const checkPremium = (item) => {
+    if (!item) return false;
+    const expiresAt = item.profiles?.membership_expires_at;
+    if (expiresAt && new Date(expiresAt) <= now) {
+      return false; // Expired, not premium!
+    }
+    return Boolean(
+      item.is_featured ||
+      item.promotion_type || 
+      item.is_verified || 
+      (item.profiles && item.profiles.membership_type && item.profiles.membership_type.toLowerCase() !== 'free')
+    );
+  };
+
   return [...dataArr].sort((a, b) => {
-    const isAPremium = Boolean(
-      a.is_featured ||
-      a.promotion_type || 
-      a.is_verified || 
-      (a.profiles && a.profiles.membership_type && a.profiles.membership_type.toLowerCase() !== 'free' && (!a.profiles.membership_expires_at || new Date() < new Date(a.profiles.membership_expires_at)))
-    );
-    const isBPremium = Boolean(
-      b.is_featured ||
-      b.promotion_type || 
-      b.is_verified || 
-      (b.profiles && b.profiles.membership_type && b.profiles.membership_type.toLowerCase() !== 'free' && (!b.profiles.membership_expires_at || new Date() < new Date(b.profiles.membership_expires_at)))
-    );
+    const isAPremium = checkPremium(a);
+    const isBPremium = checkPremium(b);
 
     if (isAPremium && !isBPremium) return -1;
     if (!isAPremium && isBPremium) return 1;
