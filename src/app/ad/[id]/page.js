@@ -769,9 +769,11 @@ export default function AdDetails({ params }) {
 
             <div className={styles.infoSection}>
               <div className={styles.header}>
-                {ad.is_verified && (
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: '#fef08a', color: '#854d0e', padding: '0.4rem 0.8rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px', boxShadow: '0 2px 4px rgba(234, 179, 8, 0.2)' }}>
-                    ★ {getPromotionBadgeText(ad.promotion_type, lang)}
+                {(ad.is_featured || ad.is_verified || ad.promotion_type) && (
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: ad.is_featured ? 'linear-gradient(135deg, #10b981, #047857)' : 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', padding: '0.4rem 0.9rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
+                    {ad.is_featured 
+                      ? (lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার প্রমোশন' : '⭐ Premium Slider Promotion') 
+                      : `💎 ${getPromotionBadgeText(ad.promotion_type, lang)}`}
                   </div>
                 )}
                 <h1 className={styles.title}>{ad.title}</h1>

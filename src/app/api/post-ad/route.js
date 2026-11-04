@@ -103,10 +103,11 @@ export async function POST(req) {
       } catch (e) {}
     }
 
-    // 3. Insert to Supabase DB
+    // 3. Insert to Supabase DB (exclude non-column fields like is_featured and profiles)
     if (serverSupabase) {
       try {
-        const { data: inserted, error: sbErr } = await serverSupabase.from('listings').insert([newAd]).select();
+        const { is_featured, profiles, ...dbPayload } = newAd;
+        const { data: inserted, error: sbErr } = await serverSupabase.from('listings').insert([dbPayload]).select();
         if (sbErr) {
           console.error('Supabase listings insert error:', sbErr);
         } else if (inserted && inserted.length > 0) {
@@ -120,7 +121,7 @@ export async function POST(req) {
             } catch (e) {}
           }
           notifySearchEngines(inserted[0].id);
-          return NextResponse.json({ success: true, ad: inserted[0] });
+          return NextResponse.json({ success: true, ad: { ...inserted[0], is_featured: Boolean(qualifiesForSlider) } });
         }
       } catch (sbErr) {
         console.error('Supabase async insert error:', sbErr);

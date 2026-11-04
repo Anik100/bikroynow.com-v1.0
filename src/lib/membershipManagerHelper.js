@@ -14,7 +14,7 @@ export function doesPackageQualifyForSlider(packageName, packageObj = null) {
 
   // Packages with top slider privilege:
   // - Gold Member
-  // - Business Partner / Enterprise
+  // - Business Partner / Enterprise / Member
   // - 15-Day Mega Boost
   // - 7-Day Super Boost
   if (
@@ -118,11 +118,12 @@ export async function activateUserMembership({
   }
 
   // 2. Automatically boost user's posted ads
-  const listingUpdates = {
+  // NOTE: 'listings' table in Supabase does NOT have 'is_featured' column.
+  // It only has 'status', 'is_verified', 'promotion_type', etc.
+  const dbUpdates = {
     status: 'active',
     is_verified: true,
     promotion_type: packageName,
-    is_featured: qualifiesForSlider,
     created_at: new Date().toISOString()
   };
 
@@ -132,12 +133,12 @@ export async function activateUserMembership({
       if (listingId) {
         await serverSupabase
           .from('listings')
-          .update(listingUpdates)
+          .update(dbUpdates)
           .eq('id', listingId);
       } else if (targetUserId) {
         await serverSupabase
           .from('listings')
-          .update(listingUpdates)
+          .update(dbUpdates)
           .eq('user_id', targetUserId)
           .neq('status', 'deleted');
       }
@@ -155,7 +156,8 @@ export async function activateUserMembership({
         (targetUserEmail && ad.user_email && ad.user_email.toLowerCase() === targetUserEmail.toLowerCase());
       if (match && ad.status !== 'deleted') {
         updateGlobalListing(ad.id, {
-          ...listingUpdates,
+          ...dbUpdates,
+          is_featured: qualifiesForSlider,
           profiles: {
             membership_type: packageName,
             membership_expires_at: expiresIso
@@ -225,7 +227,7 @@ export async function activateUserMembership({
 }
 
 let lastCleanupTime = 0;
-const CLEANUP_INTERVAL_MS = 20000; // Run at most once every 20 seconds to prevent DB stress
+const CLEANUP_INTERVAL_MS = 20000;
 
 /**
  * Automatically inspects memberships and boosts:
@@ -294,7 +296,6 @@ export async function cleanupExpiredMembershipsAndBoosts() {
     }
 
     // 3. Clean up featured_ads (Top Slider!)
-    // Automatically purge any item whose listing is expired, deleted or non-existent
     const featuredList = getGlobalFeaturedAds();
     const validFeatured = [];
     const idsToRemove = [];
@@ -302,11 +303,21 @@ export async function cleanupExpiredMembershipsAndBoosts() {
     const listingsMap = new Map();
     if (serverSupabase) {
       try {
-        const { data: dbListings } = await serverSupabase
-          .from('listings')
-          .select('id, user_id, status, promotion_type, created_at, profiles:user_id(membership_type, membership_expires_at)');
-        if (dbListings) {
-          dbListings.forEach(l => listingsMap.set(l.id, l));
+        const [listingsRes, profilesRes] = await Promise.all([
+          serverSupabase.from('listings').select('id, user_id, status, promotion_type, created_at'),
+          serverSupabase.from('profiles').select('id, membership_type, membership_expires_at')
+        ]);
+
+        const profMap = new Map();
+        if (profilesRes.data) {
+          profilesRes.data.forEach(p => profMap.set(p.id, p));
+        }
+
+        if (listingsRes.data) {
+          listingsRes.data.forEach(l => {
+            l.profiles = profMap.get(l.user_id) || null;
+            listingsMap.set(l.id, l);
+          });
         }
       } catch (e) {}
     }
@@ -337,7 +348,7 @@ export async function cleanupExpiredMembershipsAndBoosts() {
         for (const remId of idsToRemove) {
           try {
             await serverSupabase.from('featured_ads').delete().eq('listing_id', remId);
-            await serverSupabase.from('listings').update({ is_featured: false, promotion_type: null }).eq('id', remId);
+            await serverSupabase.from('listings').update({ promotion_type: null }).eq('id', remId);
           } catch (e) {}
         }
       }

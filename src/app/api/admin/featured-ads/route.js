@@ -31,24 +31,28 @@ export async function GET() {
 
     if (supabase) {
       try {
-        const { data: dbListings } = await supabase
-          .from('listings')
-          .select('id, title, price, location, images, user_id, status, promotion_type, profiles:user_id(membership_type, membership_expires_at)')
-          .neq('status', 'deleted');
-        if (dbListings) {
-          dbListings.forEach(l => listingsMap.set(l.id, l));
+        const [listingsRes, profilesRes, dbFeaturedRes] = await Promise.all([
+          supabase.from('listings').select('id, title, price, location, images, user_id, status, promotion_type').neq('status', 'deleted'),
+          supabase.from('profiles').select('id, email, membership_type, membership_expires_at'),
+          supabase.from('featured_ads').select('*').eq('is_active', true)
+        ]);
+
+        const profilesMap = new Map();
+        if (profilesRes.data) {
+          profilesRes.data.forEach(p => profilesMap.set(p.id, p));
         }
 
-        // Also fetch from db featured_ads if available
-        const { data: dbFeatured } = await supabase
-          .from('featured_ads')
-          .select('*')
-          .eq('is_active', true);
-        if (dbFeatured && dbFeatured.length > 0) {
-          // Merge unique entries
-          const merged = [...dbFeatured];
+        if (listingsRes.data) {
+          listingsRes.data.forEach(l => {
+            l.profiles = profilesMap.get(l.user_id) || null;
+            listingsMap.set(l.id, l);
+          });
+        }
+
+        if (dbFeaturedRes?.data && dbFeaturedRes.data.length > 0) {
+          const merged = [...dbFeaturedRes.data];
           featured.forEach(localItem => {
-            if (!merged.some(m => m.listing_id === localItem.listing_id)) {
+            if (!merged.some(m => String(m.listing_id) === String(localItem.listing_id))) {
               merged.push(localItem);
             }
           });

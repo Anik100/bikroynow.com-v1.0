@@ -121,15 +121,23 @@ export const getPromotionBadgeText = (promoType, lang = 'en') => {
   
   const text = promoType.toLowerCase();
   
-  if (text.includes('express')) {
-    return lang === 'bn' ? 'এক্সপ্রেস বুস্ট' : 'Express Boost';
-  } else if (text.includes('mega')) {
-    return lang === 'bn' ? 'মেগা বুস্ট' : 'Mega Boost';
-  } else if (text.includes('premium')) {
-    return lang === 'bn' ? 'প্রিমিয়াম বুস্ট' : 'Premium Boost';
+  if (text.includes('mega')) {
+    return lang === 'bn' ? 'মেগা বুস্ট (প্রিমিয়াম)' : 'Mega Boost (Premium)';
+  } else if (text.includes('super')) {
+    return lang === 'bn' ? 'সুপার বুস্ট (প্রিমিয়াম)' : 'Super Boost (Premium)';
+  } else if (text.includes('express') || text.includes('quick')) {
+    return lang === 'bn' ? 'কুইক বুস্ট (প্রিমিয়াম)' : 'Quick Boost (Premium)';
+  } else if (text.includes('gold')) {
+    return lang === 'bn' ? 'গোল্ড মেম্বার (প্রিমিয়াম)' : 'Gold Member (Premium)';
+  } else if (text.includes('business')) {
+    return lang === 'bn' ? 'বিজনেস মেম্বার (প্রিমিয়াম)' : 'Business Member (Premium)';
+  } else if (text.includes('silver')) {
+    return lang === 'bn' ? 'সিলভার মেম্বার (প্রিমিয়াম)' : 'Silver Member (Premium)';
+  } else if (text.includes('featured')) {
+    return lang === 'bn' ? 'প্রিমিয়াম ফিচার্ড' : 'Premium Featured';
   }
   
-  return lang === 'bn' ? 'প্রিমিয়াম' : 'Premium';
+  return lang === 'bn' ? `প্রিমিয়াম (${promoType})` : `Premium (${promoType})`;
 };
 
 export const sortPremiumListings = (dataArr) => {

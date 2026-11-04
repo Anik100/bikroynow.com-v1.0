@@ -9,18 +9,54 @@ export const dynamic = 'force-dynamic';
 export async function POST(req) {
   try {
     const body = await req.json();
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const serverSupabase = (supabaseUrl && serviceRoleKey)
+      ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
+      : null;
+
+    // Instant activation directly from user purchase
+    if (body.action === 'instant_activate') {
+      const { user_email, package_id, package_name, duration, duration_unit, packageObj, listing_id, transaction_id, sender_number, payment_method, price, screenshot_url } = body;
+
+      const res = await activateUserMembership({
+        userEmail: user_email,
+        packageName: package_name,
+        duration: duration || 30,
+        durationUnit: duration_unit || 'days',
+        packageObj,
+        listingId: listing_id || null
+      });
+
+      if (serverSupabase && user_email) {
+        try {
+          await serverSupabase.from('membership_purchases').insert([{
+            user_email: user_email.trim(),
+            package_id: package_id || null,
+            package_name: package_name || 'Membership',
+            price: price || 0,
+            payment_method: payment_method || 'bkash',
+            sender_number: sender_number || '01700000000',
+            transaction_id: transaction_id || ('TXN-' + Date.now()),
+            screenshot_url: screenshot_url || null,
+            status: 'approved',
+            listing_id: listing_id || null
+          }]);
+        } catch (e) {}
+      }
+
+      return NextResponse.json({ success: true, message: 'Membership activated instantly and ads boosted', ...res });
+    }
+
     const { id, status } = body;
     if (!id || !status) {
       return NextResponse.json({ error: 'Missing id or status' }, { status: 400 });
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!supabaseUrl || !serviceRoleKey) {
+    if (!serverSupabase) {
       return NextResponse.json({ error: 'Supabase credentials missing' }, { status: 500 });
     }
-
-    const serverSupabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
 
     // 1. Fetch purchase record
     const { data: purchase, error: purErr } = await serverSupabase

@@ -48,8 +48,8 @@ export async function GET(req) {
           auth: { persistSession: false, autoRefreshToken: false }
         });
 
-        // Parallel execution of featured ads and listings
-        const [featuredRes, dbRes] = await Promise.all([
+        // Parallel execution of featured ads, listings, and profiles
+        const [featuredRes, dbRes, profilesRes] = await Promise.all([
           serverSupabase
             .from('featured_ads')
             .select('listing_id')
@@ -59,31 +59,61 @@ export async function GET(req) {
             .select('*')
             .neq('status', 'deleted')
             .order('created_at', { ascending: false })
-            .limit(100)
+            .limit(100),
+          serverSupabase
+            .from('profiles')
+            .select('id, email, membership_type, membership_expires_at')
         ]);
 
+        const profilesMap = new Map();
+        if (profilesRes?.data) {
+          profilesRes.data.forEach(p => profilesMap.set(p.id, p));
+        }
+
         if (featuredRes?.data) {
-          featuredSet = new Set(featuredRes.data.map(f => f.listing_id));
+          featuredRes.data.forEach(f => featuredSet.add(f.listing_id));
         }
 
         if (Array.isArray(dbRes?.data)) {
-          dbListings = dbRes.data;
+          dbListings = dbRes.data.map(l => ({
+            ...l,
+            profiles: profilesMap.get(l.user_id) || l.profiles || null
+          }));
         }
       } catch (e) {
         console.error('Database query error:', e);
       }
     }
 
+    // Merge featured ads from global file store
+    try {
+      const globalFeatured = getGlobalFeaturedAds().filter(f => f.is_active);
+      globalFeatured.forEach(f => featuredSet.add(f.listing_id));
+    } catch (e) {}
+
     // Merge DB listings with server-side globalListingsStore
     const globalAds = getGlobalListings();
     const existingIds = new Set(dbListings.map(i => i.id));
     const extraAds = globalAds.filter(ad => !existingIds.has(ad.id) && ad.status !== 'deleted');
 
-    const combinedListings = [...extraAds, ...dbListings].map(item => ({ 
-      ...item, 
-      status: item.status || 'active',
-      is_featured: Boolean(item.is_featured || featuredSet.has(item.id))
-    }));
+    const combinedListings = [...extraAds, ...dbListings].map(item => {
+      const isFeatured = Boolean(item.is_featured || featuredSet.has(item.id));
+      const userProf = item.profiles;
+      const hasMembership = userProf &&
+        userProf.membership_type &&
+        userProf.membership_type.toLowerCase() !== 'free' &&
+        (!userProf.membership_expires_at || new Date(userProf.membership_expires_at) > new Date());
+
+      const promoType = item.promotion_type || (hasMembership ? userProf.membership_type : (isFeatured ? 'Premium Featured' : null));
+
+      return {
+        ...item,
+        status: item.status || 'active',
+        is_featured: isFeatured,
+        is_verified: Boolean(item.is_verified || hasMembership || isFeatured),
+        promotion_type: promoType
+      };
+    });
 
     let result = combinedListings;
 

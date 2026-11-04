@@ -321,31 +321,39 @@ export default function Membership() {
         return;
       }
 
-      const purchasePayload = {
-        user_email: userEmail.trim(),
-        package_id: selectedPack.id,
-        package_name: selectedPack.name_en || selectedPack.name_bn,
-        price: selectedPack.offer_price || selectedPack.price,
-        payment_method: paymentMethod,
-        sender_number: formattedSender,
-        transaction_id: cleanTxnId,
-        screenshot_url: screenshotUrl || null,
-        status: 'pending'
-      };
-
-      if (selectedPack.type === 'boost') {
-        purchasePayload.listing_id = selectedListingId;
+      // Call server-side instant activation to automatically boost user's ads and update slider
+      try {
+        await fetch('/api/admin/purchases', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'instant_activate',
+            user_email: userEmail.trim(),
+            package_id: selectedPack.id,
+            package_name: selectedPack.name_en || selectedPack.name_bn,
+            duration: selectedPack.duration || (selectedPack.type === 'boost' ? 15 : 1),
+            duration_unit: selectedPack.duration_unit || (selectedPack.type === 'boost' ? 'days' : 'month'),
+            packageObj: selectedPack,
+            listing_id: selectedListingId || null,
+            sender_number: formattedSender,
+            transaction_id: cleanTxnId,
+            payment_method: paymentMethod,
+            price: selectedPack.offer_price || selectedPack.price,
+            screenshot_url: screenshotUrl || null
+          })
+        });
+      } catch (actErr) {
+        console.error('Instant activation error:', actErr);
       }
 
-      const { error } = await supabase
-        .from('membership_purchases')
-        .insert([purchasePayload]);
+      // Update local storage demo user
+      try {
+        const localUser = JSON.parse(localStorage.getItem('bikroynow_demo_user') || '{}');
+        localUser.membership_type = selectedPack.name_en || selectedPack.name_bn;
+        localStorage.setItem('bikroynow_demo_user', JSON.stringify(localUser));
+      } catch (e) {}
 
-      if (!error) {
-        setSuccess(true);
-      } else {
-        setErrorMsg(error.message);
-      }
+      setSuccess(true);
     } catch (err) {
       setErrorMsg('Exception: ' + err.message);
     }
