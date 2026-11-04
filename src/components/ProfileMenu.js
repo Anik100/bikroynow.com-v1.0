@@ -456,7 +456,7 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
             <div className={styles.userDetails}>
               {user ? (
                 <>
-                  <h3>{profile?.full_name || user.email?.split('@')[0] || t('user')}</h3>
+                  <h3>{profile?.full_name || (typeof window !== 'undefined' ? localStorage.getItem('bkr_custom_name_' + user.id) : null) || user.user_metadata?.full_name || user.email?.split('@')[0] || t('user')}</h3>
                   <p>{user.email}</p>
                   {getMembershipBadge()}
                 </>

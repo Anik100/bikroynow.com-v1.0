@@ -9,7 +9,12 @@ import styles from './OnboardingModal.module.css';
 export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdated }) {
   const { lang } = useLanguage();
 
-  const initialName = user?.user_metadata?.full_name || 
+  const savedLocalName = typeof window !== 'undefined' && user?.id 
+    ? localStorage.getItem('bkr_custom_name_' + user.id) 
+    : null;
+
+  const initialName = savedLocalName || 
+                      user?.user_metadata?.full_name || 
                       user?.user_metadata?.name || 
                       (user?.email ? user.email.split('@')[0] : '');
 
@@ -21,7 +26,9 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
   useEffect(() => {
     if (!user) return;
 
-    const bestName = user.user_metadata?.full_name || 
+    const localName = localStorage.getItem('bkr_custom_name_' + user.id);
+    const bestName = localName || 
+                     user.user_metadata?.full_name || 
                      user.user_metadata?.name || 
                      (user.email ? user.email.split('@')[0] : '');
     setDisplayName(bestName);
@@ -36,7 +43,10 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
           .maybeSingle();
 
         if (data) {
-          if (data.full_name) setDisplayName(data.full_name);
+          if (data.full_name) {
+            setDisplayName(data.full_name);
+            localStorage.setItem('bkr_custom_name_' + user.id, data.full_name);
+          }
           if (data.phone) setPhoneNumber(data.phone);
         }
       } catch (err) {
@@ -63,13 +73,17 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
     setError(null);
 
     try {
-      // 1. Immediately store saved state locally so refresh never prompts again
+      // 1. Immediately store in localStorage so the whole app knows this name instantly
       try {
         localStorage.setItem('bkr_profile_saved_' + user.id, 'true');
+        localStorage.setItem('bkr_custom_name_' + user.id, finalName);
+        if (phoneNumber.trim()) {
+          localStorage.setItem('bkr_custom_phone_' + user.id, phoneNumber.trim());
+        }
         sessionStorage.setItem('bkr_prompt_dismissed_' + user.id, 'true');
       } catch (e) {}
 
-      // 2. Fast background database upsert with timeout race (never blocks or freezes)
+      // 2. Fast background database upsert with timeout race
       await Promise.race([
         supabase.from('profiles').upsert({
           id: user.id,
@@ -82,10 +96,11 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
         new Promise(resolve => setTimeout(resolve, 800))
       ]);
 
-      // 3. Update auth metadata asynchronously without waiting for lock
+      // 3. Update auth metadata asynchronously
       supabase.auth.updateUser({
         data: {
           full_name: finalName,
+          name: finalName,
           phone: phoneNumber.trim() || undefined
         }
       }).catch(() => {});
@@ -95,13 +110,22 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
       }
 
       onClose();
+
+      // 4. Immediately hard refresh page as requested so the new name appears everywhere instantly!
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     } catch (err) {
       console.error('Save profile error:', err);
       try {
         localStorage.setItem('bkr_profile_saved_' + user.id, 'true');
+        localStorage.setItem('bkr_custom_name_' + user.id, finalName);
         sessionStorage.setItem('bkr_prompt_dismissed_' + user.id, 'true');
       } catch (e) {}
       onClose();
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
     } finally {
       setSaving(false);
     }
