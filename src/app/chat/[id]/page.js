@@ -259,26 +259,31 @@ export default function ChatWindow({ params }) {
       // Mark messages as read when opening room
       markAsRead(activeUser.id);
 
-      try {
-        const chatRes = await fetch(`/api/chats/${effectiveId}?t=${Date.now()}`, {
-          cache: 'no-store'
-        });
-        if (chatRes.ok) {
-          const chatJson = await chatRes.json();
-          if (chatJson.chat && !isCancelled) {
-            setChat(chatJson.chat);
-            fetchMessages();
-            setLoading(false);
-            return;
+      let chatData = null;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const chatRes = await fetch(`/api/chats/${effectiveId}?t=${Date.now()}`, {
+            cache: 'no-store'
+          });
+          if (chatRes.ok) {
+            const chatJson = await chatRes.json();
+            if (chatJson.chat) {
+              chatData = chatJson.chat;
+              break;
+            }
           }
+        } catch (err) {
+          console.error('Error fetching chat session attempt ' + attempt, err);
         }
-      } catch (err) {
-        console.error('Error fetching chat session:', err);
+        if (attempt < 2) await new Promise(r => setTimeout(r, 350));
       }
 
       if (!isCancelled) {
+        if (chatData) {
+          setChat(chatData);
+          fetchMessages();
+        }
         setLoading(false);
-        router.push('/chat');
       }
     };
 
@@ -558,8 +563,10 @@ export default function ChatWindow({ params }) {
 
         {/* Messages area */}
         <div className={styles.messages}>
-          {messages.map((msg, i) => (
-            <div key={msg.id || i} className={`${styles.messageRow} ${msg.sender_id === user?.id ? styles.sent : styles.received}`}>
+          {messages.map((msg, i) => {
+            const isMe = myIdentifiers.has(msg.sender_id) || msg.sender_id === user?.id;
+            return (
+              <div key={msg.id || i} className={`${styles.messageRow} ${isMe ? styles.sent : styles.received}`}>
               <div className={styles.bubble}>
                 {msg.image_url && (
                   <div className={styles.imageMessageWrapper}>
@@ -610,7 +617,8 @@ export default function ChatWindow({ params }) {
                 <span className={styles.msgTime}>{getRelativeTime(msg.created_at, lang)}</span>
               </div>
             </div>
-          ))}
+          );
+          })}
           <div ref={messagesEndRef} />
         </div>
 

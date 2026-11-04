@@ -22,8 +22,25 @@ export async function GET(req, { params }) {
 
     let chat = null;
 
-    // 1. If valid UUID, try querying Supabase DB / RPC
-    if (isValidUUID && serverSupabase) {
+    // 1. Check cloud persistent all_chats_list from admin_settings
+    if (serverSupabase) {
+      try {
+        const { data: row } = await serverSupabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'all_chats_list')
+          .maybeSingle();
+        if (row?.value) {
+          const list = JSON.parse(row.value);
+          if (Array.isArray(list)) {
+            chat = list.find(c => c.id === id) || null;
+          }
+        }
+      } catch (e) {}
+    }
+
+    // 2. If valid UUID, try querying Supabase DB / RPC
+    if (!chat && isValidUUID && serverSupabase) {
       try {
         const { data: rpcChat, error: rpcErr } = await serverSupabase.rpc('get_chat_details_v2', {
           p_chat_id: id
@@ -43,34 +60,40 @@ export async function GET(req, { params }) {
       }
     }
 
-    // 2. Check cloud persistent all_chats_list from admin_settings
-    if (!chat && serverSupabase) {
-      try {
-        const { data: row } = await serverSupabase
-          .from('admin_settings')
-          .select('value')
-          .eq('key', 'all_chats_list')
-          .maybeSingle();
-        if (row?.value) {
-          const list = JSON.parse(row.value);
-          if (Array.isArray(list)) {
-            chat = list.find(c => c.id === id) || null;
-          }
-        }
-      } catch (e) {}
-    }
-
     // 3. Fallback to local chatsStore
     if (!chat) {
       const localChats = getChats();
       chat = localChats.find(c => c.id === id) || null;
     }
 
+    // 4. If still not found, check if chat_msgs_${id} exists in admin_settings
+    if (!chat && serverSupabase) {
+      try {
+        const { data: row } = await serverSupabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'chat_msgs_' + id)
+          .maybeSingle();
+        if (row?.value) {
+          const msgs = JSON.parse(row.value);
+          if (Array.isArray(msgs) && msgs.length > 0) {
+            chat = {
+              id,
+              listing_id: 'unknown',
+              buyer_id: msgs[0].sender_id,
+              seller_id: 'seller',
+              created_at: msgs[0].created_at
+            };
+          }
+        }
+      } catch (e) {}
+    }
+
     if (!chat) {
       return NextResponse.json({ error: 'Chat not found' }, { status: 404 });
     }
 
-    // 4. Fetch listing details
+    // 5. Fetch listing details
     let listing = null;
     try {
       const globalListings = getGlobalListings();
@@ -89,7 +112,7 @@ export async function GET(req, { params }) {
     }
     chat.listing = listing || { title: 'BikroyNow Item', images: ['https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800'] };
 
-    // 5. Fetch buyer and seller profiles (supporting UUIDs, emails, and usernames)
+    // 6. Fetch buyer and seller profiles (supporting UUIDs, emails, and usernames)
     let buyer = null;
     let seller = null;
 

@@ -82,6 +82,10 @@ export async function POST(req, { params }) {
     const { id } = params;
     const { sender_id, content, image_url } = await req.json();
 
+    if (!content && !image_url) {
+      return NextResponse.json({ error: 'Message cannot be empty' }, { status: 400 });
+    }
+
     const newMsg = {
       id: 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
       chat_id: id,
@@ -119,6 +123,29 @@ export async function POST(req, { params }) {
             key: 'chat_msgs_' + id,
             value: JSON.stringify(msgsList)
           }, { onConflict: 'key' });
+
+        // Update updated_at in all_chats_list to bump conversation to top
+        const { data: chatsRow } = await serverSupabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'all_chats_list')
+          .maybeSingle();
+
+        if (chatsRow?.value) {
+          const allChats = JSON.parse(chatsRow.value);
+          if (Array.isArray(allChats)) {
+            const currentChat = allChats.find(c => c.id === id);
+            if (currentChat) {
+              currentChat.updated_at = newMsg.created_at;
+              await serverSupabase
+                .from('admin_settings')
+                .upsert({
+                  key: 'all_chats_list',
+                  value: JSON.stringify(allChats)
+                }, { onConflict: 'key' });
+            }
+          }
+        }
       } catch (err) {
         console.error('Error saving chat_msgs to admin_settings:', err);
       }

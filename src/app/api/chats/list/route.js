@@ -22,7 +22,6 @@ export async function GET(req) {
       return NextResponse.json({ error: 'Missing user_id parameter' }, { status: 400 });
     }
 
-    const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const serverSupabase = (supabaseUrl && serviceRoleKey)
@@ -30,21 +29,37 @@ export async function GET(req) {
       : null;
 
     // Build complete set of aliases for the current user
-    const userAliases = new Set([userId]);
+    const userAliases = new Set([userId, String(userId).toLowerCase()]);
 
     let userEmail = null;
+    let profilesMap = new Map();
+
     if (serverSupabase) {
       try {
-        const { data: allProfs } = await serverSupabase.from('profiles').select('id, email, full_name, avatar_url');
+        const { data: allProfs } = await serverSupabase.from('profiles').select('id, email, full_name, avatar_url, last_seen');
         if (allProfs) {
-          const currentProf = allProfs.find(p => p.id === userId || (p.email && 'user-' + p.email.toLowerCase().replace(/[^a-z0-9]/g, '') === userId));
+          allProfs.forEach(p => {
+            profilesMap.set(p.id, p);
+            if (p.email) {
+              profilesMap.set(p.email.toLowerCase(), p);
+              profilesMap.set('user-' + p.email.toLowerCase().replace(/[^a-z0-9]/g, ''), p);
+            }
+          });
+
+          const currentProf = allProfs.find(p => 
+            p.id === userId || 
+            p.email?.toLowerCase() === String(userId).toLowerCase() || 
+            (p.email && 'user-' + p.email.toLowerCase().replace(/[^a-z0-9]/g, '') === String(userId).toLowerCase())
+          );
+
           if (currentProf?.email) {
             userEmail = currentProf.email.toLowerCase();
             userAliases.add(userEmail);
             userAliases.add('user-' + userEmail.replace(/[^a-z0-9]/g, ''));
+            userAliases.add(currentProf.id);
           }
 
-          // If the account belongs to the admin/test accounts pool, include all admin aliases so chats are never lost
+          // If the account belongs to admin pool, add admin aliases
           if (userEmail && ADMIN_EMAILS.includes(userEmail)) {
             ADMIN_EMAILS.forEach(em => {
               userAliases.add(em);
@@ -60,9 +75,27 @@ export async function GET(req) {
       } catch (e) {}
     }
 
-    let myChats = [];
+    // Also collect all listings belonging to this user
+    const myListingIds = new Set();
+    if (serverSupabase) {
+      try {
+        const uuidList = Array.from(userAliases).filter(a => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(a));
+        if (uuidList.length > 0) {
+          const { data: myListings } = await serverSupabase
+            .from('listings')
+            .select('id')
+            .in('user_id', uuidList);
+          if (Array.isArray(myListings)) {
+            myListings.forEach(l => myListingIds.add(String(l.id)));
+          }
+        }
+      } catch (e) {}
+    }
 
-    // 1. Query Supabase DB
+    // Gather all candidate chats from all sources
+    const allCandidateChats = [];
+
+    // 1. Supabase chats table
     if (serverSupabase) {
       try {
         const uuidList = Array.from(userAliases).filter(a => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(a));
@@ -70,21 +103,44 @@ export async function GET(req) {
           const { data: directChats } = await serverSupabase
             .from('chats')
             .select('*')
-            .or(`buyer_id.in.(${uuidList.join(',')}),seller_id.in.(${uuidList.join(',')})`)
-            .order('updated_at', { ascending: false });
-
+            .or(`buyer_id.in.(${uuidList.join(',')}),seller_id.in.(${uuidList.join(',')})`);
           if (Array.isArray(directChats)) {
-            myChats = directChats;
+            directChats.forEach(c => allCandidateChats.push(c));
           }
         }
       } catch (e) {}
     }
 
-    // 2. Include chats from local chatsStore
-    const localChats = getChats().filter(c => userAliases.has(c.buyer_id) || userAliases.has(c.seller_id));
-    const seenChatIds = new Set(myChats.map(c => c.id));
-    localChats.forEach(c => {
-      if (!seenChatIds.has(c.id)) {
+    // 2. Cloud persistent all_chats_list from admin_settings
+    if (serverSupabase) {
+      try {
+        const { data: row } = await serverSupabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'all_chats_list')
+          .maybeSingle();
+        if (row?.value) {
+          const cloudList = JSON.parse(row.value);
+          if (Array.isArray(cloudList)) {
+            cloudList.forEach(c => allCandidateChats.push(c));
+          }
+        }
+      } catch (e) {}
+    }
+
+    // 3. Local chatsStore
+    const localChats = getChats();
+    localChats.forEach(c => allCandidateChats.push(c));
+
+    // Deduplicate candidate chats by id and filter for this user
+    const seenChatIds = new Set();
+    const myChats = [];
+
+    allCandidateChats.forEach(c => {
+      if (!c?.id || seenChatIds.has(c.id)) return;
+      const isBuyer = userAliases.has(c.buyer_id) || userAliases.has(String(c.buyer_id).toLowerCase());
+      const isSeller = userAliases.has(c.seller_id) || userAliases.has(String(c.seller_id).toLowerCase()) || myListingIds.has(String(c.listing_id));
+      if (isBuyer || isSeller) {
         seenChatIds.add(c.id);
         myChats.push(c);
       }
@@ -93,32 +149,9 @@ export async function GET(req) {
     const globalListings = getGlobalListings();
     const allLocalMsgs = getMessages();
 
-    // Map profiles for fast partner lookup
-    let profilesMap = new Map();
-    if (serverSupabase) {
-      try {
-        const { data: profs } = await serverSupabase.from('profiles').select('id, email, full_name, avatar_url, last_seen');
-        if (profs) {
-          profs.forEach(p => {
-            profilesMap.set(p.id, p);
-            if (p.email) {
-              profilesMap.set(p.email.toLowerCase(), p);
-              profilesMap.set('user-' + p.email.toLowerCase().replace(/[^a-z0-9]/g, ''), p);
-            }
-          });
-        }
-      } catch (e) {}
-    }
-
-    // Build exact identifiers for the current viewer (to distinguish messages sent by self vs partner)
-    const currentViewerIds = new Set([
-      userId,
-      userEmail,
-      userEmail ? 'user-' + userEmail.replace(/[^a-z0-9]/g, '') : null
-    ].filter(Boolean));
-
-    const enriched = await Promise.all((myChats || []).map(async (chat) => {
-      const isBuyer = userAliases.has(chat.buyer_id);
+    // Enrich chats with listing, partner profile, lastMsg, unreadCount
+    const enriched = await Promise.all(myChats.map(async (chat) => {
+      const isBuyer = userAliases.has(chat.buyer_id) || userAliases.has(String(chat.buyer_id).toLowerCase());
       const partnerId = isBuyer ? chat.seller_id : chat.buyer_id;
 
       // 1. Get listing
@@ -136,12 +169,12 @@ export async function GET(req) {
       chat.listing = listing || { title: 'BikroyNow Item', images: ['https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800'] };
 
       // 2. Get partner profile
-      let partner = profilesMap.get(partnerId) || null;
+      let partner = profilesMap.get(partnerId) || profilesMap.get(String(partnerId).toLowerCase()) || null;
       if (!partner && serverSupabase && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(partnerId)) {
         try {
           const { data } = await serverSupabase
             .from('profiles')
-            .select('full_name, avatar_url, last_seen')
+            .select('full_name, avatar_url, last_seen, email')
             .eq('id', partnerId)
             .maybeSingle();
           if (data) partner = data;
@@ -149,31 +182,11 @@ export async function GET(req) {
       }
       chat.partner = partner || { full_name: isBuyer ? 'বিক্রেতা (Seller)' : 'ক্রেতা (Buyer)' };
 
-      // 3. Get last message and unread count
-      let lastMsg = null;
-      let unreadCount = 0;
-
+      // 3. Get messages for this chat (from all_settings + db + local)
       let chatMsgs = [];
-      if (serverSupabase && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(chat.id)) {
-        try {
-          const { data: msgs } = await serverSupabase
-            .from('messages')
-            .select('*')
-            .eq('chat_id', chat.id)
-            .order('created_at', { ascending: true });
-          if (Array.isArray(msgs)) chatMsgs = msgs;
-        } catch (e) {}
-      }
+      const seenMsgIds = new Set();
 
-      const chatLocalMsgs = allLocalMsgs.filter(m => m.chat_id === chat.id);
-      const seenMsgIds = new Set(chatMsgs.map(m => m.id));
-      chatLocalMsgs.forEach(m => {
-        if (!seenMsgIds.has(m.id)) {
-          seenMsgIds.add(m.id);
-          chatMsgs.push(m);
-        }
-      });
-      // Also include cloud messages from admin_settings
+      // Cloud messages from admin_settings
       if (serverSupabase) {
         try {
           const { data: row } = await serverSupabase
@@ -185,7 +198,7 @@ export async function GET(req) {
             const arr = JSON.parse(row.value);
             if (Array.isArray(arr)) {
               arr.forEach(m => {
-                if (!seenMsgIds.has(m.id)) {
+                if (m.id && !seenMsgIds.has(m.id)) {
                   seenMsgIds.add(m.id);
                   chatMsgs.push(m);
                 }
@@ -195,11 +208,41 @@ export async function GET(req) {
         } catch (e) {}
       }
 
+      // Supabase messages table if UUID
+      if (serverSupabase && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(chat.id)) {
+        try {
+          const { data: msgs } = await serverSupabase
+            .from('messages')
+            .select('*')
+            .eq('chat_id', chat.id)
+            .order('created_at', { ascending: true });
+          if (Array.isArray(msgs)) {
+            msgs.forEach(m => {
+              if (m.id && !seenMsgIds.has(m.id)) {
+                seenMsgIds.add(m.id);
+                chatMsgs.push(m);
+              }
+            });
+          }
+        } catch (e) {}
+      }
+
+      // Local store messages
+      const chatLocalMsgs = allLocalMsgs.filter(m => m.chat_id === chat.id);
+      chatLocalMsgs.forEach(m => {
+        if (m.id && !seenMsgIds.has(m.id)) {
+          seenMsgIds.add(m.id);
+          chatMsgs.push(m);
+        }
+      });
+
       chatMsgs.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
+      let lastMsg = null;
+      let unreadCount = 0;
       if (chatMsgs.length > 0) {
         lastMsg = chatMsgs[chatMsgs.length - 1];
-        unreadCount = chatMsgs.filter(m => !m.is_read && !currentViewerIds.has(m.sender_id)).length;
+        unreadCount = chatMsgs.filter(m => !m.is_read && !userAliases.has(m.sender_id) && !userAliases.has(String(m.sender_id).toLowerCase())).length;
       }
 
       const partnerWithLiveStatus = chat.partner ? {
@@ -216,7 +259,7 @@ export async function GET(req) {
       };
     }));
 
-    // Filter out chats linked to non-existent demo ads that have no active messages
+    // Filter out chats linked to non-existent demo ads that have no messages
     const validChats = enriched.filter(chat => {
       const isDemoId = String(chat.listing_id).startsWith('ad-1787678324480');
       if (isDemoId && !chat.lastMsg) return false;
