@@ -1,12 +1,10 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getServerSupabase } from '../../../../lib/serverSupabase';
 import { getGlobalListings } from '../../../../lib/globalListingsStore';
 import { getChats, getMessages } from '../../../../lib/chatsStore';
 import { getUserLastSeen } from '../../../../lib/userPresenceStore';
 
 export const dynamic = 'force-dynamic';
-
-
 
 export async function GET(req) {
   try {
@@ -16,11 +14,7 @@ export async function GET(req) {
       return NextResponse.json({ error: 'Missing user_id parameter' }, { status: 400 });
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const serverSupabase = (supabaseUrl && serviceRoleKey)
-      ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
-      : null;
+    const serverSupabase = getServerSupabase();
 
     // Build complete set of aliases for the current user
     const userAliases = new Set([userId, String(userId).toLowerCase()]);
@@ -30,7 +24,12 @@ export async function GET(req) {
 
     if (serverSupabase) {
       try {
-        const { data: allProfs } = await serverSupabase.from('profiles').select('id, email, full_name, avatar_url, last_seen');
+        const { data: allProfs, error: profsErr } = await serverSupabase
+          .from('profiles')
+          .select('id, email, full_name, avatar_url, last_seen');
+        if (profsErr) {
+          console.error('Error fetching profiles in chats/list:', profsErr);
+        }
         if (allProfs) {
           allProfs.forEach(p => {
             profilesMap.set(p.id, p);
@@ -52,10 +51,10 @@ export async function GET(req) {
             userAliases.add('user-' + userEmail.replace(/[^a-z0-9]/g, ''));
             userAliases.add(currentProf.id);
           }
-
-
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error('Exception fetching profiles:', e);
+      }
     }
 
     // Also collect all listings belonging to this user
@@ -78,7 +77,29 @@ export async function GET(req) {
     // Gather all candidate chats from all sources
     const allCandidateChats = [];
 
-    // 1. Supabase chats table
+    // 1. Cloud persistent all_chats_list from admin_settings
+    if (serverSupabase) {
+      try {
+        const { data: row, error: rowErr } = await serverSupabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'all_chats_list')
+          .maybeSingle();
+        if (rowErr) {
+          console.error('Error fetching all_chats_list in chats/list:', rowErr);
+        }
+        if (row?.value) {
+          const cloudList = JSON.parse(row.value);
+          if (Array.isArray(cloudList)) {
+            cloudList.forEach(c => allCandidateChats.push(c));
+          }
+        }
+      } catch (e) {
+        console.error('Exception loading all_chats_list:', e);
+      }
+    }
+
+    // 2. Supabase chats table (if UUID)
     if (serverSupabase) {
       try {
         const uuidList = Array.from(userAliases).filter(a => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(a));
@@ -94,24 +115,7 @@ export async function GET(req) {
       } catch (e) {}
     }
 
-    // 2. Cloud persistent all_chats_list from admin_settings
-    if (serverSupabase) {
-      try {
-        const { data: row } = await serverSupabase
-          .from('admin_settings')
-          .select('value')
-          .eq('key', 'all_chats_list')
-          .maybeSingle();
-        if (row?.value) {
-          const cloudList = JSON.parse(row.value);
-          if (Array.isArray(cloudList)) {
-            cloudList.forEach(c => allCandidateChats.push(c));
-          }
-        }
-      } catch (e) {}
-    }
-
-    // 3. Local chatsStore
+    // 3. Local chatsStore fallback
     const localChats = getChats();
     localChats.forEach(c => allCandidateChats.push(c));
 
@@ -165,7 +169,7 @@ export async function GET(req) {
       }
       chat.partner = partner || { full_name: isBuyer ? 'বিক্রেতা (Seller)' : 'ক্রেতা (Buyer)' };
 
-      // 3. Get messages for this chat (from all_settings + db + local)
+      // 3. Get messages for this chat (from admin_settings + db + local)
       let chatMsgs = [];
       const seenMsgIds = new Set();
 

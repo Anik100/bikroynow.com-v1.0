@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getServerSupabase } from '../../../lib/serverSupabase';
 import { createOrGetChat } from '../../../lib/chatsStore';
 
 export const dynamic = 'force-dynamic';
@@ -13,21 +13,20 @@ export async function POST(req) {
 
     const isValidUUID = (str) => typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const serverSupabase = (supabaseUrl && serviceRoleKey)
-      ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
-      : null;
+    const serverSupabase = getServerSupabase();
 
     // 1. Check if chat already exists in Supabase admin_settings cloud store
     let allChats = [];
     if (serverSupabase) {
       try {
-        const { data: row } = await serverSupabase
+        const { data: row, error: rowErr } = await serverSupabase
           .from('admin_settings')
           .select('value')
           .eq('key', 'all_chats_list')
           .maybeSingle();
+        if (rowErr) {
+          console.error('Error reading all_chats_list from admin_settings:', rowErr);
+        }
         if (row?.value) {
           try { allChats = JSON.parse(row.value); } catch (e) {}
         }
@@ -41,7 +40,9 @@ export async function POST(req) {
             return NextResponse.json({ success: true, id: existing.id });
           }
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error('Exception reading all_chats_list:', e);
+      }
     }
 
     // 2. Check if chat already exists in Supabase chats table (if UUIDs)
@@ -77,10 +78,13 @@ export async function POST(req) {
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           });
-          await serverSupabase.from('admin_settings').upsert({
+          const { error: upsertErr } = await serverSupabase.from('admin_settings').upsert({
             key: 'all_chats_list',
             value: JSON.stringify(allChats)
           }, { onConflict: 'key' });
+          if (upsertErr) {
+            console.error('Error upserting all_chats_list:', upsertErr);
+          }
         }
 
         // Try direct insert into chats table if valid UUIDs
@@ -95,7 +99,9 @@ export async function POST(req) {
             })
             .catch(() => {});
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error('Exception saving new chat to cloud:', e);
+      }
     }
 
     return NextResponse.json({ success: true, id: localChatId });

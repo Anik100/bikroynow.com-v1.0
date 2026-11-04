@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getServerSupabase } from '../../../../lib/serverSupabase';
 import { getGlobalListings } from '../../../../lib/globalListingsStore';
 import { getChats } from '../../../../lib/chatsStore';
 import { getUserLastSeen } from '../../../../lib/userPresenceStore';
@@ -8,35 +8,37 @@ export const dynamic = 'force-dynamic';
 
 export async function GET(req, { params }) {
   try {
-    const { id } = params;
+    const resolvedParams = await params;
+    const id = resolvedParams?.id;
     if (!id) {
       return NextResponse.json({ error: 'Chat ID missing' }, { status: 400 });
     }
 
     const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const serverSupabase = (supabaseUrl && serviceRoleKey) 
-      ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } }) 
-      : null;
+    const serverSupabase = getServerSupabase();
 
     let chat = null;
 
     // 1. Check cloud persistent all_chats_list from admin_settings
     if (serverSupabase) {
       try {
-        const { data: row } = await serverSupabase
+        const { data: row, error: rowErr } = await serverSupabase
           .from('admin_settings')
           .select('value')
           .eq('key', 'all_chats_list')
           .maybeSingle();
+        if (rowErr) {
+          console.error('Error fetching all_chats_list in chats/[id]:', rowErr);
+        }
         if (row?.value) {
           const list = JSON.parse(row.value);
           if (Array.isArray(list)) {
             chat = list.find(c => c.id === id) || null;
           }
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error('Exception reading all_chats_list:', e);
+      }
     }
 
     // 2. If valid UUID, try querying Supabase DB / RPC
@@ -141,8 +143,8 @@ export async function GET(req, { params }) {
     chat.buyer = buyer || { full_name: 'ক্রেতা (Buyer)' };
     chat.seller = seller || { full_name: 'বিক্রেতা (Seller)' };
 
-    chat.buyer.last_seen = getUserLastSeen(chat.buyer_id, chat.buyer.email, chat.buyer.last_seen);
-    chat.seller.last_seen = getUserLastSeen(chat.seller_id, chat.seller.email, chat.seller.last_seen);
+    chat.buyer.last_seen = getUserLastSeen(chat.buyer_id, chat.buyer?.email, chat.buyer?.last_seen);
+    chat.seller.last_seen = getUserLastSeen(chat.seller_id, chat.seller?.email, chat.seller?.last_seen);
 
     return NextResponse.json({ success: true, chat }, {
       headers: {

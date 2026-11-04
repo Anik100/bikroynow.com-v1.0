@@ -1,18 +1,19 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { getServerSupabase } from '../../../../../lib/serverSupabase';
 import { getMessages, saveMessages } from '../../../../../lib/chatsStore';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req, { params }) {
   try {
-    const { id } = params;
+    const resolvedParams = await params;
+    const id = resolvedParams?.id;
+    if (!id) {
+      return NextResponse.json({ error: 'Chat ID missing' }, { status: 400 });
+    }
+
     const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const serverSupabase = (supabaseUrl && serviceRoleKey)
-      ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
-      : null;
+    const serverSupabase = getServerSupabase();
 
     let dbMsgs = [];
     if (isValidUUID && serverSupabase) {
@@ -79,7 +80,12 @@ export async function GET(req, { params }) {
 
 export async function POST(req, { params }) {
   try {
-    const { id } = params;
+    const resolvedParams = await params;
+    const id = resolvedParams?.id;
+    if (!id) {
+      return NextResponse.json({ error: 'Chat ID missing' }, { status: 400 });
+    }
+
     const { sender_id, content, image_url } = await req.json();
 
     if (!content && !image_url) {
@@ -96,11 +102,7 @@ export async function POST(req, { params }) {
       is_read: false
     };
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const serverSupabase = (supabaseUrl && serviceRoleKey)
-      ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
-      : null;
+    const serverSupabase = getServerSupabase();
 
     // 1. Central persistent cloud store via admin_settings (works 100% reliably for ALL chats)
     if (serverSupabase) {
