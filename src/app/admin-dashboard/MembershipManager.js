@@ -382,7 +382,7 @@ export default function MembershipManager() {
             }
           }
         }
-      } else if (status === 'rejected') {
+      } else if (status === 'rejected' || status === 'pending') {
         const { data: purchase } = await supabase
           .from('membership_purchases')
           .select('*')
@@ -390,20 +390,33 @@ export default function MembershipManager() {
           .single();
 
         if (purchase) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('id')
-            .eq('email', purchase.user_email)
-            .single();
+          if (purchase.listing_id) {
+            const revertUpdates = {
+              promotion_type: null,
+              is_verified: false
+            };
+            try {
+              await supabase.from('listings').update(revertUpdates).eq('id', purchase.listing_id);
+              await supabase.from('featured_ads').delete().eq('listing_id', purchase.listing_id);
+            } catch (e) {}
 
-          if (profile) {
-            await supabase
-              .from('profiles')
-              .update({
-                membership_type: 'free',
-                membership_expires_at: null
-              })
-              .eq('id', profile.id);
+            fetch('/api/listings', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: purchase.listing_id, ...revertUpdates })
+            }).catch(() => {});
+          }
+
+          if (purchase.user_email) {
+            try {
+              await supabase
+                .from('profiles')
+                .update({
+                  membership_type: 'free',
+                  membership_expires_at: null
+                })
+                .ilike('email', purchase.user_email.trim());
+            } catch (e) {}
           }
         }
       }

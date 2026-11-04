@@ -92,6 +92,38 @@ export async function POST(req) {
             .eq('id', profile.id);
         }
       }
+    } else if (status === 'pending' || status === 'rejected') {
+      // AUTOMATICALLY REVERT BOOST WHEN RESET TO PENDING OR REJECTED!
+      if (purchase.listing_id) {
+        const revertUpdates = {
+          promotion_type: null,
+          is_verified: false
+        };
+
+        await serverSupabase
+          .from('listings')
+          .update(revertUpdates)
+          .eq('id', purchase.listing_id);
+
+        updateGlobalListing(purchase.listing_id, revertUpdates);
+
+        // Remove from featured_ads slider immediately
+        await serverSupabase
+          .from('featured_ads')
+          .delete()
+          .eq('listing_id', purchase.listing_id);
+      }
+
+      // Revert user profile membership back to free
+      if (purchase.user_email) {
+        await serverSupabase
+          .from('profiles')
+          .update({
+            membership_type: 'free',
+            membership_expires_at: null
+          })
+          .ilike('email', purchase.user_email.trim());
+      }
     }
 
     // Update status in membership_purchases

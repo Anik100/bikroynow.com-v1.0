@@ -1159,7 +1159,7 @@ export default function AdminDashboard() {
             }
           }
         }
-      } else if (status === 'rejected') {
+      } else if (status === 'rejected' || status === 'pending') {
         const { data: purchase } = await supabase
           .from('membership_purchases')
           .select('*')
@@ -1167,20 +1167,38 @@ export default function AdminDashboard() {
           .single();
 
         if (purchase) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('id')
-            .ilike('email', purchase.user_email.trim())
-            .single();
+          // Revert boosted ad if present
+          if (purchase.listing_id) {
+            const revertUpdates = {
+              promotion_type: null,
+              is_verified: false
+            };
+            try {
+              await supabase.from('listings').update(revertUpdates).eq('id', purchase.listing_id);
+              await supabase.from('featured_ads').delete().eq('listing_id', purchase.listing_id);
+            } catch (e) {}
 
-          if (profile) {
-            await supabase
-              .from('profiles')
-              .update({
-                membership_type: 'free',
-                membership_expires_at: null
-              })
-              .eq('id', profile.id);
+            fetch('/api/listings', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: purchase.listing_id, ...revertUpdates })
+            }).catch(() => {});
+
+            setFeaturedList(prev => prev.filter(item => item.listing_id !== purchase.listing_id));
+            setListings(prev => prev.map(ad => ad.id === purchase.listing_id ? { ...ad, ...revertUpdates } : ad));
+          }
+
+          // Revert user profile membership
+          if (purchase.user_email) {
+            try {
+              await supabase
+                .from('profiles')
+                .update({
+                  membership_type: 'free',
+                  membership_expires_at: null
+                })
+                .ilike('email', purchase.user_email.trim());
+            } catch (e) {}
           }
         }
       }
@@ -2586,7 +2604,7 @@ export default function AdminDashboard() {
                       {ad.status === 'active' && (
                         <>
                           {/* Promotion Level Selector */}
-                          <div style={{ flex: '1 1 130px', minWidth: '130px' }}>
+                          <div style={{ flex: '1 1 130px', minWidth: '130px', display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
                             <select
                               value={ad.promotion_type || (ad.is_verified ? 'Premium Listing' : '')}
                               onChange={(e) => {

@@ -87,14 +87,23 @@ export async function POST(req) {
         return NextResponse.json({ error: 'listing_id is required' }, { status: 400 });
       }
 
-      const existingIndex = currentFeatured.findIndex(item => item.listing_id === listing_id);
-      if (existingIndex >= 0) {
-        // Remove from featured
-        const removedItem = currentFeatured[existingIndex];
-        currentFeatured.splice(existingIndex, 1);
-        saveGlobalFeaturedAds(currentFeatured);
+      let inDb = false;
+      if (supabase) {
+        try {
+          const { data } = await supabase.from('featured_ads').select('id').eq('listing_id', listing_id).maybeSingle();
+          if (data?.id) inDb = true;
+        } catch (e) {}
+      }
 
-        if (supabase && removedItem.id) {
+      const existingIndex = currentFeatured.findIndex(item => item.listing_id === listing_id);
+      if (existingIndex >= 0 || inDb) {
+        // Remove from featured
+        if (existingIndex >= 0) {
+          currentFeatured.splice(existingIndex, 1);
+          saveGlobalFeaturedAds(currentFeatured);
+        }
+
+        if (supabase) {
           try {
             await supabase.from('featured_ads').delete().eq('listing_id', listing_id);
           } catch (e) {}
@@ -140,24 +149,29 @@ export async function POST(req) {
     }
 
     if (action === 'update') {
+      let sbItem = null;
+      if (supabase && (id || listing_id)) {
+        try {
+          const updates = {};
+          if (typeof is_active === 'boolean') updates.is_active = is_active;
+          if (typeof sort_order === 'number') updates.sort_order = sort_order;
+
+          let query = supabase.from('featured_ads').update(updates);
+          if (id) query = query.eq('id', id);
+          else if (listing_id) query = query.eq('listing_id', listing_id);
+          const { data } = await query.select().maybeSingle();
+          if (data) sbItem = data;
+        } catch (e) {}
+      }
+
       const target = currentFeatured.find(i => i.id === id || i.listing_id === listing_id);
       if (target) {
         if (typeof is_active === 'boolean') target.is_active = is_active;
         if (typeof sort_order === 'number') target.sort_order = sort_order;
         saveGlobalFeaturedAds(currentFeatured);
-
-        if (supabase && target.id) {
-          try {
-            await supabase.from('featured_ads').update({
-              is_active: target.is_active,
-              sort_order: target.sort_order
-            }).eq('id', target.id);
-          } catch (e) {}
-        }
-
-        return NextResponse.json({ success: true, item: target });
       }
-      return NextResponse.json({ error: 'Item not found' }, { status: 404 });
+
+      return NextResponse.json({ success: true, item: sbItem || target || { id, is_active, sort_order } });
     }
 
     if (action === 'delete') {
