@@ -242,7 +242,7 @@ export default function MyAds() {
               {lang === 'bn' ? 'বিজ্ঞাপন ডিলিট করবেন?' : 'Delete Ad?'}
             </h3>
             <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-              "{deleteTarget.title}" {lang === 'bn' ? 'বিজ্ঞাপনটি স্থায়ীভাবে মুছে যাবে।' : 'will be permanently deleted.'}
+              &quot;{deleteTarget.title}&quot; {lang === 'bn' ? 'বিজ্ঞাপনটি স্থায়ীভাবে মুছে যাবে।' : 'will be permanently deleted.'}
             </p>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button

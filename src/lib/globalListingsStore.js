@@ -59,6 +59,21 @@ export function getGlobalListings() {
   }
 }
 
+export function saveGlobalListing(ad) {
+  try {
+    const current = getGlobalListings();
+    const updated = [ad, ...current.filter(item => String(item.id) !== String(ad?.id))];
+    if (!fs.existsSync(STORE_DIR)) {
+      fs.mkdirSync(STORE_DIR, { recursive: true });
+    }
+    fs.writeFileSync(STORE_FILE, JSON.stringify(updated, null, 2), 'utf8');
+    return updated;
+  } catch (err) {
+    console.error('Error saving global listing:', err);
+    return [];
+  }
+}
+
 export function deleteGlobalListing(id) {
   try {
     const current = getGlobalListings();

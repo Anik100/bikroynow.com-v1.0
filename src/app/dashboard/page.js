@@ -69,7 +69,7 @@ export default function Dashboard() {
         <div className={styles.adList}>
           {myAds.length === 0 ? (
             <div className={styles.emptyState}>
-              <p>You haven't posted any ads yet.</p>
+              <p>You haven&apos;t posted any ads yet.</p>
             </div>
           ) : (
             myAds.map(ad => (

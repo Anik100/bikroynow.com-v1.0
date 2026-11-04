@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Search, MessageCircle, User, PlusCircle, Globe, MapPin, X, Home as HomeIcon, ChevronRight, ArrowRight, Heart, Crown } from 'lucide-react';
-import { supabase } from '../lib/supabaseClient';
+import { supabase, syncUserProfile } from '../lib/supabaseClient';
 import { useLanguage } from '../context/LanguageContext';
 import { LOCATIONS } from '../lib/constants';
 import ProfileMenu from './ProfileMenu';
@@ -221,6 +221,7 @@ export default function Navbar() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         setUser(session.user);
+        syncUserProfile(session.user);
       } else {
         const localUser = localStorage.getItem('bikroynow_demo_user');
         if (localUser) {
@@ -237,6 +238,7 @@ export default function Navbar() {
       (event, session) => {
         if (session?.user) {
           setUser(session.user);
+        syncUserProfile(session.user);
         } else {
           const localUser = localStorage.getItem('bikroynow_demo_user');
           if (localUser) {
