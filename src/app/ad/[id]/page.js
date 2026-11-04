@@ -1006,6 +1006,35 @@ export default function AdDetails({ params }) {
                       if (chatRes.ok) {
                         const chatJson = await chatRes.json();
                         if (chatJson.id) {
+                          try {
+                            const instantChatObj = {
+                              id: chatJson.id,
+                              listing_id: ad.id,
+                              buyer_id: activeUser.id,
+                              seller_id: ad.user_id || 'seller-business-1',
+                              created_at: new Date().toISOString(),
+                              listing: {
+                                id: ad.id,
+                                title: ad.title,
+                                images: ad.images || [],
+                                price: ad.price,
+                                location: ad.location || ''
+                              },
+                              seller: profile || {
+                                full_name: 'বিক্রেতা (Seller)',
+                                avatar_url: null,
+                                email: null
+                              },
+                              buyer: {
+                                id: activeUser.id,
+                                full_name: activeUser.user_metadata?.full_name || activeUser.email || 'ক্রেতা (Buyer)',
+                                avatar_url: activeUser.user_metadata?.avatar_url || null,
+                                email: activeUser.email
+                              }
+                            };
+                            localStorage.setItem('bikroynow_chat_meta_' + chatJson.id, JSON.stringify(instantChatObj));
+                          } catch (e) {}
+
                           router.push(`/chat/${chatJson.id}`);
                           return;
                         }

@@ -15,11 +15,35 @@ export default function ChatWindow({ params }) {
   const effectiveId = routeParams?.id || params?.id;
   const { t, lang } = useLanguage();
   const router = useRouter();
-  const [chat, setChat] = useState(null);
-  const [messages, setMessages] = useState([]);
+  const [chat, setChat] = useState(() => {
+    if (typeof window !== 'undefined' && effectiveId) {
+      try {
+        const cachedMeta = localStorage.getItem('bikroynow_chat_meta_' + effectiveId);
+        if (cachedMeta) return JSON.parse(cachedMeta);
+      } catch (e) {}
+    }
+    return null;
+  });
+  const [messages, setMessages] = useState(() => {
+    if (typeof window !== 'undefined' && effectiveId) {
+      try {
+        const cached = localStorage.getItem('bikroynow_chat_' + effectiveId);
+        if (cached) return JSON.parse(cached);
+      } catch (e) {}
+    }
+    return [];
+  });
   const [newMessage, setNewMessage] = useState('');
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => {
+    if (typeof window !== 'undefined' && effectiveId) {
+      try {
+        const cachedMeta = localStorage.getItem('bikroynow_chat_meta_' + effectiveId);
+        if (cachedMeta) return false;
+      } catch (e) {}
+    }
+    return true;
+  });
   const [sending, setSending] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [zoomScale, setZoomScale] = useState(1);
@@ -211,11 +235,6 @@ export default function ChatWindow({ params }) {
     let isCancelled = false;
     if (!effectiveId) return;
 
-    // Safety fallback: Never keep screen stuck on loading for more than 2.5s
-    const safetyTimer = setTimeout(() => {
-      if (!isCancelled) setLoading(false);
-    }, 2500);
-
     const setupChat = async () => {
       let activeUser = null;
       const { data: { session } } = await supabase.auth.getSession();
@@ -281,7 +300,19 @@ export default function ChatWindow({ params }) {
       if (!isCancelled) {
         if (chatData) {
           setChat(chatData);
+          try {
+            localStorage.setItem('bikroynow_chat_meta_' + effectiveId, JSON.stringify(chatData));
+          } catch (e) {}
           fetchMessages();
+        } else {
+          // If server failed, check if we have cached metadata in localStorage
+          try {
+            const cachedMeta = localStorage.getItem('bikroynow_chat_meta_' + effectiveId);
+            if (cachedMeta) {
+              setChat(JSON.parse(cachedMeta));
+              fetchMessages();
+            }
+          } catch (e) {}
         }
         setLoading(false);
       }
@@ -340,7 +371,6 @@ export default function ChatWindow({ params }) {
 
     return () => {
       isCancelled = true;
-      clearTimeout(safetyTimer);
       clearInterval(interval);
       supabase.removeChannel(channel);
     };
@@ -489,14 +519,23 @@ export default function ChatWindow({ params }) {
   if (!chat) return (
     <div className="container" style={{maxWidth: '500px', padding: '5rem 1.5rem', textAlign: 'center'}}>
       <h3 style={{fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.5rem'}}>
-        {lang === 'bn' ? 'চ্যাট সেশন পাওয়া যায়নি' : 'Chat session not found'}
+        {lang === 'bn' ? 'চ্যাট সেশন লোড হচ্ছে...' : 'Loading chat session...'}
       </h3>
       <p style={{fontSize: '0.9rem', color: '#64748b', marginBottom: '1.5rem'}}>
-        {lang === 'bn' ? 'বিজ্ঞাপনটি ডিলিট হয়ে গিয়ে থাকতে পারে।' : 'The listing or chat session may have been removed.'}
+        {lang === 'bn' ? 'অনুগ্রহ করে অপেক্ষা করুন অথবা রিফ্রেশ করুন।' : 'Please wait or refresh the page.'}
       </p>
-      <Link href="/chat" className="btn-primary" style={{borderRadius: '12px', padding: '0.75rem 2rem', textDecoration: 'none', display: 'inline-block'}}>
-        {lang === 'bn' ? 'মেসেজ তালিকায় যান' : 'Go to Messages'}
-      </Link>
+      <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+        <button 
+          onClick={() => window.location.reload()} 
+          className="btn-primary" 
+          style={{borderRadius: '12px', padding: '0.75rem 1.75rem', border: 'none', cursor: 'pointer'}}
+        >
+          {lang === 'bn' ? 'রিফ্রেশ করুন' : 'Refresh'}
+        </button>
+        <Link href="/chat" style={{borderRadius: '12px', padding: '0.75rem 1.75rem', textDecoration: 'none', background: '#f1f5f9', color: '#334155', fontWeight: 700}}>
+          {lang === 'bn' ? 'মেসেজ তালিকায় যান' : 'Go to Messages'}
+        </Link>
+      </div>
     </div>
   );
 
