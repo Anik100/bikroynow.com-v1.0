@@ -230,18 +230,85 @@ export default function AdminDashboard() {
     }
   }, [supportMessages]);
 
-  const getPurchaseFilterBtnStyle = (isActive, activeColor) => ({
-    background: isActive ? activeColor : 'white',
-    color: isActive ? 'white' : '#475569',
-    border: `1px solid ${isActive ? activeColor : '#cbd5e1'}`,
-    borderRadius: '6px',
-    padding: '0.3rem 0.7rem',
-    fontSize: '0.75rem',
-    fontWeight: 700,
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    outline: 'none'
-  });
+  const getPurchaseFilterBtnStyle = (isActive, activeColor, type = 'all') => {
+    const base = {
+      padding: '0.45rem 1rem',
+      borderRadius: '10px',
+      fontSize: '0.78rem',
+      fontWeight: 800,
+      cursor: 'pointer',
+      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+      outline: 'none',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.4rem',
+    };
+
+    if (type === 'all') {
+      return {
+        ...base,
+        background: isActive ? 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)' : '#ffffff',
+        color: isActive ? '#ffffff' : '#475569',
+        border: isActive ? '1px solid transparent' : '1px solid #cbd5e1',
+        boxShadow: isActive ? '0 4px 12px rgba(15, 23, 42, 0.25)' : '0 1px 3px rgba(0,0,0,0.03)',
+      };
+    }
+    if (type === 'pending') {
+      return {
+        ...base,
+        background: isActive ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : '#fffbeb',
+        color: isActive ? '#ffffff' : '#b45309',
+        border: isActive ? '1px solid transparent' : '1px solid #fde68a',
+        boxShadow: isActive ? '0 4px 14px rgba(245, 158, 11, 0.35)' : '0 1px 3px rgba(245, 158, 11, 0.08)',
+      };
+    }
+    if (type === 'approved') {
+      return {
+        ...base,
+        background: isActive ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : '#f0fdf4',
+        color: isActive ? '#ffffff' : '#15803d',
+        border: isActive ? '1px solid transparent' : '1px solid #bbf7d0',
+        boxShadow: isActive ? '0 4px 14px rgba(16, 185, 129, 0.35)' : '0 1px 3px rgba(16, 185, 129, 0.08)',
+      };
+    }
+    if (type === 'rejected') {
+      return {
+        ...base,
+        background: isActive ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : '#fef2f2',
+        color: isActive ? '#ffffff' : '#b91c1c',
+        border: isActive ? '1px solid transparent' : '1px solid #fecaca',
+        boxShadow: isActive ? '0 4px 14px rgba(239, 68, 68, 0.35)' : '0 1px 3px rgba(239, 68, 68, 0.08)',
+      };
+    }
+    return {
+      ...base,
+      background: isActive ? activeColor : 'white',
+      color: isActive ? 'white' : '#475569',
+      border: `1px solid ${isActive ? activeColor : '#cbd5e1'}`,
+    };
+  };
+
+  const getTabButtonStyle = (tabKey, activeColorGradient, inactiveIconColor, activeShadow) => {
+    const isActive = activeTab === tabKey;
+    return {
+      position: 'relative',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.55rem',
+      padding: '0.65rem 1.15rem',
+      borderRadius: '12px',
+      border: isActive ? '1px solid transparent' : '1px solid #e2e8f0',
+      background: isActive ? activeColorGradient : '#ffffff',
+      color: isActive ? '#ffffff' : '#334155',
+      fontWeight: 800,
+      cursor: 'pointer',
+      fontSize: '0.84rem',
+      boxShadow: isActive ? activeShadow : '0 1px 3px rgba(0, 0, 0, 0.04)',
+      transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+      transform: isActive ? 'scale(1.02)' : 'scale(1)',
+      outline: 'none',
+    };
+  };
 
   // Restore the selected tab on page reload
   useEffect(() => {
@@ -1647,19 +1714,10 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => handleTabChange('ads')}
                   className={styles.tabNavButton}
-                  style={{
-                    position: 'relative',
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    padding: '0.65rem 1.25rem', borderRadius: '12px', border: 'none',
-                    background: activeTab === 'ads' ? 'white' : 'transparent',
-                    color: activeTab === 'ads' ? '#008b5e' : '#64748b',
-                    fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem',
-                    boxShadow: activeTab === 'ads' ? '0 4px 12px rgba(0, 0, 0, 0.05)' : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    transform: activeTab === 'ads' ? 'scale(1)' : 'scale(0.97)',
-                  }}
+                  style={getTabButtonStyle('ads', 'linear-gradient(135deg, #008b5e 0%, #059669 100%)', '#008b5e', '0 4px 14px rgba(0, 139, 94, 0.35)')}
                 >
-                  <LayoutDashboard size={15} color={activeTab === 'ads' ? '#008b5e' : '#64748b'} /> {lang === 'bn' ? 'অ্যাড মডারেশন' : 'Ads Moderation'}
+                  <LayoutDashboard size={16} color={activeTab === 'ads' ? '#ffffff' : '#008b5e'} /> 
+                  <span>{lang === 'bn' ? 'অ্যাড মডারেশন' : 'Ads Moderation'}</span>
                   {pendingAds > 0 && (
                     <span style={{
                       position: 'absolute',
@@ -1691,18 +1749,10 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => handleTabChange('featured_ads')}
                   className={styles.tabNavButton}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    padding: '0.65rem 1.25rem', borderRadius: '12px', border: 'none',
-                    background: activeTab === 'featured_ads' ? 'white' : 'transparent',
-                    color: activeTab === 'featured_ads' ? '#008b5e' : '#64748b',
-                    fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem',
-                    boxShadow: activeTab === 'featured_ads' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    transform: activeTab === 'featured_ads' ? 'scale(1)' : 'scale(0.97)',
-                  }}
+                  style={getTabButtonStyle('featured_ads', 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', '#d97706', '0 4px 14px rgba(245, 158, 11, 0.35)')}
                 >
-                  <Star size={15} color={activeTab === 'featured_ads' ? '#008b5e' : '#64748b'} /> {lang === 'bn' ? 'ফিচার্ড বিজ্ঞাপন' : 'Featured Ads'}
+                  <Star size={16} color={activeTab === 'featured_ads' ? '#ffffff' : '#d97706'} fill={activeTab === 'featured_ads' ? '#ffffff' : 'none'} /> 
+                  <span>{lang === 'bn' ? 'ফিচার্ড বিজ্ঞাপন' : 'Featured Ads'}</span>
                 </button>
               )}
 
@@ -1711,18 +1761,10 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => handleTabChange('memberships')}
                   className={styles.tabNavButton}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    padding: '0.65rem 1.25rem', borderRadius: '12px', border: 'none',
-                    background: activeTab === 'memberships' ? 'white' : 'transparent',
-                    color: activeTab === 'memberships' ? '#008b5e' : '#64748b',
-                    fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem',
-                    boxShadow: activeTab === 'memberships' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    transform: activeTab === 'memberships' ? 'scale(1)' : 'scale(0.97)',
-                  }}
+                  style={getTabButtonStyle('memberships', 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)', '#7c3aed', '0 4px 14px rgba(139, 92, 246, 0.35)')}
                 >
-                  <Package size={15} color={activeTab === 'memberships' ? '#008b5e' : '#64748b'} /> {lang === 'bn' ? 'মেম্বারশিপ অফার' : 'Membership Offers'}
+                  <Package size={16} color={activeTab === 'memberships' ? '#ffffff' : '#7c3aed'} /> 
+                  <span>{lang === 'bn' ? 'মেম্বারশিপ অফার' : 'Membership Offers'}</span>
                 </button>
               )}
 
@@ -1731,18 +1773,10 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => handleTabChange('gateways')}
                   className={styles.tabNavButton}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    padding: '0.65rem 1.25rem', borderRadius: '12px', border: 'none',
-                    background: activeTab === 'gateways' ? 'white' : 'transparent',
-                    color: activeTab === 'gateways' ? '#008b5e' : '#64748b',
-                    fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem',
-                    boxShadow: activeTab === 'gateways' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    transform: activeTab === 'gateways' ? 'scale(1)' : 'scale(0.97)',
-                  }}
+                  style={getTabButtonStyle('gateways', 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)', '#0284c7', '0 4px 14px rgba(2, 132, 199, 0.35)')}
                 >
-                  <Settings size={15} color={activeTab === 'gateways' ? '#008b5e' : '#64748b'} /> {lang === 'bn' ? 'পেমেন্ট গেটওয়ে' : 'Payment Gateways'}
+                  <Settings size={16} color={activeTab === 'gateways' ? '#ffffff' : '#0284c7'} /> 
+                  <span>{lang === 'bn' ? 'পেমেন্ট গেটওয়ে' : 'Payment Gateways'}</span>
                 </button>
               )}
 
@@ -1751,32 +1785,23 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => handleTabChange('payment_info')}
                   className={styles.tabNavButton}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    padding: '0.65rem 1.25rem', borderRadius: '12px', border: 'none',
-                    background: activeTab === 'payment_info' ? 'white' : 'transparent',
-                    color: activeTab === 'payment_info' ? '#008b5e' : '#64748b',
-                    fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem',
-                    boxShadow: activeTab === 'payment_info' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    transform: activeTab === 'payment_info' ? 'scale(1)' : 'scale(0.97)',
-                  }}
+                  style={getTabButtonStyle('payment_info', 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)', '#ea580c', '0 4px 14px rgba(234, 88, 12, 0.38)')}
                 >
-                  {lang === 'bn' ? 'পেমেন্ট ইনফো' : 'Payment Info'}
-                  <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                    <Bell size={15} color={activeTab === 'payment_info' ? '#008b5e' : '#64748b'} />
-                    {purchases.filter(p => p.status === 'pending').length > 0 && (
-                      <span style={{
-                        position: 'absolute', top: '-8px', right: '-10px',
-                        background: '#ef4444', color: 'white', fontSize: '0.65rem', fontWeight: 900,
-                        width: '18px', height: '18px', borderRadius: '50%',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        border: '1.5px solid white',
-                      }}>
-                        {purchases.filter(p => p.status === 'pending').length}
-                      </span>
-                    )}
-                  </div>
+                  <Bell size={16} color={activeTab === 'payment_info' ? '#ffffff' : '#ea580c'} />
+                  <span>{lang === 'bn' ? 'পেমেন্ট ইনফো' : 'Payment Info'}</span>
+                  {purchases.filter(p => p.status === 'pending').length > 0 && (
+                    <span style={{
+                      background: activeTab === 'payment_info' ? '#ffffff' : '#ef4444',
+                      color: activeTab === 'payment_info' ? '#ea580c' : '#ffffff',
+                      fontSize: '0.68rem', fontWeight: 900,
+                      minWidth: '20px', height: '20px', borderRadius: '50%',
+                      display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                      border: '2px solid white',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
+                    }}>
+                      {purchases.filter(p => p.status === 'pending').length}
+                    </span>
+                  )}
                 </button>
               )}
 
@@ -1785,18 +1810,10 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => handleTabChange('users')}
                   className={styles.tabNavButton}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    padding: '0.65rem 1.25rem', borderRadius: '12px', border: 'none',
-                    background: activeTab === 'users' ? 'white' : 'transparent',
-                    color: activeTab === 'users' ? '#008b5e' : '#64748b',
-                    fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem',
-                    boxShadow: activeTab === 'users' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    transform: activeTab === 'users' ? 'scale(1)' : 'scale(0.97)',
-                  }}
+                  style={getTabButtonStyle('users', 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', '#2563eb', '0 4px 14px rgba(59, 130, 246, 0.35)')}
                 >
-                  <Users size={15} color={activeTab === 'users' ? '#008b5e' : '#64748b'} /> {lang === 'bn' ? 'ইউজার মেম্বারশিপ' : 'User Memberships'}
+                  <Users size={16} color={activeTab === 'users' ? '#ffffff' : '#2563eb'} /> 
+                  <span>{lang === 'bn' ? 'ইউজার মেম্বারশিপ' : 'User Memberships'}</span>
                 </button>
               )}
 
@@ -1805,18 +1822,9 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => handleTabChange('support')}
                   className={styles.tabNavButton}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    padding: '0.65rem 1.25rem', borderRadius: '12px', border: 'none',
-                    background: activeTab === 'support' ? 'white' : 'transparent',
-                    color: activeTab === 'support' ? '#008b5e' : '#64748b',
-                    fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem',
-                    boxShadow: activeTab === 'support' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    transform: activeTab === 'support' ? 'scale(1)' : 'scale(0.97)',
-                  }}
+                  style={getTabButtonStyle('support', 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)', '#0891b2', '0 4px 14px rgba(6, 182, 212, 0.35)')}
                 >
-                  <MessageSquare size={15} color={activeTab === 'support' ? '#008b5e' : '#64748b'} /> 
+                  <MessageSquare size={16} color={activeTab === 'support' ? '#ffffff' : '#0891b2'} /> 
                   <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                     {lang === 'bn' ? 'লাইভ সাপোর্ট' : 'Live Support'}
                     {totalUnreadSupport > 0 && (
@@ -1833,18 +1841,10 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => handleTabChange('support_settings')}
                   className={styles.tabNavButton}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    padding: '0.65rem 1.25rem', borderRadius: '12px', border: 'none',
-                    background: activeTab === 'support_settings' ? 'white' : 'transparent',
-                    color: activeTab === 'support_settings' ? '#008b5e' : '#64748b',
-                    fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem',
-                    boxShadow: activeTab === 'support_settings' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    transform: activeTab === 'support_settings' ? 'scale(1)' : 'scale(0.97)',
-                  }}
+                  style={getTabButtonStyle('support_settings', 'linear-gradient(135deg, #64748b 0%, #334155 100%)', '#475569', '0 4px 14px rgba(71, 85, 105, 0.35)')}
                 >
-                  <Settings size={15} color={activeTab === 'support_settings' ? '#008b5e' : '#64748b'} /> {lang === 'bn' ? 'সাপোর্ট কাস্টমাইজেশন' : 'Support Customization'}
+                  <Settings size={16} color={activeTab === 'support_settings' ? '#ffffff' : '#475569'} /> 
+                  <span>{lang === 'bn' ? 'সাপোর্ট কাস্টমাইজেশন' : 'Support Customization'}</span>
                 </button>
               )}
 
@@ -1853,18 +1853,10 @@ export default function AdminDashboard() {
                 <button
                   onClick={() => handleTabChange('moderators')}
                   className={styles.tabNavButton}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: '0.5rem',
-                    padding: '0.65rem 1.25rem', borderRadius: '12px', border: 'none',
-                    background: activeTab === 'moderators' ? 'white' : 'transparent',
-                    color: activeTab === 'moderators' ? '#008b5e' : '#64748b',
-                    fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem',
-                    boxShadow: activeTab === 'moderators' ? '0 4px 12px rgba(0,0,0,0.05)' : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                    transform: activeTab === 'moderators' ? 'scale(1)' : 'scale(0.97)',
-                  }}
+                  style={getTabButtonStyle('moderators', 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', '#4f46e5', '0 4px 14px rgba(99, 102, 241, 0.35)')}
                 >
-                  <Shield size={15} color={activeTab === 'moderators' ? '#008b5e' : '#64748b'} /> {lang === 'bn' ? 'মডারেটর কন্ট্রোল' : 'Moderator Control'}
+                  <Shield size={16} color={activeTab === 'moderators' ? '#ffffff' : '#4f46e5'} /> 
+                  <span>{lang === 'bn' ? 'মডারেটর কন্ট্রোল' : 'Moderator Control'}</span>
                 </button>
               )}
             </div>
@@ -2485,69 +2477,89 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.8rem', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.85rem', marginBottom: '1.5rem' }}>
               <button 
                 onClick={() => setAdFilter('all')}
                 style={{
-                  background: adFilter === 'all' ? '#008b5e' : 'white',
-                  color: adFilter === 'all' ? 'white' : '#475569',
-                  border: `1px solid ${adFilter === 'all' ? '#008b5e' : '#cbd5e1'}`,
-                  borderRadius: '10px', padding: '0.6rem 0.8rem',
+                  background: adFilter === 'all' ? 'linear-gradient(135deg, #008b5e 0%, #059669 100%)' : '#f0fdf4',
+                  color: adFilter === 'all' ? '#ffffff' : '#166534',
+                  border: adFilter === 'all' ? '1.5px solid transparent' : '1.5px solid #bbf7d0',
+                  borderRadius: '12px', padding: '0.75rem 1rem',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', transition: 'all 0.2s',
+                  cursor: 'pointer',
+                  boxShadow: adFilter === 'all' ? '0 6px 18px rgba(0, 139, 94, 0.35)' : '0 2px 6px rgba(0,0,0,0.02)',
+                  transition: 'all 0.25s ease',
+                  transform: adFilter === 'all' ? 'scale(1.02)' : 'scale(1)',
                   outline: 'none'
                 }}
               >
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.2rem' }}>{lang === 'bn' ? 'মোট বিজ্ঞাপন' : 'Total Ads'}</span>
-                <span style={{ fontSize: '1.35rem', fontWeight: 900 }}>{toBengaliNumber(totalAds, lang)}</span>
+                <span style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.25rem', letterSpacing: '0.3px' }}>
+                  📊 {lang === 'bn' ? 'মোট বিজ্ঞাপন' : 'Total Ads'}
+                </span>
+                <span style={{ fontSize: '1.4rem', fontWeight: 900 }}>{toBengaliNumber(totalAds, lang)}</span>
               </button>
 
               <button 
                 onClick={() => setAdFilter('pending')}
                 style={{
-                  background: adFilter === 'pending' ? '#d97706' : 'white',
-                  color: adFilter === 'pending' ? 'white' : '#475569',
-                  border: `1px solid ${adFilter === 'pending' ? '#d97706' : '#cbd5e1'}`,
-                  borderRadius: '10px', padding: '0.6rem 0.8rem',
+                  background: adFilter === 'pending' ? 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' : '#fffbeb',
+                  color: adFilter === 'pending' ? '#ffffff' : '#b45309',
+                  border: adFilter === 'pending' ? '1.5px solid transparent' : '1.5px solid #fde68a',
+                  borderRadius: '12px', padding: '0.75rem 1rem',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', transition: 'all 0.2s',
+                  cursor: 'pointer',
+                  boxShadow: adFilter === 'pending' ? '0 6px 18px rgba(245, 158, 11, 0.35)' : '0 2px 6px rgba(0,0,0,0.02)',
+                  transition: 'all 0.25s ease',
+                  transform: adFilter === 'pending' ? 'scale(1.02)' : 'scale(1)',
                   outline: 'none'
                 }}
               >
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.2rem' }}>{lang === 'bn' ? 'অনুমোদন পেন্ডিং' : 'Pending'}</span>
-                <span style={{ fontSize: '1.35rem', fontWeight: 900 }}>{toBengaliNumber(pendingAds, lang)}</span>
+                <span style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.25rem', letterSpacing: '0.3px' }}>
+                  ⏳ {lang === 'bn' ? 'অনুমোদন পেন্ডিং' : 'Pending'}
+                </span>
+                <span style={{ fontSize: '1.4rem', fontWeight: 900 }}>{toBengaliNumber(pendingAds, lang)}</span>
               </button>
 
               <button 
                 onClick={() => setAdFilter('active')}
                 style={{
-                  background: adFilter === 'active' ? '#0284c7' : 'white',
-                  color: adFilter === 'active' ? 'white' : '#475569',
-                  border: `1px solid ${adFilter === 'active' ? '#0284c7' : '#cbd5e1'}`,
-                  borderRadius: '10px', padding: '0.6rem 0.8rem',
+                  background: adFilter === 'active' ? 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' : '#f0f9ff',
+                  color: adFilter === 'active' ? '#ffffff' : '#0369a1',
+                  border: adFilter === 'active' ? '1.5px solid transparent' : '1.5px solid #bae6fd',
+                  borderRadius: '12px', padding: '0.75rem 1rem',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', transition: 'all 0.2s',
+                  cursor: 'pointer',
+                  boxShadow: adFilter === 'active' ? '0 6px 18px rgba(2, 132, 199, 0.35)' : '0 2px 6px rgba(0,0,0,0.02)',
+                  transition: 'all 0.25s ease',
+                  transform: adFilter === 'active' ? 'scale(1.02)' : 'scale(1)',
                   outline: 'none'
                 }}
               >
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.2rem' }}>{lang === 'bn' ? 'সক্রিয় বিজ্ঞাপন' : 'Active Ads'}</span>
-                <span style={{ fontSize: '1.35rem', fontWeight: 900 }}>{toBengaliNumber(activeAds, lang)}</span>
+                <span style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.25rem', letterSpacing: '0.3px' }}>
+                  🟢 {lang === 'bn' ? 'সক্রিয় বিজ্ঞাপন' : 'Active Ads'}
+                </span>
+                <span style={{ fontSize: '1.4rem', fontWeight: 900 }}>{toBengaliNumber(activeAds, lang)}</span>
               </button>
 
               <button 
                 onClick={() => setAdFilter('rejected')}
                 style={{
-                  background: adFilter === 'rejected' ? '#dc2626' : 'white',
-                  color: adFilter === 'rejected' ? 'white' : '#475569',
-                  border: `1px solid ${adFilter === 'rejected' ? '#dc2626' : '#cbd5e1'}`,
-                  borderRadius: '10px', padding: '0.6rem 0.8rem',
+                  background: adFilter === 'rejected' ? 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)' : '#fef2f2',
+                  color: adFilter === 'rejected' ? '#ffffff' : '#991b1b',
+                  border: adFilter === 'rejected' ? '1.5px solid transparent' : '1.5px solid #fecaca',
+                  borderRadius: '12px', padding: '0.75rem 1rem',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.05)', transition: 'all 0.2s',
+                  cursor: 'pointer',
+                  boxShadow: adFilter === 'rejected' ? '0 6px 18px rgba(239, 68, 68, 0.35)' : '0 2px 6px rgba(0,0,0,0.02)',
+                  transition: 'all 0.25s ease',
+                  transform: adFilter === 'rejected' ? 'scale(1.02)' : 'scale(1)',
                   outline: 'none'
                 }}
               >
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.2rem' }}>{lang === 'bn' ? 'বাতিল অ্যাড' : 'Rejected'}</span>
-                <span style={{ fontSize: '1.35rem', fontWeight: 900 }}>{toBengaliNumber(rejectedAds, lang)}</span>
+                <span style={{ fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.25rem', letterSpacing: '0.3px' }}>
+                  ✕ {lang === 'bn' ? 'বাতিল অ্যাড' : 'Rejected'}
+                </span>
+                <span style={{ fontSize: '1.4rem', fontWeight: 900 }}>{toBengaliNumber(rejectedAds, lang)}</span>
               </button>
             </div>
 
@@ -2823,30 +2835,39 @@ export default function AdminDashboard() {
                   <h3 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0f172a', margin: 0, display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                     🔔 {lang === 'bn' ? 'পেমেন্ট রিকোয়েস্ট' : 'Payment Requests'} ({purchaseFilter === 'all' ? purchases.length : purchases.filter(p => p.status === purchaseFilter).length})
                   </h3>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                     <button 
                       onClick={() => setPurchaseFilter('all')}
-                      style={getPurchaseFilterBtnStyle(purchaseFilter === 'all', '#64748b')}
+                      style={getPurchaseFilterBtnStyle(purchaseFilter === 'all', '#64748b', 'all')}
                     >
-                      {lang === 'bn' ? 'সবগুলো' : 'All'}
+                      📁 {lang === 'bn' ? 'সবগুলো' : 'All'}
                     </button>
                     <button 
                       onClick={() => setPurchaseFilter('pending')}
-                      style={getPurchaseFilterBtnStyle(purchaseFilter === 'pending', '#d97706')}
+                      style={getPurchaseFilterBtnStyle(purchaseFilter === 'pending', '#d97706', 'pending')}
                     >
-                      {lang === 'bn' ? 'পেন্ডিং' : 'Pending'}
+                      ⏳ {lang === 'bn' ? 'পেন্ডিং' : 'Pending'}
+                      {purchases.filter(p => p.status === 'pending').length > 0 && (
+                        <span style={{
+                          background: purchaseFilter === 'pending' ? 'rgba(255,255,255,0.3)' : '#fef3c7',
+                          color: purchaseFilter === 'pending' ? '#ffffff' : '#b45309',
+                          padding: '0.1rem 0.45rem', borderRadius: '10px', fontSize: '0.72rem', fontWeight: 900
+                        }}>
+                          {purchases.filter(p => p.status === 'pending').length}
+                        </span>
+                      )}
                     </button>
                     <button 
                       onClick={() => setPurchaseFilter('approved')}
-                      style={getPurchaseFilterBtnStyle(purchaseFilter === 'approved', '#10b981')}
+                      style={getPurchaseFilterBtnStyle(purchaseFilter === 'approved', '#10b981', 'approved')}
                     >
-                      {lang === 'bn' ? 'অনুমোদিত' : 'Approved'}
+                      ✓ {lang === 'bn' ? 'অনুমোদিত' : 'Approved'}
                     </button>
                     <button 
                       onClick={() => setPurchaseFilter('rejected')}
-                      style={getPurchaseFilterBtnStyle(purchaseFilter === 'rejected', '#ef4444')}
+                      style={getPurchaseFilterBtnStyle(purchaseFilter === 'rejected', '#ef4444', 'rejected')}
                     >
-                      {lang === 'bn' ? 'বাতিল' : 'Rejected'}
+                      ✕ {lang === 'bn' ? 'বাতিল' : 'Rejected'}
                     </button>
                   </div>
                 </div>
@@ -2931,9 +2952,10 @@ export default function AdminDashboard() {
                             <div style={{ fontSize: '0.72rem', color: '#94a3b8', marginTop: '0.15rem' }}>📅 {dateStr}</div>
                           </div>
                           <span style={{
-                            background: req.payment_method === 'bkash' ? '#ffe1e6' : '#ffedd5',
-                            color: req.payment_method === 'bkash' ? '#be123c' : '#c2410c',
-                            fontSize: '0.68rem', fontWeight: 900, padding: '0.2rem 0.5rem', borderRadius: '6px', textTransform: 'uppercase'
+                            background: req.payment_method === 'bkash' ? '#ffe4e6' : req.payment_method === 'nagad' ? '#ffedd5' : '#ede9fe',
+                            color: req.payment_method === 'bkash' ? '#be123c' : req.payment_method === 'nagad' ? '#c2410c' : '#6d28d9',
+                            border: `1px solid ${req.payment_method === 'bkash' ? '#fecdd3' : req.payment_method === 'nagad' ? '#fed7aa' : '#ddd6fe'}`,
+                            fontSize: '0.7rem', fontWeight: 900, padding: '0.25rem 0.65rem', borderRadius: '8px', textTransform: 'uppercase', letterSpacing: '0.5px'
                           }}>
                             {req.payment_method}
                           </span>
@@ -2967,7 +2989,7 @@ export default function AdminDashboard() {
                         )}
 
                         {/* Actions */}
-                        <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', marginTop: req.screenshot_url ? '0' : 'auto' }}>
+                        <div style={{ display: 'flex', gap: '0.6rem', justifyContent: 'flex-end', marginTop: req.screenshot_url ? '0' : 'auto', width: '100%' }}>
                           {isPending ? (
                             <>
                               <button
@@ -2977,12 +2999,15 @@ export default function AdminDashboard() {
                                   () => handlePurchaseStatus(req.id, 'approved')
                                 )}
                                 style={{
-                                  padding: '0.45rem 1rem', borderRadius: '8px', border: 'none',
-                                  background: '#10b981', color: 'white', fontWeight: 800, fontSize: '0.75rem',
-                                  cursor: 'pointer', boxShadow: '0 2px 6px rgba(16,185,129,0.2)', flex: 1
+                                  padding: '0.55rem 1rem', borderRadius: '10px', border: 'none',
+                                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                                  color: 'white', fontWeight: 800, fontSize: '0.78rem',
+                                  cursor: 'pointer', boxShadow: '0 4px 12px rgba(16,185,129,0.3)',
+                                  flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem',
+                                  transition: 'all 0.2s ease',
                                 }}
                               >
-                                {lang === 'bn' ? 'অনুমোদন করুন' : 'Approve'}
+                                ✓ {lang === 'bn' ? 'অনুমোদন করুন' : 'Approve'}
                               </button>
                               <button
                                 onClick={() => confirmAction(
@@ -2992,35 +3017,43 @@ export default function AdminDashboard() {
                                   true
                                 )}
                                 style={{
-                                  padding: '0.45rem 1rem', borderRadius: '8px', border: 'none',
-                                  background: '#ef4444', color: 'white', fontWeight: 800, fontSize: '0.75rem',
-                                  cursor: 'pointer', boxShadow: '0 2px 6px rgba(239,68,68,0.2)', flex: 1
+                                  padding: '0.55rem 1rem', borderRadius: '10px', border: 'none',
+                                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                                  color: 'white', fontWeight: 800, fontSize: '0.78rem',
+                                  cursor: 'pointer', boxShadow: '0 4px 12px rgba(239,68,68,0.3)',
+                                  flex: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.35rem',
+                                  transition: 'all 0.2s ease',
                                 }}
                               >
-                                {lang === 'bn' ? 'প্রত্যাখ্যান করুন' : 'Reject'}
+                                ✕ {lang === 'bn' ? 'প্রত্যাখ্যান করুন' : 'Reject'}
                               </button>
                             </>
                           ) : (
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', gap: '0.5rem' }}>
                               <span style={{
                                 background: req.status === 'approved' ? '#dcfce7' : '#fee2e2',
                                 color: req.status === 'approved' ? '#15803d' : '#b91c1c',
-                                fontSize: '0.72rem', fontWeight: 800, padding: '0.25rem 0.6rem', borderRadius: '6px'
+                                border: `1px solid ${req.status === 'approved' ? '#86efac' : '#fca5a5'}`,
+                                fontSize: '0.72rem', fontWeight: 800, padding: '0.3rem 0.65rem', borderRadius: '8px'
                               }}>
-                                {req.status === 'approved' ? (lang === 'bn' ? '✓ অনুমোদিত' : '✓ APPROVED') : (lang === 'bn' ? '✗ প্রত্যাখ্যাত' : '✗ REJECTED')}
+                                {req.status === 'approved' ? (lang === 'bn' ? '✓ অনুমোদিত' : '✓ APPROVED') : (lang === 'bn' ? '✕ প্রত্যাখ্যাত' : '✕ REJECTED')}
                               </span>
                               <button
                                 onClick={() => confirmAction(
                                   'পেন্ডিং এ রিসেট করবেন?', 'Reset to Pending?',
-                                  'স্ট্যাটাস আবার পেন্ডিং করা হবে।', 'The status will be reset to pending.',
+                                  'স্ট্যাটাস আবার পেন্ডিং করা হবে এবং বুস্ট বাতিল করা হবে।', 'The status will be reset to pending and any boost will be reverted.',
                                   () => handlePurchaseStatus(req.id, 'pending')
                                 )}
                                 style={{
-                                  background: 'transparent', border: 'none', color: '#64748b',
-                                  fontSize: '0.7rem', textDecoration: 'underline', cursor: 'pointer', fontWeight: 600
+                                  background: '#fffbeb', border: '1px solid #fde68a', color: '#b45309',
+                                  borderRadius: '8px', padding: '0.35rem 0.75rem',
+                                  fontSize: '0.72rem', cursor: 'pointer', fontWeight: 800,
+                                  boxShadow: '0 1px 3px rgba(245, 158, 11, 0.1)',
+                                  display: 'inline-flex', alignItems: 'center', gap: '0.3rem',
+                                  transition: 'all 0.2s ease'
                                 }}
                               >
-                                {lang === 'bn' ? 'পেন্ডিং এ রিসেট করুন' : 'Reset to Pending'}
+                                ↺ {lang === 'bn' ? 'পেন্ডিং এ রিসেট করুন' : 'Reset to Pending'}
                               </button>
                             </div>
                           )}
@@ -3161,7 +3194,7 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
+                  <div style={{ display: 'flex', gap: '0.6rem', marginTop: '0.5rem' }}>
                     {modEditingEmail && (
                       <button
                         type="button"
@@ -3179,11 +3212,12 @@ export default function AdminDashboard() {
                           });
                         }}
                         style={{
-                          flex: 1, padding: '0.55rem', borderRadius: '8px', border: '1px solid #cbd5e1',
-                          background: 'white', color: '#475569', fontWeight: 700, fontSize: '0.78rem', cursor: 'pointer'
+                          flex: 1, padding: '0.65rem', borderRadius: '10px', border: '1px solid #cbd5e1',
+                          background: 'white', color: '#475569', fontWeight: 800, fontSize: '0.8rem', cursor: 'pointer',
+                          transition: 'all 0.2s ease'
                         }}
                       >
-                        {lang === 'bn' ? 'বাতিল' : 'Cancel'}
+                        ✕ {lang === 'bn' ? 'বাতিল' : 'Cancel'}
                       </button>
                     )}
                     <button
@@ -3199,12 +3233,15 @@ export default function AdminDashboard() {
                         );
                       }}
                       style={{
-                        flex: 2, padding: '0.55rem', borderRadius: '8px', border: 'none',
-                        background: '#008b5e', color: 'white', fontWeight: 800, fontSize: '0.78rem',
-                        cursor: 'pointer', boxShadow: '0 2px 6px rgba(0,139,94,0.2)'
+                        flex: 2, padding: '0.65rem 1.25rem', borderRadius: '10px', border: 'none',
+                        background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                        color: 'white', fontWeight: 800, fontSize: '0.82rem',
+                        cursor: 'pointer', boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
+                        transition: 'all 0.2s ease',
+                        display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem'
                       }}
                     >
-                      {modEditingEmail ? (lang === 'bn' ? 'তথ্য আপডেট করুন' : 'Update Info') : (lang === 'bn' ? 'মডারেটর যোগ করুন' : 'Add Moderator')}
+                      {modEditingEmail ? (lang === 'bn' ? '✓ তথ্য আপডেট করুন' : '✓ Update Info') : (lang === 'bn' ? '➕ মডারেটর যোগ করুন' : '➕ Add Moderator')}
                     </button>
                   </div>
                 </form>
@@ -3241,15 +3278,16 @@ export default function AdminDashboard() {
                             </div>
                           </div>
 
-                          <div style={{ display: 'flex', gap: '0.35rem' }}>
+                          <div style={{ display: 'flex', gap: '0.4rem' }}>
                             <button
                               onClick={() => handleEditModeratorClick(mod)}
                               style={{
-                                background: '#f1f5f9', border: 'none', borderRadius: '6px',
-                                padding: '0.3rem 0.5rem', color: '#0284c7', fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer'
+                                background: '#e0f2fe', border: '1px solid #bae6fd', borderRadius: '8px',
+                                padding: '0.35rem 0.65rem', color: '#0284c7', fontSize: '0.74rem', fontWeight: 800, cursor: 'pointer',
+                                transition: 'all 0.2s ease'
                               }}
                             >
-                              {lang === 'bn' ? 'এডিট' : 'Edit'}
+                              ✎ {lang === 'bn' ? 'এডিট' : 'Edit'}
                             </button>
                             <button
                               onClick={() => confirmAction(
@@ -3259,11 +3297,12 @@ export default function AdminDashboard() {
                                 true
                               )}
                               style={{
-                                background: '#fef2f2', border: 'none', borderRadius: '6px',
-                                padding: '0.3rem 0.5rem', color: '#dc2626', fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer'
+                                background: '#fee2e2', border: '1px solid #fecaca', borderRadius: '8px',
+                                padding: '0.35rem 0.65rem', color: '#dc2626', fontSize: '0.74rem', fontWeight: 800, cursor: 'pointer',
+                                transition: 'all 0.2s ease'
                               }}
                             >
-                              {lang === 'bn' ? 'মুছুন' : 'Delete'}
+                              ✕ {lang === 'bn' ? 'মুছুন' : 'Delete'}
                             </button>
                           </div>
                         </div>
