@@ -8,6 +8,7 @@ import { supabase, syncUserProfile } from '../lib/supabaseClient';
 import { useLanguage } from '../context/LanguageContext';
 import { LOCATIONS } from '../lib/constants';
 import ProfileMenu from './ProfileMenu';
+import OnboardingModal from './OnboardingModal';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
@@ -15,6 +16,7 @@ export default function Navbar() {
   const [hasAdminAccess, setHasAdminAccess] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
   const [selectedDivision, setSelectedDivision] = useState(null);
   const [currentLocation, setCurrentLocation] = useState('All of Bangladesh');
   const [locationSearch, setLocationSearch] = useState('');
@@ -222,6 +224,9 @@ export default function Navbar() {
       if (session?.user) {
         setUser(session.user);
         syncUserProfile(session.user);
+        if (session?.user && !localStorage.getItem('bkr_name_onboarded_' + session.user.id) && !session.user.user_metadata?.name_onboarded) {
+          setTimeout(() => setShowOnboarding(true), 600);
+        }
       } else {
         const localUser = localStorage.getItem('bikroynow_demo_user');
         if (localUser) {
@@ -239,6 +244,9 @@ export default function Navbar() {
         if (session?.user) {
           setUser(session.user);
         syncUserProfile(session.user);
+        if (session?.user && !localStorage.getItem('bkr_name_onboarded_' + session.user.id) && !session.user.user_metadata?.name_onboarded) {
+          setTimeout(() => setShowOnboarding(true), 600);
+        }
         } else {
           const localUser = localStorage.getItem('bikroynow_demo_user');
           if (localUser) {
@@ -710,6 +718,20 @@ export default function Navbar() {
           hasAdminAccess={hasAdminAccess}
           onClose={() => setShowProfileMenu(false)} 
           onLogout={handleLogout}
+        />
+      )}
+
+      {showOnboarding && user && (
+        <OnboardingModal
+          user={user}
+          isOpen={showOnboarding}
+          onClose={() => setShowOnboarding(false)}
+          onProfileUpdated={(updated) => {
+            setUser(prev => prev ? {
+              ...prev,
+              user_metadata: { ...prev.user_metadata, ...updated }
+            } : null);
+          }}
         />
       )}
     </header>
