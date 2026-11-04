@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 import { getGlobalListings } from '../lib/globalListingsStore';
-import { CATEGORIES, LOCATIONS } from '../lib/constants';
 
 export const dynamic = 'force-dynamic';
 
@@ -72,49 +71,48 @@ export default async function sitemap() {
     },
   ];
 
-  // 2. Programmatic Category Landing Routes
-  const categoryKeys = Object.keys(CATEGORIES);
-  const categoryRoutes = categoryKeys.map((cat) => ({
+  // 2. High-Value Category Landing Routes (Clean 1-param URLs without XML ampersand issues)
+  const mainCategories = [
+    'Mobile Phones',
+    'Computers',
+    'Electronics',
+    'Vehicles',
+    'Property',
+    'Jobs',
+  ];
+
+  const categoryRoutes = mainCategories.map((cat) => ({
     url: `${baseUrl}/ads?category=${encodeURIComponent(cat)}`,
     lastModified: now,
     changeFrequency: 'hourly',
     priority: 0.85,
   }));
 
-  // 3. Programmatic Location Landing Routes
-  const locationKeys = Object.keys(LOCATIONS);
-  const locationRoutes = locationKeys.map((loc) => ({
+  // 3. High-Value Location Landing Routes (Clean 1-param URLs without XML ampersand issues)
+  const majorLocations = [
+    'Dhaka',
+    'Chattogram',
+    'Rajshahi',
+    'Khulna',
+    'Barishal',
+    'Sylhet',
+    'Rangpur',
+    'Mymensingh',
+    'Tangail',
+    'Gazipur',
+    'Narayanganj',
+    'Comilla',
+    'Bogra',
+  ];
+
+  const locationRoutes = majorLocations.map((loc) => ({
     url: `${baseUrl}/ads?location=${encodeURIComponent(loc)}`,
     lastModified: now,
     changeFrequency: 'hourly',
     priority: 0.85,
   }));
 
-  // Add key districts that have high classifieds search volume in Bangladesh
-  const keyDistricts = ['Tangail', 'Gazipur', 'Narayanganj', 'Comilla', 'Bogra', 'Dhaka City', 'Chattogram City'];
-  const districtRoutes = keyDistricts.map((dist) => ({
-    url: `${baseUrl}/ads?location=${encodeURIComponent(dist)}`,
-    lastModified: now,
-    changeFrequency: 'daily',
-    priority: 0.8,
-  }));
-
-  // 4. Programmatic High-Intent (Location + Category) Combos
-  // e.g. Mobile Phones in Dhaka, Cars in Chattogram, Laptops in Sylhet
-  const priorityLocations = ['Dhaka', 'Chattogram', 'Rajshahi', 'Sylhet', 'Khulna', 'Tangail'];
-  const comboRoutes = [];
-  for (const loc of priorityLocations) {
-    for (const cat of categoryKeys) {
-      comboRoutes.push({
-        url: `${baseUrl}/ads?category=${encodeURIComponent(cat)}&location=${encodeURIComponent(loc)}`,
-        lastModified: now,
-        changeFrequency: 'daily',
-        priority: 0.75,
-      });
-    }
-  }
-
-  // 5. Fetch active dynamic ad listings
+  // 4. Dynamic active ad listings
   let adRoutes = [];
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -153,8 +151,6 @@ export default async function sitemap() {
     ...staticRoutes,
     ...categoryRoutes,
     ...locationRoutes,
-    ...districtRoutes,
-    ...comboRoutes,
     ...adRoutes,
   ];
 }
