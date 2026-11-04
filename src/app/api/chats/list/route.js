@@ -82,13 +82,13 @@ export async function GET(req) {
     // 1. Cloud persistent all_chats_list from admin_settings
     if (serverSupabase) {
       try {
-        const { data: row, error: rowErr } = await serverSupabase;
-        debugRow = row;
-        debugRowErr = rowErr;
+        const { data: row, error: rowErr } = await serverSupabase
           .from('admin_settings')
           .select('value')
           .eq('key', 'all_chats_list')
           .maybeSingle();
+        debugRow = row;
+        debugRowErr = rowErr;
         if (rowErr) {
           console.error('Error fetching all_chats_list in chats/list:', rowErr);
         }
@@ -263,9 +263,22 @@ export async function GET(req) {
       return new Date(tB) - new Date(tA);
     });
 
-    return NextResponse.json({ success: true, chats: sorted, _debug: { serverSupabase: !!serverSupabase, supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL, rawCloudList: (serverSupabase ? (allCandidateChats) : null), debugRow,
-        debugRowErr,
-        allCandidateCount: allCandidateChats.length, candidateIds: allCandidateChats.map(c => c.id), myChatsCount: myChats.length, myChatIds: myChats.map(c => c.id), userAliases: Array.from(userAliases) } }, {
+    return NextResponse.json({
+      success: true,
+      chats: sorted,
+      _debug: {
+        serverSupabase: !!serverSupabase,
+        supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+        debugRowLength: debugRow?.value ? debugRow.value.length : 0,
+        debugRowValue: debugRow?.value ? JSON.parse(debugRow.value) : null,
+        debugRowErr: debugRowErr ? debugRowErr.message : null,
+        allCandidateCount: allCandidateChats.length,
+        candidateIds: allCandidateChats.map(c => c.id),
+        myChatsCount: myChats.length,
+        myChatIds: myChats.map(c => c.id),
+        userAliases: Array.from(userAliases),
+      }
+    }, {
       headers: {
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
       }
