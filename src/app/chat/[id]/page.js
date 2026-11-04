@@ -361,13 +361,13 @@ export default function ChatWindow({ params }) {
       } catch (e) {}
     };
 
-    // Background poll every 4s for messages and live partner online status
+    // Background poll every 2.5s for instant messages and live partner online status
     const interval = setInterval(() => {
       if (!isCancelled) {
         fetchMessages();
         fetchPartnerStatus();
       }
-    }, 4000);
+    }, 2500);
 
     return () => {
       isCancelled = true;

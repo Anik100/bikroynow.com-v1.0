@@ -21,8 +21,6 @@ export async function GET(req) {
 
     let userEmail = null;
     let profilesMap = new Map();
-    let debugRow = null;
-    let debugRowErr = null;
 
     if (serverSupabase) {
       try {
@@ -87,8 +85,6 @@ export async function GET(req) {
           .select('value')
           .eq('key', 'all_chats_list')
           .maybeSingle();
-        debugRow = row;
-        debugRowErr = rowErr;
         if (rowErr) {
           console.error('Error fetching all_chats_list in chats/list:', rowErr);
         }
@@ -265,19 +261,7 @@ export async function GET(req) {
 
     return NextResponse.json({
       success: true,
-      chats: sorted,
-      _debug: {
-        serverSupabase: !!serverSupabase,
-        supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-        debugRowLength: debugRow?.value ? debugRow.value.length : 0,
-        debugRowValue: debugRow?.value ? JSON.parse(debugRow.value) : null,
-        debugRowErr: debugRowErr ? debugRowErr.message : null,
-        allCandidateCount: allCandidateChats.length,
-        candidateIds: allCandidateChats.map(c => c.id),
-        myChatsCount: myChats.length,
-        myChatIds: myChats.map(c => c.id),
-        userAliases: Array.from(userAliases),
-      }
+      chats: sorted
     }, {
       headers: {
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
