@@ -245,6 +245,8 @@ function AdsContent() {
       if (apiRes.ok) {
         const apiJson = await apiRes.json();
         let allItems = Array.isArray(apiJson.listings) ? apiJson.listings : [];
+        // Strictly filter to active approved ads only
+        allItems = allItems.filter(ad => ad.status === 'active' || ad.status === 'approved');
 
         // Apply filters locally in Javascript to bypass RLS restrictions completely for all accounts
         const cat = searchParams.get('category');

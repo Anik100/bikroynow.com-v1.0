@@ -115,7 +115,8 @@ export default function Home() {
         if (apiRes.ok) {
           const apiJson = await apiRes.json();
           if (Array.isArray(apiJson.listings) && !isCancelled) {
-            setListings(sortPremiumListings(apiJson.listings));
+            const activeOnly = apiJson.listings.filter(ad => ad.status === 'active' || ad.status === 'approved');
+            setListings(sortPremiumListings(activeOnly));
             setLoading(false);
             return;
           }

@@ -1,21 +1,27 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { getGlobalListings, deleteGlobalListing } from '../../../lib/globalListingsStore';
+import { getGlobalListings, deleteGlobalListing, updateGlobalListing } from '../../../lib/globalListingsStore';
 import { deleteChatsForListing } from '../../../lib/chatsStore';
 
 export const dynamic = 'force-dynamic';
 
-// In-memory high-speed cache for super-fast responses (< 5ms)
+// In-memory high-speed cache for super-fast public responses (< 5ms)
 let cachedListings = null;
 let cacheTime = 0;
 const CACHE_TTL_MS = 15000; // 15 seconds cache
 
 export async function GET(req) {
   try {
-    const now = Date.now();
+    const { searchParams } = new URL(req.url);
+    const includeAll = searchParams.get('all') === 'true' || searchParams.get('include_pending') === 'true';
+    const statusParam = searchParams.get('status');
+    const userId = searchParams.get('user_id');
 
-    // Serve from ultra-fast in-memory cache if valid
-    if (cachedListings && (now - cacheTime < CACHE_TTL_MS)) {
+    const now = Date.now();
+    const isPublicDefault = !includeAll && !statusParam && !userId;
+
+    // Serve from ultra-fast in-memory cache for public feed if valid
+    if (isPublicDefault && cachedListings && (now - cacheTime < CACHE_TTL_MS)) {
       return NextResponse.json({ listings: cachedListings }, {
         headers: {
           'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
@@ -36,33 +42,26 @@ export async function GET(req) {
           auth: { persistSession: false, autoRefreshToken: false }
         });
 
-        // Parallel execution of featured ads and listings RPC to cut database latency in half
-        const [featuredRes, rpcRes] = await Promise.all([
+        // Parallel execution of featured ads and listings
+        const [featuredRes, dbRes] = await Promise.all([
           serverSupabase
             .from('featured_ads')
             .select('listing_id')
             .eq('is_active', true),
-          serverSupabase.rpc('get_listings_v2')
+          serverSupabase
+            .from('listings')
+            .select('*')
+            .neq('status', 'deleted')
+            .order('created_at', { ascending: false })
+            .limit(100)
         ]);
 
         if (featuredRes?.data) {
           featuredSet = new Set(featuredRes.data.map(f => f.listing_id));
         }
 
-        if (!rpcRes?.error && Array.isArray(rpcRes?.data)) {
-          dbListings = rpcRes.data;
-        } else {
-          // Fallback if RPC is not available
-          const { data: listings } = await serverSupabase
-            .from('listings')
-            .select('*')
-            .neq('status', 'deleted')
-            .order('created_at', { ascending: false })
-            .limit(50);
-
-          if (Array.isArray(listings)) {
-            dbListings = listings;
-          }
+        if (Array.isArray(dbRes?.data)) {
+          dbListings = dbRes.data;
         }
       } catch (e) {
         console.error('Database query error:', e);
@@ -80,11 +79,30 @@ export async function GET(req) {
       is_featured: Boolean(item.is_featured || featuredSet.has(item.id))
     }));
 
-    // Update in-memory cache
-    cachedListings = combinedListings;
-    cacheTime = now;
+    let result = combinedListings;
 
-    return NextResponse.json({ listings: combinedListings }, {
+    if (includeAll) {
+      // Admin dashboard: see all listings (pending, active, rejected)
+      result = combinedListings;
+    } else if (userId) {
+      // My Ads: see user's own listings regardless of status
+      result = combinedListings.filter(item => item.user_id === userId);
+    } else if (statusParam) {
+      result = combinedListings.filter(item => item.status === statusParam);
+    } else {
+      // PUBLIC USERS (Home, Ads, Search):
+      // STRICT MODERATION FILTER: Only show verified active ads!
+      // Pending, rejected, or deleted ads are strictly hidden!
+      result = combinedListings.filter(item => item.status === 'active' || item.status === 'approved');
+    }
+
+    // Cache ONLY the public feed
+    if (isPublicDefault) {
+      cachedListings = result;
+      cacheTime = now;
+    }
+
+    return NextResponse.json({ listings: result }, {
       headers: {
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
         'X-Cache': 'MISS'
@@ -92,8 +110,31 @@ export async function GET(req) {
     });
   } catch (err) {
     console.error('API route exception:', err);
-    const globalAds = getGlobalListings();
+    const globalAds = getGlobalListings().filter(item => item.status === 'active' || item.status === 'approved');
     return NextResponse.json({ listings: globalAds });
+  }
+}
+
+export async function PATCH(req) {
+  try {
+    const body = await req.json();
+    const { id, status } = body;
+    if (!id || !status) return NextResponse.json({ error: 'Missing id or status' }, { status: 400 });
+
+    updateGlobalListing(id, { status });
+    cachedListings = null;
+    cacheTime = 0;
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (supabaseUrl && serviceRoleKey) {
+      const serverSupabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
+      await serverSupabase.from('listings').update({ status }).eq('id', id);
+    }
+
+    return NextResponse.json({ success: true, status });
+  } catch (err) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
 

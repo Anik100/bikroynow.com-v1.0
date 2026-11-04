@@ -314,7 +314,7 @@ export default function PostAd() {
       // 2. Save to shared public ads pool in localStorage as client fallback
       try {
         const existingPublic = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
-        localStorage.setItem('bikroynow_public_ads', JSON.stringify([newAdPayload, ...existingPublic]));
+        localStorage.setItem('bikroynow_user_pending_ads', JSON.stringify([newAdPayload, ...existingPublic]));
       } catch (e) {}
 
       setSubmittedSuccess(true);

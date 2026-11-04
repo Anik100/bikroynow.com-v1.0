@@ -486,6 +486,58 @@ export default function AdDetails({ params }) {
   if (loading) return <div className="container" style={{padding: '5rem 0', textAlign: 'center'}}>{t('loading')}</div>;
   if (!ad) return <div className="container" style={{padding: '5rem 0', textAlign: 'center'}}>{t('noAds')}</div>;
 
+  const adminEmails = [
+    'anikh0000@gmail.com',
+    'anikh00000@gmail.com',
+    'anikh00@gmail.com',
+    'aunik008@gmail.com',
+    'aunik003@gmail.com'
+  ];
+
+  const isOwner = Boolean(
+    currentUser && ad && (
+      String(currentUser.id) === String(ad.user_id) ||
+      (currentUser.email && ad.user_id && String(ad.user_id).includes(currentUser.email.split('@')[0]))
+    )
+  );
+
+  const isAdminUser = Boolean(
+    currentUser && (
+      (currentUser.email && adminEmails.includes(currentUser.email.toLowerCase().trim())) ||
+      currentUser.user_metadata?.role === 'admin'
+    )
+  );
+
+  // If ad is pending and viewer is NOT the owner or admin, do not disclose seller info
+  if (ad && ad.status === 'pending' && !isOwner && !isAdminUser) {
+    return (
+      <div className="container" style={{ paddingTop: '5rem', paddingBottom: '6rem', textAlign: 'center' }}>
+        <div style={{
+          maxWidth: '520px',
+          margin: '0 auto',
+          background: '#ffffff',
+          padding: '2.5rem 1.5rem',
+          borderRadius: '16px',
+          boxShadow: '0 10px 25px rgba(0,0,0,0.06)',
+          border: '1px solid #fde68a'
+        }}>
+          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⏳</div>
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1c2b38', marginBottom: '0.6rem' }}>
+            {lang === 'bn' ? 'বিজ্ঞাপনটি অনুমোদনের অপেক্ষায় রয়েছে' : 'Ad is Pending Approval'}
+          </h3>
+          <p style={{ fontSize: '0.9rem', color: '#64748b', lineHeight: 1.6, marginBottom: '1.5rem' }}>
+            {lang === 'bn' 
+              ? 'এই বিজ্ঞাপনটি এখনও এডমিন কর্তৃক অনুমোদিত হয়নি। অ্যাডমিন যাচাই-বাছাই করে অনুমোদন করার পর এটি সবার জন্য উন্মুক্ত হবে।' 
+              : 'This listing is awaiting moderation review and has not yet been approved.'}
+          </p>
+          <Link href="/ads" className="btn-primary" style={{ display: 'inline-flex', padding: '0.75rem 1.5rem', borderRadius: '10px' }}>
+            {lang === 'bn' ? 'অন্যান্য বিজ্ঞাপনগুলো দেখুন' : 'Browse Other Ads'}
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.pageWrapper}>
       {ad && (

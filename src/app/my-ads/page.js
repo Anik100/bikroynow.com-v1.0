@@ -44,7 +44,7 @@ export default function MyAds() {
 
       // 3. Local demo ads fallback
       try {
-        const publicAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+        const publicAds = JSON.parse(localStorage.getItem('bikroynow_user_pending_ads') || '[]');
         if (publicAds.length > 0) {
           const existingIds = new Set(myAdsList.map(item => item.id));
           const extraAds = publicAds.filter(ad => !existingIds.has(ad.id) && ad.status !== 'deleted');

@@ -388,7 +388,7 @@ export default function AdminDashboard() {
     } catch (e) {}
 
     try {
-      const res = await fetch(`/api/listings?t=${Date.now()}`);
+      const res = await fetch(`/api/listings?all=true&t=${Date.now()}`);
       if (res.ok) {
         const apiListings = await res.json();
         if (Array.isArray(apiListings)) {
@@ -1216,6 +1216,7 @@ export default function AdminDashboard() {
         
       if (!error) {
         setListings(prev => {
+          fetch('/api/listings', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: 'active' }) }).catch(() => {});
           const updated = prev.map(ad => ad.id === id ? { ...ad, status: 'active', created_at: currentTime } : ad);
           return updated.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         });
@@ -1319,6 +1320,7 @@ export default function AdminDashboard() {
         
       if (!error) {
         setListings(prev => {
+          fetch('/api/listings', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: 'rejected' }) }).catch(() => {});
           const updated = prev.map(ad => ad.id === id ? { ...ad, status: 'rejected' } : ad);
           return updated;
         });
