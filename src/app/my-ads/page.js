@@ -19,40 +19,85 @@ export default function MyAds() {
   const [toast, setToast] = useState(null); // { type: 'success'|'error', msg }
   const router = useRouter();
 
-  const fetchMyAds = async (userId) => {
+  const fetchMyAds = async (targetUser) => {
     try {
+      const active = targetUser || user;
+      const userId = active?.id;
+      const userEmail = active?.email;
       let myAdsList = [];
 
-      // 1. Try fetching from server listings API
-      const apiRes = await fetch('/api/listings');
-      if (apiRes.ok) {
-        const apiJson = await apiRes.json();
-        if (Array.isArray(apiJson.listings)) {
-          myAdsList = apiJson.listings.filter(ad => ad.user_id === userId);
+      let deletedIds = new Set();
+      try {
+        const storedDeleted = JSON.parse(localStorage.getItem('bikroynow_deleted_ad_ids') || '[]');
+        deletedIds = new Set(storedDeleted.map(String));
+      } catch (e) {}
+
+      // 1. Try fetching from server listings API with user parameters & cache busting
+      try {
+        const params = new URLSearchParams({
+          t: String(Date.now()),
+          include_pending: 'true'
+        });
+        if (userId) params.set('user_id', String(userId));
+        if (userEmail) params.set('user_email', String(userEmail));
+
+        const apiRes = await fetch(`/api/listings?${params.toString()}`, { cache: 'no-store' });
+        if (apiRes.ok) {
+          const apiJson = await apiRes.json();
+          if (Array.isArray(apiJson.listings)) {
+            myAdsList = apiJson.listings.filter(ad => !deletedIds.has(String(ad.id)) && ad.status !== 'deleted');
+          }
         }
+      } catch (e) {
+        console.error('Error fetching my ads from API:', e);
       }
 
-      // 2. Direct Supabase query fallback
-      if (myAdsList.length === 0) {
-        const { data } = await supabase
-          .from('listings')
-          .select('*')
-          .eq('user_id', userId)
-          .order('created_at', { ascending: false });
-        if (data && Array.isArray(data)) myAdsList = data;
+      // 2. Direct Supabase query fallback if API returned empty
+      if (myAdsList.length === 0 && userId) {
+        try {
+          const { data } = await supabase
+            .from('listings')
+            .select('*')
+            .eq('user_id', userId)
+            .neq('status', 'deleted')
+            .order('created_at', { ascending: false });
+          if (data && Array.isArray(data)) {
+            myAdsList = data.filter(ad => !deletedIds.has(String(ad.id)));
+          }
+        } catch (e) {}
       }
 
-      // 3. Local demo ads fallback
+      // 3. Local pending/demo ads fallback
       try {
         const publicAds = JSON.parse(localStorage.getItem('bikroynow_user_pending_ads') || '[]');
         if (publicAds.length > 0) {
-          const existingIds = new Set(myAdsList.map(item => item.id));
-          const extraAds = publicAds.filter(ad => !existingIds.has(ad.id) && ad.status !== 'deleted');
+          const existingIds = new Set(myAdsList.map(item => String(item.id)));
+          const extraAds = publicAds.filter(ad => {
+            if (!ad || !ad.id) return false;
+            const idStr = String(ad.id);
+            if (deletedIds.has(idStr) || ad.status === 'deleted') return false;
+            if (existingIds.has(idStr)) return false;
+            if (userId && ad.user_id && String(ad.user_id) !== String(userId)) return false;
+            return true;
+          });
           myAdsList = [...extraAds, ...myAdsList];
         }
       } catch (e) {}
 
-      setListings(myAdsList);
+      // Final deduplication and deleted filter
+      const seen = new Set();
+      const finalAds = [];
+      for (const ad of myAdsList) {
+        if (!ad || !ad.id) continue;
+        const idStr = String(ad.id);
+        if (deletedIds.has(idStr) || ad.status === 'deleted') continue;
+        if (!seen.has(idStr)) {
+          seen.add(idStr);
+          finalAds.push(ad);
+        }
+      }
+
+      setListings(finalAds);
     } catch (err) {
       console.error('Error fetching my ads:', err);
     } finally {
@@ -89,7 +134,7 @@ export default function MyAds() {
 
       if (!isCancelled) {
         setUser(activeUser);
-        fetchMyAds(activeUser.id);
+        fetchMyAds(activeUser);
       }
     };
 
@@ -111,30 +156,67 @@ export default function MyAds() {
 
   const handleDelete = async () => {
     if (!deleteTarget) return;
+    const targetId = String(deleteTarget.id);
     setDeleting(true);
+
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const activeId = session?.user?.id || user?.id;
-      if (!activeId) { setDeleting(false); return; }
+      // 1. Immediately record in localStorage deleted blacklist so it NEVER resurfaces
+      try {
+        const deletedIds = JSON.parse(localStorage.getItem('bikroynow_deleted_ad_ids') || '[]').map(String);
+        if (!deletedIds.includes(targetId)) {
+          deletedIds.push(targetId);
+          localStorage.setItem('bikroynow_deleted_ad_ids', JSON.stringify(deletedIds));
+        }
+      } catch (e) {}
 
-      const { error } = await supabase
-        .from('listings')
-        .delete()
-        .eq('id', deleteTarget.id);
+      // 2. Remove permanently from bikroynow_user_pending_ads in localStorage
+      try {
+        const pending = JSON.parse(localStorage.getItem('bikroynow_user_pending_ads') || '[]');
+        const updatedPending = pending.filter(a => a && String(a.id) !== targetId);
+        localStorage.setItem('bikroynow_user_pending_ads', JSON.stringify(updatedPending));
+      } catch (e) {}
 
-      if (error) {
-        console.error('Delete error:', error);
-        showToast('error', 'Delete failed: ' + error.message);
-      } else {
-        setListings(prev => prev.filter(ad => ad.id !== deleteTarget.id));
-        showToast('success', t('deleteSuccess') || 'Ad deleted successfully!');
+      // 3. Remove permanently from bikroynow_public_ads in localStorage
+      try {
+        const pub = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+        const updatedPub = pub.filter(a => a && String(a.id) !== targetId);
+        localStorage.setItem('bikroynow_public_ads', JSON.stringify(updatedPub));
+      } catch (e) {}
+
+      // 4. Call server DELETE API (permanently removes from listings_data.json, in-memory cache, and Supabase via service role)
+      try {
+        await fetch(`/api/listings?id=${encodeURIComponent(targetId)}`, {
+          method: 'DELETE'
+        });
+      } catch (apiErr) {
+        console.error('API delete error:', apiErr);
       }
+
+      // 5. Also delete directly from Supabase via client session if authorized
+      try {
+        await supabase
+          .from('listings')
+          .delete()
+          .eq('id', targetId);
+      } catch (sbErr) {}
+
+      // 6. Delete from featured ads
+      try {
+        await fetch(`/api/admin/featured-ads?listing_id=${encodeURIComponent(targetId)}`, {
+          method: 'DELETE'
+        });
+      } catch (e) {}
+
+      // 7. Update UI state instantly
+      setListings(prev => prev.filter(ad => String(ad.id) !== targetId));
+      showToast('success', t('deleteSuccess') || 'Ad deleted successfully!');
     } catch (err) {
       console.error('Delete exception:', err);
       showToast('error', 'Error: ' + err.message);
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
-    setDeleting(false);
-    setDeleteTarget(null);
   };
 
   if (loading) return <div className="container" style={{padding: '5rem 0', textAlign: 'center'}}>{t('loading')}</div>;

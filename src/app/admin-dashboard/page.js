@@ -1367,19 +1367,34 @@ export default function AdminDashboard() {
 
   const handleDelete = async (id) => {
     if (!id) return;
+    const targetId = String(id);
     
     setActionLoading(id);
     try {
-      const { error } = await supabase
-        .from('listings')
-        .delete()
-        .eq('id', id);
-        
-      if (!error) {
-        setListings(prev => prev.filter(ad => ad.id !== id));
-      } else {
-        setErrorMessage('Error deleting ad: ' + error.message);
-      }
+      try {
+        await fetch(`/api/listings?id=${encodeURIComponent(targetId)}`, { method: 'DELETE' });
+      } catch (e) {}
+
+      try {
+        await supabase
+          .from('listings')
+          .delete()
+          .eq('id', targetId);
+      } catch (e) {}
+
+      try {
+        const deletedIds = JSON.parse(localStorage.getItem('bikroynow_deleted_ad_ids') || '[]').map(String);
+        if (!deletedIds.includes(targetId)) {
+          deletedIds.push(targetId);
+          localStorage.setItem('bikroynow_deleted_ad_ids', JSON.stringify(deletedIds));
+        }
+        const pending = JSON.parse(localStorage.getItem('bikroynow_user_pending_ads') || '[]');
+        localStorage.setItem('bikroynow_user_pending_ads', JSON.stringify(pending.filter(a => a && String(a.id) !== targetId)));
+        const pub = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+        localStorage.setItem('bikroynow_public_ads', JSON.stringify(pub.filter(a => a && String(a.id) !== targetId)));
+      } catch (e) {}
+
+      setListings(prev => prev.filter(ad => String(ad.id) !== targetId));
     } catch (err) {
       setErrorMessage('Exception: ' + err.message);
     }

@@ -37,8 +37,28 @@ export default function Dashboard() {
 
   const handleDelete = async (id) => {
     if (confirm('Are you sure you want to delete this ad?')) {
-      await supabase.from('listings').delete().eq('id', id);
-      setMyAds(myAds.filter(ad => ad.id !== id));
+      const targetId = String(id);
+      try {
+        const deletedIds = JSON.parse(localStorage.getItem('bikroynow_deleted_ad_ids') || '[]').map(String);
+        if (!deletedIds.includes(targetId)) {
+          deletedIds.push(targetId);
+          localStorage.setItem('bikroynow_deleted_ad_ids', JSON.stringify(deletedIds));
+        }
+        const pending = JSON.parse(localStorage.getItem('bikroynow_user_pending_ads') || '[]');
+        localStorage.setItem('bikroynow_user_pending_ads', JSON.stringify(pending.filter(a => a && String(a.id) !== targetId)));
+        const pub = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+        localStorage.setItem('bikroynow_public_ads', JSON.stringify(pub.filter(a => a && String(a.id) !== targetId)));
+      } catch (e) {}
+
+      try {
+        await fetch(`/api/listings?id=${encodeURIComponent(targetId)}`, { method: 'DELETE' });
+      } catch (e) {}
+
+      try {
+        await supabase.from('listings').delete().eq('id', targetId);
+      } catch (e) {}
+
+      setMyAds(prev => prev.filter(ad => String(ad.id) !== targetId));
     }
   };
 

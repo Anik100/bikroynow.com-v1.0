@@ -290,11 +290,19 @@ export default function AdDetails({ params }) {
         } catch (e) {}
       }
 
-      // 3. Also clean up from local storage
+      // 3. Also clean up from local storage & deleted blacklist
       try {
+        const deletedIds = JSON.parse(localStorage.getItem('bikroynow_deleted_ad_ids') || '[]').map(String);
+        if (!deletedIds.includes(String(ad.id))) {
+          deletedIds.push(String(ad.id));
+          localStorage.setItem('bikroynow_deleted_ad_ids', JSON.stringify(deletedIds));
+        }
         const localAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
         const filtered = localAds.filter(l => String(l.id) !== String(ad.id));
         localStorage.setItem('bikroynow_public_ads', JSON.stringify(filtered));
+
+        const pending = JSON.parse(localStorage.getItem('bikroynow_user_pending_ads') || '[]');
+        localStorage.setItem('bikroynow_user_pending_ads', JSON.stringify(pending.filter(l => String(l.id) !== String(ad.id))));
       } catch (e) {}
 
       // 4. Also delete from featured store API

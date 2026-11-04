@@ -115,7 +115,11 @@ export default function Home() {
         if (apiRes.ok) {
           const apiJson = await apiRes.json();
           if (Array.isArray(apiJson.listings) && !isCancelled) {
-            const activeOnly = apiJson.listings.filter(ad => ad.status === 'active' || ad.status === 'approved');
+            let deletedIds = new Set();
+            try {
+              deletedIds = new Set(JSON.parse(localStorage.getItem('bikroynow_deleted_ad_ids') || '[]').map(String));
+            } catch (e) {}
+            const activeOnly = apiJson.listings.filter(ad => (ad.status === 'active' || ad.status === 'approved') && !deletedIds.has(String(ad.id)));
             setListings(sortPremiumListings(activeOnly));
             setLoading(false);
             return;

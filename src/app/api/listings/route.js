@@ -17,6 +17,7 @@ export async function GET(req) {
     const includeAll = searchParams.get('all') === 'true' || searchParams.get('include_pending') === 'true';
     const statusParam = searchParams.get('status');
     const userId = searchParams.get('user_id');
+    const userEmail = searchParams.get('user_email');
 
     const now = Date.now();
     const isPublicDefault = !includeAll && !statusParam && !userId;
@@ -82,19 +83,27 @@ export async function GET(req) {
 
     let result = combinedListings;
 
-    if (includeAll) {
+    if (userId) {
+      // My Ads: see user's own listings regardless of status (active, pending, rejected)
+      result = combinedListings.filter(item => {
+        if (item.status === 'deleted') return false;
+        const matchId = String(item.user_id) === String(userId);
+        const matchEmail = userEmail && item.user_email && item.user_email.toLowerCase() === userEmail.toLowerCase();
+        return matchId || matchEmail;
+      });
+      if (statusParam) {
+        result = result.filter(item => item.status === statusParam);
+      }
+    } else if (includeAll) {
       // Admin dashboard: see all listings (pending, active, rejected)
-      result = combinedListings;
-    } else if (userId) {
-      // My Ads: see user's own listings regardless of status
-      result = combinedListings.filter(item => item.user_id === userId);
+      result = combinedListings.filter(item => item.status !== 'deleted');
     } else if (statusParam) {
-      result = combinedListings.filter(item => item.status === statusParam);
+      result = combinedListings.filter(item => item.status === statusParam && item.status !== 'deleted');
     } else {
       // PUBLIC USERS (Home, Ads, Search):
       // STRICT MODERATION FILTER: Only show verified active ads!
       // Pending, rejected, or deleted ads are strictly hidden!
-      result = combinedListings.filter(item => item.status === 'active' || item.status === 'approved');
+      result = combinedListings.filter(item => (item.status === 'active' || item.status === 'approved') && item.status !== 'deleted');
     }
 
     // Cache ONLY the public feed
@@ -174,17 +183,30 @@ export async function DELETE(req) {
     cachedListings = null;
     cacheTime = 0;
 
-    // 3. Delete from Supabase DB if valid UUID
-    if (isValidUUID(id)) {
-      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-      if (supabaseUrl && serviceRoleKey) {
+    // 3. Delete from Supabase DB
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (supabaseUrl && serviceRoleKey) {
+      try {
+        const serverSupabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
+        
         try {
-          const serverSupabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
-          await serverSupabase.from('listings').delete().eq('id', id);
-        } catch (sbErr) {
-          console.error('Error deleting from Supabase:', sbErr);
+          await serverSupabase.from('featured_ads').delete().eq('listing_id', id);
+        } catch (e) {}
+
+        try {
+          await serverSupabase.from('favorites').delete().eq('listing_id', id);
+        } catch (e) {}
+
+        if (isValidUUID(id)) {
+          const { error: delErr } = await serverSupabase.from('listings').delete().eq('id', id);
+          if (delErr) {
+            console.error('Hard delete error from Supabase, applying soft delete status=deleted:', delErr);
+            await serverSupabase.from('listings').update({ status: 'deleted' }).eq('id', id);
+          }
         }
+      } catch (sbErr) {
+        console.error('Error deleting from Supabase:', sbErr);
       }
     }
 

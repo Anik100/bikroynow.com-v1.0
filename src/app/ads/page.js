@@ -245,8 +245,12 @@ function AdsContent() {
       if (apiRes.ok) {
         const apiJson = await apiRes.json();
         let allItems = Array.isArray(apiJson.listings) ? apiJson.listings : [];
-        // Strictly filter to active approved ads only
-        allItems = allItems.filter(ad => ad.status === 'active' || ad.status === 'approved');
+        let deletedIds = new Set();
+        try {
+          deletedIds = new Set(JSON.parse(localStorage.getItem('bikroynow_deleted_ad_ids') || '[]').map(String));
+        } catch (e) {}
+        // Strictly filter to active approved ads only and exclude deleted
+        allItems = allItems.filter(ad => (ad.status === 'active' || ad.status === 'approved') && !deletedIds.has(String(ad.id)));
 
         // Apply filters locally in Javascript to bypass RLS restrictions completely for all accounts
         const cat = searchParams.get('category');
