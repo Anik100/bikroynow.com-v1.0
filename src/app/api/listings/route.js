@@ -145,8 +145,9 @@ export async function GET(req) {
           ...item,
           status: item.status || 'active',
           is_featured: isFeatured,
-          is_verified: Boolean(item.is_verified && (hasMembership || promoType)),
-          promotion_type: promoType
+          is_verified: Boolean(item.is_verified && hasMembership),
+          promotion_type: promoType,
+          profiles: hasMembership ? userProf : (userProf ? { ...userProf, membership_type: 'free', membership_expires_at: null } : null)
         };
       });
 

@@ -980,10 +980,27 @@ export default function AdminDashboard() {
         .update(updates)
         .eq('id', profileId);
 
+      // Call server API to synchronize all user listings and slider automatically
+      try {
+        await fetch('/api/admin/purchases', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'sync_user_membership',
+            user_id: profileId,
+            membership_type: type,
+            expires_at: expiresAtStr || null
+          })
+        });
+      } catch (syncErr) {
+        console.error('Error syncing user membership:', syncErr);
+      }
+
       if (!error) {
         setErrorMessage(lang === 'bn' ? '👤 ইউজার মেম্বারশিপ স্ট্যাটাস সফলভাবে আপডেট করা হয়েছে!' : '👤 User membership status updated successfully!');
         setEditingProfile(null);
         fetchProfiles();
+        fetchListings();
       } else {
         setErrorMessage('Error updating profile: ' + error.message);
       }

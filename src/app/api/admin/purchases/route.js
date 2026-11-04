@@ -51,6 +51,29 @@ export async function POST(req) {
       ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
       : null;
 
+    // Sync manual user membership changes from Admin Dashboard
+    if (body.action === 'sync_user_membership') {
+      const { user_id, user_email, membership_type, expires_at } = body;
+      const isFree = !membership_type || membership_type.toLowerCase() === 'free';
+
+      if (isFree) {
+        await revokeUserMembershipAndBoosts({
+          userId: user_id || null,
+          userEmail: user_email || null
+        });
+        return NextResponse.json({ success: true, message: 'Membership revoked and all ads cleaned' });
+      } else {
+        const res = await activateUserMembership({
+          userId: user_id || null,
+          userEmail: user_email || null,
+          packageName: membership_type,
+          duration: 30,
+          durationUnit: 'days'
+        });
+        return NextResponse.json({ success: true, message: 'Membership activated and ads boosted', ...res });
+      }
+    }
+
     // Payment submission from user checkout (saved as 'pending' for admin moderation)
     if (body.action === 'submit_purchase' || body.action === 'instant_activate') {
       const { user_email, package_id, package_name, duration, duration_unit, packageObj, listing_id, transaction_id, sender_number, payment_method, price, screenshot_url } = body;
