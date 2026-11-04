@@ -55,6 +55,8 @@ export default function PostAd() {
   const [uploadingSlots, setUploadingSlots] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [submittedSuccess, setSubmittedSuccess] = useState(false);
+  const [submittedAdStatus, setSubmittedAdStatus] = useState('pending');
+  const [newAdId, setNewAdId] = useState('');
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [selectedMainCategory, setSelectedMainCategory] = useState(null);
   const [activeSub, setActiveSub] = useState(null);
@@ -309,7 +311,10 @@ export default function PostAd() {
       const data = await res.json();
       if (data?.ad?.id) {
         newAdPayload.id = data.ad.id;
+        setNewAdId(data.ad.id);
       }
+      const finalStatus = data?.status || data?.ad?.status || (data?.autoApproved ? 'active' : 'pending');
+      setSubmittedAdStatus(finalStatus);
 
       // 2. Save to shared public ads pool in localStorage as client fallback
       try {
@@ -338,14 +343,25 @@ export default function PostAd() {
             ✓
           </div>
           <h2 style={{ fontSize: '1.45rem', fontWeight: 850, color: '#0f172a', marginBottom: '0.8rem' }}>
-            {lang === 'bn' ? 'বিজ্ঞাপনটি সফলভাবে জমা দেওয়া হয়েছে!' : 'Ad Submitted for Review!'}
+            {submittedAdStatus === 'active'
+              ? (lang === 'bn' ? '🎉 বিজ্ঞাপনটি সফলভাবে সরাসরি লাইভ হয়েছে!' : '🎉 Your Ad is Successfully Live!')
+              : (lang === 'bn' ? 'বিজ্ঞাপনটি সফলভাবে জমা দেওয়া হয়েছে!' : 'Ad Submitted for Review!')}
           </h2>
           <p style={{ color: '#475569', fontSize: '0.98rem', lineHeight: 1.6, maxWidth: '480px', margin: '0 auto 2rem', fontWeight: 600 }}>
-            {lang === 'bn' 
-              ? 'আপনার বিজ্ঞাপনটি পেন্ডিং এ রয়েছে। অ্যাডমিন প্যানেল থেকে অনুমোদন (Approve) করার পর এটি ওয়েবসাইটে প্রকাশিত হবে।' 
-              : 'Your ad has been submitted and is currently pending. It will be published after admin approval.'}
+            {submittedAdStatus === 'active'
+              ? (lang === 'bn' 
+                  ? 'ভেরিফিকেশন ছাড়া সরাসরি আপনার বিজ্ঞাপনটি ওয়েবসাইটে লাইভ হয়ে গেছে। এখনই সবাই এটি দেখতে পাবে!' 
+                  : 'Your ad has been published directly and is now live on the website for everyone to see!')
+              : (lang === 'bn' 
+                  ? 'আপনার বিজ্ঞাপনটি পেন্ডিং এ রয়েছে। অ্যাডমিন প্যানেল থেকে অনুমোদন (Approve) করার পর এটি ওয়েবসাইটে প্রকাশিত হবে।' 
+                  : 'Your ad has been submitted and is currently pending. It will be published after admin approval.')}
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            {submittedAdStatus === 'active' && newAdId && (
+              <Link href={`/ad/${newAdId}`} className={styles.submitBtn} style={{ width: 'auto', padding: '0.75rem 2rem', fontSize: '0.95rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>
+                {lang === 'bn' ? 'বিজ্ঞাপনটি দেখুন' : 'View Ad'}
+              </Link>
+            )}
             <Link href="/" className={styles.submitBtn} style={{ width: 'auto', padding: '0.75rem 2rem', fontSize: '0.95rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
               {lang === 'bn' ? 'হোম পেজে যান' : 'Go to Homepage'}
             </Link>

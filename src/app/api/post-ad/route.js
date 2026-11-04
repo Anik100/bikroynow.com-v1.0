@@ -46,6 +46,21 @@ export async function POST(req) {
 
     const adId = isValidUUID(body.id) ? body.id : crypto.randomUUID();
 
+    // Check if ad verification is required from admin settings
+    let verificationRequired = true;
+    if (serverSupabase) {
+      try {
+        const { data: settingRow } = await serverSupabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'ad_verification_required')
+          .maybeSingle();
+        if (settingRow && settingRow.value === 'false') {
+          verificationRequired = false;
+        }
+      } catch (e) {}
+    }
+
     // Check if user has an active non-expired membership
     const hasActiveMembership = userProfile &&
       userProfile.membership_type &&
@@ -54,7 +69,8 @@ export async function POST(req) {
 
     const qualifiesForSlider = hasActiveMembership && doesPackageQualifyForSlider(userProfile.membership_type);
 
-    const initialStatus = hasActiveMembership ? 'active' : (body.status || 'pending');
+    // If verification is turned off by admin, or if user has active membership: ad goes immediately live ('active')
+    const initialStatus = (!verificationRequired || hasActiveMembership) ? 'active' : (body.status || 'pending');
     const initialPromotion = hasActiveMembership ? userProfile.membership_type : (body.promotion_type || null);
     const initialVerified = hasActiveMembership ? true : Boolean(body.is_verified);
     const initialFeatured = qualifiesForSlider ? true : Boolean(body.is_featured);
@@ -121,7 +137,12 @@ export async function POST(req) {
             } catch (e) {}
           }
           notifySearchEngines(inserted[0].id);
-          return NextResponse.json({ success: true, ad: { ...inserted[0], is_featured: Boolean(qualifiesForSlider) } });
+          return NextResponse.json({ 
+            success: true, 
+            ad: { ...inserted[0], is_featured: Boolean(qualifiesForSlider) },
+            status: inserted[0].status || initialStatus,
+            autoApproved: initialStatus === 'active'
+          });
         }
       } catch (sbErr) {
         console.error('Supabase async insert error:', sbErr);
@@ -129,7 +150,12 @@ export async function POST(req) {
     }
 
     notifySearchEngines(newAd.id);
-    return NextResponse.json({ success: true, ad: newAd });
+    return NextResponse.json({ 
+      success: true, 
+      ad: newAd,
+      status: newAd.status,
+      autoApproved: initialStatus === 'active'
+    });
   } catch (err) {
     console.error('API /api/post-ad error:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });

@@ -93,6 +93,8 @@ export default function AdminDashboard() {
   const [listings, setListings] = useState([]);
   const [favoriteAdIds, setFavoriteAdIds] = useState(new Set());
   const [favoriteCounts, setFavoriteCounts] = useState({});
+  const [adVerificationRequired, setAdVerificationRequired] = useState(true);
+  const [savingVerificationSetting, setSavingVerificationSetting] = useState(false);
   const [actionLoading, setActionLoading] = useState(null);
 
   // Restructured states
@@ -518,6 +520,11 @@ export default function AdminDashboard() {
         if (bkType) setBkashType(bkType.value);
         if (nagad) setNagadNum(nagad.value);
         if (ngType) setNagadType(ngType.value);
+
+        const verifRow = data.find(s => s.key === 'ad_verification_required');
+        if (verifRow) {
+          setAdVerificationRequired(verifRow.value !== 'false');
+        }
 
         const mods = data.find(s => s.key === 'moderators');
         if (mods && mods.value) {
@@ -1313,6 +1320,35 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       setErrorMessage('Exception: ' + err.message);
+    }
+  };
+
+  const handleToggleAdVerification = async (newVal) => {
+    setAdVerificationRequired(newVal);
+    setSavingVerificationSetting(true);
+    try {
+      const { error } = await supabase.from('admin_settings').upsert({
+        key: 'ad_verification_required',
+        value: String(newVal)
+      }, { onConflict: 'key' });
+
+      if (!error) {
+        setErrorMessage(
+          lang === 'bn'
+            ? (newVal 
+                ? '✅ অ্যাড ভেরিফিকেশন চালু করা হয়েছে! (নতুন পোস্ট করা বিজ্ঞাপন এডমিনের অনুমোদনের পরেই লাইভ হবে)' 
+                : '⚡ অ্যাড ভেরিফিকেশন বন্ধ করা হয়েছে! (নতুন বিজ্ঞাপন ভেরিফিকেশন ছাড়াই সরাসরি ওয়েবসাইটে লাইভ হয়ে যাবে)')
+            : (newVal 
+                ? '✅ Ad Verification Enabled (New ads will require admin approval)' 
+                : '⚡ Ad Verification Disabled (New ads will go directly live without verification)')
+        );
+      } else {
+        setErrorMessage('Error saving setting: ' + error.message);
+      }
+    } catch (err) {
+      setErrorMessage('Exception: ' + err.message);
+    } finally {
+      setSavingVerificationSetting(false);
     }
   };
 
@@ -2516,6 +2552,97 @@ export default function AdminDashboard() {
               >
                 <RefreshCw size={14} className={adsLoading ? styles.spin : ''} /> {lang === 'bn' ? 'রিফ্রেশ' : 'Refresh'}
               </button>
+            </div>
+
+            {/* Professional Ad Verification ON / OFF Toggle Switch */}
+            <div style={{
+              background: adVerificationRequired ? '#f0fdf4' : '#eff6ff',
+              border: `1.5px solid ${adVerificationRequired ? '#86efac' : '#93c5fd'}`,
+              borderRadius: '16px',
+              padding: '1rem 1.35rem',
+              marginBottom: '1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '1rem',
+              flexWrap: 'wrap',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.02)',
+              transition: 'all 0.3s ease'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{
+                  width: '44px', height: '44px', borderRadius: '12px',
+                  background: adVerificationRequired ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'white', flexShrink: 0,
+                  boxShadow: adVerificationRequired ? '0 4px 12px rgba(16, 185, 129, 0.35)' : '0 4px 12px rgba(59, 130, 246, 0.35)'
+                }}>
+                  <Shield size={22} />
+                </div>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap', marginBottom: '0.2rem' }}>
+                    <h4 style={{ margin: 0, fontSize: '0.98rem', fontWeight: 800, color: '#0f172a' }}>
+                      {lang === 'bn' ? 'বিজ্ঞাপন ভেরিফিকেশন (অনুমোদন সিস্টেম)' : 'Ad Verification (Approval System)'}
+                    </h4>
+                    <span style={{
+                      fontSize: '0.7rem', fontWeight: 900,
+                      padding: '0.2rem 0.65rem', borderRadius: '20px',
+                      background: adVerificationRequired ? '#dcfce7' : '#dbeafe',
+                      color: adVerificationRequired ? '#15803d' : '#1d4ed8',
+                      border: `1px solid ${adVerificationRequired ? '#bbf7d0' : '#bfdbfe'}`,
+                      textTransform: 'uppercase', letterSpacing: '0.4px',
+                      display: 'inline-flex', alignItems: 'center', gap: '0.3rem'
+                    }}>
+                      {adVerificationRequired 
+                        ? (lang === 'bn' ? '● ভেরিফিকেশন চালু (অনুমোদন আবশ্যক)' : '● ON (Approval Required)') 
+                        : (lang === 'bn' ? '⚡ ভেরিফিকেশন বন্ধ (সরাসরি লাইভ)' : '⚡ OFF (Auto-Approved Direct)')}
+                    </span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '0.78rem', color: '#475569', fontWeight: 500, lineHeight: 1.4 }}>
+                    {adVerificationRequired 
+                      ? (lang === 'bn' ? 'ভেরিফিকেশন চালু: পাবলিকের পোস্ট করা নতুন প্রতিটি বিজ্ঞাপন পেন্ডিং থাকবে এবং এডমিনের অনুমোদনের পরেই কেবল ওয়েবসাইটে দৃশ্যমান হবে।' : 'Verification ON: Public ads will remain in pending state and only be published after admin approval.') 
+                      : (lang === 'bn' ? 'ভেরিফিকেশন বন্ধ: যে কেউ বিজ্ঞাপন পোস্ট করলেই কোনো ভেরিফিকেশন বা অনুমোদন ছাড়া সরাসরি সাথে সাথে ওয়েবসাইটে লাইভ হয়ে যাবে।' : 'Verification OFF: Any ad posted will bypass review and be published directly live on the website.')}
+                  </p>
+                </div>
+              </div>
+
+              {/* Physical Interactive Toggle Switch */}
+              <div 
+                onClick={() => handleToggleAdVerification(!adVerificationRequired)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '0.65rem', cursor: 'pointer',
+                  userSelect: 'none', background: 'white', padding: '0.45rem 0.9rem',
+                  borderRadius: '30px', border: '1.5px solid #cbd5e1', boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+                  transition: 'all 0.2s ease', opacity: savingVerificationSetting ? 0.6 : 1
+                }}
+                title={adVerificationRequired ? (lang === 'bn' ? 'ভেরিফিকেশন বন্ধ করতে সুইচ করুন' : 'Click to turn OFF verification') : (lang === 'bn' ? 'ভেরিফিকেশন চালু করতে সুইচ করুন' : 'Click to turn ON verification')}
+              >
+                <span style={{ fontSize: '0.78rem', fontWeight: 800, color: adVerificationRequired ? '#15803d' : '#64748b' }}>
+                  {adVerificationRequired ? (lang === 'bn' ? 'অন (ON)' : 'ON') : (lang === 'bn' ? 'অফ (OFF)' : 'OFF')}
+                </span>
+                <div style={{
+                  width: '48px',
+                  height: '26px',
+                  borderRadius: '20px',
+                  background: adVerificationRequired ? '#10b981' : '#cbd5e1',
+                  position: 'relative',
+                  transition: 'background 0.3s ease',
+                  padding: '3px',
+                  boxSizing: 'border-box'
+                }}>
+                  <div style={{
+                    width: '20px',
+                    height: '20px',
+                    borderRadius: '50%',
+                    background: 'white',
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.25)',
+                    position: 'absolute',
+                    top: '3px',
+                    left: adVerificationRequired ? '25px' : '3px',
+                    transition: 'left 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+                  }} />
+                </div>
+              </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.85rem', marginBottom: '1.5rem' }}>
