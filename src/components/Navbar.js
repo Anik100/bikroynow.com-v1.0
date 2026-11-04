@@ -219,12 +219,22 @@ export default function Navbar() {
 
 
   useEffect(() => {
+        const shouldShowPrompt = (currUser) => {
+      if (!currUser || !currUser.id || String(currUser.id).startsWith('default-')) return false;
+      // If user already saved their profile name/phone, DO NOT show on page refresh!
+      try {
+        if (localStorage.getItem('bkr_profile_saved_' + currUser.id) === 'true') return false;
+        if (sessionStorage.getItem('bkr_prompt_dismissed_' + currUser.id) === 'true') return false;
+      } catch (e) {}
+      return true;
+    };
+
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         setUser(session.user);
         syncUserProfile(session.user);
-        if (!sessionStorage.getItem('bkr_prompt_dismissed_' + session.user.id)) {
+        if (shouldShowPrompt(session.user)) {
           setTimeout(() => setShowOnboarding(true), 600);
         }
       } else {
@@ -244,9 +254,13 @@ export default function Navbar() {
         if (session?.user) {
           setUser(session.user);
           syncUserProfile(session.user);
-          if (event === 'SIGNED_IN' || !sessionStorage.getItem('bkr_prompt_dismissed_' + session.user.id)) {
-            sessionStorage.removeItem('bkr_prompt_dismissed_' + session.user.id);
+          if (event === 'SIGNED_IN') {
+            try {
+              sessionStorage.removeItem('bkr_prompt_dismissed_' + session.user.id);
+            } catch (e) {}
             setTimeout(() => setShowOnboarding(true), 500);
+          } else if (shouldShowPrompt(session.user)) {
+            setTimeout(() => setShowOnboarding(true), 600);
           }
         } else {
           const localUser = localStorage.getItem('bikroynow_demo_user');

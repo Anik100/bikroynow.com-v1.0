@@ -63,26 +63,32 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
     setError(null);
 
     try {
-      // 1. Update Supabase Auth metadata
-      await supabase.auth.updateUser({
+      // 1. Immediately store saved state locally so refresh never prompts again
+      try {
+        localStorage.setItem('bkr_profile_saved_' + user.id, 'true');
+        sessionStorage.setItem('bkr_prompt_dismissed_' + user.id, 'true');
+      } catch (e) {}
+
+      // 2. Fast background database upsert with timeout race (never blocks or freezes)
+      await Promise.race([
+        supabase.from('profiles').upsert({
+          id: user.id,
+          email: user.email.toLowerCase().trim(),
+          full_name: finalName,
+          phone: phoneNumber.trim() || null,
+          avatar_url: avatarUrl || null,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'id' }),
+        new Promise(resolve => setTimeout(resolve, 800))
+      ]);
+
+      // 3. Update auth metadata asynchronously without waiting for lock
+      supabase.auth.updateUser({
         data: {
           full_name: finalName,
           phone: phoneNumber.trim() || undefined
         }
-      });
-
-      // 2. Update Supabase profiles table
-      await supabase.from('profiles').upsert({
-        id: user.id,
-        email: user.email.toLowerCase().trim(),
-        full_name: finalName,
-        phone: phoneNumber.trim() || null,
-        avatar_url: avatarUrl || null,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'id' });
-
-      // 3. Mark dismissed for this current browser session
-      sessionStorage.setItem('bkr_prompt_dismissed_' + user.id, 'true');
+      }).catch(() => {});
 
       if (onProfileUpdated) {
         onProfileUpdated({ full_name: finalName, phone: phoneNumber.trim() });
@@ -91,7 +97,10 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
       onClose();
     } catch (err) {
       console.error('Save profile error:', err);
-      sessionStorage.setItem('bkr_prompt_dismissed_' + user.id, 'true');
+      try {
+        localStorage.setItem('bkr_profile_saved_' + user.id, 'true');
+        sessionStorage.setItem('bkr_prompt_dismissed_' + user.id, 'true');
+      } catch (e) {}
       onClose();
     } finally {
       setSaving(false);
@@ -100,7 +109,9 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
 
   const handleSkip = () => {
     // Only dismiss for this active session so on next login it can appear again
-    sessionStorage.setItem('bkr_prompt_dismissed_' + user.id, 'true');
+    try {
+      sessionStorage.setItem('bkr_prompt_dismissed_' + user.id, 'true');
+    } catch (e) {}
     onClose();
   };
 
