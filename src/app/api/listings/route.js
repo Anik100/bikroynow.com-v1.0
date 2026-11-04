@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getGlobalListings, deleteGlobalListing, updateGlobalListing } from '../../../lib/globalListingsStore';
+import { getGlobalFeaturedAds } from '../../../lib/globalFeaturedAdsStore';
 import { deleteChatsForListing } from '../../../lib/chatsStore';
 import { notifySearchEngines } from '../../../lib/seoPinger';
 import { cleanupExpiredMembershipsAndBoosts } from '../../../lib/membershipManagerHelper';
@@ -10,7 +11,9 @@ export const dynamic = 'force-dynamic';
 // In-memory high-speed cache for super-fast public responses (< 5ms)
 let cachedListings = null;
 let cacheTime = 0;
-const CACHE_TTL_MS = 15000; // 15 seconds cache
+const CACHE_TTL_MS = 10000; // 10 seconds cache
+
+const isValidUUID = (str) => typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 
 export async function GET(req) {
   try {
@@ -41,6 +44,7 @@ export async function GET(req) {
 
     let dbListings = [];
     let featuredSet = new Set();
+    const deletedListingIds = new Set();
 
     if (supabaseUrl && serviceRoleKey) {
       try {
@@ -48,8 +52,8 @@ export async function GET(req) {
           auth: { persistSession: false, autoRefreshToken: false }
         });
 
-        // Parallel execution of featured ads, listings, and profiles
-        const [featuredRes, dbRes, profilesRes] = await Promise.all([
+        // Parallel execution of featured ads, listings, profiles, and deleted listings blacklist
+        const [featuredRes, dbRes, profilesRes, delSettingRes] = await Promise.all([
           serverSupabase
             .from('featured_ads')
             .select('listing_id')
@@ -62,8 +66,22 @@ export async function GET(req) {
             .limit(100),
           serverSupabase
             .from('profiles')
-            .select('id, email, membership_type, membership_expires_at')
+            .select('id, email, membership_type, membership_expires_at'),
+          serverSupabase
+            .from('admin_settings')
+            .select('value')
+            .eq('key', 'deleted_listing_ids')
+            .maybeSingle()
         ]);
+
+        if (delSettingRes?.data?.value) {
+          try {
+            const arr = JSON.parse(delSettingRes.data.value);
+            if (Array.isArray(arr)) {
+              arr.forEach(id => deletedListingIds.add(String(id)));
+            }
+          } catch (e) {}
+        }
 
         const profilesMap = new Map();
         if (profilesRes?.data) {
@@ -75,10 +93,12 @@ export async function GET(req) {
         }
 
         if (Array.isArray(dbRes?.data)) {
-          dbListings = dbRes.data.map(l => ({
-            ...l,
-            profiles: profilesMap.get(l.user_id) || l.profiles || null
-          }));
+          dbListings = dbRes.data
+            .filter(l => !deletedListingIds.has(String(l.id)) && l.status !== 'deleted')
+            .map(l => ({
+              ...l,
+              profiles: profilesMap.get(l.user_id) || l.profiles || null
+            }));
         }
       } catch (e) {
         console.error('Database query error:', e);
@@ -92,39 +112,50 @@ export async function GET(req) {
     } catch (e) {}
 
     // Merge DB listings with server-side globalListingsStore
+    // NOTE: If Supabase returned listings, never resurrect deleted or orphan UUID ads from disk!
     const globalAds = getGlobalListings();
-    const existingIds = new Set(dbListings.map(i => i.id));
-    const extraAds = globalAds.filter(ad => !existingIds.has(ad.id) && ad.status !== 'deleted');
-
-    const combinedListings = [...extraAds, ...dbListings].map(item => {
-      const userProf = item.profiles;
-      const isFree = !userProf || !userProf.membership_type || userProf.membership_type.toLowerCase() === 'free';
-      const isExpired = userProf?.membership_expires_at && new Date(userProf.membership_expires_at) <= new Date();
-      const hasMembership = Boolean(!isFree && !isExpired);
-
-      // If user profile is free or expired, promotions & slider privileges are completely revoked
-      let promoType = null;
-      if (hasMembership) {
-        promoType = item.promotion_type || userProf.membership_type;
-      }
-
-      const isFeatured = Boolean(featuredSet.has(item.id)) && (hasMembership || !item.user_id);
-
-      return {
-        ...item,
-        status: item.status || 'active',
-        is_featured: isFeatured,
-        is_verified: Boolean(item.is_verified && (hasMembership || promoType)),
-        promotion_type: promoType
-      };
+    const existingIds = new Set(dbListings.map(i => String(i.id)));
+    const extraAds = globalAds.filter(ad => {
+      const idStr = String(ad.id);
+      if (deletedListingIds.has(idStr)) return false;
+      if (ad.status === 'deleted') return false;
+      if (existingIds.has(idStr)) return false;
+      // If DB has active listings, ignore stale UUID ads from disk
+      if (dbListings.length > 0 && isValidUUID(idStr)) return false;
+      return true;
     });
+
+    const combinedListings = [...extraAds, ...dbListings]
+      .filter(item => !deletedListingIds.has(String(item.id)) && item.status !== 'deleted')
+      .map(item => {
+        const userProf = item.profiles;
+        const isFree = !userProf || !userProf.membership_type || userProf.membership_type.toLowerCase() === 'free';
+        const isExpired = userProf?.membership_expires_at && new Date(userProf.membership_expires_at) <= new Date();
+        const hasMembership = Boolean(!isFree && !isExpired);
+
+        // If user profile is free or expired, promotions & slider privileges are completely revoked
+        let promoType = null;
+        if (hasMembership) {
+          promoType = item.promotion_type || userProf.membership_type;
+        }
+
+        const isFeatured = Boolean(featuredSet.has(item.id)) && (hasMembership || !item.user_id);
+
+        return {
+          ...item,
+          status: item.status || 'active',
+          is_featured: isFeatured,
+          is_verified: Boolean(item.is_verified && (hasMembership || promoType)),
+          promotion_type: promoType
+        };
+      });
 
     let result = combinedListings;
 
     if (userId) {
       // My Ads: see user's own listings regardless of status (active, pending, rejected)
       result = combinedListings.filter(item => {
-        if (item.status === 'deleted') return false;
+        if (item.status === 'deleted' || deletedListingIds.has(String(item.id))) return false;
         const matchId = String(item.user_id) === String(userId);
         const matchEmail = userEmail && item.user_email && item.user_email.toLowerCase() === userEmail.toLowerCase();
         return matchId || matchEmail;
@@ -134,14 +165,14 @@ export async function GET(req) {
       }
     } else if (includeAll) {
       // Admin dashboard: see all listings (pending, active, rejected)
-      result = combinedListings.filter(item => item.status !== 'deleted');
+      result = combinedListings.filter(item => item.status !== 'deleted' && !deletedListingIds.has(String(item.id)));
     } else if (statusParam) {
-      result = combinedListings.filter(item => item.status === statusParam && item.status !== 'deleted');
+      result = combinedListings.filter(item => item.status === statusParam && item.status !== 'deleted' && !deletedListingIds.has(String(item.id)));
     } else {
       // PUBLIC USERS (Home, Ads, Search):
       // STRICT MODERATION FILTER: Only show verified active ads!
       // Pending, rejected, or deleted ads are strictly hidden!
-      result = combinedListings.filter(item => (item.status === 'active' || item.status === 'approved') && item.status !== 'deleted');
+      result = combinedListings.filter(item => (item.status === 'active' || item.status === 'approved') && item.status !== 'deleted' && !deletedListingIds.has(String(item.id)));
     }
 
     // Cache ONLY the public feed
@@ -211,8 +242,6 @@ export async function DELETE(req) {
     const id = searchParams.get('id');
     if (!id) return NextResponse.json({ error: 'Missing listing ID' }, { status: 400 });
 
-    const isValidUUID = (str) => typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
-
     // 1. Delete from global persistent store
     deleteGlobalListing(id);
     deleteChatsForListing(id);
@@ -221,7 +250,7 @@ export async function DELETE(req) {
     cachedListings = null;
     cacheTime = 0;
 
-    // 3. Delete from Supabase DB
+    // 3. Delete from Supabase DB & blacklist permanently in admin_settings
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (supabaseUrl && serviceRoleKey) {
@@ -237,18 +266,44 @@ export async function DELETE(req) {
         } catch (e) {}
 
         if (isValidUUID(id)) {
-          const { error: delErr } = await serverSupabase.from('listings').delete().eq('id', id);
-          if (delErr) {
-            console.error('Hard delete error from Supabase, applying soft delete status=deleted:', delErr);
+          // Soft delete in listings first
+          try {
             await serverSupabase.from('listings').update({ status: 'deleted' }).eq('id', id);
+          } catch (e) {}
+
+          // Hard delete from listings
+          try {
+            await serverSupabase.from('listings').delete().eq('id', id);
+          } catch (delErr) {
+            console.error('Hard delete error from Supabase:', delErr);
           }
         }
+
+        // Add to permanent deleted blacklist in admin_settings
+        try {
+          const { data: setRow } = await serverSupabase
+            .from('admin_settings')
+            .select('value')
+            .eq('key', 'deleted_listing_ids')
+            .maybeSingle();
+          let currentDeleted = [];
+          if (setRow?.value) {
+            try { currentDeleted = JSON.parse(setRow.value); } catch (e) {}
+          }
+          if (!currentDeleted.includes(id)) {
+            currentDeleted.push(id);
+            await serverSupabase.from('admin_settings').upsert({
+              key: 'deleted_listing_ids',
+              value: JSON.stringify(currentDeleted)
+            }, { onConflict: 'key' });
+          }
+        } catch (e) {}
       } catch (sbErr) {
         console.error('Error deleting from Supabase:', sbErr);
       }
     }
 
-    return NextResponse.json({ success: true, message: 'Listing deleted successfully' });
+    return NextResponse.json({ success: true, message: 'Listing deleted permanently' });
   } catch (err) {
     console.error('API /api/listings DELETE error:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });
