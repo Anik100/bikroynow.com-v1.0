@@ -324,11 +324,15 @@ export default function Navbar() {
   };
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.warn('Logout signOut warning:', err);
+    }
     localStorage.removeItem('bikroynow_demo_user');
     setUser(null);
-    router.push('/');
-    router.refresh();
+    setShowProfileMenu(false);
+    window.location.href = '/';
   };
 
   const handleSearchSubmit = (e) => {

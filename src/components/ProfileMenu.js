@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { supabase } from '../lib/supabaseClient';
-import { X, FileText, Star, Award, Settings, HelpCircle, LogOut, User as UserIcon, MessageSquare, Heart } from 'lucide-react';
+import { X, FileText, Star, Award, Settings, HelpCircle, LogOut, User as UserIcon, MessageSquare, Heart, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
 import styles from './ProfileMenu.module.css';
@@ -14,6 +15,9 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
   const [user, setUser] = useState(propUser || null);
   const [profile, setProfile] = useState(null);
   const [hasAdminAccess, setHasAdminAccess] = useState(propAdmin || false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const adminEmails = [
@@ -52,6 +56,26 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
     }
   }, [propUser]);
   
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const executeLogout = async () => {
+    setLoggingOut(true);
+    try {
+      if (onLogout) {
+        await onLogout();
+      } else {
+        await supabase.auth.signOut();
+        localStorage.removeItem('bikroynow_demo_user');
+        window.location.href = '/';
+      }
+    } catch (err) {
+      console.error('Logout error:', err);
+      window.location.href = '/';
+    }
+  };
+
   // Profile editing states
   const [isEditing, setIsEditing] = useState(false);
   const [newName, setNewName] = useState('');
@@ -496,13 +520,60 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
           </Link>
           
           {user && (
-            <div className={`${styles.menuItem} ${styles.logout}`} onClick={() => { onLogout(); onClose(); }}>
+            <div className={`${styles.menuItem} ${styles.logout}`} onClick={() => setShowLogoutConfirm(true)} style={{ cursor: 'pointer' }}>
               <LogOut size={20} color="#dc2626" />
-              <span style={{ color: '#dc2626' }}>{t('logout')}</span>
+              <span style={{ color: '#dc2626', fontWeight: 700 }}>{t('logout')}</span>
             </div>
           )}
         </div>
       </div>
+
+      {showLogoutConfirm && mounted && createPortal(
+        <div className={styles.confirmOverlay} onClick={() => !loggingOut && setShowLogoutConfirm(false)}>
+          <div className={styles.confirmCard} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.confirmIconBox}>
+              <LogOut size={28} />
+            </div>
+            <h3 className={styles.confirmTitle}>
+              {lang === 'bn' ? 'লগআউট করতে চান?' : 'Sign Out of BikroyNow?'}
+            </h3>
+            <p className={styles.confirmDesc}>
+              {lang === 'bn' 
+                ? 'আপনি কি নিশ্চিতভাবে আপনার অ্যাকাউন্ট থেকে লগআউট করতে চান?' 
+                : 'Are you sure you want to log out of your account?'}
+            </p>
+            <div className={styles.confirmActions}>
+              <button 
+                type="button"
+                className={styles.confirmCancelBtn}
+                onClick={() => setShowLogoutConfirm(false)}
+                disabled={loggingOut}
+              >
+                {lang === 'bn' ? 'না, থাক' : 'Cancel'}
+              </button>
+              <button 
+                type="button"
+                className={styles.confirmLogoutBtn}
+                onClick={executeLogout}
+                disabled={loggingOut}
+              >
+                {loggingOut ? (
+                  <>
+                    <Loader2 size={16} className="spin" style={{ animation: 'spin 1s linear infinite' }} />
+                    <span>{lang === 'bn' ? 'লগআউট হচ্ছে...' : 'Signing out...'}</span>
+                  </>
+                ) : (
+                  <>
+                    <LogOut size={16} />
+                    <span>{lang === 'bn' ? 'হ্যাঁ, লগআউট' : 'Yes, Sign Out'}</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
