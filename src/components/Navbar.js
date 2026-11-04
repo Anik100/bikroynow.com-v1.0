@@ -254,12 +254,7 @@ export default function Navbar() {
         if (session?.user) {
           setUser(session.user);
           syncUserProfile(session.user);
-          if (event === 'SIGNED_IN') {
-            try {
-              sessionStorage.removeItem('bkr_prompt_dismissed_' + session.user.id);
-            } catch (e) {}
-            setTimeout(() => setShowOnboarding(true), 500);
-          } else if (shouldShowPrompt(session.user)) {
+          if (shouldShowPrompt(session.user)) {
             setTimeout(() => setShowOnboarding(true), 600);
           }
         } else {
