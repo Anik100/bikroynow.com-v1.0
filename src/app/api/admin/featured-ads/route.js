@@ -50,16 +50,7 @@ export async function GET() {
         }
 
         if (dbFeaturedRes?.data) {
-          const dbIds = new Set(dbFeaturedRes.data.map(m => String(m.listing_id)));
-          // Only keep local sample defaults (e.g. tplink, china-mobile) if not in db
-          const samples = featured.filter(l => 
-            String(l.listing_id).startsWith('tplink') || String(l.listing_id).startsWith('china-mobile')
-          );
-          const merged = [...dbFeaturedRes.data];
-          samples.forEach(s => {
-            if (!dbIds.has(String(s.listing_id))) merged.push(s);
-          });
-          featured = merged;
+          featured = dbFeaturedRes.data;
           saveGlobalFeaturedAds(featured);
         }
       } catch (e) {
