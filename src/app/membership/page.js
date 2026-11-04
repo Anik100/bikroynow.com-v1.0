@@ -321,13 +321,13 @@ export default function Membership() {
         return;
       }
 
-      // Call server-side instant activation to automatically boost user's ads and update slider
+      // Call server-side submission to place in admin moderation queue
       try {
         await fetch('/api/admin/purchases', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            action: 'instant_activate',
+            action: 'submit_purchase',
             user_email: userEmail.trim(),
             package_id: selectedPack.id,
             package_name: selectedPack.name_en || selectedPack.name_bn,
@@ -343,15 +343,8 @@ export default function Membership() {
           })
         });
       } catch (actErr) {
-        console.error('Instant activation error:', actErr);
+        console.error('Submit purchase error:', actErr);
       }
-
-      // Update local storage demo user
-      try {
-        const localUser = JSON.parse(localStorage.getItem('bikroynow_demo_user') || '{}');
-        localUser.membership_type = selectedPack.name_en || selectedPack.name_bn;
-        localStorage.setItem('bikroynow_demo_user', JSON.stringify(localUser));
-      } catch (e) {}
 
       setSuccess(true);
     } catch (err) {

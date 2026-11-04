@@ -6,6 +6,41 @@ import { activateUserMembership, revokeUserMembershipAndBoosts } from '../../../
 
 export const dynamic = 'force-dynamic';
 
+export async function GET(req) {
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const serverSupabase = (supabaseUrl && serviceRoleKey)
+      ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
+      : null;
+
+    if (!serverSupabase) {
+      return NextResponse.json({ error: 'Supabase credentials missing' }, { status: 500 });
+    }
+
+    const { data, error } = await serverSupabase
+      .from('membership_purchases')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      purchases: data || [] 
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+      }
+    });
+  } catch (err) {
+    console.error('Error fetching purchases via API:', err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
 export async function POST(req) {
   try {
     const body = await req.json();
@@ -16,22 +51,19 @@ export async function POST(req) {
       ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
       : null;
 
-    // Instant activation directly from user purchase
-    if (body.action === 'instant_activate') {
+    // Payment submission from user checkout (saved as 'pending' for admin moderation)
+    if (body.action === 'submit_purchase' || body.action === 'instant_activate') {
       const { user_email, package_id, package_name, duration, duration_unit, packageObj, listing_id, transaction_id, sender_number, payment_method, price, screenshot_url } = body;
 
-      const res = await activateUserMembership({
-        userEmail: user_email,
-        packageName: package_name,
-        duration: duration || 30,
-        durationUnit: duration_unit || 'days',
-        packageObj,
-        listingId: listing_id || null
-      });
+      if (!serverSupabase) {
+        return NextResponse.json({ error: 'Database service unavailable' }, { status: 500 });
+      }
 
-      if (serverSupabase && user_email) {
-        try {
-          await serverSupabase.from('membership_purchases').insert([{
+      let inserted = null;
+      if (user_email) {
+        const { data, error: insErr } = await serverSupabase
+          .from('membership_purchases')
+          .insert([{
             user_email: user_email.trim(),
             package_id: package_id || null,
             package_name: package_name || 'Membership',
@@ -40,13 +72,24 @@ export async function POST(req) {
             sender_number: sender_number || '01700000000',
             transaction_id: transaction_id || ('TXN-' + Date.now()),
             screenshot_url: screenshot_url || null,
-            status: 'approved',
+            status: 'pending',
             listing_id: listing_id || null
-          }]);
-        } catch (e) {}
+          }])
+          .select();
+
+        if (insErr) {
+          console.error('Error inserting membership purchase:', insErr);
+          return NextResponse.json({ error: insErr.message }, { status: 500 });
+        }
+        inserted = data;
       }
 
-      return NextResponse.json({ success: true, message: 'Membership activated instantly and ads boosted', ...res });
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Payment request submitted for admin moderation. Pending verification.',
+        status: 'pending',
+        purchase: inserted ? inserted[0] : null
+      });
     }
 
     const { id, status } = body;

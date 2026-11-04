@@ -433,8 +433,16 @@ export default function AdminDashboard() {
     };
     
     checkAdmin();
+
+    const intervalId = setInterval(() => {
+      if (isMounted) {
+        fetchPurchases();
+      }
+    }, 15000);
+
     return () => {
       isMounted = false;
+      clearInterval(intervalId);
     };
   }, [router]);
 
@@ -893,7 +901,22 @@ export default function AdminDashboard() {
   const fetchPurchases = async () => {
     setPurchasesLoading(true);
     try {
-      // FIFO Order: Oldest Pending Request first
+      // 1. Try server-side API (bypasses browser caching & RLS)
+      const res = await fetch(`/api/admin/purchases?t=${Date.now()}`, { cache: 'no-store' });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.purchases) {
+          setPurchases(json.purchases);
+          setPurchasesLoading(false);
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn('API purchase fetch fallback to client supabase:', e);
+    }
+
+    try {
+      // 2. Direct Supabase fallback (FIFO Order: Oldest Pending Request first)
       const { data } = await supabase
         .from('membership_purchases')
         .select('*')
@@ -1880,11 +1903,12 @@ export default function AdminDashboard() {
                     <span style={{
                       background: activeTab === 'payment_info' ? '#ffffff' : '#ef4444',
                       color: activeTab === 'payment_info' ? '#ea580c' : '#ffffff',
-                      fontSize: '0.68rem', fontWeight: 900,
-                      minWidth: '20px', height: '20px', borderRadius: '50%',
+                      fontSize: '0.72rem', fontWeight: 900,
+                      minWidth: '22px', height: '22px', borderRadius: '50%',
                       display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                       border: '2px solid white',
-                      boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
+                      boxShadow: '0 0 10px rgba(239, 68, 68, 0.7)',
+                      marginLeft: '6px'
                     }}>
                       {purchases.filter(p => p.status === 'pending').length}
                     </span>
