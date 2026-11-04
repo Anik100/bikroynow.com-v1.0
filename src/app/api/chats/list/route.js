@@ -173,6 +173,28 @@ export async function GET(req) {
           chatMsgs.push(m);
         }
       });
+      // Also include cloud messages from admin_settings
+      if (serverSupabase) {
+        try {
+          const { data: row } = await serverSupabase
+            .from('admin_settings')
+            .select('value')
+            .eq('key', 'chat_msgs_' + chat.id)
+            .maybeSingle();
+          if (row?.value) {
+            const arr = JSON.parse(row.value);
+            if (Array.isArray(arr)) {
+              arr.forEach(m => {
+                if (!seenMsgIds.has(m.id)) {
+                  seenMsgIds.add(m.id);
+                  chatMsgs.push(m);
+                }
+              });
+            }
+          }
+        } catch (e) {}
+      }
+
       chatMsgs.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
       if (chatMsgs.length > 0) {

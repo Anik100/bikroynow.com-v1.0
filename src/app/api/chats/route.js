@@ -15,11 +15,12 @@ export async function POST(req) {
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const serverSupabase = (supabaseUrl && serviceRoleKey)
+      ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
+      : null;
 
-    if (supabaseUrl && serviceRoleKey && isValidUUID(listing_id) && isValidUUID(buyer_id) && isValidUUID(seller_id)) {
+    if (serverSupabase && isValidUUID(listing_id) && isValidUUID(buyer_id) && isValidUUID(seller_id)) {
       try {
-        const serverSupabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
-
         // 1. Check if chat already exists in Supabase
         const { data: existingChat } = await serverSupabase
           .from('chats')
@@ -55,6 +56,35 @@ export async function POST(req) {
 
     // Fallback: Guaranteed to create/retrieve chat from resilient chatsStore
     const localChatId = createOrGetChat(listing_id, buyer_id, seller_id);
+
+    // Persist chat session centrally in admin_settings cloud store
+    if (serverSupabase) {
+      try {
+        const { data: row } = await serverSupabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'all_chats_list')
+          .maybeSingle();
+        let allChats = [];
+        if (row?.value) {
+          try { allChats = JSON.parse(row.value); } catch (e) {}
+        }
+        if (!allChats.some(c => c.id === localChatId)) {
+          allChats.push({
+            id: localChatId,
+            listing_id,
+            buyer_id,
+            seller_id,
+            created_at: new Date().toISOString()
+          });
+          await serverSupabase.from('admin_settings').upsert({
+            key: 'all_chats_list',
+            value: JSON.stringify(allChats)
+          }, { onConflict: 'key' });
+        }
+      } catch (e) {}
+    }
+
     return NextResponse.json({ success: true, id: localChatId });
   } catch (e) {
     console.error('Error creating chat:', e);

@@ -15,9 +15,9 @@ export async function GET(req, { params }) {
 
     const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const serverSupabase = (supabaseUrl && anonKey) 
-      ? createClient(supabaseUrl, anonKey, { auth: { persistSession: false } }) 
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const serverSupabase = (supabaseUrl && serviceRoleKey) 
+      ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } }) 
       : null;
 
     let chat = null;
@@ -43,7 +43,24 @@ export async function GET(req, { params }) {
       }
     }
 
-    // 2. Fallback to local chatsStore
+    // 2. Check cloud persistent all_chats_list from admin_settings
+    if (!chat && serverSupabase) {
+      try {
+        const { data: row } = await serverSupabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'all_chats_list')
+          .maybeSingle();
+        if (row?.value) {
+          const list = JSON.parse(row.value);
+          if (Array.isArray(list)) {
+            chat = list.find(c => c.id === id) || null;
+          }
+        }
+      } catch (e) {}
+    }
+
+    // 3. Fallback to local chatsStore
     if (!chat) {
       const localChats = getChats();
       chat = localChats.find(c => c.id === id) || null;
@@ -53,7 +70,7 @@ export async function GET(req, { params }) {
       return NextResponse.json({ error: 'Chat not found' }, { status: 404 });
     }
 
-    // 3. Fetch listing details
+    // 4. Fetch listing details
     let listing = null;
     try {
       const globalListings = getGlobalListings();
@@ -72,7 +89,7 @@ export async function GET(req, { params }) {
     }
     chat.listing = listing || { title: 'BikroyNow Item', images: ['https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800'] };
 
-    // 4. Fetch buyer and seller profiles (supporting UUIDs, emails, and usernames)
+    // 5. Fetch buyer and seller profiles (supporting UUIDs, emails, and usernames)
     let buyer = null;
     let seller = null;
 
@@ -104,7 +121,11 @@ export async function GET(req, { params }) {
     chat.buyer.last_seen = getUserLastSeen(chat.buyer_id, chat.buyer.email, chat.buyer.last_seen);
     chat.seller.last_seen = getUserLastSeen(chat.seller_id, chat.seller.email, chat.seller.last_seen);
 
-    return NextResponse.json({ success: true, chat });
+    return NextResponse.json({ success: true, chat }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
+      }
+    });
   } catch (e) {
     console.error('Error fetching chat details:', e);
     return NextResponse.json({ error: e.message }, { status: 500 });

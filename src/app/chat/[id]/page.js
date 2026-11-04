@@ -162,15 +162,32 @@ export default function ChatWindow({ params }) {
         const json = await res.json();
         if (Array.isArray(json.messages)) {
           setMessages(prev => {
-            const tempMsgs = prev.filter(m => String(m.id).startsWith('temp-'));
-            const serverMsgs = json.messages;
-            const serverContents = new Set(serverMsgs.map(m => m.content).filter(Boolean));
-            const serverImgUrls = new Set(serverMsgs.map(m => m.image_url).filter(Boolean));
-            const pendingTemp = tempMsgs.filter(t => 
-              (t.content && !serverContents.has(t.content)) || 
-              (t.image_url && !serverImgUrls.has(t.image_url))
-            );
-            return [...serverMsgs, ...pendingTemp];
+            // Never wipe out local messages if server returns an empty array!
+            if (json.messages.length === 0 && prev.length > 0) {
+              return prev;
+            }
+            const serverMap = new Map();
+            json.messages.forEach(m => {
+              if (m.id) serverMap.set(String(m.id), m);
+            });
+            const merged = [...json.messages];
+            prev.forEach(p => {
+              const pId = String(p.id);
+              if (!serverMap.has(pId)) {
+                const isDuplicate = json.messages.some(sm => 
+                  (p.content && sm.content === p.content) || 
+                  (p.image_url && sm.image_url === p.image_url)
+                );
+                if (!isDuplicate) {
+                  merged.push(p);
+                }
+              }
+            });
+            merged.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            try {
+              localStorage.setItem('bikroynow_chat_' + effectiveId, JSON.stringify(merged));
+            } catch (e) {}
+            return merged;
           });
         }
       }
@@ -227,6 +244,17 @@ export default function ChatWindow({ params }) {
         return;
       }
       if (!isCancelled) setUser(activeUser);
+
+      // Immediately load cached messages from localStorage so screen is never blank
+      try {
+        const cached = localStorage.getItem('bikroynow_chat_' + effectiveId);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setMessages(parsed);
+          }
+        }
+      } catch (e) {}
 
       // Mark messages as read when opening room
       markAsRead(activeUser.id);
@@ -365,7 +393,13 @@ export default function ChatWindow({ params }) {
       is_read: false
     };
 
-    setMessages(prev => [...prev, optimisticMsg]);
+    setMessages(prev => {
+      const updated = [...prev, optimisticMsg];
+      try {
+        localStorage.setItem('bikroynow_chat_' + effectiveId, JSON.stringify(updated));
+      } catch (e) {}
+      return updated;
+    });
     setTimeout(() => {
       scrollToBottom();
       chatInputRef.current?.focus();
@@ -387,7 +421,13 @@ export default function ChatWindow({ params }) {
       if (res.ok) {
         const json = await res.json();
         if (json.message) {
-          setMessages(prev => prev.map(m => m.id === tempId ? json.message : m));
+          setMessages(prev => {
+            const updated = prev.map(m => m.id === tempId ? json.message : m);
+            try {
+              localStorage.setItem('bikroynow_chat_' + effectiveId, JSON.stringify(updated));
+            } catch (e) {}
+            return updated;
+          });
         }
       }
     } catch (err) {
