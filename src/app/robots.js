@@ -15,7 +15,31 @@ export default function robots() {
           '/my-ads/',
         ],
       },
+      {
+        userAgent: 'Googlebot',
+        allow: [
+          '/',
+          '/ads',
+          '/ad/*',
+          '/about-us',
+          '/contact',
+          '/faq',
+          '/terms',
+          '/privacy',
+          '/sell-fast',
+          '/membership',
+        ],
+        disallow: [
+          '/admin-dashboard/',
+          '/api/',
+          '/chat/',
+          '/edit-ad/',
+          '/post-ad/',
+          '/my-ads/',
+        ],
+      },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,
+    host: baseUrl,
   };
 }

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getGlobalListings, deleteGlobalListing, updateGlobalListing } from '../../../lib/globalListingsStore';
 import { deleteChatsForListing } from '../../../lib/chatsStore';
+import { notifySearchEngines } from '../../../lib/seoPinger';
 
 export const dynamic = 'force-dynamic';
 
@@ -125,6 +126,7 @@ export async function PATCH(req) {
     const updates = { status };
     if (status === 'active') {
       updates.created_at = nowIso;
+      notifySearchEngines(id);
     }
 
     updateGlobalListing(id, updates);

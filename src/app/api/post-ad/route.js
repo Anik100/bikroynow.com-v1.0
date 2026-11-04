@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { saveGlobalListing } from '../../../lib/globalListingsStore';
+import { notifySearchEngines } from '../../../lib/seoPinger';
 import crypto from 'crypto';
 
 export async function POST(req) {
@@ -62,6 +63,7 @@ export async function POST(req) {
         if (sbErr) {
           console.error('Supabase listings insert error:', sbErr);
         } else if (inserted && inserted.length > 0) {
+          notifySearchEngines(inserted[0].id);
           return NextResponse.json({ success: true, ad: inserted[0] });
         }
       } catch (sbErr) {
@@ -69,6 +71,7 @@ export async function POST(req) {
       }
     }
 
+    notifySearchEngines(newAd.id);
     return NextResponse.json({ success: true, ad: newAd });
   } catch (err) {
     console.error('API /api/post-ad error:', err);

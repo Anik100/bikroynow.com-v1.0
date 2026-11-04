@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { getGlobalListings } from '../lib/globalListingsStore';
+import { CATEGORIES, LOCATIONS } from '../lib/constants';
 
 export const dynamic = 'force-dynamic';
 
@@ -7,7 +8,7 @@ export default async function sitemap() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bikroynow.com';
   const now = new Date();
 
-  // Static core routes
+  // 1. Static core routes
   const staticRoutes = [
     {
       url: `${baseUrl}`,
@@ -19,7 +20,19 @@ export default async function sitemap() {
       url: `${baseUrl}/ads`,
       lastModified: now,
       changeFrequency: 'hourly',
-      priority: 0.9,
+      priority: 0.95,
+    },
+    {
+      url: `${baseUrl}/sell-fast`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/membership`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
     {
       url: `${baseUrl}/about-us`,
@@ -40,6 +53,12 @@ export default async function sitemap() {
       priority: 0.5,
     },
     {
+      url: `${baseUrl}/stay-safe`,
+      lastModified: now,
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
       url: `${baseUrl}/privacy`,
       lastModified: now,
       changeFrequency: 'yearly',
@@ -53,7 +72,49 @@ export default async function sitemap() {
     },
   ];
 
-  // Fetch active dynamic ad listings
+  // 2. Programmatic Category Landing Routes
+  const categoryKeys = Object.keys(CATEGORIES);
+  const categoryRoutes = categoryKeys.map((cat) => ({
+    url: `${baseUrl}/ads?category=${encodeURIComponent(cat)}`,
+    lastModified: now,
+    changeFrequency: 'hourly',
+    priority: 0.85,
+  }));
+
+  // 3. Programmatic Location Landing Routes
+  const locationKeys = Object.keys(LOCATIONS);
+  const locationRoutes = locationKeys.map((loc) => ({
+    url: `${baseUrl}/ads?location=${encodeURIComponent(loc)}`,
+    lastModified: now,
+    changeFrequency: 'hourly',
+    priority: 0.85,
+  }));
+
+  // Add key districts that have high classifieds search volume in Bangladesh
+  const keyDistricts = ['Tangail', 'Gazipur', 'Narayanganj', 'Comilla', 'Bogra', 'Dhaka City', 'Chattogram City'];
+  const districtRoutes = keyDistricts.map((dist) => ({
+    url: `${baseUrl}/ads?location=${encodeURIComponent(dist)}`,
+    lastModified: now,
+    changeFrequency: 'daily',
+    priority: 0.8,
+  }));
+
+  // 4. Programmatic High-Intent (Location + Category) Combos
+  // e.g. Mobile Phones in Dhaka, Cars in Chattogram, Laptops in Sylhet
+  const priorityLocations = ['Dhaka', 'Chattogram', 'Rajshahi', 'Sylhet', 'Khulna', 'Tangail'];
+  const comboRoutes = [];
+  for (const loc of priorityLocations) {
+    for (const cat of categoryKeys) {
+      comboRoutes.push({
+        url: `${baseUrl}/ads?category=${encodeURIComponent(cat)}&location=${encodeURIComponent(loc)}`,
+        lastModified: now,
+        changeFrequency: 'daily',
+        priority: 0.75,
+      });
+    }
+  }
+
+  // 5. Fetch active dynamic ad listings
   let adRoutes = [];
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -61,30 +122,39 @@ export default async function sitemap() {
 
     let listings = [];
     if (supabaseUrl && anonKey) {
-      const supabase = createClient(supabaseUrl, anonKey);
+      const supabase = createClient(supabaseUrl, anonKey, {
+        auth: { persistSession: false },
+      });
       const { data } = await supabase
         .from('listings')
         .select('id, created_at, status')
-        .eq('status', 'active')
-        .limit(1000);
+        .or('status.eq.active,status.eq.approved')
+        .limit(2000);
       if (Array.isArray(data) && data.length > 0) {
         listings = data;
       }
     }
 
     if (listings.length === 0) {
-      listings = getGlobalListings().filter(l => l.status === 'active');
+      listings = getGlobalListings().filter((l) => l.status === 'active' || l.status === 'approved');
     }
 
     adRoutes = listings.map((ad) => ({
       url: `${baseUrl}/ad/${ad.id}`,
       lastModified: ad.created_at ? new Date(ad.created_at) : now,
       changeFrequency: 'daily',
-      priority: 0.8,
+      priority: 0.9,
     }));
   } catch (err) {
-    console.error('Error generating sitemap ad routes:', err);
+    console.error('Error generating dynamic sitemap ad routes:', err);
   }
 
-  return [...staticRoutes, ...adRoutes];
+  return [
+    ...staticRoutes,
+    ...categoryRoutes,
+    ...locationRoutes,
+    ...districtRoutes,
+    ...comboRoutes,
+    ...adRoutes,
+  ];
 }

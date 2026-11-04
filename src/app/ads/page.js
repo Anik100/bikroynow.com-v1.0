@@ -253,7 +253,7 @@ function AdsContent() {
         const loc = searchParams.get('location');
         const minP = searchParams.get('minPrice');
         const maxP = searchParams.get('maxPrice');
-        const q = searchParams.get('q');
+        const q = searchParams.get('q') || searchParams.get('search');
         const verifiedOnly = searchParams.get('verified') === 'true';
 
         let filtered = allItems;
