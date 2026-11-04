@@ -19,15 +19,32 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (user) {
-      const bestName = user.user_metadata?.full_name || 
-                       user.user_metadata?.name || 
-                       (user.email ? user.email.split('@')[0] : '');
-      setDisplayName(bestName);
-      if (user.user_metadata?.phone) {
-        setPhoneNumber(user.user_metadata.phone);
+    if (!user) return;
+
+    const bestName = user.user_metadata?.full_name || 
+                     user.user_metadata?.name || 
+                     (user.email ? user.email.split('@')[0] : '');
+    setDisplayName(bestName);
+
+    // Fetch existing phone/name from profiles table if previously saved
+    const loadProfile = async () => {
+      try {
+        const { data } = await supabase
+          .from('profiles')
+          .select('full_name, phone')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (data) {
+          if (data.full_name) setDisplayName(data.full_name);
+          if (data.phone) setPhoneNumber(data.phone);
+        }
+      } catch (err) {
+        console.warn('Error fetching profile in onboarding modal:', err);
       }
-    }
+    };
+
+    loadProfile();
   }, [user]);
 
   if (!isOpen || !user) return null;
@@ -50,8 +67,7 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
       await supabase.auth.updateUser({
         data: {
           full_name: finalName,
-          phone: phoneNumber.trim() || undefined,
-          name_onboarded: true
+          phone: phoneNumber.trim() || undefined
         }
       });
 
@@ -65,8 +81,8 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
         updated_at: new Date().toISOString()
       }, { onConflict: 'id' });
 
-      // 3. Mark as onboarded in localStorage
-      localStorage.setItem('bkr_name_onboarded_' + user.id, 'true');
+      // 3. Mark dismissed for this current browser session
+      sessionStorage.setItem('bkr_prompt_dismissed_' + user.id, 'true');
 
       if (onProfileUpdated) {
         onProfileUpdated({ full_name: finalName, phone: phoneNumber.trim() });
@@ -75,8 +91,7 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
       onClose();
     } catch (err) {
       console.error('Save profile error:', err);
-      // Even if network glitches, mark onboarded locally so user isn't stuck
-      localStorage.setItem('bkr_name_onboarded_' + user.id, 'true');
+      sessionStorage.setItem('bkr_prompt_dismissed_' + user.id, 'true');
       onClose();
     } finally {
       setSaving(false);
@@ -84,11 +99,8 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
   };
 
   const handleSkip = () => {
-    localStorage.setItem('bkr_name_onboarded_' + user.id, 'true');
-    // Also save the default Google name to avoid prompting again
-    supabase.auth.updateUser({
-      data: { name_onboarded: true }
-    }).catch(() => {});
+    // Only dismiss for this active session so on next login it can appear again
+    sessionStorage.setItem('bkr_prompt_dismissed_' + user.id, 'true');
     onClose();
   };
 
@@ -97,16 +109,16 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
       <div className={styles.modalCard} onClick={(e) => e.stopPropagation()}>
         <div className={styles.topBadge}>
           <Sparkles size={14} />
-          <span>{lang === 'bn' ? 'স্বাগতম BikroyNow-এ' : 'Welcome to BikroyNow'}</span>
+          <span>{lang === 'bn' ? 'প্রোফাইল কনফার্মেশন' : 'Profile Confirmation'}</span>
         </div>
 
         <h3 className={styles.title}>
-          {lang === 'bn' ? 'আপনার প্রোফাইলের নাম সেট করুন' : 'Set Your Profile Name'}
+          {lang === 'bn' ? 'নাম ও মোবাইল নম্বর দিন' : 'Enter Name & Mobile Number'}
         </h3>
         <p className={styles.subtitle}>
           {lang === 'bn'
-            ? 'আপনার বিজ্ঞাপন ও চ্যাটে ক্রেতা-বিক্রেতারা এই নামটি দেখতে পাবে। আপনি নিজের বা দোকানের নাম ব্যবহার করতে পারেন।'
-            : 'This name will appear on your ads and chats. You can use your personal or business name.'}
+            ? 'ক্রেতা ও বিক্রেতারা আপনার এই নাম এবং নম্বর দেখতে পাবে। প্রয়োজনমতো পরিবর্তন করে নিন।'
+            : 'Buyers and sellers will see this name and phone on your listings and chats.'}
         </p>
 
         <div className={styles.avatarWrapper}>
@@ -142,14 +154,14 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
               autoFocus
             />
             <span className={styles.helperText}>
-              {lang === 'bn' ? '💡 আপনি পরবর্তীতে যেকোনো সময় প্রোফাইল থেকে এটি পরিবর্তন করতে পারবেন।' : '💡 You can edit this anytime from your profile settings.'}
+              {lang === 'bn' ? '💡 আপনি এটি নিজের নাম বা দোকানের নাম হিসেবে দিতে পারেন।' : '💡 You can use your personal name or shop name.'}
             </span>
           </div>
 
           <div className={styles.inputGroup}>
             <label className={styles.label}>
               <Phone size={15} />
-              <span>{lang === 'bn' ? 'মোবাইল নম্বর (ঐচ্ছিক)' : 'Phone Number (Optional)'}</span>
+              <span>{lang === 'bn' ? 'মোবাইল নম্বর' : 'Mobile Number'}</span>
             </label>
             <input
               type="tel"
@@ -173,14 +185,14 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
             ) : (
               <>
                 <CheckCircle2 size={18} />
-                <span>{lang === 'bn' ? 'নিশ্চিত করুন ও শুরু করুন' : 'Confirm & Get Started'}</span>
+                <span>{lang === 'bn' ? 'নিশ্চিত করুন ও এগিয়ে যান' : 'Confirm & Continue'}</span>
               </>
             )}
           </button>
         </form>
 
         <button type="button" onClick={handleSkip} className={styles.btnSecondary}>
-          {lang === 'bn' ? 'পরে ঠিক করব (গুগলের নামেই থাক)' : 'Keep Google name for now'}
+          {lang === 'bn' ? 'এখন না (পরে দিব)' : 'Not now (Skip)'}
         </button>
       </div>
     </div>

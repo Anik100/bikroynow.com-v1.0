@@ -64,16 +64,29 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
     setLoggingOut(true);
     try {
       if (onLogout) {
-        await onLogout();
+        await Promise.race([
+          onLogout(),
+          new Promise(r => setTimeout(r, 1500))
+        ]);
       } else {
-        await supabase.auth.signOut();
-        localStorage.removeItem('bikroynow_demo_user');
-        window.location.href = '/';
+        await Promise.race([
+          supabase.auth.signOut(),
+          new Promise(r => setTimeout(r, 1200))
+        ]);
       }
     } catch (err) {
-      console.error('Logout error:', err);
-      window.location.href = '/';
+      console.warn('Logout error:', err);
     }
+    try {
+      localStorage.removeItem('bikroynow_demo_user');
+      sessionStorage.clear();
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('sb-') || key.startsWith('bkr_')) {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch (e) {}
+    window.location.href = '/';
   };
 
   // Profile editing states

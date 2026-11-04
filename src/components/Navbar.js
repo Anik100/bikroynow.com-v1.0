@@ -224,7 +224,7 @@ export default function Navbar() {
       if (session?.user) {
         setUser(session.user);
         syncUserProfile(session.user);
-        if (session?.user && !localStorage.getItem('bkr_name_onboarded_' + session.user.id) && !session.user.user_metadata?.name_onboarded) {
+        if (!sessionStorage.getItem('bkr_prompt_dismissed_' + session.user.id)) {
           setTimeout(() => setShowOnboarding(true), 600);
         }
       } else {
@@ -243,10 +243,11 @@ export default function Navbar() {
       (event, session) => {
         if (session?.user) {
           setUser(session.user);
-        syncUserProfile(session.user);
-        if (session?.user && !localStorage.getItem('bkr_name_onboarded_' + session.user.id) && !session.user.user_metadata?.name_onboarded) {
-          setTimeout(() => setShowOnboarding(true), 600);
-        }
+          syncUserProfile(session.user);
+          if (event === 'SIGNED_IN' || !sessionStorage.getItem('bkr_prompt_dismissed_' + session.user.id)) {
+            sessionStorage.removeItem('bkr_prompt_dismissed_' + session.user.id);
+            setTimeout(() => setShowOnboarding(true), 500);
+          }
         } else {
           const localUser = localStorage.getItem('bikroynow_demo_user');
           if (localUser) {
@@ -325,11 +326,22 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut();
+      await Promise.race([
+        supabase.auth.signOut(),
+        new Promise(resolve => setTimeout(resolve, 1000))
+      ]);
     } catch (err) {
       console.warn('Logout signOut warning:', err);
     }
-    localStorage.removeItem('bikroynow_demo_user');
+    try {
+      localStorage.removeItem('bikroynow_demo_user');
+      sessionStorage.clear();
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('sb-') || key.startsWith('bkr_')) {
+          localStorage.removeItem(key);
+        }
+      });
+    } catch (e) {}
     setUser(null);
     setShowProfileMenu(false);
     window.location.href = '/';
