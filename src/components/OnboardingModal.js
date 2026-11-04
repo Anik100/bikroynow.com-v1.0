@@ -101,7 +101,8 @@ export default function OnboardingModal({ user, isOpen, onClose, onProfileUpdate
         data: {
           full_name: finalName,
           name: finalName,
-          phone: phoneNumber.trim() || undefined
+          phone: phoneNumber.trim() || undefined,
+          profile_completed: true
         }
       }).catch(() => {});
 

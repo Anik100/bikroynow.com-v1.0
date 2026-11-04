@@ -225,6 +225,7 @@ export default function Navbar() {
       try {
         if (localStorage.getItem('bkr_profile_saved_' + currUser.id) === 'true') return false;
         if (sessionStorage.getItem('bkr_prompt_dismissed_' + currUser.id) === 'true') return false;
+        if (currUser.user_metadata?.profile_completed) return false;
       } catch (e) {}
       return true;
     };
