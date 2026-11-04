@@ -121,18 +121,36 @@ export async function PATCH(req) {
     const { id, status } = body;
     if (!id || !status) return NextResponse.json({ error: 'Missing id or status' }, { status: 400 });
 
-    updateGlobalListing(id, { status });
+    const nowIso = new Date().toISOString();
+    const updates = { status };
+    if (status === 'active') {
+      updates.created_at = nowIso;
+    }
+
+    updateGlobalListing(id, updates);
     cachedListings = null;
     cacheTime = 0;
+
+    let dbUpdated = false;
+    let dbError = null;
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     if (supabaseUrl && serviceRoleKey) {
-      const serverSupabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
-      await serverSupabase.from('listings').update({ status }).eq('id', id);
+      try {
+        const serverSupabase = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } });
+        const { data, error } = await serverSupabase.from('listings').update(updates).eq('id', id).select();
+        if (error) {
+          dbError = error.message;
+        } else if (data && data.length > 0) {
+          dbUpdated = true;
+        }
+      } catch (err) {
+        dbError = err.message;
+      }
     }
 
-    return NextResponse.json({ success: true, status });
+    return NextResponse.json({ success: true, status, dbUpdated, dbError });
   } catch (err) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }

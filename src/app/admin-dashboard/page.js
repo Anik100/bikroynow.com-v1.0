@@ -1206,53 +1206,45 @@ export default function AdminDashboard() {
     setActionLoading(id);
     try {
       const currentTime = new Date().toISOString();
-      const { error } = await supabase
+      let patchSuccess = false;
+
+      // 1. Trigger server API to update listing and clear cache
+      try {
+        const patchRes = await fetch('/api/listings', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, status: 'active' })
+        });
+        if (patchRes.ok) {
+          const resJson = await patchRes.json();
+          if (resJson.dbUpdated) patchSuccess = true;
+        }
+      } catch (e) {}
+
+      // 2. Direct client-side update with row count check
+      const { data, error } = await supabase
         .from('listings')
         .update({ 
           status: 'active',
           created_at: currentTime 
         })
-        .eq('id', id);
-        
-      if (!error) {
+        .eq('id', id)
+        .select();
+
+      const isActuallyUpdated = patchSuccess || (data && data.length > 0);
+
+      if (isActuallyUpdated) {
         setListings(prev => {
-          fetch('/api/listings', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: 'active' }) }).catch(() => {});
           const updated = prev.map(ad => ad.id === id ? { ...ad, status: 'active', created_at: currentTime } : ad);
           return updated.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         });
-
-        // Automatically insert to featured_ads if owner is an active Business Member
-        try {
-          const { data: listingData } = await supabase
-            .from('listings')
-            .select('user_id')
-            .eq('id', id)
-            .single();
-          
-          if (listingData) {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('membership_type, membership_expires_at')
-              .eq('id', listingData.user_id)
-              .single();
-            
-            if (profile) {
-              const expiresAt = profile.membership_expires_at ? new Date(profile.membership_expires_at) : null;
-              const isNotExpired = !expiresAt || new Date() < expiresAt;
-              const isBusiness = profile.membership_type && profile.membership_type.toLowerCase().includes('business');
-              
-              if (isBusiness && isNotExpired) {
-                await supabase
-                  .from('featured_ads')
-                  .upsert({ listing_id: id, is_active: true, sort_order: 0 }, { onConflict: 'listing_id' });
-              }
-            }
-          }
-        } catch (featErr) {
-          console.error('Error automatically featuring approved business ad:', featErr);
-        }
+        setErrorMessage(lang === 'bn' ? '✅ বিজ্ঞাপনটি সফলভাবে অ্যাপ্রুভ করা হয়েছে!' : '✅ Ad approved successfully!');
       } else {
-        setErrorMessage('Error approving ad: ' + error.message);
+        setErrorMessage(
+          lang === 'bn'
+            ? '⚠️ ডাটাবেজ আপডেট ব্যর্থ হয়েছে (Supabase RLS পলিসির কারণে)। অনুগ্রহ করে Supabase SQL Editor-এ পলিসিটি অ্যাড করুন।'
+            : '⚠️ Database update blocked by Supabase RLS policy. Please add the RLS policy in Supabase SQL editor.'
+        );
       }
     } catch (err) {
       setErrorMessage('Exception: ' + err.message);
@@ -1310,22 +1302,41 @@ export default function AdminDashboard() {
 
   const handleReject = async (id) => {
     if (!id) return;
-    
     setActionLoading(id);
     try {
-      const { error } = await supabase
+      let patchSuccess = false;
+      try {
+        const patchRes = await fetch('/api/listings', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, status: 'rejected' })
+        });
+        if (patchRes.ok) {
+          const resJson = await patchRes.json();
+          if (resJson.dbUpdated) patchSuccess = true;
+        }
+      } catch (e) {}
+
+      const { data, error } = await supabase
         .from('listings')
         .update({ status: 'rejected' })
-        .eq('id', id);
+        .eq('id', id)
+        .select();
         
-      if (!error) {
+      const isActuallyUpdated = patchSuccess || (data && data.length > 0);
+
+      if (isActuallyUpdated) {
         setListings(prev => {
-          fetch('/api/listings', { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id, status: 'rejected' }) }).catch(() => {});
           const updated = prev.map(ad => ad.id === id ? { ...ad, status: 'rejected' } : ad);
           return updated;
         });
+        setErrorMessage(lang === 'bn' ? 'বিজ্ঞাপনটি রিজেক্ট করা হয়েছে।' : 'Ad has been rejected.');
       } else {
-        setErrorMessage('Error rejecting ad: ' + error.message);
+        setErrorMessage(
+          lang === 'bn'
+            ? '⚠️ ডাটাবেজ আপডেট ব্যর্থ হয়েছে (Supabase RLS পলিসির কারণে)। অনুগ্রহ করে Supabase SQL Editor-এ পলিসিটি অ্যাড করুন।'
+            : '⚠️ Database update blocked by Supabase RLS policy.'
+        );
       }
     } catch (err) {
       setErrorMessage('Exception: ' + err.message);
