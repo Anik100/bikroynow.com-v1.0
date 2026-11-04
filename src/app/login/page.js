@@ -2,30 +2,26 @@
 
 import { useState, Suspense } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 import { useLanguage } from '../../context/LanguageContext';
-import { CheckCircle2, ShieldCheck, Zap, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { CheckCircle2, ShieldCheck, Zap, Loader2 } from 'lucide-react';
 import styles from './login.module.css';
 
 function LoginContent() {
   const { lang } = useLanguage();
   const searchParams = useSearchParams();
-  const router = useRouter();
   const redirectTarget = searchParams.get('redirect') || '/';
 
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [showEmailLogin, setShowEmailLogin] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailLoading, setEmailLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleGoogleLogin = async () => {
     try {
       setGoogleLoading(true);
       setError(null);
-      const origin = typeof window !== 'undefined' ? window.location.origin : '';
+      
+      const origin = typeof window !== 'undefined' ? window.location.origin : 'https://bikroynow.com';
       const redirectUri = `${origin}${redirectTarget.startsWith('/') ? redirectTarget : '/' + redirectTarget}`;
 
       const { error: authErr } = await supabase.auth.signInWithOAuth({
@@ -45,41 +41,6 @@ function LoginContent() {
     }
   };
 
-  const handleEmailLogin = async (e) => {
-    e.preventDefault();
-    setEmailLoading(true);
-    setError(null);
-
-    try {
-      const { data, error: signInErr } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      });
-
-      if (signInErr) {
-        // Fallback for demo or admin
-        if (email.trim() && password.length >= 4) {
-          const cleanEmail = email.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-          const fallbackUser = {
-            id: 'user-' + cleanEmail,
-            email: email.trim(),
-            user_metadata: { full_name: email.split('@')[0] }
-          };
-          localStorage.setItem('bikroynow_demo_user', JSON.stringify(fallbackUser));
-          window.location.href = redirectTarget;
-          return;
-        }
-        setError(lang === 'bn' ? 'ইমেইল বা পাসওয়ার্ড সঠিক নয়।' : signInErr.message);
-        setEmailLoading(false);
-      } else {
-        window.location.href = redirectTarget;
-      }
-    } catch (err) {
-      setError(err.message);
-      setEmailLoading(false);
-    }
-  };
-
   return (
     <div className={`container ${styles.authContainer}`}>
       <div className={`${styles.authCard} ${styles.loginCard}`}>
@@ -91,13 +52,13 @@ function LoginContent() {
         <h2>{lang === 'bn' ? 'BikroyNow-এ স্বাগতম' : 'Welcome to BikroyNow'}</h2>
         <p>
           {lang === 'bn' 
-            ? 'বিজ্ঞাপন পোস্ট, ক্রেতাদের সাথে চ্যাট ও প্রোফাইল নিয়ন্ত্রণ করতে আপনার গুগল অ্যাকাউন্ট দিয়ে প্রবেশ করুন।' 
-            : 'Sign in with your Google account to post ads, chat with buyers, and manage your account.'}
+            ? 'বিজ্ঞাপন পোস্ট, ক্রেতাদের সাথে চ্যাট ও অ্যাকাউন্ট নিয়ন্ত্রণ করতে Google দিয়ে প্রবেশ করুন।' 
+            : 'Sign in with Google to post ads, chat with buyers, and manage your account.'}
         </p>
 
         {error && <div className={styles.error}>{error}</div>}
 
-        {/* Primary Hero Google Button */}
+        {/* Exclusive Hero Google Button */}
         <button 
           onClick={handleGoogleLogin} 
           disabled={googleLoading}
@@ -138,63 +99,11 @@ function LoginContent() {
         </div>
 
         <p className={styles.switchAuth} style={{ marginTop: '0.75rem' }}>
-          {lang === 'bn' ? 'নতুন অ্যাকাউন্ট খুলতে চান?' : "Need a new account?"}{' '}
+          {lang === 'bn' ? 'নতুন অ্যাকাউন্ট তৈরি করতে চান?' : "Don't have an account?"}{' '}
           <Link href={`/signup${redirectTarget !== '/' ? `?redirect=${encodeURIComponent(redirectTarget)}` : ''}`} style={{ fontWeight: 700, color: '#ff7519' }}>
             {lang === 'bn' ? 'সাইন আপ করুন' : 'Sign up'}
           </Link>
         </p>
-
-        {/* Optional Email Login Toggle for Admin / Demo */}
-        <div className={styles.emailToggleSection}>
-          <button 
-            type="button" 
-            onClick={() => setShowEmailLogin(!showEmailLogin)} 
-            className={styles.emailToggleBtn}
-          >
-            {showEmailLogin 
-              ? (lang === 'bn' ? '▲ ইমেইল ফর্ম লুকান' : '▲ Hide email login') 
-              : (lang === 'bn' ? '▼ ইমেইল ও পাসওয়ার্ড দিয়ে লগইন করুন (অ্যাডমিন / টেস্ট)' : '▼ Log in with email & password (Admin / Test)')}
-          </button>
-
-          {showEmailLogin && (
-            <form onSubmit={handleEmailLogin} className={styles.form} style={{ marginTop: '0.75rem' }}>
-              <div className={styles.inputGroup}>
-                <label>{lang === 'bn' ? 'ইমেইল অ্যাড্রেস' : 'Email'}</label>
-                <input 
-                  type="email" 
-                  required 
-                  className="input-field"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@bikroynow.com"
-                />
-              </div>
-
-              <div className={styles.inputGroup}>
-                <label>{lang === 'bn' ? 'পাসওয়ার্ড' : 'Password'}</label>
-                <input 
-                  type="password" 
-                  required 
-                  className="input-field"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                />
-              </div>
-
-              <button 
-                type="submit" 
-                className="btn-primary" 
-                style={{ width: '100%', marginTop: '0.4rem', padding: '0.6rem' }} 
-                disabled={emailLoading}
-              >
-                {emailLoading 
-                  ? (lang === 'bn' ? 'লগইন হচ্ছে...' : 'Logging in...') 
-                  : (lang === 'bn' ? 'ইমেইল দিয়ে লগইন' : 'Log in with Email')}
-              </button>
-            </form>
-          )}
-        </div>
       </div>
     </div>
   );
