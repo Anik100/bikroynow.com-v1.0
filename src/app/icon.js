@@ -12,23 +12,34 @@ export default function Icon() {
     (
       <div
         style={{
-          fontSize: 20,
-          background: 'linear-gradient(135deg, #008b5e 0%, #00583b 100%)',
+          background: 'linear-gradient(135deg, #FFB703 0%, #F59E0B 100%)',
           width: '100%',
           height: '100%',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          borderRadius: '7px',
+          borderRadius: '8px',
           color: 'white',
           fontWeight: 900,
           fontFamily: 'sans-serif',
-          boxShadow: 'inset 0 0 0 1px rgba(255,255,255,0.2)',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ color: '#ffffff', marginRight: '1px' }}>B</span>
-          <span style={{ color: '#fbbf24', fontSize: '14px', fontWeight: 900 }}>N</span>
+        <div style={{ display: 'flex', gap: '5px', marginTop: '1px' }}>
+          <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'white' }} />
+          <div style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'white' }} />
+        </div>
+        <div
+          style={{
+            width: '12px',
+            height: '6px',
+            borderBottom: '2px solid white',
+            borderRadius: '0 0 10px 10px',
+            margin: '1px 0 2px 0',
+          }}
+        />
+        <div style={{ fontSize: '7px', fontWeight: 900, letterSpacing: '0.5px', lineHeight: 1 }}>
+          NOW
         </div>
       </div>
     ),

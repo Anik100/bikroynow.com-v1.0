@@ -62,10 +62,18 @@ export const metadata = {
     type: 'website',
     images: [
       {
+        url: `${siteUrl}/opengraph-image`,
+        width: 1200,
+        height: 630,
+        type: 'image/png',
+        alt: 'BikroyNow.com Orange Marketplace Logo',
+      },
+      {
         url: `${siteUrl}/icon.svg`,
         width: 512,
         height: 512,
-        alt: 'BikroyNow.com Marketplace Logo',
+        type: 'image/svg+xml',
+        alt: 'BikroyNow.com Orange Logo',
       },
     ],
   },
@@ -73,7 +81,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'BikroyNow.com - Buy & Sell Anything in Bangladesh',
     description: 'The largest online marketplace in Bangladesh to buy, sell, and find electronics, mobiles, and more.',
-    images: [`${siteUrl}/icon.svg`],
+    images: [`${siteUrl}/opengraph-image`],
   },
   verification: {
     google: 'fhC9HvJp-lIaXm3VnKC1W_EtPwoGY6dHeXWSTgYiAm0',
