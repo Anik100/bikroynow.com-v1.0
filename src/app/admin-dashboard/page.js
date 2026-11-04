@@ -1117,6 +1117,7 @@ export default function AdminDashboard() {
             const { error: listingUpdateErr } = await supabase
               .from('listings')
               .update({
+                status: 'active',
                 is_verified: true,
                 promotion_type: pkg.name_en,
                 created_at: new Date().toISOString()
@@ -1183,6 +1184,15 @@ export default function AdminDashboard() {
           }
         }
       }
+
+      // Trigger server-side administrative approval API
+      try {
+        await fetch('/api/admin/purchases', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, status })
+        });
+      } catch (e) {}
 
       const { error } = await supabase
         .from('membership_purchases')

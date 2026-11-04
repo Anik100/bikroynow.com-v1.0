@@ -340,6 +340,7 @@ export default function MembershipManager() {
             const { error: boostErr } = await supabase
               .from('listings')
               .update({
+                status: 'active',
                 is_verified: true,
                 promotion_type: pkg.name_en,
                 created_at: new Date().toISOString()
@@ -406,6 +407,15 @@ export default function MembershipManager() {
           }
         }
       }
+
+      // Trigger server-side administrative approval API
+      try {
+        await fetch('/api/admin/purchases', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, status })
+        });
+      } catch (e) {}
 
       const { error } = await supabase
         .from('membership_purchases')
