@@ -16,9 +16,9 @@ export async function POST(req) {
     const isValidUUID = (str) => typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    const serverSupabase = (supabaseUrl && anonKey) 
-      ? createClient(supabaseUrl, anonKey, { auth: { persistSession: false } })
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const serverSupabase = (supabaseUrl && serviceRoleKey) 
+      ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
       : null;
 
     let validUserId = body.user_id;
@@ -46,7 +46,7 @@ export async function POST(req) {
 
     const adId = isValidUUID(body.id) ? body.id : crypto.randomUUID();
 
-    // Check if ad verification is required from admin settings
+    // Check if ad verification is required from admin settings (default: true)
     let verificationRequired = true;
     if (serverSupabase) {
       try {
@@ -55,10 +55,12 @@ export async function POST(req) {
           .select('value')
           .eq('key', 'ad_verification_required')
           .maybeSingle();
-        if (settingRow && settingRow.value === 'false') {
+        if (settingRow && (settingRow.value === 'false' || settingRow.value === false)) {
           verificationRequired = false;
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error('Error checking verification setting:', e);
+      }
     }
 
     // Check if user has an active non-expired membership
@@ -69,11 +71,14 @@ export async function POST(req) {
 
     const qualifiesForSlider = hasActiveMembership && doesPackageQualifyForSlider(userProfile.membership_type);
 
-    // If verification is turned off by admin, or if user has active membership: ad goes immediately live ('active')
-    const initialStatus = (!verificationRequired || hasActiveMembership) ? 'active' : (body.status || 'pending');
+    // CRITICAL:
+    // If verification is ON: ALL newly posted ads MUST go to 'pending' for admin moderation.
+    // They must NEVER be auto-approved while verification is ON.
+    // If verification is OFF: ads go directly live ('active').
+    const initialStatus = verificationRequired ? 'pending' : 'active';
     const initialPromotion = hasActiveMembership ? userProfile.membership_type : (body.promotion_type || null);
-    const initialVerified = hasActiveMembership ? true : Boolean(body.is_verified);
-    const initialFeatured = qualifiesForSlider ? true : Boolean(body.is_featured);
+    const initialVerified = (!verificationRequired && hasActiveMembership) ? true : false;
+    const initialFeatured = (!verificationRequired && qualifiesForSlider) ? true : false;
 
     const newAd = {
       id: adId,
@@ -91,19 +96,11 @@ export async function POST(req) {
       status: initialStatus,
       promotion_type: initialPromotion,
       is_verified: initialVerified,
-      is_featured: initialFeatured,
-      created_at: new Date().toISOString(),
-      profiles: userProfile ? {
-        membership_type: userProfile.membership_type,
-        membership_expires_at: userProfile.membership_expires_at
-      } : undefined
+      created_at: new Date().toISOString()
     };
 
-    // 1. Save to server-side global listings store
-    saveGlobalListing(newAd);
-
-    // 2. If qualifies for Top Slider, add to featured_ads store
-    if (qualifiesForSlider) {
+    // 1. If verification is OFF and qualifies for Top Slider, add to featured_ads
+    if (!verificationRequired && qualifiesForSlider) {
       try {
         const curFeatured = getGlobalFeaturedAds();
         if (!curFeatured.some(f => String(f.listing_id) === String(adId))) {
@@ -119,15 +116,18 @@ export async function POST(req) {
       } catch (e) {}
     }
 
-    // 3. Insert to Supabase DB (exclude non-column fields like is_featured and profiles)
+    // 2. Insert to Supabase DB (primary source of truth)
     if (serverSupabase) {
       try {
-        const { is_featured, profiles, ...dbPayload } = newAd;
-        const { data: inserted, error: sbErr } = await serverSupabase.from('listings').insert([dbPayload]).select();
+        const { data: inserted, error: sbErr } = await serverSupabase
+          .from('listings')
+          .insert([newAd])
+          .select();
+
         if (sbErr) {
           console.error('Supabase listings insert error:', sbErr);
         } else if (inserted && inserted.length > 0) {
-          if (qualifiesForSlider) {
+          if (!verificationRequired && qualifiesForSlider) {
             try {
               await serverSupabase.from('featured_ads').upsert({
                 listing_id: inserted[0].id,
@@ -136,10 +136,12 @@ export async function POST(req) {
               }, { onConflict: 'listing_id' });
             } catch (e) {}
           }
-          notifySearchEngines(inserted[0].id);
+          if (initialStatus === 'active') {
+            notifySearchEngines(inserted[0].id);
+          }
           return NextResponse.json({ 
             success: true, 
-            ad: { ...inserted[0], is_featured: Boolean(qualifiesForSlider) },
+            ad: { ...inserted[0], is_featured: Boolean(!verificationRequired && qualifiesForSlider) },
             status: inserted[0].status || initialStatus,
             autoApproved: initialStatus === 'active'
           });
@@ -149,7 +151,12 @@ export async function POST(req) {
       }
     }
 
-    notifySearchEngines(newAd.id);
+    // 3. Fallback only if Supabase is unavailable
+    if (initialStatus === 'active') {
+      saveGlobalListing(newAd);
+      notifySearchEngines(newAd.id);
+    }
+
     return NextResponse.json({ 
       success: true, 
       ad: newAd,

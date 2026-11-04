@@ -204,7 +204,10 @@ export async function PATCH(req) {
     const updates = { status };
     if (status === 'active') {
       updates.created_at = nowIso;
+      updates.is_verified = true;
       notifySearchEngines(id);
+    } else if (status === 'rejected' || status === 'pending') {
+      updates.is_verified = false;
     }
 
     updateGlobalListing(id, updates);
