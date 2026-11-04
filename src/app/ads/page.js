@@ -646,7 +646,7 @@ function AdsContent() {
                             <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #10b981, #047857)', color: '#ffffff', fontWeight: 900 }}>
                               {lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার' : '⭐ Premium Slider'}
                             </div>
-                          ) : (ad.promotion_type || ad.is_verified) ? (
+                          ) : (ad.promotion_type && ad.promotion_type !== 'free') ? (
                             <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', fontWeight: 900 }}>
                               {lang === 'bn' ? '💎 প্রিমিয়াম' : '💎 Premium'}
                             </div>
@@ -683,7 +683,7 @@ function AdsContent() {
                               {getRelativeTime(ad.created_at, lang)}
                             </div>
                           </div>
-                          {(ad.is_featured || ad.promotion_type || ad.is_verified) && (
+                          {(ad.is_featured || (ad.promotion_type && ad.promotion_type !== 'free')) && (
                             <div style={{ marginTop: 'auto', paddingTop: '0.6rem', borderTop: '1px dashed #fef08a', textAlign: 'center', alignSelf: 'stretch' }}>
                               <span style={{ color: ad.is_featured ? '#047857' : '#d97706', fontWeight: 900, fontSize: '0.8rem', letterSpacing: '0.5px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
                                 {ad.is_featured 

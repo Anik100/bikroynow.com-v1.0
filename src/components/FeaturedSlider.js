@@ -39,9 +39,13 @@ export default function FeaturedSlider({ lang = 'en' }) {
           const active = json.data.filter(ad => {
             if (!ad.is_active || !ad.listing || ad.listing.error || ad.listing.status === 'deleted') return false;
             if (deletedIds.has(String(ad.listing_id || ad.listing.id))) return false;
-            // Filter out if user membership is expired
-            const exp = ad.listing.profiles?.membership_expires_at;
-            if (exp && new Date(exp) <= now) return false;
+            // Filter out if user membership is free or expired
+            if (ad.listing.user_id) {
+              const prof = ad.listing.profiles;
+              if (!prof || !prof.membership_type || prof.membership_type === 'free') return false;
+              const exp = prof.membership_expires_at;
+              if (exp && new Date(exp) <= now) return false;
+            }
             return true;
           });
           setFeaturedAds(active);

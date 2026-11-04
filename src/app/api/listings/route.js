@@ -97,20 +97,24 @@ export async function GET(req) {
     const extraAds = globalAds.filter(ad => !existingIds.has(ad.id) && ad.status !== 'deleted');
 
     const combinedListings = [...extraAds, ...dbListings].map(item => {
-      const isFeatured = Boolean(item.is_featured || featuredSet.has(item.id));
       const userProf = item.profiles;
-      const hasMembership = userProf &&
-        userProf.membership_type &&
-        userProf.membership_type.toLowerCase() !== 'free' &&
-        (!userProf.membership_expires_at || new Date(userProf.membership_expires_at) > new Date());
+      const isFree = !userProf || !userProf.membership_type || userProf.membership_type.toLowerCase() === 'free';
+      const isExpired = userProf?.membership_expires_at && new Date(userProf.membership_expires_at) <= new Date();
+      const hasMembership = Boolean(!isFree && !isExpired);
 
-      const promoType = item.promotion_type || (hasMembership ? userProf.membership_type : (isFeatured ? 'Premium Featured' : null));
+      // If user profile is free or expired, promotions & slider privileges are completely revoked
+      let promoType = null;
+      if (hasMembership) {
+        promoType = item.promotion_type || userProf.membership_type;
+      }
+
+      const isFeatured = Boolean(featuredSet.has(item.id)) && (hasMembership || !item.user_id);
 
       return {
         ...item,
         status: item.status || 'active',
         is_featured: isFeatured,
-        is_verified: Boolean(item.is_verified || hasMembership || isFeatured),
+        is_verified: Boolean(item.is_verified && (hasMembership || promoType)),
         promotion_type: promoType
       };
     });

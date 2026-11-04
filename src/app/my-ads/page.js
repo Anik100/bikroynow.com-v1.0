@@ -279,7 +279,7 @@ export default function MyAds() {
                       <span style={{ background: 'linear-gradient(135deg, #10b981, #047857)', color: 'white', padding: '0.15rem 0.6rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 800 }}>
                         {lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার' : '⭐ Premium Slider'}
                       </span>
-                    ) : (ad.promotion_type || ad.is_verified) ? (
+                    ) : (ad.promotion_type && ad.promotion_type !== 'free') ? (
                       <span style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', padding: '0.15rem 0.6rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 800 }}>
                         {lang === 'bn' ? `💎 প্রিমিয়াম (${ad.promotion_type || 'বুস্টেড'})` : `💎 Premium (${ad.promotion_type || 'Boosted'})`}
                       </span>

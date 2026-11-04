@@ -119,7 +119,6 @@ export async function activateUserMembership({
 
   // 2. Automatically boost user's posted ads
   // NOTE: 'listings' table in Supabase does NOT have 'is_featured' column.
-  // It only has 'status', 'is_verified', 'promotion_type', etc.
   const dbUpdates = {
     status: 'active',
     is_verified: true,
@@ -226,12 +225,123 @@ export async function activateUserMembership({
   return { success: true, expiresAt: expiresIso, qualifiesForSlider };
 }
 
+/**
+ * Completely revokes a user's membership and promotions:
+ * - Sets profile membership_type = 'free', membership_expires_at = null
+ * - Sets listings promotion_type = null, is_verified = false (Never sends is_featured to Supabase listings!)
+ * - Deletes all user's ads from featured_ads table (Slider)
+ * - Purges from globalFeaturedAdsStore and resets globalListingsStore
+ */
+export async function revokeUserMembershipAndBoosts({
+  userId = null,
+  userEmail = null,
+  listingId = null
+}) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const serverSupabase = (supabaseUrl && serviceRoleKey)
+    ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
+    : null;
+
+  let targetUserId = userId;
+  let targetUserEmail = userEmail;
+  const targetListingIds = new Set();
+  if (listingId) targetListingIds.add(String(listingId));
+
+  try {
+    if (serverSupabase) {
+      // 1. Find profile
+      if (!targetUserId && targetUserEmail) {
+        const { data: prof } = await serverSupabase
+          .from('profiles')
+          .select('id, email')
+          .ilike('email', targetUserEmail.trim())
+          .maybeSingle();
+        if (prof) {
+          targetUserId = prof.id;
+        }
+      }
+
+      // 2. Revert profile to free
+      if (targetUserId) {
+        await serverSupabase
+          .from('profiles')
+          .update({
+            membership_type: 'free',
+            membership_expires_at: null
+          })
+          .eq('id', targetUserId);
+
+        // Fetch all listings belonging to this user
+        const { data: userAds } = await serverSupabase
+          .from('listings')
+          .select('id')
+          .eq('user_id', targetUserId);
+
+        if (Array.isArray(userAds)) {
+          userAds.forEach(a => targetListingIds.add(String(a.id)));
+        }
+      }
+
+      // 3. Update Supabase listings (DO NOT pass is_featured column!)
+      if (targetListingIds.size > 0) {
+        const idArr = Array.from(targetListingIds);
+        for (const adId of idArr) {
+          await serverSupabase
+            .from('listings')
+            .update({
+              promotion_type: null,
+              is_verified: false
+            })
+            .eq('id', adId);
+
+          // 4. Delete from featured_ads table (Top Slider)
+          await serverSupabase
+            .from('featured_ads')
+            .delete()
+            .eq('listing_id', adId);
+        }
+      }
+    }
+
+    // 5. Purge from globalFeaturedAdsStore
+    const currentFeatured = getGlobalFeaturedAds();
+    const updatedFeatured = currentFeatured.filter(f => !targetListingIds.has(String(f.listing_id)));
+    saveGlobalFeaturedAds(updatedFeatured);
+
+    // 6. Reset in globalListingsStore
+    const globalAds = getGlobalListings();
+    for (const ad of globalAds) {
+      const match = targetListingIds.has(String(ad.id)) ||
+        (targetUserId && String(ad.user_id) === String(targetUserId)) ||
+        (targetUserEmail && ad.user_email && ad.user_email.toLowerCase() === targetUserEmail.toLowerCase());
+
+      if (match) {
+        updateGlobalListing(ad.id, {
+          promotion_type: null,
+          is_featured: false,
+          is_verified: false,
+          profiles: {
+            membership_type: 'free',
+            membership_expires_at: null
+          }
+        });
+      }
+    }
+
+    return { success: true, count: targetListingIds.size };
+  } catch (err) {
+    console.error('Error in revokeUserMembershipAndBoosts:', err);
+    return { success: false, error: err.message };
+  }
+}
+
 let lastCleanupTime = 0;
-const CLEANUP_INTERVAL_MS = 20000;
+const CLEANUP_INTERVAL_MS = 15000;
 
 /**
  * Automatically inspects memberships and boosts:
- * - If expired: removes from Top Slider immediately
+ * - If expired or user is free: removes from Top Slider immediately
  * - Reverts promotion_type to null & membership_type to 'free'
  */
 export async function cleanupExpiredMembershipsAndBoosts() {
@@ -241,7 +351,6 @@ export async function cleanupExpiredMembershipsAndBoosts() {
   }
   lastCleanupTime = now;
 
-  const nowIso = new Date().toISOString();
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   const serverSupabase = (supabaseUrl && serviceRoleKey)
@@ -250,23 +359,29 @@ export async function cleanupExpiredMembershipsAndBoosts() {
 
   try {
     const expiredUserIds = new Set();
+    const freeOrExpiredUserIds = new Set();
 
     // 1. Check Supabase profiles with expired memberships
     if (serverSupabase) {
       try {
-        const { data: expiredProfiles } = await serverSupabase
+        const { data: allProfiles } = await serverSupabase
           .from('profiles')
-          .select('id, email, membership_expires_at')
-          .not('membership_expires_at', 'is', null)
-          .lt('membership_expires_at', nowIso);
+          .select('id, email, membership_type, membership_expires_at');
 
-        if (Array.isArray(expiredProfiles) && expiredProfiles.length > 0) {
-          for (const p of expiredProfiles) {
-            expiredUserIds.add(p.id);
-            await serverSupabase
-              .from('profiles')
-              .update({ membership_type: 'free', membership_expires_at: null })
-              .eq('id', p.id);
+        if (Array.isArray(allProfiles)) {
+          for (const p of allProfiles) {
+            const isFree = !p.membership_type || p.membership_type === 'free';
+            const isExp = p.membership_expires_at && new Date(p.membership_expires_at) <= new Date();
+            if (isFree || isExp) {
+              freeOrExpiredUserIds.add(p.id);
+            }
+            if (isExp) {
+              expiredUserIds.add(p.id);
+              await serverSupabase
+                .from('profiles')
+                .update({ membership_type: 'free', membership_expires_at: null })
+                .eq('id', p.id);
+            }
           }
         }
       } catch (e) {}
@@ -278,8 +393,9 @@ export async function cleanupExpiredMembershipsAndBoosts() {
       const expiresAt = ad.profiles?.membership_expires_at;
       const isExpired = expiresAt && new Date(expiresAt) <= new Date();
       const isUserExpired = ad.user_id && expiredUserIds.has(ad.user_id);
+      const isUserFree = ad.user_id && freeOrExpiredUserIds.has(ad.user_id);
 
-      if (isExpired || isUserExpired) {
+      if (isExpired || isUserExpired || isUserFree) {
         if (ad.promotion_type || ad.is_featured) {
           updateGlobalListing(ad.id, {
             promotion_type: null,
@@ -309,11 +425,11 @@ export async function cleanupExpiredMembershipsAndBoosts() {
         ]);
 
         const profMap = new Map();
-        if (profilesRes.data) {
+        if (profilesRes?.data) {
           profilesRes.data.forEach(p => profMap.set(p.id, p));
         }
 
-        if (listingsRes.data) {
+        if (listingsRes?.data) {
           listingsRes.data.forEach(l => {
             l.profiles = profMap.get(l.user_id) || null;
             listingsMap.set(l.id, l);
@@ -332,11 +448,16 @@ export async function cleanupExpiredMembershipsAndBoosts() {
         continue;
       }
 
-      // Check if creator's membership is expired
-      const profExpiry = listing.profiles?.membership_expires_at;
-      if (profExpiry && new Date(profExpiry) <= new Date()) {
-        idsToRemove.push(item.listing_id);
-        continue;
+      // Check if creator's membership is free or expired
+      if (listing.user_id) {
+        const prof = listing.profiles;
+        const isFree = !prof || !prof.membership_type || prof.membership_type === 'free';
+        const isExpired = prof?.membership_expires_at && new Date(prof.membership_expires_at) <= new Date();
+
+        if (isFree || isExpired) {
+          idsToRemove.push(item.listing_id);
+          continue;
+        }
       }
 
       validFeatured.push(item);
@@ -348,7 +469,7 @@ export async function cleanupExpiredMembershipsAndBoosts() {
         for (const remId of idsToRemove) {
           try {
             await serverSupabase.from('featured_ads').delete().eq('listing_id', remId);
-            await serverSupabase.from('listings').update({ promotion_type: null }).eq('id', remId);
+            await serverSupabase.from('listings').update({ promotion_type: null, is_verified: false }).eq('id', remId);
           } catch (e) {}
         }
       }

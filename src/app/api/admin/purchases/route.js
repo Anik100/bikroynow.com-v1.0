@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { updateGlobalListing } from '../../../../lib/globalListingsStore';
 import { getGlobalFeaturedAds, saveGlobalFeaturedAds } from '../../../../lib/globalFeaturedAdsStore';
-import { activateUserMembership } from '../../../../lib/membershipManagerHelper';
+import { activateUserMembership, revokeUserMembershipAndBoosts } from '../../../../lib/membershipManagerHelper';
 
 export const dynamic = 'force-dynamic';
 
@@ -90,74 +90,13 @@ export async function POST(req) {
         packageObj: pkg,
         listingId: purchase.listing_id || null
       });
-    } else if (status === 'pending' || status === 'rejected') {
-      // AUTOMATICALLY REVERT BOOST & REMOVE FROM SLIDER WHEN RESET OR REJECTED!
-      if (purchase.listing_id) {
-        const revertUpdates = {
-          promotion_type: null,
-          is_verified: false,
-          is_featured: false
-        };
-
-        await serverSupabase
-          .from('listings')
-          .update(revertUpdates)
-          .eq('id', purchase.listing_id);
-
-        updateGlobalListing(purchase.listing_id, revertUpdates);
-
-        await serverSupabase
-          .from('featured_ads')
-          .delete()
-          .eq('listing_id', purchase.listing_id);
-
-        const curFeatured = getGlobalFeaturedAds().filter(f => String(f.listing_id) !== String(purchase.listing_id));
-        saveGlobalFeaturedAds(curFeatured);
-      }
-
-      // Revert user profile membership back to free and remove their ads from slider
-      if (purchase.user_email) {
-        const { data: prof } = await serverSupabase
-          .from('profiles')
-          .select('id')
-          .ilike('email', purchase.user_email.trim())
-          .maybeSingle();
-
-        if (prof) {
-          await serverSupabase
-            .from('profiles')
-            .update({
-              membership_type: 'free',
-              membership_expires_at: null
-            })
-            .eq('id', prof.id);
-
-          const revertUpdates = {
-            promotion_type: null,
-            is_verified: false,
-            is_featured: false
-          };
-
-          await serverSupabase
-            .from('listings')
-            .update(revertUpdates)
-            .eq('user_id', prof.id);
-
-          const { data: uListings } = await serverSupabase
-            .from('listings')
-            .select('id')
-            .eq('user_id', prof.id);
-
-          if (uListings && uListings.length > 0) {
-            const uIds = new Set(uListings.map(l => String(l.id)));
-            for (const lId of uIds) {
-              await serverSupabase.from('featured_ads').delete().eq('listing_id', lId);
-            }
-            const curFeatured = getGlobalFeaturedAds().filter(f => !uIds.has(String(f.listing_id)));
-            saveGlobalFeaturedAds(curFeatured);
-          }
-        }
-      }
+    } else if (status === 'pending' || status === 'rejected' || status === 'cancelled') {
+      // AUTOMATICALLY REVERT MEMBERSHIP, BOOSTS & REMOVE ALL ADS FROM SLIDER
+      await revokeUserMembershipAndBoosts({
+        userId: purchase.user_id || null,
+        userEmail: purchase.user_email || null,
+        listingId: purchase.listing_id || null
+      });
     }
 
     // Update status in membership_purchases

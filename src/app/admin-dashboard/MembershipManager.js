@@ -390,11 +390,12 @@ export default function MembershipManager() {
           .single();
 
         if (purchase) {
+          const revertUpdates = {
+            promotion_type: null,
+            is_verified: false
+          };
+
           if (purchase.listing_id) {
-            const revertUpdates = {
-              promotion_type: null,
-              is_verified: false
-            };
             try {
               await supabase.from('listings').update(revertUpdates).eq('id', purchase.listing_id);
               await supabase.from('featured_ads').delete().eq('listing_id', purchase.listing_id);
@@ -409,13 +410,37 @@ export default function MembershipManager() {
 
           if (purchase.user_email) {
             try {
-              await supabase
+              const { data: prof } = await supabase
                 .from('profiles')
-                .update({
-                  membership_type: 'free',
-                  membership_expires_at: null
-                })
-                .ilike('email', purchase.user_email.trim());
+                .select('id')
+                .ilike('email', purchase.user_email.trim())
+                .maybeSingle();
+
+              if (prof?.id) {
+                await supabase
+                  .from('profiles')
+                  .update({
+                    membership_type: 'free',
+                    membership_expires_at: null
+                  })
+                  .eq('id', prof.id);
+
+                await supabase
+                  .from('listings')
+                  .update(revertUpdates)
+                  .eq('user_id', prof.id);
+
+                const { data: userAds } = await supabase
+                  .from('listings')
+                  .select('id')
+                  .eq('user_id', prof.id);
+
+                if (Array.isArray(userAds)) {
+                  for (const ad of userAds) {
+                    await supabase.from('featured_ads').delete().eq('listing_id', ad.id);
+                  }
+                }
+              }
             } catch (e) {}
           }
         }

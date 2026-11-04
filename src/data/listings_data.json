@@ -18,12 +18,12 @@
     "contact_phone": "01323212321",
     "status": "active",
     "created_at": "2026-11-04T13:21:13.711+00:00",
-    "is_verified": true,
-    "promotion_type": "15-Day Mega Boost",
-    "is_featured": true,
+    "is_verified": false,
+    "promotion_type": null,
+    "is_featured": false,
     "profiles": {
-      "membership_type": "15-Day Mega Boost",
-      "membership_expires_at": "2026-11-19T13:43:50.324+00:00"
+      "membership_type": "free",
+      "membership_expires_at": null
     }
   },
   {

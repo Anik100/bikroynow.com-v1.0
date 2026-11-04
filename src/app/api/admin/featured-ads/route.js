@@ -49,12 +49,15 @@ export async function GET() {
           });
         }
 
-        if (dbFeaturedRes?.data && dbFeaturedRes.data.length > 0) {
+        if (dbFeaturedRes?.data) {
+          const dbIds = new Set(dbFeaturedRes.data.map(m => String(m.listing_id)));
+          // Only keep local sample defaults (e.g. tplink, china-mobile) if not in db
+          const samples = featured.filter(l => 
+            String(l.listing_id).startsWith('tplink') || String(l.listing_id).startsWith('china-mobile')
+          );
           const merged = [...dbFeaturedRes.data];
-          featured.forEach(localItem => {
-            if (!merged.some(m => String(m.listing_id) === String(localItem.listing_id))) {
-              merged.push(localItem);
-            }
+          samples.forEach(s => {
+            if (!dbIds.has(String(s.listing_id))) merged.push(s);
           });
           featured = merged;
           saveGlobalFeaturedAds(featured);
@@ -79,9 +82,17 @@ export async function GET() {
       }))
       .filter(item => {
         if (!item.is_active || !item.listing || item.listing.status === 'deleted') return false;
-        // Verify expiration date
-        const exp = item.listing.profiles?.membership_expires_at;
-        if (exp && new Date(exp) <= now) return false;
+        
+        // If the listing belongs to a user, check their membership status
+        if (item.listing.user_id) {
+          const prof = item.listing.profiles;
+          if (!prof || !prof.membership_type || prof.membership_type === 'free') {
+            return false;
+          }
+          if (prof.membership_expires_at && new Date(prof.membership_expires_at) <= now) {
+            return false;
+          }
+        }
         return true;
       })
       .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
