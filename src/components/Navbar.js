@@ -142,7 +142,9 @@ export default function Navbar() {
 
     const fetchUnreadCount = async () => {
       try {
-        const res = await fetch(`/api/chats/list?user_id=${user.id}`);
+        const res = await fetch(`/api/chats/list?user_id=${user.id}&t=${Date.now()}`, {
+          cache: 'no-store'
+        });
         if (res.ok) {
           const json = await res.json();
           if (Array.isArray(json.chats)) {
@@ -160,7 +162,7 @@ export default function Navbar() {
 
     const interval = setInterval(() => {
       fetchUnreadCount();
-    }, 4000); // 4s interval for instant live updates
+    }, 3000); // 3s interval for instant live updates on mobile and desktop
 
     return () => {
       clearInterval(interval);

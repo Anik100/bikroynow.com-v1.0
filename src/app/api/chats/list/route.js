@@ -6,13 +6,7 @@ import { getUserLastSeen } from '../../../../lib/userPresenceStore';
 
 export const dynamic = 'force-dynamic';
 
-const ADMIN_EMAILS = [
-  'anikh0000@gmail.com',
-  'anikh00000@gmail.com',
-  'anikh00@gmail.com',
-  'aunik008@gmail.com',
-  'aunik003@gmail.com'
-];
+
 
 export async function GET(req) {
   try {
@@ -59,18 +53,7 @@ export async function GET(req) {
             userAliases.add(currentProf.id);
           }
 
-          // If the account belongs to admin pool, add admin aliases
-          if (userEmail && ADMIN_EMAILS.includes(userEmail)) {
-            ADMIN_EMAILS.forEach(em => {
-              userAliases.add(em);
-              userAliases.add('user-' + em.replace(/[^a-z0-9]/g, ''));
-            });
-            allProfs.forEach(p => {
-              if (p.email && ADMIN_EMAILS.includes(p.email.toLowerCase())) {
-                userAliases.add(p.id);
-              }
-            });
-          }
+
         }
       } catch (e) {}
     }
