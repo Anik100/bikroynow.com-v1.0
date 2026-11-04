@@ -259,7 +259,7 @@ export async function GET(req) {
       return new Date(tB) - new Date(tA);
     });
 
-    return NextResponse.json({ success: true, chats: sorted }, {
+    return NextResponse.json({ success: true, chats: sorted, _debug: { serverSupabase: !!serverSupabase, allCandidateCount: allCandidateChats.length, candidateIds: allCandidateChats.map(c => c.id), myChatsCount: myChats.length, myChatIds: myChats.map(c => c.id), userAliases: Array.from(userAliases) } }, {
       headers: {
         'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate'
       }
