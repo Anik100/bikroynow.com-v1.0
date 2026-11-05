@@ -9,7 +9,7 @@ import { uploadToImgBB } from '../../lib/imgbb';
 import { compressImage } from '../../lib/utils';
 import { LOCATIONS, CATEGORIES } from '../../lib/constants';
 import { useLanguage } from '../../context/LanguageContext';
-import { Smartphone, Laptop, Zap, Car, Home as HouseIcon, Briefcase, Box, ChevronRight, ChevronDown } from 'lucide-react';
+import { Smartphone, Laptop, Zap, Car, Home as HouseIcon, Briefcase, Box, ChevronRight, ChevronDown, Search } from 'lucide-react';
 import styles from './post-ad.module.css';
 
 const CAT_CONFIG = {
@@ -61,6 +61,9 @@ export default function PostAd() {
   const [selectedMainCategory, setSelectedMainCategory] = useState(null);
   const [activeSub, setActiveSub] = useState(null);
   const [displayCategory, setDisplayCategory] = useState('');
+  const [subCatSearchQuery, setSubCatSearchQuery] = useState('');
+  const [customItemInput, setCustomItemInput] = useState('');
+  const [showOtherInput, setShowOtherInput] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const [monthlyAdsCount, setMonthlyAdsCount] = useState(0);
@@ -687,56 +690,159 @@ export default function PostAd() {
               ) : (
                 /* Level 2: Accordion Subcategories List */
                 <div className={styles.subCatPanel}>
-                  <button className={styles.subCatBackBtn} onClick={() => setSelectedMainCategory(null)}>
-                    ← {lang === 'bn' ? 'ফিরে যান' : 'Back'}
-                  </button>
+                  <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.2rem'}}>
+                    <button 
+                      className={styles.subCatBackBtn} 
+                      onClick={() => {
+                        setSelectedMainCategory(null);
+                        setSubCatSearchQuery('');
+                        setShowOtherInput(false);
+                      }}
+                      style={{margin: 0}}
+                    >
+                      ← {lang === 'bn' ? 'ফিরে যান' : 'Back'}
+                    </button>
+                    <span style={{fontWeight: 800, fontSize: '0.92rem', color: '#0f172a'}}>
+                      {lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory}
+                    </span>
+                  </div>
+
+                  {/* Subcategory & Item Search Bar */}
+                  <div className={styles.subCatSearchWrapper}>
+                    <Search size={18} className={styles.subCatSearchIcon} />
+                    <input 
+                      type="text" 
+                      className={styles.subCatSearchInput}
+                      placeholder={lang === 'bn' ? `${lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory}-এ সাব-ক্যাটাগরি বা আইটেম খুঁজুন...` : `Search in ${selectedMainCategory}...`}
+                      value={subCatSearchQuery}
+                      onChange={(e) => setSubCatSearchQuery(e.target.value)}
+                    />
+                    {subCatSearchQuery && (
+                      <button 
+                        type="button" 
+                        className={styles.subCatSearchClear}
+                        onClick={() => setSubCatSearchQuery('')}
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
 
                   <div className={styles.accordionContainer}>
-                    {Object.entries(CATEGORIES[selectedMainCategory]).map(([sub, items]) => {
-                      const isExpanded = activeSub === sub;
-                      return (
-                        <div key={sub} className={styles.subCatAccordionGroup}>
-                          <div 
-                            className={`${styles.subCatAccordionHeader} ${isExpanded ? styles.activeHeader : ''}`}
-                            onClick={() => {
-                              setActiveSub(prev => (prev === sub ? null : sub));
-                            }}
-                          >
-                            <div className={styles.subCatAccordionTitle}>
-                              <span className={styles.subHeaderDot}></span>
-                              <span>{sub}</span>
-                            </div>
-                            <div className={`${styles.subChevronCircle} ${isExpanded ? styles.rotated : ''}`}>
-                              <ChevronDown size={18} />
-                            </div>
-                          </div>
+                    {CATEGORIES[selectedMainCategory] && Object.entries(CATEGORIES[selectedMainCategory])
+                      .filter(([sub, items]) => {
+                        if (!subCatSearchQuery.trim()) return true;
+                        const q = subCatSearchQuery.toLowerCase().trim();
+                        const matchSub = sub.toLowerCase().includes(q);
+                        const matchItem = items.some(item => item.toLowerCase().includes(q));
+                        return matchSub || matchItem;
+                      })
+                      .map(([sub, items]) => {
+                        const q = subCatSearchQuery.toLowerCase().trim();
+                        const filteredItems = q 
+                          ? items.filter(item => item.toLowerCase().includes(q) || sub.toLowerCase().includes(q))
+                          : items;
+                        const isExpanded = q ? true : (activeSub === sub);
 
-                          <div className={`${styles.accordionBody} ${isExpanded ? styles.expanded : ''}`}>
-                            <div className={styles.accordionContent}>
-                              <div className={styles.itemGrid}>
-                                {items.map(item => (
-                                  <div 
-                                    key={item} 
-                                    className={styles.subCatItem}
-                                    onClick={() => {
-                                      setFormData({ ...formData, category_id: item });
-                                      const mainCatName = lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory;
-                                      setDisplayCategory(`${mainCatName} › ${sub} › ${item}`);
-                                      setShowCategoryModal(false);
-                                      setSelectedMainCategory(null);
-                                      setActiveSub(null);
-                                    }}
-                                  >
-                                    <span>{item}</span>
-                                    <span className={styles.arrowIcon}>→</span>
-                                  </div>
-                                ))}
+                        return (
+                          <div key={sub} className={styles.subCatAccordionGroup}>
+                            <div 
+                              className={`${styles.subCatAccordionHeader} ${isExpanded ? styles.activeHeader : ''}`}
+                              onClick={() => {
+                                setActiveSub(prev => (prev === sub ? null : sub));
+                              }}
+                            >
+                              <div className={styles.subCatAccordionTitle}>
+                                <span className={styles.subHeaderDot}></span>
+                                <span>{sub}</span>
+                                {q && (
+                                  <span style={{fontSize: '0.75rem', color: '#008b5e', fontWeight: 700, marginLeft: '6px'}}>
+                                    ({filteredItems.length})
+                                  </span>
+                                )}
+                              </div>
+                              <div className={`${styles.subChevronCircle} ${isExpanded ? styles.rotated : ''}`}>
+                                <ChevronDown size={18} />
+                              </div>
+                            </div>
+
+                            <div className={`${styles.accordionBody} ${isExpanded ? styles.expanded : ''}`}>
+                              <div className={styles.accordionContent}>
+                                <div className={styles.itemGrid}>
+                                  {filteredItems.map(item => (
+                                    <div 
+                                      key={item} 
+                                      className={styles.subCatItem}
+                                      onClick={() => {
+                                        setFormData({ ...formData, category_id: item });
+                                        const mainCatName = lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory;
+                                        setDisplayCategory(`${mainCatName} › ${sub} › ${item}`);
+                                        setShowCategoryModal(false);
+                                        setSelectedMainCategory(null);
+                                        setActiveSub(null);
+                                        setSubCatSearchQuery('');
+                                        setShowOtherInput(false);
+                                      }}
+                                    >
+                                      <span>{item}</span>
+                                      <span className={styles.arrowIcon}>→</span>
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
                             </div>
                           </div>
+                        );
+                      })}
+
+                    {/* Other / Custom item card at the end */}
+                    <div className={styles.otherCustomCard}>
+                      <div 
+                        className={styles.otherCustomHeader}
+                        onClick={() => setShowOtherInput(!showOtherInput)}
+                      >
+                        <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                          <span style={{fontSize: '1.2rem'}}>🏷️</span>
+                          <span>{lang === 'bn' ? 'অন্যান্য (কাস্টম আইটেম)' : 'Other (Custom Item)'}</span>
                         </div>
-                      );
-                    })}
+                        <span style={{fontSize: '0.82rem', color: '#008b5e', fontWeight: 800}}>
+                          {showOtherInput ? (lang === 'bn' ? '▲ বন্ধ করুন' : '▲ Close') : (lang === 'bn' ? '▼ আপনি যা বিক্রি করবেন লিখুন' : '▼ Type Custom Item')}
+                        </span>
+                      </div>
+
+                      {showOtherInput && (
+                        <div className={styles.otherCustomInputGroup}>
+                          <input 
+                            type="text" 
+                            className={styles.otherCustomInput}
+                            placeholder={lang === 'bn' ? 'সে কি বিক্রয় করতে চান সেটি লিখে দিন (যেমন: ওয়াইফাই ক্যামেরা, প্রজেক্টর...)' : 'Type what you want to sell...'}
+                            value={customItemInput}
+                            onChange={(e) => setCustomItemInput(e.target.value)}
+                            autoFocus
+                          />
+                          <button 
+                            type="button" 
+                            className={styles.otherCustomBtn}
+                            onClick={() => {
+                              const customVal = customItemInput.trim();
+                              if (customVal) {
+                                setFormData({ ...formData, category_id: customVal });
+                                const mainCatName = lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory;
+                                setDisplayCategory(`${mainCatName} › অন্যান্য › ${customVal}`);
+                                setShowCategoryModal(false);
+                                setSelectedMainCategory(null);
+                                setActiveSub(null);
+                                setCustomItemInput('');
+                                setShowOtherInput(false);
+                                setSubCatSearchQuery('');
+                              }
+                            }}
+                          >
+                            {lang === 'bn' ? 'নির্বাচন করুন ✓' : 'Confirm ✓'}
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}

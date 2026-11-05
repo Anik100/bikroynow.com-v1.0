@@ -8,7 +8,7 @@ import styles from './page.module.css';
 import { CATEGORIES } from '../lib/constants';
 import { useLanguage } from '../context/LanguageContext';
 import { getRelativeTime, formatFullDate, formatPrice, getPromotionBadgeText, sortPremiumListings } from '../lib/utils';
-import { Heart, Smartphone, Laptop, Zap, Car, Home as HouseIcon, Briefcase, Box, ChevronDown } from 'lucide-react';
+import { Heart, Smartphone, Laptop, Zap, Car, Home as HouseIcon, Briefcase, Box, ChevronDown, Search } from 'lucide-react';
 import FeaturedSlider from '../components/FeaturedSlider';
 
 const getSellerBadge = (profiles, lang) => {
@@ -96,6 +96,9 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [subCatSearchQuery, setSubCatSearchQuery] = useState('');
+  const [customItemInput, setCustomItemInput] = useState('');
+  const [showOtherInput, setShowOtherInput] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -240,6 +243,9 @@ export default function Home() {
     setShowCategoryModal(false);
     setActiveCategory(null);
     setActiveSub(null);
+    setSubCatSearchQuery('');
+    setCustomItemInput('');
+    setShowOtherInput(false);
     if (window.history.state && window.history.state.modalOpen) {
       window.history.back();
     }
@@ -396,13 +402,14 @@ export default function Home() {
               {/* Prominent Banner for viewing ALL items in this Category */}
               <div 
                 style={{
-                  marginBottom: '1rem',
+                  marginBottom: '0.65rem',
                   padding: '0.85rem 1.1rem',
                   background: 'linear-gradient(135deg, #008b5e 0%, #00704c 100%)',
                   borderRadius: '12px',
                   boxShadow: '0 4px 12px rgba(0, 139, 94, 0.25)',
                   cursor: 'pointer',
-                  transition: 'transform 0.2s'
+                  transition: 'transform 0.2s',
+                  flexShrink: 0
                 }}
                 onClick={() => {
                   setSelectedCategoryFilter(activeCategory);
@@ -439,65 +446,149 @@ export default function Home() {
                 </Link>
               </div>
 
-              {CATEGORIES[activeCategory] ? (
-                Object.keys(CATEGORIES[activeCategory]).map(sub => {
-                  const isExpanded = activeSub === sub;
-                  return (
-                    <div key={sub} className={styles.subCatAccordionGroup}>
-                      <div 
-                        className={`${styles.subCatAccordionHeader} ${isExpanded ? styles.activeHeader : ''}`}
-                        onClick={() => {
-                          setActiveSub(prev => (prev === sub ? null : sub));
-                        }}
-                      >
-                        <div className={styles.subCatAccordionTitle}>
-                          <span className={styles.subHeaderDot}></span>
-                          <span>{t(sub)}</span>
-                        </div>
-                        <div className={`${styles.subChevronCircle} ${isExpanded ? styles.rotated : ''}`}>
-                          <ChevronDown size={18} />
-                        </div>
-                      </div>
+              {/* Subcategory & Item Search Bar */}
+              <div className={styles.subCatSearchWrapper}>
+                <Search size={18} className={styles.subCatSearchIcon} />
+                <input 
+                  type="text" 
+                  className={styles.subCatSearchInput}
+                  placeholder={lang === 'bn' ? `${t(activeCategory)}-এ সাব-ক্যাটাগরি বা আইটেম খুঁজুন...` : `Search subcategories or items in ${t(activeCategory)}...`}
+                  value={subCatSearchQuery}
+                  onChange={(e) => setSubCatSearchQuery(e.target.value)}
+                />
+                {subCatSearchQuery && (
+                  <button 
+                    type="button" 
+                    className={styles.subCatSearchClear}
+                    onClick={() => setSubCatSearchQuery('')}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
 
-                      <div className={`${styles.accordionBody} ${isExpanded ? styles.expanded : ''}`}>
-                        <div className={styles.accordionContent}>
-                          <div className={styles.itemGrid}>
-                            <div 
-                              className={styles.categoryLink} 
-                              onClick={() => {
-                                setSelectedCategoryFilter(sub);
-                                closeCategoryModal();
-                              }} 
-                              style={{ background: '#e6f4ef', border: '1px solid #bbf7d0' }}
-                            >
-                              <Link href={`/ads?category=${encodeURIComponent(sub)}`}>
-                                <span style={{ fontWeight: 800, color: '#008b5e' }}>
-                                  🌐 {lang === 'bn' ? `সকল ${t(sub)}` : `All ${t(sub)}`}
+              {CATEGORIES[activeCategory] ? (
+                <>
+                  {Object.entries(CATEGORIES[activeCategory])
+                    .filter(([sub, items]) => {
+                      if (!subCatSearchQuery.trim()) return true;
+                      const q = subCatSearchQuery.toLowerCase().trim();
+                      const matchSub = sub.toLowerCase().includes(q) || (t(sub) && t(sub).toLowerCase().includes(q));
+                      const matchItem = items.some(item => item.toLowerCase().includes(q) || (t(item) && t(item).toLowerCase().includes(q)));
+                      return matchSub || matchItem;
+                    })
+                    .map(([sub, items]) => {
+                      const q = subCatSearchQuery.toLowerCase().trim();
+                      const filteredItems = q 
+                        ? items.filter(item => item.toLowerCase().includes(q) || (t(item) && t(item).toLowerCase().includes(q)) || sub.toLowerCase().includes(q) || (t(sub) && t(sub).toLowerCase().includes(q)))
+                        : items;
+
+                      const isExpanded = q ? true : (activeSub === sub);
+
+                      return (
+                        <div key={sub} className={styles.subCatAccordionGroup}>
+                          <div 
+                            className={`${styles.subCatAccordionHeader} ${isExpanded ? styles.activeHeader : ''}`}
+                            onClick={() => {
+                              setActiveSub(prev => (prev === sub ? null : sub));
+                            }}
+                          >
+                            <div className={styles.subCatAccordionTitle}>
+                              <span className={styles.subHeaderDot}></span>
+                              <span>{t(sub)}</span>
+                              {q && (
+                                <span style={{fontSize: '0.75rem', color: '#008b5e', fontWeight: 700, marginLeft: '6px'}}>
+                                  ({filteredItems.length})
                                 </span>
-                                <span className={styles.arrowIcon} style={{ color: '#008b5e' }}>→</span>
-                              </Link>
+                              )}
                             </div>
-                            {CATEGORIES[activeCategory][sub].map(item => (
-                              <div 
-                                key={item} 
-                                className={styles.categoryLink} 
-                                onClick={() => {
-                                  setSelectedCategoryFilter(item);
-                                  closeCategoryModal();
-                                }}
-                              >
-                                <Link href={`/ads?category=${encodeURIComponent(item)}`}>
-                                  <span>{t(item)}</span>
-                                  <span className={styles.arrowIcon}>→</span>
-                                </Link>
+                            <div className={`${styles.subChevronCircle} ${isExpanded ? styles.rotated : ''}`}>
+                              <ChevronDown size={18} />
+                            </div>
+                          </div>
+
+                          <div className={`${styles.accordionBody} ${isExpanded ? styles.expanded : ''}`}>
+                            <div className={styles.accordionContent}>
+                              <div className={styles.itemGrid}>
+                                <div 
+                                  className={styles.categoryLink} 
+                                  onClick={() => {
+                                    setSelectedCategoryFilter(sub);
+                                    closeCategoryModal();
+                                  }} 
+                                  style={{ background: '#e6f4ef', border: '1px solid #bbf7d0' }}
+                                >
+                                  <Link href={`/ads?category=${encodeURIComponent(sub)}`}>
+                                    <span style={{ fontWeight: 800, color: '#008b5e' }}>
+                                      🌐 {lang === 'bn' ? `সকল ${t(sub)}` : `All ${t(sub)}`}
+                                    </span>
+                                    <span className={styles.arrowIcon} style={{ color: '#008b5e' }}>→</span>
+                                  </Link>
+                                </div>
+                                {filteredItems.map(item => (
+                                  <div 
+                                    key={item} 
+                                    className={styles.categoryLink} 
+                                    onClick={() => {
+                                      setSelectedCategoryFilter(item);
+                                      closeCategoryModal();
+                                    }}
+                                  >
+                                    <Link href={`/ads?category=${encodeURIComponent(item)}`}>
+                                      <span>{t(item)}</span>
+                                      <span className={styles.arrowIcon}>→</span>
+                                    </Link>
+                                  </div>
+                                ))}
                               </div>
-                            ))}
+                            </div>
                           </div>
                         </div>
+                      );
+                    })}
+
+                  {/* Other / Custom item card at the end */}
+                  <div className={styles.otherCustomCard}>
+                    <div 
+                      className={styles.otherCustomHeader}
+                      onClick={() => setShowOtherInput(!showOtherInput)}
+                    >
+                      <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                        <span style={{fontSize: '1.2rem'}}>🏷️</span>
+                        <span>{lang === 'bn' ? 'অন্যান্য (কাস্টম আইটেম)' : 'Other (Custom Item)'}</span>
                       </div>
+                      <span style={{fontSize: '0.82rem', color: '#008b5e', fontWeight: 800}}>
+                        {showOtherInput ? (lang === 'bn' ? '▲ বন্ধ করুন' : '▲ Close') : (lang === 'bn' ? '▼ আপনার পণ্য লিখুন' : '▼ Type Custom Item')}
+                      </span>
                     </div>
-                  );
-                })
+
+                    {showOtherInput && (
+                      <form 
+                        className={styles.otherCustomInputGroup}
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          const val = customItemInput.trim();
+                          if (val) {
+                            closeCategoryModal();
+                            window.location.href = `/ads?search=${encodeURIComponent(val)}&category=${encodeURIComponent(activeCategory)}`;
+                          }
+                        }}
+                      >
+                        <input 
+                          type="text" 
+                          className={styles.otherCustomInput}
+                          placeholder={lang === 'bn' ? 'সে কি বিক্রয় বা খুঁজতে চান লিখুন...' : 'Type what you want to sell or find...'}
+                          value={customItemInput}
+                          onChange={(e) => setCustomItemInput(e.target.value)}
+                          autoFocus
+                        />
+                        <button type="submit" className={styles.otherCustomBtn}>
+                          {lang === 'bn' ? 'খুঁজুন →' : 'Search →'}
+                        </button>
+                      </form>
+                    )}
+                  </div>
+                </>
               ) : (
                 <div className={styles.noSub}>{t('noSub')}</div>
               )}
