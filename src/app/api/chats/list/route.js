@@ -119,30 +119,43 @@ export async function GET(req) {
     const localChats = getChats();
     localChats.forEach(c => allCandidateChats.push(c));
 
-    // Load deleted chat IDs from admin_settings
-    const deletedChatIds = new Set();
+    // Load per-user deleted chat IDs for this specific user
+    const userDeletedChatIds = new Set();
     if (serverSupabase) {
       try {
-        const { data: delRow } = await serverSupabase
+        const { data: mapRow } = await serverSupabase
           .from('admin_settings')
           .select('value')
-          .eq('key', 'deleted_chat_ids')
+          .eq('key', 'user_deleted_chats')
           .maybeSingle();
-        if (delRow?.value) {
-          const dArr = JSON.parse(delRow.value);
-          if (Array.isArray(dArr)) {
-            dArr.forEach(did => deletedChatIds.add(did));
+
+        if (mapRow?.value) {
+          const userDeletedMap = JSON.parse(mapRow.value);
+          if (userDeletedMap && typeof userDeletedMap === 'object') {
+            userAliases.forEach(alias => {
+              const list = userDeletedMap[alias];
+              if (Array.isArray(list)) {
+                list.forEach(cid => userDeletedChatIds.add(cid));
+              }
+            });
           }
         }
       } catch (e) {}
     }
 
-    // Deduplicate candidate chats by id, filter out deleted ones, and filter for this user
+    // Deduplicate candidate chats by id, filter out chats deleted for THIS user only, and filter for this user
     const seenChatIds = new Set();
     const myChats = [];
 
     allCandidateChats.forEach(c => {
-      if (!c?.id || seenChatIds.has(c.id) || deletedChatIds.has(c.id)) return;
+      if (!c?.id || seenChatIds.has(c.id)) return;
+
+      // Check if deleted for this user
+      if (userDeletedChatIds.has(c.id)) return;
+      if (Array.isArray(c.deleted_for) && c.deleted_for.some(a => userAliases.has(a) || userAliases.has(String(a).toLowerCase()))) {
+        return;
+      }
+
       const isBuyer = userAliases.has(c.buyer_id) || userAliases.has(String(c.buyer_id).toLowerCase());
       const isSeller = userAliases.has(c.seller_id) || userAliases.has(String(c.seller_id).toLowerCase()) || myListingIds.has(String(c.listing_id));
       if (isBuyer || isSeller) {

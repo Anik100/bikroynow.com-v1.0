@@ -6,7 +6,7 @@ import { supabase } from '../../lib/supabaseClient';
 import { useLanguage } from '../../context/LanguageContext';
 import { getRelativeTime, formatLastSeen } from '../../lib/utils';
 import styles from './chat.module.css';
-import { MessageSquare, ArrowRight, Trash2 } from 'lucide-react';
+import { MessageSquare, ArrowRight, Trash2, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ChatListPage() {
@@ -25,10 +25,11 @@ export default function ChatListPage() {
   const touchStartPosRef = useRef({ x: 0, y: 0 });
   const isLongPressActiveRef = useRef(false);
 
-  // Helper to get local deleted chat IDs
-  const getLocalDeletedIds = () => {
+  // Helper to get local deleted chat IDs per user
+  const getLocalDeletedIds = (uid) => {
     try {
-      const arr = JSON.parse(localStorage.getItem('bikroynow_deleted_chats') || '[]');
+      const key = uid ? 'bikroynow_deleted_chats_' + uid : 'bikroynow_deleted_chats';
+      const arr = JSON.parse(localStorage.getItem(key) || '[]');
       return Array.isArray(arr) ? new Set(arr) : new Set();
     } catch (e) {
       return new Set();
@@ -40,7 +41,7 @@ export default function ChatListPage() {
       setLoading(false);
       return;
     }
-    const localDeleted = getLocalDeletedIds();
+    const localDeleted = getLocalDeletedIds(userId);
 
     try {
       // 1. Try server API
@@ -157,7 +158,7 @@ export default function ChatListPage() {
     router.push(`/chat/${chat.id}`);
   };
 
-  // Confirm delete chat thread permanently
+  // Confirm delete chat thread for current user (Delete for Me)
   const handleConfirmDelete = async () => {
     if (!deletingChat) return;
     const targetChat = deletingChat;
@@ -167,18 +168,19 @@ export default function ChatListPage() {
       // 1. Optimistic removal from state
       setChats(prev => prev.filter(c => c.id !== targetChat.id));
 
-      // 2. Save to local deleted list immediately
+      // 2. Save to per-user local deleted list immediately
       try {
-        const existing = JSON.parse(localStorage.getItem('bikroynow_deleted_chats') || '[]');
+        const key = user?.id ? 'bikroynow_deleted_chats_' + user.id : 'bikroynow_deleted_chats';
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
         if (!existing.includes(targetChat.id)) {
           existing.push(targetChat.id);
-          localStorage.setItem('bikroynow_deleted_chats', JSON.stringify(existing));
+          localStorage.setItem(key, JSON.stringify(existing));
         }
         localStorage.removeItem('bikroynow_chat_' + targetChat.id);
         localStorage.removeItem('bikroynow_chat_meta_' + targetChat.id);
       } catch (e) {}
 
-      // 3. Call server DELETE endpoint
+      // 3. Call server DELETE endpoint with user_id
       const activeUserId = user?.id || '';
       await fetch(`/api/chats/${targetChat.id}?user_id=${encodeURIComponent(activeUserId)}`, {
         method: 'DELETE'
@@ -186,6 +188,36 @@ export default function ChatListPage() {
     } catch (err) {
       console.error('Error deleting chat:', err);
     } finally {
+      setIsDeleting(false);
+      setDeletingChat(null);
+    }
+  };
+
+  // Block user directly from chat list
+  const handleBlockFromList = async () => {
+    if (!deletingChat || !user) return;
+    const targetChat = deletingChat;
+    const isBuyer = targetChat.buyer_id === user.id || targetChat.buyer_id === user.email;
+    const partnerId = isBuyer ? targetChat.seller_id : targetChat.buyer_id;
+
+    if (!partnerId) return;
+    setIsDeleting(true);
+
+    try {
+      await fetch('/api/user/block', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'block',
+          blocker_id: user.id,
+          blocked_id: partnerId
+        })
+      });
+
+      // Also remove chat for current user
+      await handleConfirmDelete();
+    } catch (e) {
+      console.error('Error blocking user:', e);
       setIsDeleting(false);
       setDeletingChat(null);
     }
@@ -462,13 +494,13 @@ export default function ChatListPage() {
             </div>
 
             <h3 className={styles.modalTitle}>
-              {lang === 'bn' ? 'সম্পূর্ণ চ্যাট হিস্ট্রি মুছবেন?' : 'Delete Entire Chat History?'}
+              {lang === 'bn' ? 'চ্যাট হিস্ট্রি মুছবেন?' : 'Delete Chat History?'}
             </h3>
 
             <p className={styles.modalDescription}>
               {lang === 'bn' 
-                ? `"${deletingChat.partner?.full_name || 'User'}"-এর সাথে এই পণ্যের সকল মেসেজ ও চ্যাট হিস্ট্রি স্থায়ীভাবে মুছে ফেলা হবে। আপনি কি নিশ্চিত?`
-                : `All messages and chat history with "${deletingChat.partner?.full_name || 'User'}" for this item will be permanently deleted. Are you sure?`}
+                ? `"${deletingChat.partner?.full_name || 'User'}"-এর সাথে এই চ্যাটটি শুধুমাত্র আপনার ইনবক্স থেকে মুছে যাবে। অন্য প্রান্তের ব্যবহারকারীর চ্যাট হিস্ট্রি অপরিবর্তিত থাকবে।`
+                : `This chat will only be deleted from your inbox. The other user's conversation history will not be affected.`}
             </p>
 
             <div className={styles.modalChatPreview}>
@@ -487,27 +519,53 @@ export default function ChatListPage() {
               </div>
             </div>
 
-            <div className={styles.modalActions}>
-              <button 
-                type="button" 
-                className={styles.modalCancelBtn}
-                onClick={() => setDeletingChat(null)}
+            <div style={{display: 'flex', flexDirection: 'column', gap: '0.65rem'}}>
+              <div className={styles.modalActions}>
+                <button 
+                  type="button" 
+                  className={styles.modalCancelBtn}
+                  onClick={() => setDeletingChat(null)}
+                  disabled={isDeleting}
+                >
+                  {lang === 'bn' ? 'বাতিল' : 'Cancel'}
+                </button>
+                <button 
+                  type="button" 
+                  className={styles.modalDeleteBtn}
+                  onClick={handleConfirmDelete}
+                  disabled={isDeleting}
+                >
+                  <Trash2 size={16} />
+                  <span>
+                    {isDeleting 
+                      ? (lang === 'bn' ? 'মুছে ফেলা হচ্ছে...' : 'Deleting...') 
+                      : (lang === 'bn' ? 'আমার পাশ থেকে মুছুন' : 'Delete for Me')}
+                  </span>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleBlockFromList}
                 disabled={isDeleting}
+                style={{
+                  background: '#fef2f2',
+                  border: '1px solid #fecaca',
+                  borderRadius: '12px',
+                  padding: '0.65rem 1rem',
+                  color: '#dc2626',
+                  fontSize: '0.88rem',
+                  fontWeight: 750,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.45rem',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s ease'
+                }}
               >
-                {lang === 'bn' ? 'বাতিল' : 'Cancel'}
-              </button>
-              <button 
-                type="button" 
-                className={styles.modalDeleteBtn}
-                onClick={handleConfirmDelete}
-                disabled={isDeleting}
-              >
-                <Trash2 size={16} />
-                <span>
-                  {isDeleting 
-                    ? (lang === 'bn' ? 'মুছে ফেলা হচ্ছে...' : 'Deleting...') 
-                    : (lang === 'bn' ? 'মুছে ফেলুন' : 'Delete Chat')}
-                </span>
+                <ShieldAlert size={16} color="#dc2626" />
+                <span>{lang === 'bn' ? 'ব্যবহারকারীকে ব্লক ও ডিলিট করুন' : 'Block & Delete'}</span>
               </button>
             </div>
           </div>

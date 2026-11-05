@@ -92,6 +92,76 @@ export async function POST(req, { params }) {
       return NextResponse.json({ error: 'Message cannot be empty' }, { status: 400 });
     }
 
+    const serverSupabase = getServerSupabase();
+
+    // 0. Check Block Status between sender and partner
+    let partnerId = null;
+    if (serverSupabase) {
+      try {
+        const { data: chatsRow } = await serverSupabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'all_chats_list')
+          .maybeSingle();
+
+        if (chatsRow?.value) {
+          const allChats = JSON.parse(chatsRow.value);
+          if (Array.isArray(allChats)) {
+            const currentChat = allChats.find(c => c.id === id);
+            if (currentChat) {
+              const cleanSender = String(sender_id).toLowerCase().trim();
+              const bStr = String(currentChat.buyer_id).toLowerCase().trim();
+              const sStr = String(currentChat.seller_id).toLowerCase().trim();
+              const isSenderBuyer = (cleanSender === bStr || cleanSender.includes(bStr) || bStr.includes(cleanSender));
+              partnerId = isSenderBuyer ? currentChat.seller_id : currentChat.buyer_id;
+            }
+          }
+        }
+
+        if (partnerId) {
+          const { data: blockRow } = await serverSupabase
+            .from('admin_settings')
+            .select('value')
+            .eq('key', 'blocked_users')
+            .maybeSingle();
+
+          if (blockRow?.value) {
+            const blockedList = JSON.parse(blockRow.value);
+            if (Array.isArray(blockedList)) {
+              const cleanSender = String(sender_id).toLowerCase().trim();
+              const cleanPartner = String(partnerId).toLowerCase().trim();
+
+              const blockedByPartner = blockedList.some(item => {
+                const b1 = String(item.blocker_id || '').toLowerCase().trim();
+                const b2 = String(item.blocked_id || '').toLowerCase().trim();
+                return (b1 === cleanPartner || cleanPartner.includes(b1)) && (b2 === cleanSender || cleanSender.includes(b2));
+              });
+
+              if (blockedByPartner) {
+                return NextResponse.json({ 
+                  error: 'এই ব্যবহারকারী আপনাকে ব্লক করেছেন। আপনি আর কোনো বার্তা পাঠাতে পারবেন না।' 
+                }, { status: 403 });
+              }
+
+              const senderBlockedPartner = blockedList.some(item => {
+                const b1 = String(item.blocker_id || '').toLowerCase().trim();
+                const b2 = String(item.blocked_id || '').toLowerCase().trim();
+                return (b1 === cleanSender || cleanSender.includes(b1)) && (b2 === cleanPartner || cleanPartner.includes(b2));
+              });
+
+              if (senderBlockedPartner) {
+                return NextResponse.json({ 
+                  error: 'আপনি এই ব্যবহারকারীকে ব্লক করেছেন। বার্তা পাঠাতে আগে আনব্লক করুন।' 
+                }, { status: 400 });
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error in block status check:', err);
+      }
+    }
+
     const newMsg = {
       id: 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
       chat_id: id,
@@ -101,8 +171,6 @@ export async function POST(req, { params }) {
       created_at: new Date().toISOString(),
       is_read: false
     };
-
-    const serverSupabase = getServerSupabase();
 
     // 1. Central persistent cloud store via admin_settings (works 100% reliably for ALL chats)
     if (serverSupabase) {
@@ -139,6 +207,10 @@ export async function POST(req, { params }) {
             const currentChat = allChats.find(c => c.id === id);
             if (currentChat) {
               currentChat.updated_at = newMsg.created_at;
+              // If receiver had deleted chat previously, un-hide it upon incoming message
+              if (Array.isArray(currentChat.deleted_for) && partnerId) {
+                currentChat.deleted_for = currentChat.deleted_for.filter(a => String(a).toLowerCase() !== String(partnerId).toLowerCase());
+              }
               await serverSupabase
                 .from('admin_settings')
                 .upsert({

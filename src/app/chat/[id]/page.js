@@ -8,7 +8,7 @@ import { uploadToImgBB } from '../../../lib/imgbb';
 import { useLanguage } from '../../../context/LanguageContext';
 import { getRelativeTime, formatLastSeen, compressImage } from '../../../lib/utils';
 import styles from '../chat.module.css';
-import { Send, Camera, ChevronLeft, Loader2, User as UserIcon, ZoomIn, ZoomOut, X, Trash2 } from 'lucide-react';
+import { Send, Camera, ChevronLeft, Loader2, User as UserIcon, ZoomIn, ZoomOut, X, Trash2, ShieldAlert, ShieldCheck } from 'lucide-react';
 
 export default function ChatWindow({ params }) {
   const routeParams = useParams();
@@ -51,6 +51,50 @@ export default function ChatWindow({ params }) {
   const [mounted, setMounted] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeletingChat, setIsDeletingChat] = useState(false);
+  const [isBlockedByMe, setIsBlockedByMe] = useState(false);
+  const [isBlockedByThem, setIsBlockedByThem] = useState(false);
+  const [showBlockModal, setShowBlockModal] = useState(false);
+  const [isBlocking, setIsBlocking] = useState(false);
+
+  const checkBlockStatus = async (uid, pid) => {
+    if (!uid || !pid) return;
+    try {
+      const res = await fetch(`/api/user/block?user_id=${encodeURIComponent(uid)}&partner_id=${encodeURIComponent(pid)}`, { cache: 'no-store' });
+      if (res.ok) {
+        const json = await res.json();
+        setIsBlockedByMe(Boolean(json.is_blocked_by_me));
+        setIsBlockedByThem(Boolean(json.is_blocked_by_them));
+      }
+    } catch (e) {}
+  };
+
+  const handleToggleBlock = async () => {
+    if (!user || !chat) return;
+    const partnerId = isBuyer ? chat.seller_id : chat.buyer_id;
+    if (!partnerId) return;
+
+    setIsBlocking(true);
+    const nextAction = isBlockedByMe ? 'unblock' : 'block';
+    try {
+      const res = await fetch('/api/user/block', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: nextAction,
+          blocker_id: user.id,
+          blocked_id: partnerId
+        })
+      });
+      if (res.ok) {
+        setIsBlockedByMe(nextAction === 'block');
+      }
+    } catch (e) {
+      console.error('Error toggling block:', e);
+    } finally {
+      setIsBlocking(false);
+      setShowBlockModal(false);
+    }
+  };
 
   const handleDeleteEntireChat = async () => {
     setIsDeletingChat(true);
@@ -628,7 +672,27 @@ export default function ChatWindow({ params }) {
             )}
             <button
               type="button"
-              title={lang === 'bn' ? 'সম্পূর্ণ চ্যাট হিস্ট্রি মুছুন' : 'Delete Chat History'}
+              title={isBlockedByMe ? (lang === 'bn' ? 'আনব্লক করুন' : 'Unblock User') : (lang === 'bn' ? 'ব্যবহারকারীকে ব্লক করুন' : 'Block User')}
+              onClick={() => setShowBlockModal(true)}
+              style={{
+                background: isBlockedByMe ? '#fef3c7' : '#f1f5f9',
+                border: isBlockedByMe ? '1px solid #fde68a' : '1px solid #e2e8f0',
+                color: isBlockedByMe ? '#d97706' : '#64748b',
+                padding: '0.55rem',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+                flexShrink: 0
+              }}
+            >
+              {isBlockedByMe ? <ShieldCheck size={18} /> : <ShieldAlert size={18} />}
+            </button>
+            <button
+              type="button"
+              title={lang === 'bn' ? 'আমার দিক থেকে চ্যাট মুছুন' : 'Delete for Me'}
               onClick={() => setShowDeleteModal(true)}
               style={{
                 background: '#fee2e2',
@@ -648,6 +712,29 @@ export default function ChatWindow({ params }) {
             </button>
           </div>
         </div>
+
+        {/* Block Status Banners */}
+        {isBlockedByMe && (
+          <div style={{background: '#fffbeb', borderBottom: '1px solid #fef3c7', padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', color: '#92400e', fontSize: '0.86rem'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700}}>
+              <ShieldAlert size={18} color="#d97706" />
+              <span>{lang === 'bn' ? 'আপনি এই ব্যবহারকারীকে ব্লক করেছেন।' : 'You have blocked this user.'}</span>
+            </div>
+            <button 
+              type="button" 
+              onClick={() => setShowBlockModal(true)}
+              style={{background: '#d97706', color: '#fff', border: 'none', borderRadius: '8px', padding: '0.35rem 0.75rem', fontSize: '0.8rem', fontWeight: 800, cursor: 'pointer'}}
+            >
+              {lang === 'bn' ? 'আনব্লক করুন' : 'Unblock'}
+            </button>
+          </div>
+        )}
+        {isBlockedByThem && (
+          <div style={{background: '#fef2f2', borderBottom: '1px solid #fee2e2', padding: '0.75rem 1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#991b1b', fontSize: '0.86rem', fontWeight: 700}}>
+            <ShieldAlert size={18} color="#ef4444" />
+            <span>{lang === 'bn' ? 'এই ব্যবহারকারী আপনাকে ব্লক করেছেন। আপনি আর কোনো বার্তা পাঠাতে পারবেন না।' : 'This user has blocked you. You cannot send messages.'}</span>
+          </div>
+        )}
 
         {/* Messages area */}
         <div className={styles.messages}>
@@ -713,7 +800,7 @@ export default function ChatWindow({ params }) {
         {/* Input Area */}
         <form className={styles.inputArea} onSubmit={handleSend}>
           <label className={styles.uploadBtn}>
-            <input type="file" hidden accept=".jpg,.jpeg,.png,.webp" onChange={handleImageUpload} disabled={sending} />
+            <input type="file" hidden accept=".jpg,.jpeg,.png,.webp" onChange={handleImageUpload} disabled={sending || isBlockedByMe || isBlockedByThem} />
             <Camera size={22} />
           </label>
           <div className={styles.inputWrapper}>
@@ -721,7 +808,7 @@ export default function ChatWindow({ params }) {
               ref={chatInputRef}
               type="text" 
               className={styles.input} 
-              placeholder={t('typeMessage')}
+              placeholder={isBlockedByMe ? (lang === 'bn' ? 'মেসেজ পাঠাতে প্রথমে ব্যবহারকারীকে আনব্লক করুন' : 'Unblock user to send messages') : isBlockedByThem ? (lang === 'bn' ? 'আপনাকে ব্লক করা হয়েছে' : 'You have been blocked') : t('typeMessage')}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               disabled={sending}
