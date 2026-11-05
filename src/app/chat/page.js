@@ -9,12 +9,35 @@ import styles from './chat.module.css';
 import { MessageSquare, ArrowRight, Trash2, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 
+// Instant synchronous user resolution from localStorage (0ms delay)
+const getInstantUser = () => {
+  if (typeof window === 'undefined') return null;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed?.user) return parsed.user;
+        }
+      }
+    }
+    const localUser = localStorage.getItem('bikroynow_demo_user');
+    if (localUser) return JSON.parse(localUser);
+  } catch (e) {}
+  return null;
+};
+
 export default function ChatListPage() {
   const { t, lang } = useLanguage();
   const router = useRouter();
   const [chats, setChats] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(() => {
+    if (typeof window !== 'undefined' && getInstantUser()) return false;
+    return true;
+  });
+  const [user, setUser] = useState(() => getInstantUser());
 
   // Chat thread deletion states
   const [deletingChat, setDeletingChat] = useState(null);
@@ -227,64 +250,94 @@ export default function ChatListPage() {
     let isCancelled = false;
     let activeUserId = null;
 
-    // Safety fallback: Never keep screen stuck on loading for more than 2 seconds
+    // 1. Immediately check instant user from localStorage
+    const instantUser = getInstantUser();
+    if (instantUser?.id) {
+      activeUserId = instantUser.id;
+      setUser(instantUser);
+      setLoading(false);
+      fetchChatsForUser(instantUser.id);
+    }
+
+    // Safety fallback: Never keep screen stuck on loading for more than 1.5 seconds
     const safetyTimer = setTimeout(() => {
       if (!isCancelled) setLoading(false);
-    }, 2000);
+    }, 1500);
 
-    const checkSessionAndFetch = async () => {
-      let activeUser = null;
-
-      // 1. Check getSession
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        activeUser = session.user;
-      } else {
+    // 2. Asynchronous verification with Supabase session & OAuth hash token
+    const verifySession = async () => {
+      // Check for OAuth access_token in URL hash
+      if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token=')) {
         try {
-          const localUser = localStorage.getItem('bikroynow_demo_user');
-          if (localUser) activeUser = JSON.parse(localUser);
+          const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+          const hashParams = new URLSearchParams(hashStr);
+          const accessToken = hashParams.get('access_token');
+          const refreshToken = hashParams.get('refresh_token');
+          if (accessToken) {
+            const { data: authData } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken || ''
+            });
+            if (authData?.session?.user && !isCancelled) {
+              activeUserId = authData.session.user.id;
+              setUser(authData.session.user);
+              setLoading(false);
+              fetchChatsForUser(authData.session.user.id);
+              try {
+                window.history.replaceState(null, '', window.location.pathname + window.location.search);
+              } catch (e) {}
+              return;
+            }
+          }
         } catch (e) {}
       }
 
-      // 2. If session not found immediately on mobile, give a 250ms grace period for Supabase to restore from storage
-      if (!activeUser) {
-        await new Promise(r => setTimeout(r, 250));
-        const retry = await supabase.auth.getSession();
-        if (retry.data.session?.user) {
-          activeUser = retry.data.session.user;
-        }
-      }
-
-      if (!activeUser) {
-        if (!isCancelled) {
-          setLoading(false);
-          router.push('/login');
-        }
-        return;
-      }
-
-      if (!isCancelled) {
-        activeUserId = activeUser.id;
-        setUser(activeUser);
-        await fetchChatsForUser(activeUser.id);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user && !isCancelled) {
+        activeUserId = session.user.id;
+        setUser(session.user);
+        setLoading(false);
+        fetchChatsForUser(session.user.id);
+      } else if (!instantUser && !isCancelled) {
+        setLoading(false);
       }
     };
 
-    checkSessionAndFetch();
+    verifySession();
 
+    // 3. Listen to auth state changes to guarantee seamless login sync
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user && !isCancelled) {
+        activeUserId = session.user.id;
+        setUser(session.user);
+        setLoading(false);
+        fetchChatsForUser(session.user.id);
+      } else if (!isCancelled) {
+        const fallback = getInstantUser();
+        if (fallback) {
+          activeUserId = fallback.id;
+          setUser(fallback);
+          setLoading(false);
+          fetchChatsForUser(fallback.id);
+        }
+      }
+    });
+
+    // 4. Polling for live updates
     const interval = setInterval(() => {
       if (!isCancelled && activeUserId) {
         fetchChatsForUser(activeUserId);
       }
-    }, 4000); // 4s live polling
+    }, 4000);
 
     return () => {
       isCancelled = true;
       clearTimeout(safetyTimer);
       clearInterval(interval);
+      if (authListener?.subscription) authListener.subscription.unsubscribe();
       if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
     };
-  }, [router]);
+  }, []);
 
   if (loading) return (
     <div className="container" style={{padding: '5rem 0', textAlign: 'center', color: '#64748b', fontSize: '1.05rem', fontWeight: 600}}>

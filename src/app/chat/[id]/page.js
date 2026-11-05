@@ -10,6 +10,26 @@ import { getRelativeTime, formatLastSeen, compressImage } from '../../../lib/uti
 import styles from '../chat.module.css';
 import { Send, Camera, ChevronLeft, Loader2, User as UserIcon, ZoomIn, ZoomOut, X, Trash2, ShieldAlert, ShieldCheck } from 'lucide-react';
 
+// Instant synchronous user resolution from localStorage (0ms delay)
+const getInstantUser = () => {
+  if (typeof window === 'undefined') return null;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed?.user) return parsed.user;
+        }
+      }
+    }
+    const localUser = localStorage.getItem('bikroynow_demo_user');
+    if (localUser) return JSON.parse(localUser);
+  } catch (e) {}
+  return null;
+};
+
 export default function ChatWindow({ params }) {
   const routeParams = useParams();
   const effectiveId = routeParams?.id || params?.id;
@@ -34,7 +54,7 @@ export default function ChatWindow({ params }) {
     return [];
   });
   const [newMessage, setNewMessage] = useState('');
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => getInstantUser());
   const [loading, setLoading] = useState(() => {
     if (typeof window !== 'undefined' && effectiveId) {
       try {
@@ -307,29 +327,38 @@ export default function ChatWindow({ params }) {
     if (!effectiveId) return;
 
     const setupChat = async () => {
-      let activeUser = null;
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user) {
-        activeUser = session.user;
-      } else {
+      let activeUser = getInstantUser();
+
+      // Check URL hash for OAuth token
+      if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token=')) {
         try {
-          const localUser = localStorage.getItem('bikroynow_demo_user');
-          if (localUser) activeUser = JSON.parse(localUser);
+          const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+          const hashParams = new URLSearchParams(hashStr);
+          const accessToken = hashParams.get('access_token');
+          const refreshToken = hashParams.get('refresh_token');
+          if (accessToken) {
+            const { data: authData } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken || ''
+            });
+            if (authData?.session?.user) {
+              activeUser = authData.session.user;
+              try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch (e) {}
+            }
+          }
         } catch (e) {}
       }
 
       if (!activeUser) {
-        await new Promise(r => setTimeout(r, 250));
-        const retry = await supabase.auth.getSession();
-        if (retry.data.session?.user) {
-          activeUser = retry.data.session.user;
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          activeUser = session.user;
         }
       }
 
       if (!activeUser) {
         if (!isCancelled) {
           setLoading(false);
-          router.push('/login');
         }
         return;
       }
@@ -390,6 +419,13 @@ export default function ChatWindow({ params }) {
     };
 
     setupChat();
+
+    // Auth state listener
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user && !isCancelled) {
+        setUser(session.user);
+      }
+    });
 
     // Supabase Realtime subscription for instant message delivery
     const channel = supabase
