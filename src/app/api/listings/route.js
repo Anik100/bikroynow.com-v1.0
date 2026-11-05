@@ -25,6 +25,51 @@ export async function GET(req) {
     const statusParam = searchParams.get('status');
     const userId = searchParams.get('user_id');
     const userEmail = searchParams.get('user_email');
+    const idParam = searchParams.get('id');
+
+    // Handle single listing lookup by ID with extreme speed (<50ms)
+    if (idParam) {
+      if (cachedListings) {
+        const found = cachedListings.find(l => String(l.id) === String(idParam));
+        if (found) return NextResponse.json({ listing: found });
+      }
+      const globalFound = getGlobalListings().find(l => String(l.id) === String(idParam));
+      if (globalFound) return NextResponse.json({ listing: globalFound });
+
+      const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      if (supabaseUrl && serviceRoleKey && isValidUUID(idParam)) {
+        try {
+          const serverSupabase = createClient(supabaseUrl, serviceRoleKey, {
+            auth: { persistSession: false, autoRefreshToken: false }
+          });
+          const { data: singleAd } = await serverSupabase
+            .from('listings')
+            .select('*')
+            .eq('id', idParam)
+            .maybeSingle();
+
+          if (singleAd) {
+            let profileData = null;
+            if (singleAd.user_id && isValidUUID(singleAd.user_id)) {
+              const { data: p } = await serverSupabase
+                .from('profiles')
+                .select('*')
+                .eq('id', singleAd.user_id)
+                .maybeSingle();
+              profileData = p;
+            }
+            return NextResponse.json({
+              listing: {
+                ...singleAd,
+                profiles: profileData
+              }
+            });
+          }
+        } catch (e) {}
+      }
+      return NextResponse.json({ listing: null }, { status: 404 });
+    }
 
     const now = Date.now();
     const isPublicDefault = !includeAll && !statusParam && !userId;

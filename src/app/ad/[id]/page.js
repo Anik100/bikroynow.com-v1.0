@@ -324,106 +324,170 @@ export default function AdDetails({ params }) {
       return;
     }
 
+    let isCancelled = false;
+
+    // Helper for fast fetch with timeout so UI never hangs
+    const fetchWithTimeout = async (url, ms = 2500) => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), ms);
+      try {
+        const res = await fetch(url, { signal: controller.signal });
+        clearTimeout(timer);
+        return res;
+      } catch (e) {
+        clearTimeout(timer);
+        return null;
+      }
+    };
+
     const fetchAdData = async () => {
       try {
         let adData = null;
         const isValidUUID = (str) => typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 
-        // 1. If valid UUID, query Supabase DB
-        if (isValidUUID(effectiveId)) {
-          const { data, error } = await supabase
-            .from('listings')
-            .select('*')
-            .eq('id', effectiveId)
-            .maybeSingle();
-          if (data) adData = data;
-        }
+        // 1. Instant cache check from localStorage (renders in 0ms)
+        try {
+          const localAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+          const localFound = localAds.find(l => String(l.id) === String(effectiveId));
+          if (localFound) {
+            adData = localFound;
+            if (!isCancelled) {
+              setAd(localFound);
+              if (localFound.profiles) setProfile(localFound.profiles);
+              setLoading(false);
+            }
+          }
+        } catch (e) {}
 
-        // 2. Fetch from /api/listings (handling both array & { listings: [] })
+        // 2. Fetch from fast internal API /api/listings?id=... (fastest server response ~50ms)
+        try {
+          const res = await fetchWithTimeout(`/api/listings?id=${encodeURIComponent(effectiveId)}&t=${Date.now()}`, 2500);
+          if (res && res.ok) {
+            const data = await res.json();
+            if (data?.listing) {
+              adData = data.listing;
+              if (!isCancelled) {
+                setAd(adData);
+                if (adData.profiles) setProfile(adData.profiles);
+                setLoading(false);
+              }
+            }
+          }
+        } catch (e) {}
+
+        // 3. Fallback: Check full /api/listings feed
         if (!adData) {
           try {
-            const res = await fetch(`/api/listings?t=${Date.now()}`);
-            if (res.ok) {
+            const res = await fetchWithTimeout(`/api/listings?t=${Date.now()}`, 2500);
+            if (res && res.ok) {
               const resJson = await res.json();
               const allListings = Array.isArray(resJson) ? resJson : (resJson?.listings || []);
-              adData = allListings.find(l => String(l.id) === String(effectiveId)) || null;
+              const found = allListings.find(l => String(l.id) === String(effectiveId));
+              if (found) {
+                adData = found;
+                if (!isCancelled) {
+                  setAd(adData);
+                  if (adData.profiles) setProfile(adData.profiles);
+                  setLoading(false);
+                }
+              }
             }
           } catch (e) {}
         }
 
-        // 3. Fallback to localStorage
-        if (!adData) {
+        // 4. Fallback: Direct Supabase query with 2.5s race timeout
+        if (!adData && isValidUUID(effectiveId)) {
           try {
-            const localAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
-            adData = localAds.find(l => String(l.id) === String(effectiveId)) || null;
+            const sbPromise = supabase.from('listings').select('*').eq('id', effectiveId).maybeSingle();
+            const timeoutPromise = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 2500));
+            const { data } = await Promise.race([sbPromise, timeoutPromise]);
+            if (data) {
+              adData = data;
+              if (!isCancelled) {
+                setAd(adData);
+                setLoading(false);
+              }
+            }
           } catch (e) {}
         }
 
-        if (!adData) {
+        // Always end loading state promptly
+        if (!isCancelled) {
           setLoading(false);
-          return;
         }
 
-        setAd(adData);
-
-        // Fetch similar ads based on category
+        // 5. Background non-blocking load: Fetch similar ads & profile without freezing UI
         if (adData?.category_id) {
-          try {
-            let { data: similarAdsData } = await supabase
-              .from('listings')
-              .select('*')
-              .eq('category_id', adData.category_id)
-              .neq('status', 'pending')
-              .neq('id', adData.id)
-              .order('created_at', { ascending: false })
-              .limit(4);
-            if (similarAdsData) setSimilarAds(similarAdsData);
-          } catch (e) {}
+          supabase
+            .from('listings')
+            .select('*')
+            .eq('category_id', adData.category_id)
+            .neq('status', 'pending')
+            .neq('id', adData.id)
+            .order('created_at', { ascending: false })
+            .limit(4)
+            .then(({ data: similarAdsData }) => {
+              if (similarAdsData && !isCancelled) setSimilarAds(similarAdsData);
+            })
+            .catch(() => {});
         }
 
-        // Fetch Profile separately if user_id is valid UUID
-        if (adData?.user_id && isValidUUID(adData.user_id)) {
-          try {
-            const { data: profileData } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', adData.user_id)
-              .maybeSingle();
-            if (profileData) setProfile(profileData);
-          } catch (e) {}
+        if (adData?.user_id && isValidUUID(adData.user_id) && !adData.profiles) {
+          supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', adData.user_id)
+            .maybeSingle()
+            .then(({ data: profileData }) => {
+              if (profileData && !isCancelled) setProfile(profileData);
+            })
+            .catch(() => {});
         }
       } catch (err) {
         console.error('Fetch Error:', err);
       } finally {
-        setLoading(false);
+        if (!isCancelled) {
+          setLoading(false);
+        }
       }
     };
 
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      let activeUser = session?.user;
-      if (!activeUser) {
-        try {
-          const localUser = localStorage.getItem('bikroynow_demo_user');
-          if (localUser) activeUser = JSON.parse(localUser);
-        } catch (e) {}
-      }
-      setCurrentUser(activeUser || null);
-      if (activeUser && effectiveId) {
-        try {
-          const { data } = await supabase
-            .from('favorites')
-            .select('*')
-            .eq('user_id', activeUser.id)
-            .eq('listing_id', effectiveId)
-            .maybeSingle();
-          if (data) setIsFavorite(true);
-        } catch (e) {}
-      }
+      try {
+        const sessionPromise = supabase.auth.getSession();
+        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve({ data: { session: null } }), 1500));
+        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
+        let activeUser = session?.user;
+        if (!activeUser) {
+          try {
+            const localUser = localStorage.getItem('bikroynow_demo_user');
+            if (localUser) activeUser = JSON.parse(localUser);
+          } catch (e) {}
+        }
+        if (!isCancelled) {
+          setCurrentUser(activeUser || null);
+          if (activeUser && effectiveId && isValidUUID(effectiveId)) {
+            supabase
+              .from('favorites')
+              .select('*')
+              .eq('user_id', activeUser.id)
+              .eq('listing_id', effectiveId)
+              .maybeSingle()
+              .then(({ data }) => {
+                if (data && !isCancelled) setIsFavorite(true);
+              })
+              .catch(() => {});
+          }
+        }
+      } catch (e) {}
     };
 
     checkUser();
     fetchAdData();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [effectiveId]);
 
   useEffect(() => {
