@@ -510,7 +510,7 @@ export default function ChatWindow({ params }) {
       <p style={{fontSize: '0.9rem', color: '#64748b', marginBottom: '1.5rem'}}>
         {lang === 'bn' ? 'বিক্রেতা বা ক্রেতার সাথে চ্যাট করতে আপনার অ্যাকাউন্টে সাইন ইন করুন।' : 'Sign in to your account to start chatting.'}
       </p>
-      <Link href="/login" className="btn-primary" style={{borderRadius: '12px', padding: '0.75rem 2rem', textDecoration: 'none', display: 'inline-block'}}>
+      <Link href={`/login?redirect=${encodeURIComponent('/chat/' + effectiveId)}`} className="btn-primary" style={{borderRadius: '12px', padding: '0.75rem 2rem', textDecoration: 'none', display: 'inline-block'}}>
         {lang === 'bn' ? 'লগইন করুন' : 'Login Now'}
       </Link>
     </div>

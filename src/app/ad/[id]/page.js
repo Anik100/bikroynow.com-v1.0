@@ -1033,10 +1033,18 @@ export default function AdDetails({ params }) {
                   onClick={async () => {
                     setSendingChat(true);
                     try {
-                      // 1. Instant check from React state
+                      // 1. Check verified user session
                       let activeUser = currentUser;
 
-                      // 2. Synchronous check from localStorage
+                      if (!activeUser) {
+                        try {
+                          const sessionPromise = supabase.auth.getSession();
+                          const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ data: { session: null } }), 1200));
+                          const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
+                          if (session?.user) activeUser = session.user;
+                        } catch (e) {}
+                      }
+
                       if (!activeUser) {
                         try {
                           const localUser = localStorage.getItem('bikroynow_demo_user');
@@ -1044,29 +1052,9 @@ export default function AdDetails({ params }) {
                         } catch (e) {}
                       }
 
+                      // If not logged in, smoothly redirect to login with return URL
                       if (!activeUser) {
-                        try {
-                          const sbKey = Object.keys(localStorage).find(k => k.startsWith('sb-') && k.endsWith('-auth-token'));
-                          if (sbKey) {
-                            const tokenData = JSON.parse(localStorage.getItem(sbKey));
-                            if (tokenData?.user) activeUser = tokenData.user;
-                          }
-                        } catch (e) {}
-                      }
-
-                      // 3. Fast race with 1s timeout for Supabase getSession (never hangs)
-                      if (!activeUser) {
-                        try {
-                          const sessionPromise = supabase.auth.getSession();
-                          const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ data: { session: null } }), 1000));
-                          const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
-                          if (session?.user) activeUser = session.user;
-                        } catch (e) {}
-                      }
-
-                      // If not logged in, redirect immediately to login
-                      if (!activeUser) {
-                        router.push('/login');
+                        router.push(`/login?redirect=${encodeURIComponent('/ad/' + effectiveId)}`);
                         return;
                       }
                       
