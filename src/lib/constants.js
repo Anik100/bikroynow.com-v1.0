@@ -10,398 +10,736 @@ export const LOCATIONS = {
 };
 
 export const CATEGORIES = {
-  'Mobile Phones': {
-    'Smartphones & Tablets': [
-      'Android Smartphones',
-      'iPhones (Apple)',
-      'Tablets & iPads',
-      'Refurbished & Used Phones',
-      'Feature Phones (Button Phones)',
-      'Gaming Phones'
+  "Mobile Phones": {
+    "Smartphones & Mobile Brands": [
+      "Samsung Galaxy Smartphones",
+      "Apple iPhones (iPhone 11 to 16 Pro Max)",
+      "Xiaomi, Redmi & POCO Phones",
+      "Realme Smartphones",
+      "Vivo Smartphones",
+      "Oppo Smartphones",
+      "OnePlus Smartphones",
+      "Google Pixel Phones",
+      "Infinix Smartphones",
+      "Tecno Smartphones",
+      "Motorola Smartphones",
+      "Nothing Phone",
+      "Honor Smartphones",
+      "Sony Xperia Phones",
+      "Asus ROG & Gaming Phones",
+      "Symphony & Walton Smartphones",
+      "Refurbished & Second-Hand Smartphones"
     ],
-    'Accessories': [
-      'Cases, Covers & Skins',
-      'Screen Protectors & Glass',
-      'Chargers & Fast Adapters',
-      'Power Banks & Batteries',
-      'Earphones & AirPods',
-      'Headphones & Bluetooth Headsets',
-      'Cables & Converters',
-      'Holders, Mounts & Stands',
-      'Selfie Sticks & Tripods',
-      'Memory Cards (microSD)',
-      'Camera Lenses & Flash'
+    "Feature Phones (Button Phones)": [
+      "Nokia Classic Button Phones",
+      "Walton Feature Phones",
+      "Symphony Feature Phones",
+      "Itel Button Phones",
+      "Lava Feature Phones",
+      "Samsung Guru & Keypad Phones"
     ],
-    'Wearables': [
-      'Smartwatches (Apple, Samsung, etc.)',
-      'Fitness & Smart Bands',
-      'Smart Rings & VR Headsets',
-      'Smartwatch Straps & Accessories'
+    "Tablets & iPads": [
+      "Apple iPad (Pro, Air, Mini, Standard)",
+      "Samsung Galaxy Tab",
+      "Xiaomi Pad",
+      "Lenovo Android Tablets",
+      "Amazon Fire HD Tablets",
+      "Graphics & Drawing Tablets",
+      "Kids Learning Tablets"
     ],
-    'SIM & Services': [
-      'SIM Cards & VIP Numbers',
-      'Mobile Servicing & Repair',
-      'Display & Battery Replacement',
-      'Phone Parts & Motherboards'
+    "Mobile Accessories": [
+      "Fast Chargers & Power Adapters (20W - 120W)",
+      "GaN Fast Chargers",
+      "Type-C & Lightning Fast Data Cables",
+      "Power Banks (10000mAh, 20000mAh, 30000mAh)",
+      "Wireless Magnetic Chargers & Magsafe",
+      "Wireless Earbuds (AirPods, Galaxy Buds)",
+      "Bluetooth Neckbands & Headsets",
+      "Over-Ear DJ & Gaming Headphones",
+      "Silicone, TPU & Rugged Phone Cases",
+      "Premium Leather & Flip Wallet Covers",
+      "11D / 21D Curved Tempered Glass",
+      "UV Liquid Tempered Glass",
+      "Camera Lens Protectors",
+      "Ring Lights with Tripod Stands",
+      "Mobile Vlogging Tripods & Monopods",
+      "Handheld 3-Axis Mobile Gimbals",
+      "Mobile Gaming Triggers & Phone Coolers",
+      "Car Mobile Holders & Mounts",
+      "Waterproof Bike Mobile Mounts",
+      "OTG Converters & Splitters",
+      "MicroSD Memory Cards (32GB - 512GB)",
+      "Stylus Touch Pens"
+    ],
+    "Wearables & Smartwatches": [
+      "Apple Watch (Ultra, Series 8/9/10, SE)",
+      "Samsung Galaxy Watch",
+      "Amazfit Smartwatches",
+      "Huawei Smartwatches",
+      "Xiaomi & Mi Smart Bands",
+      "Kieslect, Haylou & Mibro Watches",
+      "Fire-Boltt, Noise & boAt Watches",
+      "Smartwatch Metal & Silicone Straps",
+      "Smartwatch Magnetic Chargers",
+      "Smart Health Rings"
+    ],
+    "Parts & Repair Services": [
+      "Original OLED / AMOLED Displays",
+      "Copy / Incell LCD Displays",
+      "Original Replacement Batteries",
+      "Charging Logic Ports & Ribbons",
+      "Original Phone Motherboards",
+      "Front & Back Camera Modules",
+      "Phone Back Glass & Body Housings",
+      "Professional Screen Replacement Service",
+      "Battery Replacement Service",
+      "Water Damage & Motherboard Repair Service",
+      "Software Flash, FRP & Network Unlock"
+    ],
+    "SIM Cards & VIP Numbers": [
+      "Grameenphone (GP) SIM & VIP Numbers",
+      "Banglalink SIM & VIP Numbers",
+      "Robi & Airtel SIM Cards",
+      "Teletalk SIM Cards",
+      "Prepaid & Postpaid Corporate SIMs"
     ]
   },
-  Computers: {
-    'Laptops': [
-      'Gaming Laptops',
-      'Ultrabooks & Business Laptops',
-      'MacBooks (Air / Pro)',
-      'Student & Budget Laptops',
-      '2-in-1 Touchscreen Laptops',
-      'Used & Refurbished Laptops'
+  "Computers": {
+    "Laptops": [
+      "High-End Gaming Laptops (RTX 4060/4070/4080)",
+      "Intel Core i3 Budget Laptops",
+      "Intel Core i5 Multitasking Laptops",
+      "Intel Core i7 Professional Laptops",
+      "Intel Core i9 Extreme Laptops",
+      "AMD Ryzen 5 & Ryzen 7 Laptops",
+      "Apple MacBook Air (M1, M2, M3)",
+      "Apple MacBook Pro (M1, M2, M3 Pro/Max)",
+      "HP Pavilion, Envy & Spectre Laptops",
+      "Dell Inspiron, Vostro & XPS Laptops",
+      "Lenovo ThinkPad, IdeaPad & Legion",
+      "Asus ROG, TUF & ZenBook Laptops",
+      "Acer Predator, Nitro & Swift Laptops",
+      "2-in-1 Touch Convertible Laptops",
+      "Used & Reconditioned Laptops"
     ],
-    'Desktops': [
-      'Gaming Desktop PCs',
-      'Office & Workstation PCs',
-      'All-in-One (AIO) PCs',
-      'Brand Desktops (HP, Dell, Lenovo)',
-      'Mini PCs & TV Sticks',
-      'Custom Built Desktops'
+    "Desktop Computers": [
+      "Custom Built Gaming Desktop PCs",
+      "Office, Business & Accounting PCs",
+      "Video Editing & 3D Animation PCs",
+      "All-in-One (AIO) Desktop Computers",
+      "Brand Desktops (HP, Dell, Lenovo)",
+      "Mini PCs & Compute Sticks",
+      "High-Performance Workstations"
     ],
-    'Components': [
-      'Processors / CPU (Intel & AMD)',
-      'Motherboards',
-      'Graphics Cards / GPU',
-      'RAM (DDR4 / DDR5)',
-      'Internal SSD & NVMe Drives',
-      'Hard Drives (HDD)',
-      'Power Supplies (PSU)',
-      'CPU Coolers & Liquid Coolers',
-      'PC Casings',
-      'Casing Fans & RGB Lighting'
+    "Processors (CPU)": [
+      "Intel Core i3 Processors",
+      "Intel Core i5 Processors",
+      "Intel Core i7 Processors",
+      "Intel Core i9 Processors",
+      "AMD Ryzen 3 & Ryzen 5 Processors",
+      "AMD Ryzen 7 & Ryzen 9 Processors"
     ],
-    'Monitors': [
-      'Gaming High-Refresh Monitors',
-      '4K / Ultra-wide Curved Monitors',
-      'Standard Office LED Monitors',
-      'Monitor Mounts & Arms'
+    "Motherboards": [
+      "ASUS ROG, TUF & Prime Motherboards",
+      "MSI Gaming & Pro Motherboards",
+      "Gigabyte AORUS & Ultra Durable Boards",
+      "ASRock Motherboards",
+      "Intel H61, B450, B550, B660, B760 & Z790 Boards",
+      "AMD AM4 & AM5 Motherboards"
     ],
-    'Accessories': [
-      'Mechanical & Wireless Keyboards',
-      'Gaming & Wireless Mouse',
-      'Mousepads & Desk Mats',
-      'Webcams & Microphones',
-      'Laptop Bags, Sleeves & Stands',
-      'Laptop Batteries & Adapters',
-      'UPS & Voltage Stabilizers',
-      'USB Hubs & Card Readers'
+    "Graphics Cards (GPU)": [
+      "NVIDIA GeForce RTX 4090 & 4080 GPU",
+      "NVIDIA GeForce RTX 4070 & 4060 GPU",
+      "NVIDIA GeForce RTX 3060, 3070 & 3080 GPU",
+      "NVIDIA GeForce GTX 1650 & 1660 Super",
+      "AMD Radeon RX 6600, 6700 & 7800 GPU",
+      "Budget Graphics Cards (2GB / 4GB)"
     ],
-    'Networking': [
-      'Wi-Fi Routers & Mesh Systems',
-      'Network Switches & LAN Cables',
-      'Range Extenders & Repeaters',
-      '4G / 5G Pocket Routers & Modems',
-      'Network Cards & Antennas'
+    "RAM (Memory)": [
+      "4GB & 8GB DDR3 Desktop RAM",
+      "8GB DDR4 3200MHz Gaming RAM",
+      "16GB DDR4 3200MHz Gaming RAM",
+      "32GB DDR4 High-Performance RAM",
+      "16GB DDR5 5600MHz / 6000MHz RAM",
+      "32GB DDR5 Extreme Gaming RAM",
+      "Laptop DDR4 & DDR5 RAM Modules"
     ],
-    'Printers & Scanners': [
-      'Laser & Inkjet Printers',
-      'All-in-One Multifunction Printers',
-      'Barcode & POS Receipt Printers',
-      'Document Scanners',
-      'Printer Inks & Toners'
+    "Internal Storage (SSD & HDD)": [
+      "128GB & 256GB SATA SSD",
+      "512GB NVMe M.2 High-Speed SSD",
+      "1TB NVMe M.2 Gen4 SSD",
+      "2TB NVMe SSD",
+      "1TB & 2TB SATA Desktop HDD",
+      "4TB - 8TB Surveillance & NAS Hard Drives"
     ],
-    'Storage': [
-      'External Hard Drives (HDD)',
-      'External Portable SSDs',
-      'Pen Drives & Flash Drives',
-      'SD & Memory Cards'
+    "Power Supplies & Casings": [
+      "450W - 550W Standard Power Supplies",
+      "650W - 750W 80 Plus Bronze / Gold PSU",
+      "850W - 1000W 80 Plus Gold Modular PSU",
+      "Gaming RGB Casings with Tempered Glass",
+      "Mid-Tower & Full-Tower PC Casings",
+      "Mini-ITX Compact Casings",
+      "120mm ARGB Casing Fans & Fan Hubs",
+      "120mm, 240mm & 360mm Liquid CPU Coolers",
+      "High-Performance Tower Air Coolers",
+      "Thermal Paste & Cooling Accessories"
     ],
-    'Software & Services': [
-      'Operating Systems & Office Software',
-      'Antivirus & Internet Security',
-      'Computer Repair & Maintenance'
+    "Monitors & Displays": [
+      "144Hz / 165Hz / 240Hz Esports Gaming Monitors",
+      "21.5-inch & 22-inch LED Office Monitors",
+      "24-inch IPS Borderless Monitors",
+      "27-inch 2K QHD & 4K UHD Monitors",
+      "Curved Ultrawide & Productivity Monitors",
+      "Portable USB-C Monitors",
+      "Single & Dual Gas-Spring Monitor Desk Arms"
+    ],
+    "Keyboards, Mouse & Peripherals": [
+      "Mechanical Gaming Keyboards (Blue/Red/Brown Switch)",
+      "RGB Wireless & Bluetooth Keyboards",
+      "Standard Office Membrane Keyboards",
+      "Wireless Keyboard & Mouse Combos",
+      "Optical Gaming Mouse with DPI Settings",
+      "Ultra-Lightweight Wireless Gaming Mouse",
+      "Large Extended Desk Mats & Mousepads",
+      "Ergonomic Wrist Rests",
+      "1080p & 4K Streaming Webcams",
+      "USB Studio & Condenser Microphones"
+    ],
+    "Networking & Internet Devices": [
+      "Wi-Fi 6 Gigabit Dual-Band Routers",
+      "High-Speed Wi-Fi 5 AC Routers",
+      "Whole Home Mesh Wi-Fi Systems",
+      "4G & 5G SIM Pocket Routers / Modems",
+      "Wi-Fi Range Extenders & Signal Boosters",
+      "5-Port, 8-Port & 16-Port Gigabit Network Switches",
+      "Cat6 & Cat7 High-Speed LAN Cables",
+      "Optical Fiber ONU & Patch Cords",
+      "USB Wi-Fi Receivers & Bluetooth Dongles"
+    ],
+    "Printers, Scanners & Office Gear": [
+      "Canon MegaTank Ink Tank Color Printers",
+      "Epson EcoTank Color Printers",
+      "HP LaserJet Monochromatic Printers",
+      "All-in-One Multi-Function Printers (Print/Scan/Copy)",
+      "Barcode & Thermal POS Receipt Printers",
+      "Flatbed & Document Scanners",
+      "Original Refill Ink Bottles",
+      "Laser Toner Cartridges"
+    ],
+    "External Storage & Power Backup": [
+      "1TB, 2TB & 4TB External Portable Hard Drives",
+      "External Portable High-Speed SSDs",
+      "32GB, 64GB, 128GB & 256GB USB Flash Drives",
+      "High-Speed SD & MicroSD Cards",
+      "650VA & 1200VA Offline PC UPS",
+      "Online UPS for Servers & Critical Systems",
+      "Voltage Stabilizers",
+      "Laptop Cooling Pads & Ergonomic Stands",
+      "USB-C Multi-Port Hubs & Docking Stations",
+      "Laptop Bags, Sleeves & Backpacks"
+    ],
+    "Software, Windows & Maintenance": [
+      "Windows 10 & 11 Pro Genuine License Keys",
+      "Microsoft Office 365 Genuine Accounts",
+      "Kaspersky, ESET & Norton Internet Security",
+      "Desktop & Laptop Cleaning and Servicing",
+      "Operating System Installation & Driver Setup",
+      "Hard Disk & SSD Data Recovery Services"
     ]
   },
-  Electronics: {
-    'TVs & Video': [
-      'Smart TVs (Android / Google TV)',
-      '4K OLED & QLED TVs',
-      'Standard LED TVs',
-      'Android TV Boxes & Fire Sticks',
-      'Projectors & Screens',
-      'TV Wall Mounts & Remotes'
+  "Electronics": {
+    "Televisions & Smart Video": [
+      "32-inch Smart Android LED TVs",
+      "43-inch 4K Ultra HD Smart TVs",
+      "50-inch & 55-inch 4K Google TVs",
+      "65-inch & 75-inch OLED / QLED Premium TVs",
+      "Sony BRAVIA Smart TVs",
+      "Samsung Crystal UHD & QLED TVs",
+      "LG 4K Smart TVs",
+      "Walton & Singer Smart TVs",
+      "4K Android TV Boxes & Media Players",
+      "Amazon Fire TV Stick & Google Chromecast",
+      "Portable Mini LED Projectors",
+      "Full HD & 4K Home Cinema Projectors",
+      "Projector Screens with Stands",
+      "Heavy-Duty TV Wall Mounts & Brackets",
+      "Universal Smart TV Remote Controls"
     ],
-    'Audio & Sound Systems': [
-      'Bluetooth & Wireless Speakers',
-      'Home Theater & Soundbars',
-      'Sound Systems & Amplifiers',
-      'Microphones & Studio Sound',
-      'Wireless Earbuds & AirPods',
-      'Headphones & DJ Headsets',
-      'Karaoke Speakers'
+    "Audio, Speakers & Sound Systems": [
+      "Portable Bluetooth Wireless Speakers (JBL, Sony, Tribit)",
+      "2.1 & 5.1 Channel Home Theater Sound Systems",
+      "TV Soundbars with Wireless Subwoofers",
+      "High-Bass Party Speakers with RGB Lights",
+      "Wireless Bluetooth Karaoke Microphones",
+      "Studio Condenser Microphones with Arms",
+      "Wireless Lapel & Collar Mics for Vlogging",
+      "DJ Headphones & Sound Mixers",
+      "Audio Amplifiers & Sound Equalizers",
+      "Guitar & Instrument Audio Cables"
     ],
-    'Cameras & Photography': [
-      'DSLR Cameras (Canon, Nikon, etc.)',
-      'Mirrorless Professional Cameras',
-      'Action Cameras & GoPros',
-      'CCTV & Security Cameras',
-      'Drones & Quadcopters',
-      'Camera Lenses & Filters',
-      'Tripods, Monopods & Gimbals',
-      'Camera Lights & Softboxes',
-      'Camera Bags & Batteries'
+    "Cameras & Photography Equipment": [
+      "Canon DSLR Cameras (200D II, 1500D, 80D, 90D)",
+      "Nikon DSLR Cameras (D3500, D5600, D7500)",
+      "Sony Mirrorless Cameras (A6400, A7 III, A7 IV)",
+      "Action Cameras (GoPro Hero 10/11/12, Insta360)",
+      "DJI Camera Drones & Quadcopters",
+      "3-Axis Handheld Camera Gimbals & Stabilizers",
+      "50mm Prime Lenses (f/1.8 Bokeh)",
+      "Wide Angle & Telephoto Zoom Lenses",
+      "Heavy-Duty Aluminum Camera Tripods",
+      "Studio Ring Lights & Softbox Continuous Lighting",
+      "Speedlite Camera Flashes & Transmitters",
+      "CCTV 4-Channel & 8-Channel Complete Camera Sets",
+      "360-Degree Wi-Fi Smart Home Security IP Cameras",
+      "Camera Batteries, Dual Chargers & Memory Cards",
+      "Waterproof Camera Backpacks & Hard Cases"
     ],
-    'Home Appliances': [
-      'Air Conditioners (AC)',
-      'Refrigerators & Fridges',
-      'Deep Freezers',
-      'Washing Machines & Dryers',
-      'Water Purifiers & RO Filters',
-      'Air Coolers',
-      'Geysers & Water Heaters',
-      'Vacuum Cleaners',
-      'Room Heaters'
+    "Air Conditioners (AC) & Cooling": [
+      "1.0 Ton Inverter Split AC",
+      "1.5 Ton Inverter Split AC (Energy Saving)",
+      "2.0 Ton Inverter Split AC",
+      "Gree, General & Daikin Air Conditioners",
+      "Walton, Singer & Haier ACs",
+      "Portable Air Conditioners",
+      "Ceiling-Mounted Cassette ACs",
+      "Commercial Tower ACs",
+      "Evaporative Air Coolers & Room Chillers"
     ],
-    'Kitchen Appliances': [
-      'Microwave & Electric Ovens',
-      'Blenders, Grinders & Juicers',
-      'Rice Cookers & Pressure Cookers',
-      'Gas Stoves & Burners',
-      'Induction & Infrared Cookers',
-      'Air Fryers',
-      'Electric Kettles',
-      'Toasters & Sandwich Makers',
-      'Water Dispensers',
-      'Kitchen Food Processors'
+    "Refrigerators & Freezers": [
+      "Frost & Non-Frost Inverter Refrigerators",
+      "Side-by-Side Double Door Refrigerators",
+      "French Door Luxury Refrigerators",
+      "Deep Freezers & Chest Freezers (100L - 400L)",
+      "Commercial Glass Door Beverage Chillers",
+      "Mini Refrigerators for Bedrooms & Offices"
     ],
-    'Fans & Small Appliances': [
-      'Ceiling, Stand & Table Fans',
-      'Exhaust & Rechargeable Fans',
-      'Dry & Steam Irons',
-      'Sewing Machines',
-      'Insect Killer Lamps'
+    "Washing Machines & Dryers": [
+      "Front-Load Fully Automatic Inverter Washing Machines",
+      "Top-Load Fully Automatic Washing Machines",
+      "Semi-Automatic Twin-Tub Washing Machines",
+      "Electric Clothes Dryers",
+      "Washing Machine Stands with Wheels"
     ],
-    'Power & Solar': [
-      'IPS & Home Inverters',
-      'Generators (Petrol / Diesel)',
-      'Solar Panels & Systems',
-      'Rechargeable Batteries & UPS',
-      'Voltage Stabilizers'
+    "Water Purifiers & Heaters": [
+      "RO (Reverse Osmosis) Multi-Stage Water Purifiers",
+      "UV & Mineral Water Purifiers",
+      "Hot, Cold & Normal Water Dispensers",
+      "Instant Electric Geysers / Water Heaters",
+      "Storage Electric Geysers (30L, 45L, 67L)",
+      "LPG / Natural Gas Water Heaters"
+    ],
+    "Kitchen Appliances": [
+      "Convection Microwave Ovens (Baking & Grilling)",
+      "Solo & Grill Microwave Ovens",
+      "Electric Baking Ovens & OTGs (30L - 60L)",
+      "750W - 1000W Heavy-Duty Blenders & Grinders",
+      "Food Processors, Meat Mincers & Dough Kneaders",
+      "Electric Rice Cookers (1.8L, 2.8L, 3.2L)",
+      "Digital Electric Pressure Cookers",
+      "Automatic Stainless Steel Electric Kettles",
+      "Double Burner Gas Stoves with Glass Tops",
+      "Induction Cookers & Touch Hot Plates",
+      "Infrared Cookers (All Cookware Compatible)",
+      "Air Fryers for Oil-Free Healthy Cooking (4L - 9L)",
+      "2-Slice & 4-Slice Pop-Up Bread Toasters",
+      "Electric Sandwich, Panini & Waffle Makers",
+      "Automatic Roti Makers",
+      "Electric Hand Mixers & Egg Beaters"
+    ],
+    "Fans, Cleaning & Personal Care": [
+      "56-inch High-Speed Ceiling Fans (Havells, BRB, Walton)",
+      "Adjustable Stand & Pedestal Fans",
+      "Desk & Table Fans",
+      "Exhaust Fans for Kitchens & Bathrooms",
+      "Rechargeable Emergency Battery Fans",
+      "Lightweight Dry Electric Irons",
+      "Heavy Steam Irons & Vertical Garment Steamers",
+      "Canister & Upright Wet & Dry Vacuum Cleaners",
+      "Smart Robot Vacuum Cleaners",
+      "Electric Sewing Machines",
+      "Rechargeable Mosquito Bats & Insect Killer Lamps",
+      "Professional Hair Dryers & Straighteners",
+      "Men's Cordless Hair & Beard Trimmers & Shavers",
+      "Rechargeable LED Emergency Lights & Torches"
+    ],
+    "Power, Solar & Generators": [
+      "800VA, 1000VA & 1200VA Pure Sine Wave Home IPS",
+      "1500VA - 2500VA Heavy-Duty IPS & Inverters",
+      "130Ah, 150Ah & 200Ah Tall Tubular IPS Batteries",
+      "Petrol & Octane Portable Silent Generators (1kW - 5kW)",
+      "Diesel Industrial Generators (10kVA - 50kVA)",
+      "Monocrystalline High-Efficiency Solar Panels",
+      "MPPT & PWM Solar Charge Controllers",
+      "Automatic Voltage Stabilizers (for AC & Refrigerators)"
     ]
   },
-  Vehicles: {
-    'Cars': [
-      'Sedan Cars (Toyota, Honda, etc.)',
-      'Hatchback Cars',
-      'SUVs & 4x4 Jeeps',
-      'Crossovers',
-      'Microbuses & Vans',
-      'Hybrid & Electric Cars',
-      'Luxury & Premium Cars'
+  "Vehicles": {
+    "Cars": [
+      "Toyota Allion & Premio",
+      "Toyota Corolla (Axio, Fielder, Altis)",
+      "Toyota Noah, Voxy & Esquire Microbuses",
+      "Toyota HiAce Vans",
+      "Toyota Aqua & Vitz Hybrid Cars",
+      "Toyota Harrier & RAV4 SUVs",
+      "Honda Grace, Civic & Accord",
+      "Honda Vezel Hybrid SUVs",
+      "Nissan X-Trail & Dualis",
+      "Mitsubishi Pajero & Outlander Jeeps",
+      "Hyundai & Kia SUVs & Sedans",
+      "BMW 3-Series, 5-Series & 7-Series",
+      "Mercedes-Benz C-Class & E-Class",
+      "Audi A4 & A6 Luxury Sedans",
+      "Reconditioned Unregistered Japanese Cars",
+      "Second-Hand Used Registered Cars",
+      "Vintage & Classic Antique Cars"
     ],
-    'Motorcycles': [
-      'Standard Commuter Bikes',
-      'Sports Bikes',
-      'Cruiser & Cafe Racers',
-      'Scooters & Mopeds',
-      'Off-Road & Dirt Bikes',
-      'Second-Hand Used Bikes'
+    "Motorcycles & Scooters": [
+      "Yamaha R15 (V3 & V4) Sports Bikes",
+      "Yamaha FZ-S (V2 & V3) & MT-15",
+      "Suzuki Gixxer & Gixxer SF (FI / ABS)",
+      "Suzuki GSX-R 150 Dual Channel ABS",
+      "Honda CB Hornet 160R & XBlade",
+      "Honda CBR 150R",
+      "Bajaj Pulsar (150cc, 160cc, 220F, NS160)",
+      "Bajaj Discover (110cc, 125cc) & Platina 100",
+      "TVS Apache RTR 160 4V & 2V",
+      "TVS Stryker 125cc & Metro 100cc",
+      "Royal Enfield Classic 350 & Bullet 350",
+      "Yamaha RayZR, TVS Ntorq & Honda Activa Scooters",
+      "Cruiser & Cafe Racer Modified Bikes",
+      "Off-Road & Dirt Trail Bikes",
+      "Second-Hand Used Registered Motorcycles"
     ],
-    'Electric Vehicles': [
-      'Electric Bikes (E-Bikes)',
-      'Electric Scooters',
-      'Electric Easy Bikes',
-      'Electric Cycles'
+    "Electric Vehicles (EV)": [
+      "Electric Bikes & Commuters",
+      "Electric High-Speed Scooters",
+      "Electric Cycles (Pedal Assist E-Bikes)",
+      "Electric Easy Bikes & Auto Rickshaws"
     ],
-    'Bicycles': [
-      'Mountain Bikes (MTB)',
-      'Road & Racing Bikes',
-      'Hybrid & City Bikes',
-      'Kids & BMX Bicycles',
-      'Cycle Helmets & Accessories'
+    "Bicycles": [
+      "Mountain Bikes (MTB - 26\", 27.5\", 29\")",
+      "Road & Racing Bicycles",
+      "Hybrid & City Commuter Bicycles",
+      "Foldable Portable Bicycles",
+      "Kids Bicycles (12\", 16\", 20\")",
+      "BMX Stunt Bicycles",
+      "Cycle Helmets, Gloves & Riding Gear",
+      "Rechargeable Cycle Headlights & Horns",
+      "Anti-Theft Cable & Number Locks",
+      "Digital Speedometers & Portable Air Pumps"
     ],
-    'Commercial Vehicles': [
-      'Pickups & Mini Trucks',
-      'Medium & Heavy Trucks',
-      'Buses & Minibuses',
-      'Auto Rickshaws & CNG',
-      'Covered Vans',
-      'Tractors & Harvesters'
+    "Commercial Vehicles": [
+      "1 Ton & 1.5 Ton Pickup Vans (Tata, Mahindra)",
+      "Medium & Heavy Freight Trucks",
+      "Covered Vans for Deliveries",
+      "Passenger Minibuses & Intercity Buses",
+      "Auto Rickshaws & Green CNGs",
+      "Agricultural Tractors & Power Tillers",
+      "Emergency Ambulances"
     ],
-    'Water Transport': [
-      'Speedboats',
-      'Engine Boats & Trawlers',
-      'Cargo & Passenger Boats',
-      'Jet Skis'
+    "Water Transport": [
+      "Fiberglass Speedboats",
+      "Outboard Marine Motors (Yamaha, Suzuki)",
+      "Engine Trawlers & Cargo Boats",
+      "Passenger Launches & Jet Skis"
     ],
-    'Spare Parts & Accessories': [
-      'Car & Bike Batteries',
-      'Tyres & Wheels',
-      'Engine Parts & Engine Oils',
-      'Helmets & Riding Gear',
-      'Car Audio & Android Displays',
-      'Car LED & Fog Lights',
-      'Seat Covers & Floor Mats',
-      'GPS Trackers & Security Systems'
+    "Auto Parts & Accessories": [
+      "Car & Motorcycle Batteries (Exide, Hamko, Lucas)",
+      "Tubeless Car Tyres (Michelin, Yokohama, Bridgestone)",
+      "Motorcycle Tyres (Pirelli, MRF, CEAT, Maxxis)",
+      "Alloy Rims & Wheel Accessories",
+      "Synthetic Engine Oils (Motul, Mobil, Shell, Liqui Moly)",
+      "DOT & ECE Certified Riding Helmets",
+      "Armored Riding Jackets, Gloves & Knee Guards",
+      "Android Touch Displays & GPS Navigation Systems",
+      "Dashcams & Night-Vision Reverse Cameras",
+      "Car Subwoofers, Speakers & Amplifiers",
+      "High-Power LED Headlight Bulbs & Fog Lights",
+      "Custom Leather Seat Covers",
+      "7D Waterproof Heavy-Duty Floor Mats",
+      "GPS Vehicle Trackers with Remote Engine Lock",
+      "Motorcycle Anti-Theft Alarm Disc Locks",
+      "Waterproof Full Body Car & Bike Covers",
+      "Car Wash Shampoos, Polishes & Scratch Removers"
     ]
   },
-  Property: {
-    'Apartments & Flats': [
-      'Apartments for Sale',
-      'Apartments for Rent',
-      'Luxury Penthouses',
-      'Studio Apartments',
-      'Duplex Flats'
+  "Property": {
+    "Apartments & Flats for Sale": [
+      "2-Bedroom Ready Flats for Sale",
+      "3-Bedroom Ready Flats for Sale",
+      "4-Bedroom Luxury Flats for Sale",
+      "Under-Construction Flats for Sale",
+      "Duplex Luxury Apartments for Sale",
+      "Exclusive Penthouses for Sale"
     ],
-    'Land & Plots': [
-      'Residential Land for Sale',
-      'Commercial Land for Sale',
-      'Agricultural Land',
-      'Industrial Land & Plots'
+    "Apartments & Flats for Rent": [
+      "2-Bedroom Family Flats for Rent",
+      "3-Bedroom Family Flats for Rent",
+      "4-Bedroom Spacious Flats for Rent",
+      "Furnished Serviced Apartments for Rent",
+      "Bachelor-Friendly Flats for Rent",
+      "Studio Apartments for Rent"
     ],
-    'Houses & Buildings': [
-      'Houses & Villas for Sale',
-      'Complete Buildings for Sale',
-      'Houses for Rent'
+    "Land & Plots": [
+      "Residential Land & Plots for Sale",
+      "Commercial Corner Plots for Sale",
+      "Agricultural & Farm Land for Sale",
+      "Industrial Land & Factory Plots for Sale",
+      "Rajuk & Purbachal Approved Plots",
+      "Housing Project Plots with Easy Installments"
     ],
-    'Commercial Property': [
-      'Office Space for Rent',
-      'Office Space for Sale',
-      'Shops & Retail Space for Rent',
-      'Shops & Showrooms for Sale',
-      'Warehouses & Godowns',
-      'Factory Spaces'
+    "Houses & Buildings": [
+      "Complete Independent Houses for Sale",
+      "Multi-Story Commercial / Residential Buildings for Sale",
+      "Luxury Villas & Farmhouses",
+      "Independent Houses for Rent"
     ],
-    'Rooms & Shared Living': [
-      'Single Room for Rent',
-      'Bachelor Mess & Sublet',
-      'Family Sublet Rooms',
-      'Hostels & PG Accommodations',
-      'Garage & Parking Spaces'
+    "Commercial Property": [
+      "Ready Office Spaces for Rent",
+      "Commercial Office Floors for Sale",
+      "Market Retail Shops & Showrooms for Rent",
+      "Commercial Shops for Sale",
+      "Warehouses & Storage Godowns for Rent",
+      "Garments & Factory Floors for Rent"
+    ],
+    "Rooms & Shared Living": [
+      "Single Room for Rent (Bachelor / Student)",
+      "Master Bedroom Sublet for Rent",
+      "Family Sublet Rooms for Rent",
+      "Male Bachelor Mess Seats",
+      "Female Bachelor Mess Seats",
+      "Student Hostels & PG Accommodations",
+      "Garage & Covered Car Parking Spaces for Rent"
     ]
   },
-  Jobs: {
-    'IT & Telecom': [
-      'Software & Web Developers',
-      'Mobile App Developers',
-      'UI / UX & Graphic Designers',
-      'Data Entry Operators',
-      'Network & Hardware Engineers',
-      'QA & Software Testers',
-      'SEO & Digital Marketers'
+  "Jobs": {
+    "IT & Software Development": [
+      "Frontend Web Developers (React, Next.js, Vue)",
+      "Backend Developers (Node.js, Python, PHP, Java)",
+      "Full-Stack Web Developers",
+      "Mobile App Developers (Flutter, Android, iOS)",
+      "UI / UX & Product Designers",
+      "Graphic Designers & Logo Designers",
+      "Video Editors & 2D/3D Motion Animators",
+      "Software Quality Assurance (SQA) & Testers",
+      "Database Administrators & DevOps Engineers",
+      "Network & System Administrators"
     ],
-    'Sales & Marketing': [
-      'Field Sales Executives',
-      'Showroom Sales Persons',
-      'Telemarketing & Call Center Reps',
-      'Marketing Managers',
-      'Business Development Executives'
+    "Sales & Marketing": [
+      "Field Sales Representatives (FSR)",
+      "Showroom & Retail Sales Executives",
+      "Corporate Sales Managers",
+      "Digital Marketing Specialists",
+      "Social Media Marketing Managers",
+      "Search Engine Optimization (SEO) Specialists",
+      "Business Development Executives (BDE)",
+      "Brand Ambassadors & Promoters"
     ],
-    'Customer Service': [
-      'Customer Care Executives',
-      'Call Center Agents',
-      'Receptionists & Front Desk',
-      'Help Desk Executives'
+    "Customer Support & Telemarketing": [
+      "Call Center Customer Support Agents",
+      "Inbound & Outbound Telemarketers",
+      "Live Chat & Social Media Support Specialists",
+      "Technical Support Executives",
+      "Front Desk Officers & Receptionists"
     ],
-    'Office & Accounts': [
-      'Office Assistants & Peons',
-      'HR & Admin Officers',
-      'Accountants & Cashiers',
-      'Data Entry & Clerical'
+    "Office, Accounts & Administration": [
+      "Office Assistants, Peons & Messengers",
+      "Human Resources (HR) & Recruitment Officers",
+      "Administrative Officers & Coordinators",
+      "Accountants & Financial Auditors",
+      "Billing Clerks & Cashiers",
+      "Data Entry Operators & Computer Typists",
+      "Personal Assistants (PA) & Secretaries"
     ],
-    'Education & Training': [
-      'Home Tutors & Teachers',
-      'School & College Teachers',
-      'Coaching Instructors',
-      'Language Trainers'
+    "Education, Teaching & Training": [
+      "Home Tutors (Class 1 to 12 - All Subjects)",
+      "English Medium Curriculum Tutors",
+      "Primary & High School Teachers",
+      "College Lecturers & University Professors",
+      "Holy Quran & Arabic Tutors",
+      "Admission & Academic Coaching Instructors",
+      "IELTS & Spoken English Trainers",
+      "Computer & Coding Instructors"
     ],
-    'Driver & Transport': [
-      'Bike Riders & Food Delivery',
-      'Parcel Delivery Boys',
-      'Private & Office Car Drivers',
-      'Truck & Heavy Vehicle Drivers'
+    "Delivery, Driver & Logistics": [
+      "Food & Parcel Delivery Bike Riders",
+      "E-commerce Courier Delivery Boys",
+      "Private Family Car Drivers",
+      "Corporate Office Car Drivers",
+      "Heavy Truck & Covered Van Drivers",
+      "Warehouse Workers & Loaders"
     ],
-    'Garments & Textile': [
-      'Garments Machine Operators',
-      'Quality Control (QC) Inspectors',
-      'Merchandisers',
-      'Factory Labor & Production'
+    "Garments, Textile & Manufacturing": [
+      "Garments Sewing Machine Operators",
+      "Quality Control (QC) & Quality Assurance (QA)",
+      "Apparel Merchandisers & Assistants",
+      "Pattern Makers, Cutting Masters & Tailors",
+      "Factory Supervisors & Line In-charge",
+      "General Factory Production Labor"
     ],
-    'Technical & Hospitality': [
-      'Electricians & AC Technicians',
-      'Plumbers & Mechanics',
-      'Chefs & Restaurant Cooks',
-      'Waiters & Service Staff',
-      'Security Guards'
+    "Hospitality, Hotel & Restaurant": [
+      "Restaurant Head Chefs & Main Cooks",
+      "Fast Food, Burger & Pizza Chefs",
+      "Waiters, Stewards & Dining Staff",
+      "Baristas & Coffee Makers",
+      "Hotel Room Attendants & Housekeeping Staff"
+    ],
+    "Technical, Trade & Security": [
+      "Electricians & House Wiring Technicians",
+      "Split & Central AC Repair Technicians",
+      "Plumbers & Pipe Repair Technicians",
+      "Automobile Car & Bike Mechanics",
+      "Carpenters & Furniture Woodworkers",
+      "Security Guards (Day & Night Shift)",
+      "CCTV, Fingerprint & Access Control Technicians"
     ]
   },
-  'অন্যান্য': {
-    'Home & Living': [
-      'Beds, Mattresses & Wardrobes',
-      'Sofas & Couches',
-      'Dining Tables & Chairs',
-      'Office & Study Desks',
-      'Showcases & Bookshelves',
-      'Curtains, Carpets & Rugs',
-      'Bedding & Blankets',
-      'Home Decor & Lighting',
-      'Kitchenware & Dinner Sets'
+  "অন্যান্য": {
+    "Home & Living (Furniture & Decor)": [
+      "King & Queen Size Wooden Beds",
+      "Orthopedic & Spring Mattresses",
+      "4-Door & 3-Door Wooden & Steel Wardrobes",
+      "Modern 3+2+1 Sofa Sets & Couch",
+      "L-Shaped Sectional Corner Sofas",
+      "Solid Wood Divans & Daybeds",
+      "6-Seater & 4-Seater Dining Table Sets",
+      "Computer & Ergonomic Study Desks",
+      "Adjustable Ergonomic Office Chairs",
+      "Living Room TV Cabinets & Wall Showcases",
+      "Wooden & Metal Bookshelves",
+      "Modern Dressing Tables with Mirrors",
+      "Wooden & Metal Shoe Racks",
+      "Luxury Window Curtains & Drapery Rods",
+      "Persian & Turkish Floor Carpets & Rugs",
+      "100% Cotton Bed Sheets & Comforters",
+      "Modern Ceiling Chandeliers & Pendant Lamps",
+      "Wall Art, Islamic Calligraphy & Canvas Paintings",
+      "Non-Stick Marble Cookware & Fry Pans",
+      "Opal Glass & Ceramic Dinner Sets",
+      "Bathroom Vanities, Mirrors & Fixtures"
     ],
-    'Fashion & Lifestyle': [
-      "Men's Clothing (Panjabi, Shirts, Pants)",
-      "Women's Clothing (Sarees, Three Pieces)",
-      "Shoes, Sneakers & Sandals",
-      "Watches & Sunglasses",
-      "Bags, Backpacks & Luggage",
-      "Jewelry & Ornaments",
-      "Cosmetics & Skincare",
-      "Perfumes & Attar"
+    "Fashion & Lifestyle": [
+      "Men's Exclusive Cotton & Silk Panjabis",
+      "Men's Casual & Formal Full-Sleeve Shirts",
+      "Men's Denim Jeans & Stretchable Chino Pants",
+      "Men's Winter Leather Jackets & Hoodies",
+      "Women's Jamdani, Katan & Silk Sarees",
+      "Women's Cotton Three Pieces & Salwar Kameez",
+      "Women's Designer Kurtis, Tops & Gowns",
+      "Dubai Borka, Abayas & Premium Hijabs",
+      "Men's Running Sneakers & Sports Shoes",
+      "Men's Pure Leather Formal Shoes",
+      "Men's Leather Sandals & Loafers",
+      "Women's Heels, Flats & Party Shoes",
+      "Luxury Analog & Quartz Wristwatches",
+      "Polarized & UV Protection Sunglasses",
+      "Men's Genuine Leather Wallets & Belts",
+      "Travel Luggage, Trolley Bags & Duffle Bags",
+      "School, College & Laptop Backpacks",
+      "22K Gold & Diamond Jewelry",
+      "Silver & Premium Imitation Jewelry",
+      "Face Wash, Serums & Organic Skincare",
+      "Lipsticks, Foundation & Makeup Kits",
+      "Imported Original Perfumes & Alcohol-Free Attars"
     ],
-    'Sports & Fitness': [
-      'Cricket Bats, Balls & Kits',
-      'Footballs & Boots',
-      'Badminton Rackets & Shuttles',
-      'Gym Equipment & Dumbbells',
-      'Jerseys & Sportswear',
-      'Indoor Games & Board Games'
+    "Sports & Fitness": [
+      "English Willow Grade-1 Cricket Bats",
+      "Kashmir Willow Tennis & Tape Cricket Bats",
+      "Cricket Leather Balls, Stumps & Practice Nets",
+      "Leg Guards, Batting Gloves & Helmets",
+      "FIFA Approved Match Footballs",
+      "Football Studs & Cleats Shoes",
+      "Carbon Fiber Professional Badminton Rackets",
+      "Yonex Feather & Nylon Shuttlecocks",
+      "Rubber Coated Gym Dumbbells & Barbells",
+      "Multi-Angle Adjustable Gym Weight Benches",
+      "Motorized Incline Home Treadmills",
+      "Indoor Magnetic Fitness Exercise Bikes",
+      "Original Club Cricket & Football Jerseys",
+      "Tournament Championship Carrom Boards & Coins",
+      "Wooden Chess Sets & Family Board Games",
+      "Table Tennis Bats, Nets & High-Bounce Balls"
     ],
-    'Hobbies & Books': [
-      'Musical Instruments (Guitars, Keyboards)',
-      'Academic & Text Books',
-      'Novels & Story Books',
-      'Islamic & Religious Books',
-      'Video Games & Gaming Consoles',
-      'Toys & Action Figures'
+    "Hobbies, Books & Music": [
+      "Acoustic Wooden Guitars with Gig Bags",
+      "Solid-Body Electric Guitars & Mini Amplifiers",
+      "61-Key & 88-Key Electronic Music Keyboards / Pianos",
+      "Bamboo Flutes, Violins & Traditional Harmoniums",
+      "NCTB School, College & Madrasah Textbooks",
+      "Medical, Engineering & IBA Admission Guidebooks",
+      "Bangla Literature, Fiction, Thriller & Novels",
+      "Tafseer, Hadith & Islamic Educational Books",
+      "English Bestseller & Self-Development Books",
+      "Sony PlayStation (PS4 & PS5) Consoles & Games",
+      "Microsoft Xbox Series X / Series S Consoles",
+      "Nintendo Switch OLED Gaming Consoles",
+      "Collectible Die-Cast Scale Cars & Action Figures"
     ],
-    'Kids & Baby': [
-      'Baby Clothing & Shoes',
-      'Baby Strollers & Walkers',
-      'Baby Cribs & Cots',
-      'Diapers & Baby Care',
-      'Kids Toys & Ride-on Cars'
+    "Kids & Baby Products": [
+      "Newborn Baby Cotton Clothing Sets",
+      "Baby Rompers, Dungarees & Party Frocks",
+      "Foldable Baby Strollers & Lightweight Prams",
+      "Musical Baby Walkers with Safety Wheels",
+      "Wooden Baby Cots, Bassinets & Cribs",
+      "Adjustable Baby Feeding High Chairs",
+      "Disposable Baby Diapers & Soft Wet Wipes",
+      "Baby Skin Care Lotions, Powders & Bath Tubs",
+      "Battery-Operated Ride-On Electric Jeeps & Cars",
+      "Educational Wooden Puzzles & Building Blocks",
+      "Soft Plush Teddy Bears & Cartoon Dolls"
     ],
-    'Pets & Animals': [
-      'Cats & Kittens',
-      'Dogs & Puppies',
-      'Pet Birds & Parrots',
-      'Aquarium Fish & Tanks',
-      'Pet Food & Accessories',
-      'Cows, Goats & Livestock',
-      'Pigeons & Poultry'
+    "Pets & Animals": [
+      "Persian, Siamese & Local Kittens",
+      "German Shepherd, Golden Retriever & Puppies",
+      "Siraji, Lotan & Fancy Pigeons",
+      "Lovebirds, Cockatiels, Budgerigars & Macaws",
+      "Glass Aquarium Tanks, Cabinets & Hoods",
+      "Aquarium Power Filters, Air Pumps & LED Lights",
+      "Exotic Goldfish, Guppies & Tropical Aquarium Fish",
+      "Premium Cat Food (Drools, Me-O, Reflex, Royal Canin)",
+      "High-Protein Dog Food & Crunchy Treats",
+      "Clean Bird Seeds, Millet & Mineral Blocks",
+      "Spacious Pet Travel Carriers & Metal Cages",
+      "Pet Shampoos, Brushes & Neck Belts",
+      "Qurbani Cattle, Bulls & Dairy Cows",
+      "Khasi, Goats & Sheep",
+      "Desi Roosters, Hens, Ducks & Quails"
     ],
-    'Agriculture': [
-      'Seeds, Plants & Nurseries',
-      'Fertilizers & Pesticides',
-      'Agricultural Tools & Machines',
-      'Poultry & Fish Feed'
+    "Agriculture & Farming": [
+      "High-Yield Hybrid Vegetable & Crop Seeds",
+      "Fruiting Plant Seedlings & Nursery Flower Trees",
+      "Bonsai, Indoor Plants & Ceramic Pots",
+      "100% Organic Vermicompost & Soil Conditioners",
+      "DAP, Urea & Potash Agricultural Fertilizers",
+      "Plant Insecticides, Fungicides & Battery Sprayers",
+      "Irrigation Water Pumps, Pipes & Drip Systems",
+      "Mini Power Tillers & Rice Harvesters",
+      "Nutritious Poultry Feed & Fish Floating Feed",
+      "High-Calcium Dairy Cattle & Goat Feed"
     ],
-    'Business & Industry': [
-      'Industrial Machinery & Tools',
-      'Raw Materials & Chemicals',
-      'Office Stationery & Supplies',
-      'Wholesale & Bulk Products'
+    "Business & Industrial": [
+      "Automatic Packaging, Sealing & Shrink Machines",
+      "Industrial Plastic, Injection & Paper Machinery",
+      "Commercial Screen & Offset Printing Presses",
+      "Industrial Raw Chemical Materials",
+      "Wholesale Garments Fabrics, Yarns & Threads",
+      "Bulk Office A4 Paper, Files & Stationery",
+      "Commercial Glass Door Deep Freezers & Chillers",
+      "POS Touch Screen Billing Machines & Barcode Scanners"
     ],
-    'Services': [
-      'Electronics & AC Servicing',
-      'Electrician & Plumbing Services',
-      'Home Cleaning & Shifting',
-      'Photography & Video Services',
-      'Event Management & Catering',
-      'Tutoring & Training Services'
+    "Services": [
+      "AC Master Servicing, Gas Charging & Shifting",
+      "Refrigerator & Washing Machine Fast Home Repair",
+      "Certified Electrician & Complete House Wiring Services",
+      "Plumbing Pipe Fitting & Sanitary Leakage Repair",
+      "Home, Apartment & Office Deep Cleaning Services",
+      "Professional House Shifting, Furniture & Pickup Movers",
+      "Wedding Photography, Cinematic Video & Drone Shoots",
+      "Birthday, Wedding & Corporate Stage Event Decor",
+      "Professional Catering, Chef & Serving Staff",
+      "Air Ticket Booking, Hotel Reservation & Visa Assistance",
+      "Business Trade License, VAT & Legal Advisory Services",
+      "Home & Online Tutoring Provider Services"
     ]
   }
 };

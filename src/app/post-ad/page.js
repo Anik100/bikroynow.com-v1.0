@@ -670,12 +670,7 @@ export default function PostAd() {
                         className={styles.mainCatItem} 
                         onClick={() => {
                           setSelectedMainCategory(main);
-                          if (CATEGORIES[main]) {
-                            const firstSub = Object.keys(CATEGORIES[main])[0];
-                            setActiveSub(firstSub);
-                          } else {
-                            setActiveSub(null);
-                          }
+                          setActiveSub(null);
                         }}
                       >
                         <div className={styles.iconBox} style={{ background: config.gradient }}>

@@ -369,12 +369,7 @@ export default function Home() {
                   onClick={() => {
                     setActiveCategory(cat.name);
                     setSelectedCategoryFilter(cat.name);
-                    if (CATEGORIES[cat.name]) {
-                      const firstSub = Object.keys(CATEGORIES[cat.name])[0];
-                      setActiveSub(firstSub);
-                    } else {
-                      setActiveSub(null);
-                    }
+                    setActiveSub(null);
                     setShowCategoryModal(true);
                   }}
                 >
