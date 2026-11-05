@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000tte4",
     "emsc_20261027_0000026",
     "emsc_20261027_0000050",
     "us7000tteg",
@@ -499,7 +498,8 @@
     "emsc_20261104_0000352",
     "emsc_20261104_0000274",
     "emsc_20261105_0000124",
-    "us7000tw76"
+    "us7000tw76",
+    "emsc_20261105_0000131"
   ],
   "replied_comment_ids": [
     "122120741193450344_1863232818365307",
@@ -652,14 +652,6 @@
     "122113907097450344_1060066650173420"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261103_0000040",
-      "mag": 4.9,
-      "place": "OFF EAST COAST OF KAMCHATKA",
-      "latitude": 52.9868,
-      "longitude": 159.7868,
-      "epoch_ms": 1793675589760
-    },
     {
       "id": "emsc_20261103_0000048",
       "mag": 4.1,
@@ -1051,6 +1043,14 @@
       "latitude": -3.4817,
       "longitude": 32.0862,
       "epoch_ms": 1793870553660
+    },
+    {
+      "id": "emsc_20261105_0000131",
+      "mag": 4.3,
+      "place": "SOUTHWEST OF SUMATRA, INDONESIA",
+      "latitude": -6.68,
+      "longitude": 102.58,
+      "epoch_ms": 1793872077000
     }
   ]
 }
