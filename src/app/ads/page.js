@@ -8,7 +8,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import { getRelativeTime, formatPrice, getPromotionBadgeText, sortPremiumListings } from '../../lib/utils';
 import { LOCATIONS, CATEGORIES } from '../../lib/constants';
 import styles from './ads.module.css';
-import { Filter, ChevronDown, X, List, Grid, Heart } from 'lucide-react';
+import { Filter, ChevronDown, X, List, Grid, Heart, Search } from 'lucide-react';
 
 const CAT_ICONS = {
   Electronics: '⚡',
@@ -115,6 +115,9 @@ function AdsContent() {
   const [showFilters, setShowFilters] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [filterCatSearch, setFilterCatSearch] = useState('');
+  const [filterCustomInput, setFilterCustomInput] = useState('');
+  const [showFilterOther, setShowFilterOther] = useState(false);
   
   const [locationSearch, setLocationSearch] = useState('');
   const [selectedDivision, setSelectedDivision] = useState(null);
@@ -880,7 +883,11 @@ function AdsContent() {
                   <button
                     type="button"
                     className={styles.backBtn}
-                    onClick={() => setSelectedMainCategory(null)}
+                    onClick={() => {
+                      setSelectedMainCategory(null);
+                      setFilterCatSearch('');
+                      setShowFilterOther(false);
+                    }}
                   >
                     ← {lang === 'bn' ? 'ফিরে যান' : 'Back'}
                   </button>
@@ -897,32 +904,171 @@ function AdsContent() {
                         setSelectedCategory(selectedMainCategory); 
                         setShowCategoryModal(false); 
                         setSelectedMainCategory(null);
+                        setFilterCatSearch('');
+                        setShowFilterOther(false);
                       }} 
                     />
                     <span className={styles.radioCircle}></span>
                   </label>
 
-                  {Object.entries(CATEGORIES[selectedMainCategory]).map(([sub, items]) => (
-                    <div key={sub} style={{ padding: '0.2rem 0' }}>
-                      <div className={styles.subCatHeader}>{t(sub)}</div>
-                      {items.map(item => (
-                        <label key={item} className={styles.radioItem}>
-                          <span style={{ paddingLeft: '0.5rem' }}>{t(item)}</span>
-                          <input 
-                            type="radio" 
-                            name="fcat" 
-                            checked={selectedCategory === item}
-                            onChange={() => { 
-                              setSelectedCategory(item); 
-                              setShowCategoryModal(false); 
-                              setSelectedMainCategory(null);
-                            }} 
-                          />
-                          <span className={styles.radioCircle}></span>
-                        </label>
-                      ))}
+                  {/* Category Filter Search Bar */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    background: '#f8fafc',
+                    border: '1.5px solid #cbd5e1',
+                    borderRadius: '10px',
+                    padding: '0.45rem 0.75rem',
+                    margin: '0.5rem 0',
+                    gap: '0.4rem'
+                  }}>
+                    <Search size={16} color="#64748b" />
+                    <input 
+                      type="text" 
+                      placeholder={lang === 'bn' ? `${t(selectedMainCategory)}-এ খুঁজুন...` : `Search in ${t(selectedMainCategory)}...`}
+                      value={filterCatSearch}
+                      onChange={(e) => setFilterCatSearch(e.target.value)}
+                      style={{
+                        border: 'none',
+                        outline: 'none',
+                        background: 'transparent',
+                        width: '100%',
+                        fontSize: '0.86rem',
+                        fontFamily: 'inherit'
+                      }}
+                    />
+                    {filterCatSearch && (
+                      <button 
+                        type="button" 
+                        onClick={() => setFilterCatSearch('')}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#64748b',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          padding: '0 4px'
+                        }}
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+
+                  {CATEGORIES[selectedMainCategory] && Object.entries(CATEGORIES[selectedMainCategory])
+                    .filter(([sub, items]) => {
+                      if (!filterCatSearch.trim()) return true;
+                      const q = filterCatSearch.toLowerCase().trim();
+                      const matchSub = sub.toLowerCase().includes(q) || (t(sub) && t(sub).toLowerCase().includes(q));
+                      const matchItem = items.some(item => item.toLowerCase().includes(q) || (t(item) && t(item).toLowerCase().includes(q)));
+                      return matchSub || matchItem;
+                    })
+                    .map(([sub, items]) => {
+                      const q = filterCatSearch.toLowerCase().trim();
+                      const filteredItems = q 
+                        ? items.filter(item => item.toLowerCase().includes(q) || (t(item) && t(item).toLowerCase().includes(q)) || sub.toLowerCase().includes(q) || (t(sub) && t(sub).toLowerCase().includes(q)))
+                        : items;
+
+                      return (
+                        <div key={sub} style={{ padding: '0.2rem 0' }}>
+                          <div className={styles.subCatHeader}>
+                            {t(sub)}
+                            {q && (
+                              <span style={{ fontSize: '0.75rem', color: '#008b5e', fontWeight: 700, marginLeft: '6px' }}>
+                                ({filteredItems.length})
+                              </span>
+                            )}
+                          </div>
+                          {filteredItems.map(item => (
+                            <label key={item} className={styles.radioItem}>
+                              <span style={{ paddingLeft: '0.5rem' }}>{t(item)}</span>
+                              <input 
+                                type="radio" 
+                                name="fcat" 
+                                checked={selectedCategory === item}
+                                onChange={() => { 
+                                  setSelectedCategory(item); 
+                                  setShowCategoryModal(false); 
+                                  setSelectedMainCategory(null);
+                                  setFilterCatSearch('');
+                                  setShowFilterOther(false);
+                                }} 
+                              />
+                              <span className={styles.radioCircle}></span>
+                            </label>
+                          ))}
+                        </div>
+                      );
+                    })}
+
+                  {/* Other / Custom item filter card */}
+                  <div style={{
+                    margin: '0.65rem 0',
+                    padding: '0.75rem',
+                    border: '1.5px dashed #008b5e',
+                    borderRadius: '10px',
+                    background: '#f0fdf4'
+                  }}>
+                    <div 
+                      onClick={() => setShowFilterOther(!showFilterOther)}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                        fontWeight: 800,
+                        fontSize: '0.88rem',
+                        color: '#008b5e'
+                      }}
+                    >
+                      <span>🏷️ {lang === 'bn' ? 'অন্যান্য (কাস্টম ফিল্টার)' : 'Other (Custom Filter)'}</span>
+                      <span style={{ fontSize: '0.78rem' }}>{showFilterOther ? '▲' : '▼'}</span>
                     </div>
-                  ))}
+
+                    {showFilterOther && (
+                      <div style={{ marginTop: '0.65rem', display: 'flex', gap: '0.4rem' }}>
+                        <input 
+                          type="text" 
+                          placeholder={lang === 'bn' ? 'নির্দিষ্ট পণ্য লিখে ফিল্টার করুন...' : 'Type specific item...'}
+                          value={filterCustomInput}
+                          onChange={(e) => setFilterCustomInput(e.target.value)}
+                          style={{
+                            flex: 1,
+                            padding: '0.45rem 0.65rem',
+                            border: '1.5px solid #cbd5e1',
+                            borderRadius: '8px',
+                            fontSize: '0.84rem'
+                          }}
+                        />
+                        <button 
+                          type="button" 
+                          onClick={() => {
+                            const val = filterCustomInput.trim();
+                            if (val) {
+                              setSelectedCategory(val);
+                              setShowCategoryModal(false);
+                              setSelectedMainCategory(null);
+                              setFilterCustomInput('');
+                              setShowFilterOther(false);
+                              setFilterCatSearch('');
+                            }
+                          }}
+                          style={{
+                            background: '#008b5e',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '8px',
+                            padding: '0.45rem 0.85rem',
+                            fontWeight: 700,
+                            fontSize: '0.82rem',
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {lang === 'bn' ? 'প্রয়োগ' : 'Apply'}
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </>
               )}
             </div>
