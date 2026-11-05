@@ -558,10 +558,10 @@
 
 .modalBackdrop {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
   background: rgba(15, 23, 42, 0.65);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
@@ -570,7 +570,9 @@
   justify-content: center;
   z-index: 99999;
   padding: 1rem;
+  box-sizing: border-box;
   animation: fadeInModal 0.2s ease-out forwards;
+  overscroll-behavior: contain;
 }
 
 .modalBox {
@@ -582,6 +584,11 @@
   box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.3), 0 0 1px rgba(0, 0, 0, 0.1);
   text-align: center;
   animation: scaleUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-sizing: border-box;
+  max-height: calc(100dvh - 2rem);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: auto;
 }
 
 .modalIconWrapper {
@@ -701,5 +708,88 @@
 @media (max-width: 768px) {
   .rowActionBtns {
     display: none !important;
+  }
+}
+
+
+.modalBlockBtn {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  color: #dc2626;
+  font-size: 0.88rem;
+  font-weight: 750;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.modalBlockBtn:hover:not(:disabled) {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.modalBlockBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .modalBackdrop {
+    padding: 0.75rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modalBox {
+    padding: 1.25rem 1.1rem;
+    border-radius: 20px;
+    max-height: calc(100dvh - 1.5rem);
+    margin: auto;
+  }
+
+  .modalIconWrapper {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 0.65rem;
+  }
+
+  .modalTitle {
+    font-size: 1.12rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .modalDescription {
+    font-size: 0.84rem;
+    line-height: 1.35;
+    margin-bottom: 0.75rem;
+  }
+
+  .modalChatPreview {
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.85rem;
+    border-radius: 12px;
+  }
+
+  .modalActions {
+    gap: 0.5rem;
+  }
+
+  .modalCancelBtn,
+  .modalDeleteBtn {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.86rem;
+    border-radius: 10px;
+  }
+
+  .modalBlockBtn {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.84rem;
+    border-radius: 10px;
   }
 }

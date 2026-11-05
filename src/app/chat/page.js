@@ -804,21 +804,7 @@ export default function ChatListPage() {
                 type="button"
                 onClick={handleBlockFromList}
                 disabled={isDeleting}
-                style={{
-                  background: '#fef2f2',
-                  border: '1px solid #fecaca',
-                  borderRadius: '12px',
-                  padding: '0.65rem 1rem',
-                  color: '#dc2626',
-                  fontSize: '0.88rem',
-                  fontWeight: 750,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.45rem',
-                  cursor: 'pointer',
-                  transition: 'background 0.2s ease'
-                }}
+                className={styles.modalBlockBtn}
               >
                 <ShieldAlert size={16} color="#dc2626" />
                 <span>{lang === 'bn' ? 'ব্যবহারকারীকে ব্লক ও ডিলিট করুন' : 'Block & Delete'}</span>
@@ -830,3 +816,4 @@ export default function ChatListPage() {
     </div>
   );
 }
+
