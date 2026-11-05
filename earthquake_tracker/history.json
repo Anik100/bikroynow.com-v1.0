@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261026_0000280",
     "us7000ttci",
     "emsc_20261026_0000300",
     "us7000ttd1",
@@ -499,7 +498,8 @@
     "us7000tw4z",
     "emsc_20261105_0000011",
     "us7000tw53",
-    "emsc_20261105_0000034"
+    "emsc_20261105_0000034",
+    "ew1793854580"
   ],
   "replied_comment_ids": [
     "122120210835450344_1129097422833677",
@@ -651,14 +651,6 @@
     "122111765577450344_1347621150789333"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261102_0000221",
-      "mag": 4.0,
-      "place": "SOUTH OF JAVA, INDONESIA",
-      "latitude": -9.26,
-      "longitude": 112.04,
-      "epoch_ms": 1793638048000
-    },
     {
       "id": "emsc_20261102_0000326",
       "mag": 4.2,
@@ -1050,6 +1042,14 @@
       "latitude": 7.3115,
       "longitude": -80.0339,
       "epoch_ms": 1793847058000
+    },
+    {
+      "id": "ew1793854580",
+      "mag": 4.6,
+      "place": "92 km WSW of Ferndale, California",
+      "latitude": 40.3121,
+      "longitude": -125.3016,
+      "epoch_ms": 1793854566000
     }
   ]
 }
