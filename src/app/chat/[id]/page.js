@@ -137,23 +137,34 @@ export default function ChatWindow({ params }) {
   const handleDeleteEntireChat = async () => {
     setIsDeletingChat(true);
     try {
+      const activeUserId = user?.id || '';
       try {
-        const existing = JSON.parse(localStorage.getItem('bikroynow_deleted_chats') || '[]');
+        const key = activeUserId ? 'bikroynow_deleted_chats_' + activeUserId : 'bikroynow_deleted_chats';
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
         if (!existing.includes(effectiveId)) {
           existing.push(effectiveId);
-          localStorage.setItem('bikroynow_deleted_chats', JSON.stringify(existing));
+          localStorage.setItem(key, JSON.stringify(existing));
         }
         localStorage.removeItem('bikroynow_chat_' + effectiveId);
         localStorage.removeItem('bikroynow_chat_meta_' + effectiveId);
+
+        if (activeUserId) {
+          const cached = JSON.parse(localStorage.getItem('bikroynow_cached_chats_' + activeUserId) || '[]');
+          if (Array.isArray(cached)) {
+            const filtered = cached.filter(c => c.id !== effectiveId);
+            localStorage.setItem('bikroynow_cached_chats_' + activeUserId, JSON.stringify(filtered));
+          }
+        }
       } catch (e) {}
 
-      await fetch(`/api/chats/${effectiveId}?user_id=${encodeURIComponent(user?.id || '')}`, {
+      await fetch(`/api/chats/${effectiveId}?user_id=${encodeURIComponent(activeUserId)}`, {
         method: 'DELETE'
       });
 
       router.push('/chat');
     } catch (e) {
       console.error('Delete chat error:', e);
+    } finally {
       setIsDeletingChat(false);
       setShowDeleteModal(false);
     }
@@ -874,6 +885,110 @@ export default function ChatWindow({ params }) {
           </button>
         </form>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div 
+          className={styles.modalBackdrop} 
+          onClick={() => { if (!isDeletingChat) setShowDeleteModal(false); }}
+        >
+          <div 
+            className={styles.modalBox} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalIconWrapper}>
+              <Trash2 size={30} color="#ef4444" />
+            </div>
+
+            <h3 className={styles.modalTitle}>
+              {lang === 'bn' ? 'চ্যাট হিস্ট্রি মুছবেন?' : 'Delete Chat History?'}
+            </h3>
+
+            <p className={styles.modalDescription}>
+              {lang === 'bn' 
+                ? `"${partner?.full_name || 'User'}"-এর সাথে এই চ্যাটটি শুধুমাত্র আপনার ইনবক্স থেকে মুছে যাবে। অন্য প্রান্তের ব্যবহারকারীর চ্যাট হিস্ট্রি অপরিবর্তিত থাকবে।`
+                : `This conversation will only be deleted from your inbox. The other user's conversation will not be affected.`}
+            </p>
+
+            <div className={styles.modalActions}>
+              <button 
+                type="button" 
+                className={styles.modalCancelBtn}
+                onClick={() => setShowDeleteModal(false)}
+                disabled={isDeletingChat}
+              >
+                {lang === 'bn' ? 'বাতিল' : 'Cancel'}
+              </button>
+              <button 
+                type="button" 
+                className={styles.modalDeleteBtn}
+                onClick={handleDeleteEntireChat}
+                disabled={isDeletingChat}
+              >
+                <Trash2 size={16} />
+                <span>
+                  {isDeletingChat 
+                    ? (lang === 'bn' ? 'মুছে ফেলা হচ্ছে...' : 'Deleting...') 
+                    : (lang === 'bn' ? 'আমার পাশ থেকে মুছুন' : 'Delete for Me')}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Block/Unblock Confirmation Modal */}
+      {showBlockModal && (
+        <div 
+          className={styles.modalBackdrop} 
+          onClick={() => { if (!isBlocking) setShowBlockModal(false); }}
+        >
+          <div 
+            className={styles.modalBox} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalIconWrapper} style={{background: isBlockedByMe ? '#dcfce7' : '#fee2e2'}}>
+              {isBlockedByMe ? <ShieldCheck size={32} color="#16a34a" /> : <ShieldAlert size={32} color="#ef4444" />}
+            </div>
+
+            <h3 className={styles.modalTitle}>
+              {isBlockedByMe 
+                ? (lang === 'bn' ? 'ব্যবহারকারীকে আনব্লক করবেন?' : 'Unblock User?') 
+                : (lang === 'bn' ? 'ব্যবহারকারীকে ব্লক করবেন?' : 'Block this user?')}
+            </h3>
+
+            <p className={styles.modalDescription}>
+              {isBlockedByMe
+                ? (lang === 'bn' ? `আপনি কি "${partner?.full_name || 'User'}"-কে আনব্লক করতে চান? আনব্লক করলে তিনি আপনাকে আবার মেসেজ পাঠাতে পারবেন।` : `Do you want to unblock "${partner?.full_name || 'User'}"?`)
+                : (lang === 'bn' ? `আপনি কি "${partner?.full_name || 'User'}"-কে ব্লক করতে চান? ব্লক করলে তিনি আপনাকে আর কোনো বার্তা বা গালাগালি দিতে পারবেন না।` : `Are you sure you want to block "${partner?.full_name || 'User'}"? They will not be able to send you any messages.`)}
+            </p>
+
+            <div className={styles.modalActions}>
+              <button 
+                type="button" 
+                className={styles.modalCancelBtn}
+                onClick={() => setShowBlockModal(false)}
+                disabled={isBlocking}
+              >
+                {lang === 'bn' ? 'বাতিল' : 'Cancel'}
+              </button>
+              <button 
+                type="button" 
+                className={styles.modalDeleteBtn}
+                style={{background: isBlockedByMe ? '#16a34a' : '#ef4444'}}
+                onClick={handleToggleBlock}
+                disabled={isBlocking}
+              >
+                <span>
+                  {isBlocking 
+                    ? (lang === 'bn' ? 'অপেক্ষা করুন...' : 'Processing...') 
+                    : (isBlockedByMe ? (lang === 'bn' ? 'আনব্লক করুন' : 'Unblock') : (lang === 'bn' ? 'ব্লক করুন' : 'Block User'))}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Full-screen Professional Image Lightbox Modal via Portal */}
       {previewImage && mounted && typeof document !== 'undefined' && createPortal(

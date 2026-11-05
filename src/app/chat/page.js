@@ -57,9 +57,11 @@ export default function ChatListPage() {
   });
   const [user, setUser] = useState(() => getInstantUser());
 
-  // Chat thread deletion states
+  // Chat thread deletion & blocking states
   const [deletingChat, setDeletingChat] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [blockingChat, setBlockingChat] = useState(null);
+  const [isBlockingUser, setIsBlockingUser] = useState(false);
   const [holdingChatId, setHoldingChatId] = useState(null);
 
   const longPressTimerRef = useRef(null);
@@ -202,7 +204,52 @@ export default function ChatListPage() {
     router.push(`/chat/${chat.id}`);
   };
 
-  // Confirm delete chat thread for current user (Delete for Me)
+  // Confirm block user from chat list
+  const confirmBlockFromList = async () => {
+    if (!blockingChat || !user) return;
+    const targetChat = blockingChat;
+
+    const myIds = new Set([
+      String(user.id).toLowerCase().trim(),
+      user.email ? String(user.email).toLowerCase().trim() : null,
+      user.email ? 'user-' + String(user.email).toLowerCase().replace(/[^a-z0-9]/g, '') : null
+    ].filter(Boolean));
+
+    const isBuyer = myIds.has(String(targetChat.buyer_id || '').toLowerCase().trim());
+    const partnerId = targetChat.partner?.id || targetChat.partner?.email || (isBuyer ? targetChat.seller_id : targetChat.buyer_id);
+
+    if (!partnerId) {
+      alert('Partner ID not found');
+      return;
+    }
+
+    setIsBlockingUser(true);
+    try {
+      const res = await fetch('/api/user/block', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'block',
+          blocker_id: user.id,
+          blocked_id: partnerId
+        })
+      });
+
+      if (res.ok) {
+        alert(lang === 'bn' ? 'ব্যবহারকারীকে সফলভাবে ব্লক করা হয়েছে।' : 'User blocked successfully.');
+      } else {
+        const errJson = await res.json().catch(() => ({}));
+        alert(errJson.error || 'ব্লক করতে সমস্যা হয়েছে।');
+      }
+    } catch (e) {
+      console.error('Error blocking user:', e);
+    } finally {
+      setIsBlockingUser(false);
+      setBlockingChat(null);
+    }
+  };
+
+    // Confirm delete chat thread for current user (Delete for Me)
   const handleConfirmDelete = async () => {
     if (!deletingChat) return;
     const targetChat = deletingChat;
@@ -541,19 +588,35 @@ export default function ChatListPage() {
                   </div>
                 </div>
 
-                {/* Desktop / Quick Delete Action Button */}
-                <button
-                  type="button"
-                  className={styles.deleteItemBtn}
-                  title={lang === 'bn' ? 'চ্যাট হিস্ট্রি মুছুন' : 'Delete Chat History'}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setDeletingChat(chat);
-                  }}
-                >
-                  <Trash2 size={18} />
-                </button>
+                {/* Action Buttons: Block & Delete */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                  <button
+                    type="button"
+                    className={styles.deleteItemBtn}
+                    style={{ color: '#d97706' }}
+                    title={lang === 'bn' ? 'ব্যবহারকারীকে ব্লক করুন' : 'Block User'}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setBlockingChat(chat);
+                    }}
+                  >
+                    <ShieldAlert size={18} />
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.deleteItemBtn}
+                    style={{ color: '#ef4444' }}
+                    title={lang === 'bn' ? 'চ্যাট হিস্ট্রি মুছুন' : 'Delete Chat History'}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setDeletingChat(chat);
+                    }}
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </div>
             );
           })
@@ -584,6 +647,74 @@ export default function ChatListPage() {
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal for Blocking User from Chat List */}
+      {blockingChat && (
+        <div 
+          className={styles.modalBackdrop} 
+          onClick={() => { if (!isBlockingUser) setBlockingChat(null); }}
+        >
+          <div 
+            className={styles.modalBox} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalIconWrapper} style={{background: '#fee2e2'}}>
+              <ShieldAlert size={32} color="#ef4444" />
+            </div>
+
+            <h3 className={styles.modalTitle}>
+              {lang === 'bn' ? 'ব্যবহারকারীকে ব্লক করবেন?' : 'Block this user?'}
+            </h3>
+
+            <p className={styles.modalDescription}>
+              {lang === 'bn' 
+                ? `আপনি কি "${blockingChat.partner?.full_name || 'User'}"-কে ব্লক করতে চান? ব্লক করলে তিনি আপনাকে আর কোনো বার্তা বা গালাগালি দিতে পারবেন না।`
+                : `Are you sure you want to block "${blockingChat.partner?.full_name || 'User'}"? They will not be able to send you any messages.`}
+            </p>
+
+            <div className={styles.modalChatPreview}>
+              <img 
+                src={blockingChat.listing?.images?.[0] || 'https://via.placeholder.com/100'} 
+                alt={blockingChat.listing?.title} 
+                style={{width: '44px', height: '44px', borderRadius: '10px', objectFit: 'cover', border: '1px solid #e2e8f0'}}
+              />
+              <div style={{minWidth: 0, flex: 1}}>
+                <div style={{fontWeight: 800, fontSize: '0.92rem', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                  {blockingChat.partner?.full_name || 'User'}
+                </div>
+                <div style={{fontSize: '0.8rem', color: '#008b5e', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                  {blockingChat.listing?.title || 'BikroyNow Item'}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.modalActions}>
+              <button 
+                type="button" 
+                className={styles.modalCancelBtn}
+                onClick={() => setBlockingChat(null)}
+                disabled={isBlockingUser}
+              >
+                {lang === 'bn' ? 'বাতিল' : 'Cancel'}
+              </button>
+              <button 
+                type="button" 
+                className={styles.modalDeleteBtn}
+                style={{background: '#ef4444'}}
+                onClick={confirmBlockFromList}
+                disabled={isBlockingUser}
+              >
+                <ShieldAlert size={16} />
+                <span>
+                  {isBlockingUser 
+                    ? (lang === 'bn' ? 'ব্লক হচ্ছে...' : 'Blocking...') 
+                    : (lang === 'bn' ? 'ব্লক করুন' : 'Block User')}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Confirmation Modal for Deleting Chat Thread */}
       {deletingChat && (
