@@ -517,3 +517,174 @@
     height: 36px;
   }
 }
+
+/* =========================================================
+   Chat Thread Deletion & Confirmation Modal Styles
+   ========================================================= */
+
+.chatItemWrapper {
+  position: relative;
+  transition: all 0.2s ease;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.chatItemHolding {
+  background: #fef2f2 !important;
+  transform: scale(0.985);
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.deleteItemBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 10px;
+  color: #94a3b8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+.deleteItemBtn:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  transform: scale(1.08);
+}
+
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 1rem;
+  animation: fadeInModal 0.2s ease-out forwards;
+}
+
+.modalBox {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: 2rem 1.75rem;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.3), 0 0 1px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  animation: scaleUpModal 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.modalIconWrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #fee2e2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: 850;
+  color: #0f172a;
+  margin-bottom: 0.6rem;
+}
+
+.modalDescription {
+  font-size: 0.92rem;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+}
+
+.modalChatPreview {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  text-align: left;
+  margin-bottom: 1.5rem;
+}
+
+.modalActions {
+  display: flex;
+  gap: 0.85rem;
+  justify-content: center;
+}
+
+.modalCancelBtn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.modalCancelBtn:hover {
+  background: #f1f5f9;
+  color: #1e293b;
+}
+
+.modalDeleteBtn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: none;
+  background: #ef4444;
+  color: #ffffff;
+  font-weight: 750;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+  transition: all 0.18s ease;
+}
+
+.modalDeleteBtn:hover:not(:disabled) {
+  background: #dc2626;
+  box-shadow: 0 6px 18px rgba(220, 38, 38, 0.45);
+}
+
+.modalDeleteBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+@keyframes fadeInModal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUpModal {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

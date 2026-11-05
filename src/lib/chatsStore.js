@@ -83,6 +83,22 @@ export function createOrGetChat(listingId, buyerId, sellerId) {
   return newChatId;
 }
 
+export function deleteChat(chatId) {
+  try {
+    const chats = getChats();
+    const remainingChats = chats.filter(c => c.id !== chatId);
+    saveChats(remainingChats);
+
+    const messages = getMessages();
+    const remainingMessages = messages.filter(m => m.chat_id !== chatId);
+    saveMessages(remainingMessages);
+    return true;
+  } catch (e) {
+    console.error('Error deleting chat:', e);
+    return false;
+  }
+}
+
 export function deleteChatsForListing(listingId) {
   try {
     const chats = getChats();

@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
 import { useLanguage } from '../../context/LanguageContext';
 import { getRelativeTime, formatLastSeen } from '../../lib/utils';
 import styles from './chat.module.css';
-import { MessageSquare, ArrowRight } from 'lucide-react';
+import { MessageSquare, ArrowRight, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ChatListPage() {
@@ -16,11 +16,32 @@ export default function ChatListPage() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
 
+  // Chat thread deletion states
+  const [deletingChat, setDeletingChat] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [holdingChatId, setHoldingChatId] = useState(null);
+
+  const longPressTimerRef = useRef(null);
+  const touchStartPosRef = useRef({ x: 0, y: 0 });
+  const isLongPressActiveRef = useRef(false);
+
+  // Helper to get local deleted chat IDs
+  const getLocalDeletedIds = () => {
+    try {
+      const arr = JSON.parse(localStorage.getItem('bikroynow_deleted_chats') || '[]');
+      return Array.isArray(arr) ? new Set(arr) : new Set();
+    } catch (e) {
+      return new Set();
+    }
+  };
+
   const fetchChatsForUser = async (userId) => {
     if (!userId) {
       setLoading(false);
       return;
     }
+    const localDeleted = getLocalDeletedIds();
+
     try {
       // 1. Try server API
       const res = await fetch(`/api/chats/list?user_id=${userId}&t=${Date.now()}`, {
@@ -29,7 +50,8 @@ export default function ChatListPage() {
       if (res.ok) {
         const json = await res.json();
         if (Array.isArray(json.chats)) {
-          setChats(json.chats);
+          const filtered = json.chats.filter(c => !localDeleted.has(c.id));
+          setChats(filtered);
           setLoading(false);
           return;
         }
@@ -68,7 +90,8 @@ export default function ChatListPage() {
             };
           }));
 
-          setChats(enriched);
+          const filtered = enriched.filter(c => !localDeleted.has(c.id));
+          setChats(filtered);
           setLoading(false);
           return;
         }
@@ -87,6 +110,85 @@ export default function ChatListPage() {
     const lastSeenDate = new Date(lastSeen);
     const now = new Date();
     return (now - lastSeenDate) < 180000; // 3 mins threshold
+  };
+
+  // Touch Long-Press Handlers (for mobile press & hold)
+  const handleTouchStart = (chat, e) => {
+    if (e.touches.length !== 1) return;
+    touchStartPosRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    isLongPressActiveRef.current = false;
+    setHoldingChatId(chat.id);
+
+    if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+
+    longPressTimerRef.current = setTimeout(() => {
+      isLongPressActiveRef.current = true;
+      setHoldingChatId(null);
+      if (typeof window !== 'undefined' && window.navigator && window.navigator.vibrate) {
+        window.navigator.vibrate(50);
+      }
+      setDeletingChat(chat);
+    }, 500); // 500ms press & hold
+  };
+
+  const handleTouchMove = (e) => {
+    if (!touchStartPosRef.current) return;
+    const dx = Math.abs(e.touches[0].clientX - touchStartPosRef.current.x);
+    const dy = Math.abs(e.touches[0].clientY - touchStartPosRef.current.y);
+    if (dx > 10 || dy > 10) {
+      // User is scrolling, cancel long-press
+      if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+      setHoldingChatId(null);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+    setHoldingChatId(null);
+  };
+
+  const handleChatClick = (chat, e) => {
+    if (isLongPressActiveRef.current) {
+      e.preventDefault();
+      e.stopPropagation();
+      isLongPressActiveRef.current = false;
+      return;
+    }
+    router.push(`/chat/${chat.id}`);
+  };
+
+  // Confirm delete chat thread permanently
+  const handleConfirmDelete = async () => {
+    if (!deletingChat) return;
+    const targetChat = deletingChat;
+    setIsDeleting(true);
+
+    try {
+      // 1. Optimistic removal from state
+      setChats(prev => prev.filter(c => c.id !== targetChat.id));
+
+      // 2. Save to local deleted list immediately
+      try {
+        const existing = JSON.parse(localStorage.getItem('bikroynow_deleted_chats') || '[]');
+        if (!existing.includes(targetChat.id)) {
+          existing.push(targetChat.id);
+          localStorage.setItem('bikroynow_deleted_chats', JSON.stringify(existing));
+        }
+        localStorage.removeItem('bikroynow_chat_' + targetChat.id);
+        localStorage.removeItem('bikroynow_chat_meta_' + targetChat.id);
+      } catch (e) {}
+
+      // 3. Call server DELETE endpoint
+      const activeUserId = user?.id || '';
+      await fetch(`/api/chats/${targetChat.id}?user_id=${encodeURIComponent(activeUserId)}`, {
+        method: 'DELETE'
+      });
+    } catch (err) {
+      console.error('Error deleting chat:', err);
+    } finally {
+      setIsDeleting(false);
+      setDeletingChat(null);
+    }
   };
 
   useEffect(() => {
@@ -148,6 +250,7 @@ export default function ChatListPage() {
       isCancelled = true;
       clearTimeout(safetyTimer);
       clearInterval(interval);
+      if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
     };
   }, [router]);
 
@@ -186,23 +289,35 @@ export default function ChatListPage() {
       <div style={{background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '18px', overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.04)'}}>
         {chats.length > 0 ? (
           chats.map((chat) => {
+            const isHolding = holdingChatId === chat.id;
+
             return (
-              <Link 
-                href={`/chat/${chat.id}`} 
-                key={chat.id} 
-                className={styles.chatItem} 
+              <div
+                key={chat.id}
+                className={`${styles.chatItem} ${isHolding ? styles.chatItemHolding : ''}`}
+                onClick={(e) => handleChatClick(chat, e)}
+                onTouchStart={(e) => handleTouchStart(chat, e)}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+                onTouchCancel={handleTouchEnd}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  setDeletingChat(chat);
+                }}
                 style={{
                   display: 'flex',
                   padding: '1.1rem 1.3rem',
                   gap: '1rem',
                   borderBottom: '1px solid #f1f5f9',
                   alignItems: 'center',
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  transition: 'background 0.2s ease',
+                  cursor: 'pointer',
+                  userSelect: 'none',
+                  WebkitTouchCallout: 'none',
+                  transition: 'background 0.2s ease, transform 0.15s ease',
                   background: chat.unreadCount > 0 ? '#fff5f5' : 'transparent'
                 }}
               >
+                {/* Ad Image Thumbnail */}
                 <div style={{ position: 'relative', flexShrink: 0 }}>
                   <img 
                     src={chat.listing?.images?.[0] || 'https://via.placeholder.com/100'} 
@@ -231,6 +346,8 @@ export default function ChatListPage() {
                     </span>
                   )}
                 </div>
+
+                {/* Content */}
                 <div style={{flex: 1, minWidth: 0}}>
                   <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', gap: '8px'}}>
                     <div style={{display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0}}>
@@ -262,9 +379,11 @@ export default function ChatListPage() {
                       {getRelativeTime(chat.lastMsg?.created_at || chat.created_at, lang)}
                     </span>
                   </div>
+
                   <div style={{fontSize: '0.85rem', color: '#008b5e', fontWeight: '700', marginBottom: '3px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
                     {chat.listing?.title} {chat.listing?.price ? `• Tk ${Number(chat.listing.price).toLocaleString()}` : ''}
                   </div>
+
                   <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                     <p style={{
                       fontSize: '0.84rem', 
@@ -297,7 +416,21 @@ export default function ChatListPage() {
                     )}
                   </div>
                 </div>
-              </Link>
+
+                {/* Desktop / Quick Delete Action Button */}
+                <button
+                  type="button"
+                  className={styles.deleteItemBtn}
+                  title={lang === 'bn' ? 'চ্যাট হিস্ট্রি মুছুন' : 'Delete Chat History'}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDeletingChat(chat);
+                  }}
+                >
+                  <Trash2 size={18} />
+                </button>
+              </div>
             );
           })
         ) : (
@@ -311,6 +444,75 @@ export default function ChatListPage() {
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal for Deleting Chat Thread */}
+      {deletingChat && (
+        <div 
+          className={styles.modalBackdrop} 
+          onClick={() => {
+            if (!isDeleting) setDeletingChat(null);
+          }}
+        >
+          <div 
+            className={styles.modalBox} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalIconWrapper}>
+              <Trash2 size={30} color="#ef4444" />
+            </div>
+
+            <h3 className={styles.modalTitle}>
+              {lang === 'bn' ? 'সম্পূর্ণ চ্যাট হিস্ট্রি মুছবেন?' : 'Delete Entire Chat History?'}
+            </h3>
+
+            <p className={styles.modalDescription}>
+              {lang === 'bn' 
+                ? `"${deletingChat.partner?.full_name || 'User'}"-এর সাথে এই পণ্যের সকল মেসেজ ও চ্যাট হিস্ট্রি স্থায়ীভাবে মুছে ফেলা হবে। আপনি কি নিশ্চিত?`
+                : `All messages and chat history with "${deletingChat.partner?.full_name || 'User'}" for this item will be permanently deleted. Are you sure?`}
+            </p>
+
+            <div className={styles.modalChatPreview}>
+              <img 
+                src={deletingChat.listing?.images?.[0] || 'https://via.placeholder.com/100'} 
+                alt={deletingChat.listing?.title} 
+                style={{width: '44px', height: '44px', borderRadius: '10px', objectFit: 'cover', border: '1px solid #e2e8f0'}}
+              />
+              <div style={{minWidth: 0, flex: 1}}>
+                <div style={{fontWeight: 800, fontSize: '0.92rem', color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                  {deletingChat.partner?.full_name || 'User'}
+                </div>
+                <div style={{fontSize: '0.8rem', color: '#008b5e', fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                  {deletingChat.listing?.title || 'BikroyNow Item'}
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.modalActions}>
+              <button 
+                type="button" 
+                className={styles.modalCancelBtn}
+                onClick={() => setDeletingChat(null)}
+                disabled={isDeleting}
+              >
+                {lang === 'bn' ? 'বাতিল' : 'Cancel'}
+              </button>
+              <button 
+                type="button" 
+                className={styles.modalDeleteBtn}
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+              >
+                <Trash2 size={16} />
+                <span>
+                  {isDeleting 
+                    ? (lang === 'bn' ? 'মুছে ফেলা হচ্ছে...' : 'Deleting...') 
+                    : (lang === 'bn' ? 'মুছে ফেলুন' : 'Delete Chat')}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

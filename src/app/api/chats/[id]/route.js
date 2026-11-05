@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSupabase } from '../../../../lib/serverSupabase';
 import { getGlobalListings } from '../../../../lib/globalListingsStore';
-import { getChats } from '../../../../lib/chatsStore';
+import { getChats, deleteChat } from '../../../../lib/chatsStore';
 import { getUserLastSeen } from '../../../../lib/userPresenceStore';
 
 export const dynamic = 'force-dynamic';
@@ -154,5 +154,105 @@ export async function GET(req, { params }) {
   } catch (e) {
     console.error('Error fetching chat details:', e);
     return NextResponse.json({ error: e.message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req, { params }) {
+  try {
+    const resolvedParams = await params;
+    const id = resolvedParams?.id;
+    if (!id) {
+      return NextResponse.json({ error: 'Chat ID missing' }, { status: 400 });
+    }
+
+    const serverSupabase = getServerSupabase();
+    const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+
+    // 1. Remove chat from persistent all_chats_list in admin_settings
+    if (serverSupabase) {
+      try {
+        const { data: row } = await serverSupabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'all_chats_list')
+          .maybeSingle();
+
+        if (row?.value) {
+          try {
+            const list = JSON.parse(row.value);
+            if (Array.isArray(list)) {
+              const updated = list.filter(c => c.id !== id);
+              await serverSupabase
+                .from('admin_settings')
+                .upsert({ key: 'all_chats_list', value: JSON.stringify(updated) }, { onConflict: 'key' });
+            }
+          } catch (e) {
+            console.error('Error parsing all_chats_list on delete:', e);
+          }
+        }
+      } catch (e) {
+        console.error('Error removing from all_chats_list:', e);
+      }
+
+      // 2. Remove all messages for this chat in admin_settings
+      try {
+        await serverSupabase
+          .from('admin_settings')
+          .delete()
+          .eq('key', 'chat_msgs_' + id);
+      } catch (e) {
+        console.error('Error deleting chat_msgs in admin_settings:', e);
+      }
+
+      // 3. Add to persistent deleted_chat_ids list in admin_settings
+      try {
+        const { data: delRow } = await serverSupabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'deleted_chat_ids')
+          .maybeSingle();
+
+        let deletedIds = [];
+        if (delRow?.value) {
+          try {
+            deletedIds = JSON.parse(delRow.value);
+          } catch (e) {}
+        }
+        if (!Array.isArray(deletedIds)) deletedIds = [];
+        if (!deletedIds.includes(id)) {
+          deletedIds.push(id);
+          if (deletedIds.length > 2000) deletedIds = deletedIds.slice(-2000);
+          await serverSupabase
+            .from('admin_settings')
+            .upsert({ key: 'deleted_chat_ids', value: JSON.stringify(deletedIds) }, { onConflict: 'key' });
+        }
+      } catch (e) {
+        console.error('Error updating deleted_chat_ids:', e);
+      }
+
+      // 4. If Supabase DB table exists and valid UUID, delete from messages & chats tables
+      if (isValidUUID) {
+        try {
+          await serverSupabase.from('messages').delete().eq('chat_id', id);
+          await serverSupabase.from('chats').delete().eq('id', id);
+        } catch (dbErr) {
+          console.error('Error deleting from Supabase tables:', dbErr);
+        }
+      }
+    }
+
+    // 5. Delete from local chatsStore
+    try {
+      if (typeof deleteChat === 'function') {
+        deleteChat(id);
+      }
+    } catch (e) {
+      console.error('Error calling deleteChat in store:', e);
+    }
+
+    return NextResponse.json({ success: true, message: 'Chat deleted successfully' });
+  } catch (err) {
+    console.error('Error in DELETE /api/chats/[id]:', err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

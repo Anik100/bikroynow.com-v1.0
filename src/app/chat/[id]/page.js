@@ -8,7 +8,7 @@ import { uploadToImgBB } from '../../../lib/imgbb';
 import { useLanguage } from '../../../context/LanguageContext';
 import { getRelativeTime, formatLastSeen, compressImage } from '../../../lib/utils';
 import styles from '../chat.module.css';
-import { Send, Camera, ChevronLeft, Loader2, User as UserIcon, ZoomIn, ZoomOut, X } from 'lucide-react';
+import { Send, Camera, ChevronLeft, Loader2, User as UserIcon, ZoomIn, ZoomOut, X, Trash2 } from 'lucide-react';
 
 export default function ChatWindow({ params }) {
   const routeParams = useParams();
@@ -49,6 +49,33 @@ export default function ChatWindow({ params }) {
   const [zoomScale, setZoomScale] = useState(1);
   const [panOffset, setPanOffset] = useState({ x: 0, y: 0 });
   const [mounted, setMounted] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeletingChat, setIsDeletingChat] = useState(false);
+
+  const handleDeleteEntireChat = async () => {
+    setIsDeletingChat(true);
+    try {
+      try {
+        const existing = JSON.parse(localStorage.getItem('bikroynow_deleted_chats') || '[]');
+        if (!existing.includes(effectiveId)) {
+          existing.push(effectiveId);
+          localStorage.setItem('bikroynow_deleted_chats', JSON.stringify(existing));
+        }
+        localStorage.removeItem('bikroynow_chat_' + effectiveId);
+        localStorage.removeItem('bikroynow_chat_meta_' + effectiveId);
+      } catch (e) {}
+
+      await fetch(`/api/chats/${effectiveId}?user_id=${encodeURIComponent(user?.id || '')}`, {
+        method: 'DELETE'
+      });
+
+      router.push('/chat');
+    } catch (e) {
+      console.error('Delete chat error:', e);
+      setIsDeletingChat(false);
+      setShowDeleteModal(false);
+    }
+  };
   const touchStartRef = useRef({ distance: 0, x: 0, y: 0 });
   const openTimeRef = useRef(0);
   const lastTapRef = useRef(0);
@@ -585,19 +612,41 @@ export default function ChatWindow({ params }) {
               </div>
             </div>
           </div>
-          {chat.listing && (
-            <Link href={`/ad/${chat.listing_id || ''}`} style={{display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', background: '#f8fafc', padding: '0.35rem 0.65rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-              <div style={{textAlign: 'right', display: 'flex', flexDirection: 'column'}}>
-                <span style={{fontSize: '0.82rem', fontWeight: 700, color: '#1e293b', maxWidth: '180px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
-                  {chat.listing?.title}
-                </span>
-                <span style={{fontSize: '0.75rem', fontWeight: 800, color: '#008b5e'}}>
-                  {chat.listing?.price ? `Tk ${Number(chat.listing.price).toLocaleString()}` : ''}
-                </span>
-              </div>
-              <img src={chat.listing?.images?.[0] || 'https://via.placeholder.com/100'} alt="Listing" style={{width: '38px', height: '38px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #cbd5e1'}} />
-            </Link>
-          )}
+          <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+            {chat.listing && (
+              <Link href={`/ad/${chat.listing_id || ''}`} style={{display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', background: '#f8fafc', padding: '0.35rem 0.65rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
+                <div style={{textAlign: 'right', display: 'flex', flexDirection: 'column'}}>
+                  <span style={{fontSize: '0.82rem', fontWeight: 700, color: '#1e293b', maxWidth: '140px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+                    {chat.listing?.title}
+                  </span>
+                  <span style={{fontSize: '0.75rem', fontWeight: 800, color: '#008b5e'}}>
+                    {chat.listing?.price ? `Tk ${Number(chat.listing.price).toLocaleString()}` : ''}
+                  </span>
+                </div>
+                <img src={chat.listing?.images?.[0] || 'https://via.placeholder.com/100'} alt="Listing" style={{width: '38px', height: '38px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #cbd5e1'}} />
+              </Link>
+            )}
+            <button
+              type="button"
+              title={lang === 'bn' ? 'সম্পূর্ণ চ্যাট হিস্ট্রি মুছুন' : 'Delete Chat History'}
+              onClick={() => setShowDeleteModal(true)}
+              style={{
+                background: '#fee2e2',
+                border: 'none',
+                color: '#ef4444',
+                padding: '0.55rem',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'all 0.2s ease',
+                flexShrink: 0
+              }}
+            >
+              <Trash2 size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Messages area */}

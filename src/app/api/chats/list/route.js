@@ -119,12 +119,30 @@ export async function GET(req) {
     const localChats = getChats();
     localChats.forEach(c => allCandidateChats.push(c));
 
-    // Deduplicate candidate chats by id and filter for this user
+    // Load deleted chat IDs from admin_settings
+    const deletedChatIds = new Set();
+    if (serverSupabase) {
+      try {
+        const { data: delRow } = await serverSupabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'deleted_chat_ids')
+          .maybeSingle();
+        if (delRow?.value) {
+          const dArr = JSON.parse(delRow.value);
+          if (Array.isArray(dArr)) {
+            dArr.forEach(did => deletedChatIds.add(did));
+          }
+        }
+      } catch (e) {}
+    }
+
+    // Deduplicate candidate chats by id, filter out deleted ones, and filter for this user
     const seenChatIds = new Set();
     const myChats = [];
 
     allCandidateChats.forEach(c => {
-      if (!c?.id || seenChatIds.has(c.id)) return;
+      if (!c?.id || seenChatIds.has(c.id) || deletedChatIds.has(c.id)) return;
       const isBuyer = userAliases.has(c.buyer_id) || userAliases.has(String(c.buyer_id).toLowerCase());
       const isSeller = userAliases.has(c.seller_id) || userAliases.has(String(c.seller_id).toLowerCase()) || myListingIds.has(String(c.listing_id));
       if (isBuyer || isSeller) {
