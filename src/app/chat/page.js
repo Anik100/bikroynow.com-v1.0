@@ -520,21 +520,32 @@ export default function ChatListPage() {
 
                 {/* Content */}
                 <div style={{flex: 1, minWidth: 0}}>
-                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', gap: '8px'}}>
-                    <div style={{display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0}}>
-                      <span style={{fontWeight: chat.unreadCount > 0 ? '850' : '750', fontSize: '0.98rem', color: '#0f172a'}}>
+                  <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', gap: '6px', minWidth: 0}}>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0, flex: 1, overflow: 'hidden'}}>
+                      <span style={{
+                        fontWeight: chat.unreadCount > 0 ? '850' : '750', 
+                        fontSize: '0.96rem', 
+                        color: '#0f172a',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        maxWidth: '125px',
+                        display: 'inline-block'
+                      }}>
                         {chat.partner?.full_name || 'User'}
                       </span>
                       <span style={{
-                        fontSize: '0.7rem',
+                        fontSize: '0.68rem',
                         color: isOnline(chat.partner?.last_seen) ? '#16a34a' : '#64748b',
                         fontWeight: '700',
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '4px',
                         backgroundColor: isOnline(chat.partner?.last_seen) ? '#dcfce7' : '#f1f5f9',
-                        padding: '1px 7px',
-                        borderRadius: '10px'
+                        padding: '1px 6px',
+                        borderRadius: '10px',
+                        flexShrink: 0,
+                        whiteSpace: 'nowrap'
                       }}>
                         <span style={{
                           width: '6px',
@@ -546,7 +557,13 @@ export default function ChatListPage() {
                         <span>{formatLastSeen(chat.partner?.last_seen, lang, true)}</span>
                       </span>
                     </div>
-                    <span style={{fontSize: '0.72rem', color: chat.unreadCount > 0 ? '#ef4444' : '#94a3b8', fontWeight: chat.unreadCount > 0 ? 700 : 500, flexShrink: 0}}>
+                    <span style={{
+                      fontSize: '0.72rem', 
+                      color: chat.unreadCount > 0 ? '#ef4444' : '#94a3b8', 
+                      fontWeight: chat.unreadCount > 0 ? 700 : 500, 
+                      flexShrink: 0,
+                      whiteSpace: 'nowrap'
+                    }}>
                       {getRelativeTime(chat.lastMsg?.created_at || chat.created_at, lang)}
                     </span>
                   </div>
@@ -588,8 +605,8 @@ export default function ChatListPage() {
                   </div>
                 </div>
 
-                {/* Action Buttons: Block & Delete */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
+                {/* Action Buttons: Block & Delete (Visible on Laptop/Desktop, Hidden on Mobile for clean wide space) */}
+                <div className={styles.rowActionBtns}>
                   <button
                     type="button"
                     className={styles.deleteItemBtn}

@@ -688,3 +688,18 @@
     transform: scale(1) translateY(0);
   }
 }
+
+.rowActionBtns {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  margin-left: 8px;
+}
+
+/* On mobile devices: Hide the two row buttons so full width is available for name and message without text collision */
+@media (max-width: 768px) {
+  .rowActionBtns {
+    display: none !important;
+  }
+}
