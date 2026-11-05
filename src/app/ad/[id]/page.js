@@ -1033,17 +1033,38 @@ export default function AdDetails({ params }) {
                   onClick={async () => {
                     setSendingChat(true);
                     try {
-                      let activeUser = null;
-                      const { data: { session } } = await supabase.auth.getSession();
-                      if (session?.user) {
-                        activeUser = session.user;
-                      } else {
+                      // 1. Instant check from React state
+                      let activeUser = currentUser;
+
+                      // 2. Synchronous check from localStorage
+                      if (!activeUser) {
                         try {
                           const localUser = localStorage.getItem('bikroynow_demo_user');
                           if (localUser) activeUser = JSON.parse(localUser);
                         } catch (e) {}
                       }
 
+                      if (!activeUser) {
+                        try {
+                          const sbKey = Object.keys(localStorage).find(k => k.startsWith('sb-') && k.endsWith('-auth-token'));
+                          if (sbKey) {
+                            const tokenData = JSON.parse(localStorage.getItem(sbKey));
+                            if (tokenData?.user) activeUser = tokenData.user;
+                          }
+                        } catch (e) {}
+                      }
+
+                      // 3. Fast race with 1s timeout for Supabase getSession (never hangs)
+                      if (!activeUser) {
+                        try {
+                          const sessionPromise = supabase.auth.getSession();
+                          const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ data: { session: null } }), 1000));
+                          const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
+                          if (session?.user) activeUser = session.user;
+                        } catch (e) {}
+                      }
+
+                      // If not logged in, redirect immediately to login
                       if (!activeUser) {
                         router.push('/login');
                         return;
@@ -1056,7 +1077,9 @@ export default function AdDetails({ params }) {
                         return;
                       }
 
-                      // Call server-side chats API to create or get chat session
+                      // Call server-side chats API to create or get chat session with 4s timeout
+                      const controller = new AbortController();
+                      const timer = setTimeout(() => controller.abort(), 4000);
                       const chatRes = await fetch('/api/chats', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -1064,10 +1087,12 @@ export default function AdDetails({ params }) {
                           listing_id: ad.id,
                           buyer_id: activeUser.id,
                           seller_id: ad.user_id || 'seller-business-1'
-                        })
-                      });
+                        }),
+                        signal: controller.signal
+                      }).catch(() => null);
+                      clearTimeout(timer);
 
-                      if (chatRes.ok) {
+                      if (chatRes && chatRes.ok) {
                         const chatJson = await chatRes.json();
                         if (chatJson.id) {
                           try {
@@ -1107,7 +1132,7 @@ export default function AdDetails({ params }) {
                       throw new Error(lang === 'bn' ? 'সার্ভার চ্যাট তৈরি করতে ব্যর্থ হয়েছে।' : 'Failed to create chat session on server.');
                     } catch (err) {
                       console.error('Chat error full:', err);
-                      alert((lang === 'bn' ? 'চ্যাট শুরু করতে সমস্যা হয়েছে: ' : 'Error starting chat: ') + err.message);
+                      alert((lang === 'bn' ? 'চ্যাট শুরু করতে সমস্যা হয়েছে: ' : 'Error starting chat: ') + (err?.message || 'Network error'));
                     } finally {
                       setSendingChat(false);
                     }
