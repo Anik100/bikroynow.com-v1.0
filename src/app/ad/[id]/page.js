@@ -454,6 +454,28 @@ export default function AdDetails({ params }) {
 
     const checkUser = async () => {
       try {
+        // Explicitly consume OAuth hash if redirected from Google
+        if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token=')) {
+          try {
+            const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+            const hashParams = new URLSearchParams(hashStr);
+            const accessToken = hashParams.get('access_token');
+            const refreshToken = hashParams.get('refresh_token');
+            if (accessToken) {
+              const { data: authData } = await supabase.auth.setSession({
+                access_token: accessToken,
+                refresh_token: refreshToken || ''
+              });
+              if (authData?.session?.user && !isCancelled) {
+                setCurrentUser(authData.session.user);
+                try {
+                  window.history.replaceState(null, '', window.location.pathname + window.location.search);
+                } catch (e) {}
+              }
+            }
+          } catch (e) {}
+        }
+
         const sessionPromise = supabase.auth.getSession();
         const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve({ data: { session: null } }), 1500));
         const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);

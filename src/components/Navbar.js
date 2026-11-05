@@ -233,6 +233,36 @@ export default function Navbar() {
     };
 
     const checkUser = async () => {
+      // 1. Explicitly detect & consume OAuth access_token from Google redirect hash
+      if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token=')) {
+        try {
+          const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
+          const hashParams = new URLSearchParams(hashStr);
+          const accessToken = hashParams.get('access_token');
+          const refreshToken = hashParams.get('refresh_token');
+          if (accessToken) {
+            const { data: authData } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken || ''
+            });
+            if (authData?.session?.user) {
+              setUser(authData.session.user);
+              syncUserProfile(authData.session.user);
+              try {
+                window.history.replaceState(null, '', window.location.pathname + window.location.search);
+              } catch (e) {}
+              if (shouldShowPrompt(authData.session.user)) {
+                setTimeout(() => setShowOnboarding(true), 600);
+              }
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn('OAuth hash consumption error:', e);
+        }
+      }
+
+      // 2. Standard session retrieval
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
         setUser(session.user);
