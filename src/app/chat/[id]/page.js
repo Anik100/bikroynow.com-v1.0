@@ -76,6 +76,18 @@ export default function ChatWindow({ params }) {
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [isBlocking, setIsBlocking] = useState(false);
 
+  const getPartnerId = () => {
+    if (!chat || !user) return null;
+    const myIds = new Set([
+      user?.id,
+      user?.email?.toLowerCase(),
+      user?.email ? 'user-' + user.email.toLowerCase().replace(/[^a-z0-9]/g, '') : null
+    ].filter(Boolean));
+
+    const amBuyer = myIds.has(chat.buyer_id) || (chat.buyer?.email && myIds.has(chat.buyer.email?.toLowerCase()));
+    return amBuyer ? chat.seller_id : chat.buyer_id;
+  };
+
   const checkBlockStatus = async (uid, pid) => {
     if (!uid || !pid) return;
     try {
@@ -90,8 +102,11 @@ export default function ChatWindow({ params }) {
 
   const handleToggleBlock = async () => {
     if (!user || !chat) return;
-    const partnerId = isBuyer ? chat.seller_id : chat.buyer_id;
-    if (!partnerId) return;
+    const partnerId = getPartnerId();
+    if (!partnerId) {
+      console.error('Partner ID missing for block toggle');
+      return;
+    }
 
     setIsBlocking(true);
     const nextAction = isBlockedByMe ? 'unblock' : 'block';
@@ -107,6 +122,9 @@ export default function ChatWindow({ params }) {
       });
       if (res.ok) {
         setIsBlockedByMe(nextAction === 'block');
+      } else {
+        const errJson = await res.json().catch(() => ({}));
+        alert(errJson.error || 'ব্লক পরিবর্তন করতে সমস্যা হয়েছে।');
       }
     } catch (e) {
       console.error('Error toggling block:', e);

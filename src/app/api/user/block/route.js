@@ -14,13 +14,24 @@ async function getUserAliases(userId, serverSupabase) {
   aliases.add(raw);
   aliases.add(raw.toLowerCase());
 
+  if (raw.startsWith('user-')) {
+    aliases.add(raw.substring(5).toLowerCase());
+  }
+
+  const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(raw);
+
   if (serverSupabase) {
     try {
-      const { data: prof } = await serverSupabase
-        .from('profiles')
-        .select('id, email')
-        .or(`id.eq.${raw},email.ilike.${raw}`)
-        .maybeSingle();
+      let query = serverSupabase.from('profiles').select('id, email');
+      if (isValidUUID) {
+        query = query.eq('id', raw);
+      } else if (raw.includes('@')) {
+        query = query.ilike('email', raw);
+      } else {
+        query = query.ilike('email', `%${raw.replace(/^user-/, '')}%`);
+      }
+
+      const { data: prof } = await query.maybeSingle();
 
       if (prof) {
         if (prof.id) {
@@ -33,7 +44,9 @@ async function getUserAliases(userId, serverSupabase) {
           aliases.add('user-' + em.replace(/[^a-z0-9]/g, ''));
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error('Error resolving user aliases in block:', e);
+    }
   }
 
   return aliases;
@@ -41,7 +54,6 @@ async function getUserAliases(userId, serverSupabase) {
 
 /**
  * GET /api/user/block?user_id=...&partner_id=...
- * Check if user blocked partner, or partner blocked user
  */
 export async function GET(req) {
   try {
@@ -63,7 +75,6 @@ export async function GET(req) {
       partnerId ? getUserAliases(partnerId, serverSupabase) : Promise.resolve(new Set())
     ]);
 
-    // Fetch blocked_users list from admin_settings
     let blockedList = [];
     try {
       const { data: row } = await serverSupabase
@@ -85,15 +96,13 @@ export async function GET(req) {
 
     if (partnerId) {
       for (const item of blockedList) {
-        const itemBlocker = String(item.blocker_id || item.blocker || '').toLowerCase();
-        const itemBlocked = String(item.blocked_id || item.blocked || '').toLowerCase();
+        const itemBlocker = String(item.blocker_id || item.blocker || '').toLowerCase().trim();
+        const itemBlocked = String(item.blocked_id || item.blocked || '').toLowerCase().trim();
 
-        // Did I block partner?
         if (myAliases.has(itemBlocker) && partnerAliases.has(itemBlocked)) {
           isBlockedByMe = true;
         }
 
-        // Did partner block me?
         if (partnerAliases.has(itemBlocker) && myAliases.has(itemBlocked)) {
           isBlockedByThem = true;
         }
@@ -137,7 +146,6 @@ export async function POST(req) {
       getUserAliases(blocked_id, serverSupabase)
     ]);
 
-    // 1. Fetch current list
     let blockedList = [];
     try {
       const { data: row } = await serverSupabase
@@ -156,10 +164,9 @@ export async function POST(req) {
     const cleanBlocked = String(blocked_id).trim();
 
     if (action === 'block') {
-      // Check if already blocked
       const alreadyBlocked = blockedList.some(item => {
-        const b1 = String(item.blocker_id || '').toLowerCase();
-        const b2 = String(item.blocked_id || '').toLowerCase();
+        const b1 = String(item.blocker_id || '').toLowerCase().trim();
+        const b2 = String(item.blocked_id || '').toLowerCase().trim();
         return blockerAliases.has(b1) && blockedAliases.has(b2);
       });
 
@@ -171,15 +178,13 @@ export async function POST(req) {
         });
       }
     } else if (action === 'unblock') {
-      // Remove from list
       blockedList = blockedList.filter(item => {
-        const b1 = String(item.blocker_id || '').toLowerCase();
-        const b2 = String(item.blocked_id || '').toLowerCase();
+        const b1 = String(item.blocker_id || '').toLowerCase().trim();
+        const b2 = String(item.blocked_id || '').toLowerCase().trim();
         return !(blockerAliases.has(b1) && blockedAliases.has(b2));
       });
     }
 
-    // Save updated blockedList to admin_settings
     await serverSupabase.from('admin_settings').upsert({
       key: 'blocked_users',
       value: JSON.stringify(blockedList)

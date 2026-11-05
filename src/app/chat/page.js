@@ -29,12 +29,30 @@ const getInstantUser = () => {
   return null;
 };
 
+// Instant synchronous cache resolution from localStorage (0ms delay)
+const getCachedChats = (uid) => {
+  if (typeof window === 'undefined' || !uid) return [];
+  try {
+    const raw = localStorage.getItem('bikroynow_cached_chats_' + uid);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {}
+  return [];
+};
+
 export default function ChatListPage() {
   const { t, lang } = useLanguage();
   const router = useRouter();
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState(() => {
+    const instant = getInstantUser();
+    return instant?.id ? getCachedChats(instant.id) : [];
+  });
   const [loading, setLoading] = useState(() => {
-    if (typeof window !== 'undefined' && getInstantUser()) return false;
+    if (typeof window === 'undefined') return true;
+    const instant = getInstantUser();
+    if (instant?.id && getCachedChats(instant.id).length > 0) return false;
     return true;
   });
   const [user, setUser] = useState(() => getInstantUser());
@@ -75,6 +93,9 @@ export default function ChatListPage() {
         const json = await res.json();
         if (Array.isArray(json.chats)) {
           const filtered = json.chats.filter(c => !localDeleted.has(c.id));
+          try {
+            localStorage.setItem('bikroynow_cached_chats_' + userId, JSON.stringify(filtered));
+          } catch (e) {}
           setChats(filtered);
           setLoading(false);
           return;
@@ -220,14 +241,26 @@ export default function ChatListPage() {
   const handleBlockFromList = async () => {
     if (!deletingChat || !user) return;
     const targetChat = deletingChat;
-    const isBuyer = targetChat.buyer_id === user.id || targetChat.buyer_id === user.email;
-    const partnerId = isBuyer ? targetChat.seller_id : targetChat.buyer_id;
 
-    if (!partnerId) return;
+    // Accurately resolve partner ID from enriched partner profile or buyer/seller IDs
+    const myIds = new Set([
+      String(user.id).toLowerCase().trim(),
+      user.email ? String(user.email).toLowerCase().trim() : null,
+      user.email ? 'user-' + String(user.email).toLowerCase().replace(/[^a-z0-9]/g, '') : null
+    ].filter(Boolean));
+
+    const isBuyer = myIds.has(String(targetChat.buyer_id || '').toLowerCase().trim());
+    const partnerId = targetChat.partner?.id || targetChat.partner?.email || (isBuyer ? targetChat.seller_id : targetChat.buyer_id);
+
+    if (!partnerId) {
+      console.error('Could not determine partner ID for block');
+      return;
+    }
+
     setIsDeleting(true);
 
     try {
-      await fetch('/api/user/block', {
+      const res = await fetch('/api/user/block', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -237,10 +270,16 @@ export default function ChatListPage() {
         })
       });
 
-      // Also remove chat for current user
-      await handleConfirmDelete();
+      if (res.ok) {
+        // Also remove chat from current user's list
+        await handleConfirmDelete();
+      } else {
+        const errJson = await res.json().catch(() => ({}));
+        alert(errJson.error || 'ব্লক করতে ব্যর্থ হয়েছে, আবার চেষ্টা করুন।');
+      }
     } catch (e) {
       console.error('Error blocking user:', e);
+    } finally {
       setIsDeleting(false);
       setDeletingChat(null);
     }
@@ -518,6 +557,22 @@ export default function ChatListPage() {
               </div>
             );
           })
+        ) : loading ? (
+          <div style={{padding: '4.5rem 2rem', textAlign: 'center', color: '#64748b'}}>
+            <div style={{
+              display: 'inline-block',
+              width: '32px',
+              height: '32px',
+              border: '3px solid #e2e8f0',
+              borderTopColor: '#008b5e',
+              borderRadius: '50%',
+              animation: 'spin 0.75s linear infinite',
+              marginBottom: '1rem'
+            }} />
+            <div style={{fontWeight: 700, fontSize: '0.96rem', color: '#334155'}}>
+              {lang === 'bn' ? 'মেসেজ লোড হচ্ছে...' : 'Loading messages...'}
+            </div>
+          </div>
         ) : (
           <div style={{padding: '5rem 2rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', color: '#94a3b8'}}>
             <MessageSquare size={54} strokeWidth={1.3} color="#cbd5e1" />
