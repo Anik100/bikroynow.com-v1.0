@@ -1,8 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261027_0000172",
-    "us7000ttgf",
-    "emsc_20261027_0000192",
     "us7000ttgh",
     "emsc_20261027_0000189",
     "emsc_20261027_0000190",
@@ -499,7 +496,10 @@
     "emsc_20261106_0000031",
     "us7000tweb",
     "us7000tweq",
-    "emsc_20261106_0000043"
+    "emsc_20261106_0000043",
+    "emsc_20261106_0000055",
+    "emsc_20261106_0000065",
+    "emsc_20261106_0000059"
   ],
   "replied_comment_ids": [
     "122117756493450344_910694425314791",
@@ -654,30 +654,6 @@
     "122121990981450344_1481809433829807"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261103_0000189",
-      "mag": 4.1,
-      "place": "ANTOFAGASTA, CHILE",
-      "latitude": -21.63,
-      "longitude": -68.63,
-      "epoch_ms": 1793715779000
-    },
-    {
-      "id": "emsc_20261103_0000198",
-      "mag": 4.0,
-      "place": "MAULE, CHILE",
-      "latitude": -36.17,
-      "longitude": -71.44,
-      "epoch_ms": 1793718684000
-    },
-    {
-      "id": "emsc_20261103_0000201",
-      "mag": 4.5,
-      "place": "TAIWAN",
-      "latitude": 24.44,
-      "longitude": 121.84,
-      "epoch_ms": 1793719325300
-    },
     {
       "id": "emsc_20261103_0000207",
       "mag": 4.0,
@@ -1053,6 +1029,30 @@
       "latitude": -19.3647,
       "longitude": 168.7529,
       "epoch_ms": 1793929059847
+    },
+    {
+      "id": "emsc_20261106_0000055",
+      "mag": 4.2,
+      "place": "PANAMA",
+      "latitude": 7.4372,
+      "longitude": -80.5323,
+      "epoch_ms": 1793937132000
+    },
+    {
+      "id": "emsc_20261106_0000065",
+      "mag": 4.3,
+      "place": "CELEBES SEA",
+      "latitude": 2.19,
+      "longitude": 122.83,
+      "epoch_ms": 1793938396000
+    },
+    {
+      "id": "emsc_20261106_0000059",
+      "mag": 4.0,
+      "place": "TAIWAN",
+      "latitude": 24.0119,
+      "longitude": 121.6359,
+      "epoch_ms": 1793937673180
     }
   ]
 }
