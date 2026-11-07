@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000ttld",
     "emsc_20261027_0000362",
     "emsc_20261028_0000037",
     "us7000ttlm",
@@ -499,7 +498,8 @@
     "emsc_20261107_0000041",
     "emsc_20261107_0000058",
     "us7000twqe",
-    "emsc_20261106_0000299"
+    "emsc_20261106_0000299",
+    "emsc_20261107_0000065"
   ],
   "replied_comment_ids": [
     "122117756493450344_910694425314791",
@@ -654,14 +654,6 @@
     "122121990981450344_1481809433829807"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tvu2",
-      "mag": 4.4,
-      "place": "247 km ENE of Levuka, Fiji",
-      "latitude": -17.6108,
-      "longitude": -178.4002,
-      "epoch_ms": 1793744878884
-    },
     {
       "id": "emsc_20261103_0000308",
       "mag": 4.4,
@@ -1053,6 +1045,14 @@
       "latitude": -10.01,
       "longitude": -75.84,
       "epoch_ms": 1794029814000
+    },
+    {
+      "id": "emsc_20261107_0000065",
+      "mag": 4.0,
+      "place": "NORTHERN SUMATRA, INDONESIA",
+      "latitude": 5.89,
+      "longitude": 94.89,
+      "epoch_ms": 1794034449000
     }
   ]
 }
