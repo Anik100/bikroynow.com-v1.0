@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000ttlk",
     "emsc_20261028_0000042",
     "emsc_20261028_0000043",
     "us7000ttli",
@@ -499,7 +498,8 @@
     "emsc_20261107_0000065",
     "us7000twqr",
     "emsc_20261107_0000073",
-    "us7000twqw"
+    "us7000twqw",
+    "emsc_20261107_0000106"
   ],
   "replied_comment_ids": [
     "122117756493450344_910694425314791",
@@ -654,14 +654,6 @@
     "122121990981450344_1481809433829807"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261103_0000313",
-      "mag": 4.1,
-      "place": "SOUTH ISLAND OF NEW ZEALAND",
-      "latitude": -42.004,
-      "longitude": 172.9617,
-      "epoch_ms": 1793747449259
-    },
     {
       "id": "emsc_20261103_0000328",
       "mag": 4.0,
@@ -1053,6 +1045,14 @@
       "latitude": -57.9579,
       "longitude": -25.8023,
       "epoch_ms": 1794035650868
+    },
+    {
+      "id": "emsc_20261107_0000106",
+      "mag": 4.2,
+      "place": "MOLUCCA SEA",
+      "latitude": 0.15,
+      "longitude": 125.94,
+      "epoch_ms": 1794044852000
     }
   ]
 }
