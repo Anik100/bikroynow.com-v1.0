@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261028_0000103",
     "us7000ttmh",
     "emsc_20261027_0000347",
     "emsc_20261028_0000108",
@@ -499,7 +498,8 @@
     "emsc_20261107_0000186",
     "us7000twss",
     "emsc_20261107_0000187",
-    "emsc_20261107_0000193"
+    "emsc_20261107_0000193",
+    "emsc_20261107_0000195"
   ],
   "replied_comment_ids": [
     "122114840829450344_1141440051897250",
@@ -656,14 +656,6 @@
     "122117756493450344_977356934759784"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261104_0000126",
-      "mag": 4.4,
-      "place": "KEPULAUAN TALAUD, INDONESIA",
-      "latitude": 4.16,
-      "longitude": 126.38,
-      "epoch_ms": 1793788637000
-    },
     {
       "id": "us7000tvyl",
       "mag": 4.0,
@@ -1055,6 +1047,14 @@
       "latitude": 7.4234,
       "longitude": -80.159,
       "epoch_ms": 1794067310000
+    },
+    {
+      "id": "emsc_20261107_0000195",
+      "mag": 5.6,
+      "place": "NEAR S. COAST OF HONSHU, JAPAN",
+      "latitude": 34.9188,
+      "longitude": 137.8668,
+      "epoch_ms": 1794067472760
     }
   ]
 }
