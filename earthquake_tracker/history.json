@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261028_0000134",
     "us7000ttmz",
     "emsc_20261028_0000142",
     "emsc_20261028_0000138",
@@ -499,7 +498,8 @@
     "us7000twt8",
     "emsc_20261107_0000234",
     "emsc_20261107_0000241",
-    "emsc_20261107_0000245"
+    "emsc_20261107_0000245",
+    "us7000twtv"
   ],
   "replied_comment_ids": [
     "122117767125450344_1599589281115855",
@@ -659,14 +659,6 @@
     "122121805197450344_2361852207969175"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261105_0000011",
-      "mag": 4.0,
-      "place": "XIZANG-QINGHAI BORDER REGION",
-      "latitude": 32.5065,
-      "longitude": 94.1224,
-      "epoch_ms": 1793839755589
-    },
     {
       "id": "emsc_20261105_0000034",
       "mag": 4.0,
@@ -1058,6 +1050,14 @@
       "latitude": 9.37,
       "longitude": 126.79,
       "epoch_ms": 1794080701000
+    },
+    {
+      "id": "us7000twtv",
+      "mag": 4.5,
+      "place": "65 km WSW of Masachapa, Nicaragua",
+      "latitude": 11.526,
+      "longitude": -87.0544,
+      "epoch_ms": 1794081310891
     }
   ]
 }
