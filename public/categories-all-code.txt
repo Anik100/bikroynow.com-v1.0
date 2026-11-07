@@ -1,0 +1,2470 @@
+# BikroyNow.com - সম্পূর্ণ ক্যাটাগরি সিস্টেম কোড (All Categories Codebase)
+
+এই ফাইলে BikroyNow-এর ক্যাটাগরি সম্পর্কিত সম্পূর্ণ ডাটাবেজ/কনস্ট্যান্টস, হোমপেজের ক্যাটাগরি সেকশন ও পপআপ মোডাল, এবং পোস্ট অ্যাড পেজের ক্যাটাগরি সিলেক্টরের সম্পূর্ণ JSX এবং CSS কোড একত্র করে দেওয়া হলো।
+
+---
+
+## সূচিপত্র (Table of Contents)
+1. [অংশ ১: ডাটাবেজ / কনস্ট্যান্টস ক্যাটাগরি লিস্ট (src/lib/constants.js)](#part1)
+2. [অংশ ২: হোমপেজের ক্যাটাগরি কম্পোনেন্ট ও লজিক (src/app/page.js)](#part2)
+3. [অংশ ৩: হোমপেজের ক্যাটাগরি সিএসএস (src/app/page.module.css)](#part3)
+4. [অংশ ৪: পোস্ট অ্যাড পেজের ক্যাটাগরি সিলেক্টর কম্পোনেন্ট (src/app/post-ad/page.js)](#part4)
+5. [অংশ ৫: পোস্ট অ্যাড পেজের ক্যাটাগরি সিএসএস (src/app/post-ad/post-ad.module.css)](#part5)
+
+---
+
+<a id="part1"></a>
+## অংশ ১: ডাটাবেজ / কনস্ট্যান্টস ক্যাটাগরি লিস্ট (Constants & Database Categories)
+**ফাইল পাথ:** `src/lib/constants.js`
+
+```javascript
+export const CATEGORIES = {
+  "Mobile Phones": {
+    "Smartphones & Mobile Brands": [
+      "Samsung Galaxy Smartphones",
+      "Apple iPhones (iPhone 11 to 16 Pro Max)",
+      "Xiaomi, Redmi & POCO Phones",
+      "Realme Smartphones",
+      "Vivo Smartphones",
+      "Oppo Smartphones",
+      "OnePlus Smartphones",
+      "Google Pixel Phones",
+      "Infinix Smartphones",
+      "Tecno Smartphones",
+      "Motorola Smartphones",
+      "Nothing Phone",
+      "Honor Smartphones",
+      "Sony Xperia Phones",
+      "Asus ROG & Gaming Phones",
+      "Symphony & Walton Smartphones",
+      "Refurbished & Second-Hand Smartphones"
+    ],
+    "Feature Phones (Button Phones)": [
+      "Nokia Classic Button Phones",
+      "Walton Feature Phones",
+      "Symphony Feature Phones",
+      "Itel Button Phones",
+      "Lava Feature Phones",
+      "Samsung Guru & Keypad Phones"
+    ],
+    "Tablets & iPads": [
+      "Apple iPad (Pro, Air, Mini, Standard)",
+      "Samsung Galaxy Tab",
+      "Xiaomi Pad",
+      "Lenovo Android Tablets",
+      "Amazon Fire HD Tablets",
+      "Graphics & Drawing Tablets",
+      "Kids Learning Tablets"
+    ],
+    "Mobile Accessories": [
+      "Fast Chargers & Power Adapters (20W - 120W)",
+      "GaN Fast Chargers",
+      "Type-C & Lightning Fast Data Cables",
+      "Power Banks (10000mAh, 20000mAh, 30000mAh)",
+      "Wireless Magnetic Chargers & Magsafe",
+      "Wireless Earbuds (AirPods, Galaxy Buds)",
+      "Bluetooth Neckbands & Headsets",
+      "Over-Ear DJ & Gaming Headphones",
+      "Silicone, TPU & Rugged Phone Cases",
+      "Premium Leather & Flip Wallet Covers",
+      "11D / 21D Curved Tempered Glass",
+      "UV Liquid Tempered Glass",
+      "Camera Lens Protectors",
+      "Ring Lights with Tripod Stands",
+      "Mobile Vlogging Tripods & Monopods",
+      "Handheld 3-Axis Mobile Gimbals",
+      "Mobile Gaming Triggers & Phone Coolers",
+      "Car Mobile Holders & Mounts",
+      "Waterproof Bike Mobile Mounts",
+      "OTG Converters & Splitters",
+      "MicroSD Memory Cards (32GB - 512GB)",
+      "Stylus Touch Pens"
+    ],
+    "Wearables & Smartwatches": [
+      "Apple Watch (Ultra, Series 8/9/10, SE)",
+      "Samsung Galaxy Watch",
+      "Amazfit Smartwatches",
+      "Huawei Smartwatches",
+      "Xiaomi & Mi Smart Bands",
+      "Kieslect, Haylou & Mibro Watches",
+      "Fire-Boltt, Noise & boAt Watches",
+      "Smartwatch Metal & Silicone Straps",
+      "Smartwatch Magnetic Chargers",
+      "Smart Health Rings"
+    ],
+    "Parts & Repair Services": [
+      "Original OLED / AMOLED Displays",
+      "Copy / Incell LCD Displays",
+      "Original Replacement Batteries",
+      "Charging Logic Ports & Ribbons",
+      "Original Phone Motherboards",
+      "Front & Back Camera Modules",
+      "Phone Back Glass & Body Housings",
+      "Professional Screen Replacement Service",
+      "Battery Replacement Service",
+      "Water Damage & Motherboard Repair Service",
+      "Software Flash, FRP & Network Unlock"
+    ],
+    "SIM Cards & VIP Numbers": [
+      "Grameenphone (GP) SIM & VIP Numbers",
+      "Banglalink SIM & VIP Numbers",
+      "Robi & Airtel SIM Cards",
+      "Teletalk SIM Cards",
+      "Prepaid & Postpaid Corporate SIMs"
+    ]
+  },
+  "Computers": {
+    "Laptops": [
+      "High-End Gaming Laptops (RTX 4060/4070/4080)",
+      "Intel Core i3 Budget Laptops",
+      "Intel Core i5 Multitasking Laptops",
+      "Intel Core i7 Professional Laptops",
+      "Intel Core i9 Extreme Laptops",
+      "AMD Ryzen 5 & Ryzen 7 Laptops",
+      "Apple MacBook Air (M1, M2, M3)",
+      "Apple MacBook Pro (M1, M2, M3 Pro/Max)",
+      "HP Pavilion, Envy & Spectre Laptops",
+      "Dell Inspiron, Vostro & XPS Laptops",
+      "Lenovo ThinkPad, IdeaPad & Legion",
+      "Asus ROG, TUF & ZenBook Laptops",
+      "Acer Predator, Nitro & Swift Laptops",
+      "2-in-1 Touch Convertible Laptops",
+      "Used & Reconditioned Laptops"
+    ],
+    "Desktop Computers": [
+      "Custom Built Gaming Desktop PCs",
+      "Office, Business & Accounting PCs",
+      "Video Editing & 3D Animation PCs",
+      "All-in-One (AIO) Desktop Computers",
+      "Brand Desktops (HP, Dell, Lenovo)",
+      "Mini PCs & Compute Sticks",
+      "High-Performance Workstations"
+    ],
+    "Processors (CPU)": [
+      "Intel Core i3 Processors",
+      "Intel Core i5 Processors",
+      "Intel Core i7 Processors",
+      "Intel Core i9 Processors",
+      "AMD Ryzen 3 & Ryzen 5 Processors",
+      "AMD Ryzen 7 & Ryzen 9 Processors"
+    ],
+    "Motherboards": [
+      "ASUS ROG, TUF & Prime Motherboards",
+      "MSI Gaming & Pro Motherboards",
+      "Gigabyte AORUS & Ultra Durable Boards",
+      "ASRock Motherboards",
+      "Intel H61, B450, B550, B660, B760 & Z790 Boards",
+      "AMD AM4 & AM5 Motherboards"
+    ],
+    "Graphics Cards (GPU)": [
+      "NVIDIA GeForce RTX 4090 & 4080 GPU",
+      "NVIDIA GeForce RTX 4070 & 4060 GPU",
+      "NVIDIA GeForce RTX 3060, 3070 & 3080 GPU",
+      "NVIDIA GeForce GTX 1650 & 1660 Super",
+      "AMD Radeon RX 6600, 6700 & 7800 GPU",
+      "Budget Graphics Cards (2GB / 4GB)"
+    ],
+    "RAM (Memory)": [
+      "4GB & 8GB DDR3 Desktop RAM",
+      "8GB DDR4 3200MHz Gaming RAM",
+      "16GB DDR4 3200MHz Gaming RAM",
+      "32GB DDR4 High-Performance RAM",
+      "16GB DDR5 5600MHz / 6000MHz RAM",
+      "32GB DDR5 Extreme Gaming RAM",
+      "Laptop DDR4 & DDR5 RAM Modules"
+    ],
+    "Internal Storage (SSD & HDD)": [
+      "128GB & 256GB SATA SSD",
+      "512GB NVMe M.2 High-Speed SSD",
+      "1TB NVMe M.2 Gen4 SSD",
+      "2TB NVMe SSD",
+      "1TB & 2TB SATA Desktop HDD",
+      "4TB - 8TB Surveillance & NAS Hard Drives"
+    ],
+    "Power Supplies & Casings": [
+      "450W - 550W Standard Power Supplies",
+      "650W - 750W 80 Plus Bronze / Gold PSU",
+      "850W - 1000W 80 Plus Gold Modular PSU",
+      "Gaming RGB Casings with Tempered Glass",
+      "Mid-Tower & Full-Tower PC Casings",
+      "Mini-ITX Compact Casings",
+      "120mm ARGB Casing Fans & Fan Hubs",
+      "120mm, 240mm & 360mm Liquid CPU Coolers",
+      "High-Performance Tower Air Coolers",
+      "Thermal Paste & Cooling Accessories"
+    ],
+    "Monitors & Displays": [
+      "144Hz / 165Hz / 240Hz Esports Gaming Monitors",
+      "21.5-inch & 22-inch LED Office Monitors",
+      "24-inch IPS Borderless Monitors",
+      "27-inch 2K QHD & 4K UHD Monitors",
+      "Curved Ultrawide & Productivity Monitors",
+      "Portable USB-C Monitors",
+      "Single & Dual Gas-Spring Monitor Desk Arms"
+    ],
+    "Keyboards, Mouse & Peripherals": [
+      "Mechanical Gaming Keyboards (Blue/Red/Brown Switch)",
+      "RGB Wireless & Bluetooth Keyboards",
+      "Standard Office Membrane Keyboards",
+      "Wireless Keyboard & Mouse Combos",
+      "Optical Gaming Mouse with DPI Settings",
+      "Ultra-Lightweight Wireless Gaming Mouse",
+      "Large Extended Desk Mats & Mousepads",
+      "Ergonomic Wrist Rests",
+      "1080p & 4K Streaming Webcams",
+      "USB Studio & Condenser Microphones"
+    ],
+    "Networking & Internet Devices": [
+      "Wi-Fi 6 Gigabit Dual-Band Routers",
+      "High-Speed Wi-Fi 5 AC Routers",
+      "Whole Home Mesh Wi-Fi Systems",
+      "4G & 5G SIM Pocket Routers / Modems",
+      "Wi-Fi Range Extenders & Signal Boosters",
+      "5-Port, 8-Port & 16-Port Gigabit Network Switches",
+      "Cat6 & Cat7 High-Speed LAN Cables",
+      "Optical Fiber ONU & Patch Cords",
+      "USB Wi-Fi Receivers & Bluetooth Dongles"
+    ],
+    "Printers, Scanners & Office Gear": [
+      "Canon MegaTank Ink Tank Color Printers",
+      "Epson EcoTank Color Printers",
+      "HP LaserJet Monochromatic Printers",
+      "All-in-One Multi-Function Printers (Print/Scan/Copy)",
+      "Barcode & Thermal POS Receipt Printers",
+      "Flatbed & Document Scanners",
+      "Original Refill Ink Bottles",
+      "Laser Toner Cartridges"
+    ],
+    "External Storage & Power Backup": [
+      "1TB, 2TB & 4TB External Portable Hard Drives",
+      "External Portable High-Speed SSDs",
+      "32GB, 64GB, 128GB & 256GB USB Flash Drives",
+      "High-Speed SD & MicroSD Cards",
+      "650VA & 1200VA Offline PC UPS",
+      "Online UPS for Servers & Critical Systems",
+      "Voltage Stabilizers",
+      "Laptop Cooling Pads & Ergonomic Stands",
+      "USB-C Multi-Port Hubs & Docking Stations",
+      "Laptop Bags, Sleeves & Backpacks"
+    ],
+    "Software, Windows & Maintenance": [
+      "Windows 10 & 11 Pro Genuine License Keys",
+      "Microsoft Office 365 Genuine Accounts",
+      "Kaspersky, ESET & Norton Internet Security",
+      "Desktop & Laptop Cleaning and Servicing",
+      "Operating System Installation & Driver Setup",
+      "Hard Disk & SSD Data Recovery Services"
+    ]
+  },
+  "Electronics": {
+    "Televisions & Smart Video": [
+      "32-inch Smart Android LED TVs",
+      "43-inch 4K Ultra HD Smart TVs",
+      "50-inch & 55-inch 4K Google TVs",
+      "65-inch & 75-inch OLED / QLED Premium TVs",
+      "Sony BRAVIA Smart TVs",
+      "Samsung Crystal UHD & QLED TVs",
+      "LG 4K Smart TVs",
+      "Walton & Singer Smart TVs",
+      "4K Android TV Boxes & Media Players",
+      "Amazon Fire TV Stick & Google Chromecast",
+      "Portable Mini LED Projectors",
+      "Full HD & 4K Home Cinema Projectors",
+      "Projector Screens with Stands",
+      "Heavy-Duty TV Wall Mounts & Brackets",
+      "Universal Smart TV Remote Controls"
+    ],
+    "Audio, Speakers & Sound Systems": [
+      "Portable Bluetooth Wireless Speakers (JBL, Sony, Tribit)",
+      "2.1 & 5.1 Channel Home Theater Sound Systems",
+      "TV Soundbars with Wireless Subwoofers",
+      "High-Bass Party Speakers with RGB Lights",
+      "Wireless Bluetooth Karaoke Microphones",
+      "Studio Condenser Microphones with Arms",
+      "Wireless Lapel & Collar Mics for Vlogging",
+      "DJ Headphones & Sound Mixers",
+      "Audio Amplifiers & Sound Equalizers",
+      "Guitar & Instrument Audio Cables"
+    ],
+    "Cameras & Photography Equipment": [
+      "Canon DSLR Cameras (200D II, 1500D, 80D, 90D)",
+      "Nikon DSLR Cameras (D3500, D5600, D7500)",
+      "Sony Mirrorless Cameras (A6400, A7 III, A7 IV)",
+      "Action Cameras (GoPro Hero 10/11/12, Insta360)",
+      "DJI Camera Drones & Quadcopters",
+      "3-Axis Handheld Camera Gimbals & Stabilizers",
+      "50mm Prime Lenses (f/1.8 Bokeh)",
+      "Wide Angle & Telephoto Zoom Lenses",
+      "Heavy-Duty Aluminum Camera Tripods",
+      "Studio Ring Lights & Softbox Continuous Lighting",
+      "Speedlite Camera Flashes & Transmitters",
+      "CCTV 4-Channel & 8-Channel Complete Camera Sets",
+      "360-Degree Wi-Fi Smart Home Security IP Cameras",
+      "Camera Batteries, Dual Chargers & Memory Cards",
+      "Waterproof Camera Backpacks & Hard Cases"
+    ],
+    "Air Conditioners (AC) & Cooling": [
+      "1.0 Ton Inverter Split AC",
+      "1.5 Ton Inverter Split AC (Energy Saving)",
+      "2.0 Ton Inverter Split AC",
+      "Gree, General & Daikin Air Conditioners",
+      "Walton, Singer & Haier ACs",
+      "Portable Air Conditioners",
+      "Ceiling-Mounted Cassette ACs",
+      "Commercial Tower ACs",
+      "Evaporative Air Coolers & Room Chillers"
+    ],
+    "Refrigerators & Freezers": [
+      "Frost & Non-Frost Inverter Refrigerators",
+      "Side-by-Side Double Door Refrigerators",
+      "French Door Luxury Refrigerators",
+      "Deep Freezers & Chest Freezers (100L - 400L)",
+      "Commercial Glass Door Beverage Chillers",
+      "Mini Refrigerators for Bedrooms & Offices"
+    ],
+    "Washing Machines & Dryers": [
+      "Front-Load Fully Automatic Inverter Washing Machines",
+      "Top-Load Fully Automatic Washing Machines",
+      "Semi-Automatic Twin-Tub Washing Machines",
+      "Electric Clothes Dryers",
+      "Washing Machine Stands with Wheels"
+    ],
+    "Water Purifiers & Heaters": [
+      "RO (Reverse Osmosis) Multi-Stage Water Purifiers",
+      "UV & Mineral Water Purifiers",
+      "Hot, Cold & Normal Water Dispensers",
+      "Instant Electric Geysers / Water Heaters",
+      "Storage Electric Geysers (30L, 45L, 67L)",
+      "LPG / Natural Gas Water Heaters"
+    ],
+    "Kitchen Appliances": [
+      "Convection Microwave Ovens (Baking & Grilling)",
+      "Solo & Grill Microwave Ovens",
+      "Electric Baking Ovens & OTGs (30L - 60L)",
+      "750W - 1000W Heavy-Duty Blenders & Grinders",
+      "Food Processors, Meat Mincers & Dough Kneaders",
+      "Electric Rice Cookers (1.8L, 2.8L, 3.2L)",
+      "Digital Electric Pressure Cookers",
+      "Automatic Stainless Steel Electric Kettles",
+      "Double Burner Gas Stoves with Glass Tops",
+      "Induction Cookers & Touch Hot Plates",
+      "Infrared Cookers (All Cookware Compatible)",
+      "Air Fryers for Oil-Free Healthy Cooking (4L - 9L)",
+      "2-Slice & 4-Slice Pop-Up Bread Toasters",
+      "Electric Sandwich, Panini & Waffle Makers",
+      "Automatic Roti Makers",
+      "Electric Hand Mixers & Egg Beaters"
+    ],
+    "Fans, Cleaning & Personal Care": [
+      "56-inch High-Speed Ceiling Fans (Havells, BRB, Walton)",
+      "Adjustable Stand & Pedestal Fans",
+      "Desk & Table Fans",
+      "Exhaust Fans for Kitchens & Bathrooms",
+      "Rechargeable Emergency Battery Fans",
+      "Lightweight Dry Electric Irons",
+      "Heavy Steam Irons & Vertical Garment Steamers",
+      "Canister & Upright Wet & Dry Vacuum Cleaners",
+      "Smart Robot Vacuum Cleaners",
+      "Electric Sewing Machines",
+      "Rechargeable Mosquito Bats & Insect Killer Lamps",
+      "Professional Hair Dryers & Straighteners",
+      "Men's Cordless Hair & Beard Trimmers & Shavers",
+      "Rechargeable LED Emergency Lights & Torches"
+    ],
+    "Power, Solar & Generators": [
+      "800VA, 1000VA & 1200VA Pure Sine Wave Home IPS",
+      "1500VA - 2500VA Heavy-Duty IPS & Inverters",
+      "130Ah, 150Ah & 200Ah Tall Tubular IPS Batteries",
+      "Petrol & Octane Portable Silent Generators (1kW - 5kW)",
+      "Diesel Industrial Generators (10kVA - 50kVA)",
+      "Monocrystalline High-Efficiency Solar Panels",
+      "MPPT & PWM Solar Charge Controllers",
+      "Automatic Voltage Stabilizers (for AC & Refrigerators)"
+    ]
+  },
+  "Vehicles": {
+    "Cars": [
+      "Toyota Allion & Premio",
+      "Toyota Corolla (Axio, Fielder, Altis)",
+      "Toyota Noah, Voxy & Esquire Microbuses",
+      "Toyota HiAce Vans",
+      "Toyota Aqua & Vitz Hybrid Cars",
+      "Toyota Harrier & RAV4 SUVs",
+      "Honda Grace, Civic & Accord",
+      "Honda Vezel Hybrid SUVs",
+      "Nissan X-Trail & Dualis",
+      "Mitsubishi Pajero & Outlander Jeeps",
+      "Hyundai & Kia SUVs & Sedans",
+      "BMW 3-Series, 5-Series & 7-Series",
+      "Mercedes-Benz C-Class & E-Class",
+      "Audi A4 & A6 Luxury Sedans",
+      "Reconditioned Unregistered Japanese Cars",
+      "Second-Hand Used Registered Cars",
+      "Vintage & Classic Antique Cars"
+    ],
+    "Motorcycles & Scooters": [
+      "Yamaha R15 (V3 & V4) Sports Bikes",
+      "Yamaha FZ-S (V2 & V3) & MT-15",
+      "Suzuki Gixxer & Gixxer SF (FI / ABS)",
+      "Suzuki GSX-R 150 Dual Channel ABS",
+      "Honda CB Hornet 160R & XBlade",
+      "Honda CBR 150R",
+      "Bajaj Pulsar (150cc, 160cc, 220F, NS160)",
+      "Bajaj Discover (110cc, 125cc) & Platina 100",
+      "TVS Apache RTR 160 4V & 2V",
+      "TVS Stryker 125cc & Metro 100cc",
+      "Royal Enfield Classic 350 & Bullet 350",
+      "Yamaha RayZR, TVS Ntorq & Honda Activa Scooters",
+      "Cruiser & Cafe Racer Modified Bikes",
+      "Off-Road & Dirt Trail Bikes",
+      "Second-Hand Used Registered Motorcycles"
+    ],
+    "Electric Vehicles (EV)": [
+      "Electric Bikes & Commuters",
+      "Electric High-Speed Scooters",
+      "Electric Cycles (Pedal Assist E-Bikes)",
+      "Electric Easy Bikes & Auto Rickshaws"
+    ],
+    "Bicycles": [
+      "Mountain Bikes (MTB - 26\", 27.5\", 29\")",
+      "Road & Racing Bicycles",
+      "Hybrid & City Commuter Bicycles",
+      "Foldable Portable Bicycles",
+      "Kids Bicycles (12\", 16\", 20\")",
+      "BMX Stunt Bicycles",
+      "Cycle Helmets, Gloves & Riding Gear",
+      "Rechargeable Cycle Headlights & Horns",
+      "Anti-Theft Cable & Number Locks",
+      "Digital Speedometers & Portable Air Pumps"
+    ],
+    "Commercial Vehicles": [
+      "1 Ton & 1.5 Ton Pickup Vans (Tata, Mahindra)",
+      "Medium & Heavy Freight Trucks",
+      "Covered Vans for Deliveries",
+      "Passenger Minibuses & Intercity Buses",
+      "Auto Rickshaws & Green CNGs",
+      "Agricultural Tractors & Power Tillers",
+      "Emergency Ambulances"
+    ],
+    "Water Transport": [
+      "Fiberglass Speedboats",
+      "Outboard Marine Motors (Yamaha, Suzuki)",
+      "Engine Trawlers & Cargo Boats",
+      "Passenger Launches & Jet Skis"
+    ],
+    "Auto Parts & Accessories": [
+      "Car & Motorcycle Batteries (Exide, Hamko, Lucas)",
+      "Tubeless Car Tyres (Michelin, Yokohama, Bridgestone)",
+      "Motorcycle Tyres (Pirelli, MRF, CEAT, Maxxis)",
+      "Alloy Rims & Wheel Accessories",
+      "Synthetic Engine Oils (Motul, Mobil, Shell, Liqui Moly)",
+      "DOT & ECE Certified Riding Helmets",
+      "Armored Riding Jackets, Gloves & Knee Guards",
+      "Android Touch Displays & GPS Navigation Systems",
+      "Dashcams & Night-Vision Reverse Cameras",
+      "Car Subwoofers, Speakers & Amplifiers",
+      "High-Power LED Headlight Bulbs & Fog Lights",
+      "Custom Leather Seat Covers",
+      "7D Waterproof Heavy-Duty Floor Mats",
+      "GPS Vehicle Trackers with Remote Engine Lock",
+      "Motorcycle Anti-Theft Alarm Disc Locks",
+      "Waterproof Full Body Car & Bike Covers",
+      "Car Wash Shampoos, Polishes & Scratch Removers"
+    ]
+  },
+  "Property": {
+    "Apartments & Flats for Sale": [
+      "2-Bedroom Ready Flats for Sale",
+      "3-Bedroom Ready Flats for Sale",
+      "4-Bedroom Luxury Flats for Sale",
+      "Under-Construction Flats for Sale",
+      "Duplex Luxury Apartments for Sale",
+      "Exclusive Penthouses for Sale"
+    ],
+    "Apartments & Flats for Rent": [
+      "2-Bedroom Family Flats for Rent",
+      "3-Bedroom Family Flats for Rent",
+      "4-Bedroom Spacious Flats for Rent",
+      "Furnished Serviced Apartments for Rent",
+      "Bachelor-Friendly Flats for Rent",
+      "Studio Apartments for Rent"
+    ],
+    "Land & Plots": [
+      "Residential Land & Plots for Sale",
+      "Commercial Corner Plots for Sale",
+      "Agricultural & Farm Land for Sale",
+      "Industrial Land & Factory Plots for Sale",
+      "Rajuk & Purbachal Approved Plots",
+      "Housing Project Plots with Easy Installments"
+    ],
+    "Houses & Buildings": [
+      "Complete Independent Houses for Sale",
+      "Multi-Story Commercial / Residential Buildings for Sale",
+      "Luxury Villas & Farmhouses",
+      "Independent Houses for Rent"
+    ],
+    "Commercial Property": [
+      "Ready Office Spaces for Rent",
+      "Commercial Office Floors for Sale",
+      "Market Retail Shops & Showrooms for Rent",
+      "Commercial Shops for Sale",
+      "Warehouses & Storage Godowns for Rent",
+      "Garments & Factory Floors for Rent"
+    ],
+    "Rooms & Shared Living": [
+      "Single Room for Rent (Bachelor / Student)",
+      "Master Bedroom Sublet for Rent",
+      "Family Sublet Rooms for Rent",
+      "Male Bachelor Mess Seats",
+      "Female Bachelor Mess Seats",
+      "Student Hostels & PG Accommodations",
+      "Garage & Covered Car Parking Spaces for Rent"
+    ]
+  },
+  "Jobs": {
+    "IT & Software Development": [
+      "Frontend Web Developers (React, Next.js, Vue)",
+      "Backend Developers (Node.js, Python, PHP, Java)",
+      "Full-Stack Web Developers",
+      "Mobile App Developers (Flutter, Android, iOS)",
+      "UI / UX & Product Designers",
+      "Graphic Designers & Logo Designers",
+      "Video Editors & 2D/3D Motion Animators",
+      "Software Quality Assurance (SQA) & Testers",
+      "Database Administrators & DevOps Engineers",
+      "Network & System Administrators"
+    ],
+    "Sales & Marketing": [
+      "Field Sales Representatives (FSR)",
+      "Showroom & Retail Sales Executives",
+      "Corporate Sales Managers",
+      "Digital Marketing Specialists",
+      "Social Media Marketing Managers",
+      "Search Engine Optimization (SEO) Specialists",
+      "Business Development Executives (BDE)",
+      "Brand Ambassadors & Promoters"
+    ],
+    "Customer Support & Telemarketing": [
+      "Call Center Customer Support Agents",
+      "Inbound & Outbound Telemarketers",
+      "Live Chat & Social Media Support Specialists",
+      "Technical Support Executives",
+      "Front Desk Officers & Receptionists"
+    ],
+    "Office, Accounts & Administration": [
+      "Office Assistants, Peons & Messengers",
+      "Human Resources (HR) & Recruitment Officers",
+      "Administrative Officers & Coordinators",
+      "Accountants & Financial Auditors",
+      "Billing Clerks & Cashiers",
+      "Data Entry Operators & Computer Typists",
+      "Personal Assistants (PA) & Secretaries"
+    ],
+    "Education, Teaching & Training": [
+      "Home Tutors (Class 1 to 12 - All Subjects)",
+      "English Medium Curriculum Tutors",
+      "Primary & High School Teachers",
+      "College Lecturers & University Professors",
+      "Holy Quran & Arabic Tutors",
+      "Admission & Academic Coaching Instructors",
+      "IELTS & Spoken English Trainers",
+      "Computer & Coding Instructors"
+    ],
+    "Delivery, Driver & Logistics": [
+      "Food & Parcel Delivery Bike Riders",
+      "E-commerce Courier Delivery Boys",
+      "Private Family Car Drivers",
+      "Corporate Office Car Drivers",
+      "Heavy Truck & Covered Van Drivers",
+      "Warehouse Workers & Loaders"
+    ],
+    "Garments, Textile & Manufacturing": [
+      "Garments Sewing Machine Operators",
+      "Quality Control (QC) & Quality Assurance (QA)",
+      "Apparel Merchandisers & Assistants",
+      "Pattern Makers, Cutting Masters & Tailors",
+      "Factory Supervisors & Line In-charge",
+      "General Factory Production Labor"
+    ],
+    "Hospitality, Hotel & Restaurant": [
+      "Restaurant Head Chefs & Main Cooks",
+      "Fast Food, Burger & Pizza Chefs",
+      "Waiters, Stewards & Dining Staff",
+      "Baristas & Coffee Makers",
+      "Hotel Room Attendants & Housekeeping Staff"
+    ],
+    "Technical, Trade & Security": [
+      "Electricians & House Wiring Technicians",
+      "Split & Central AC Repair Technicians",
+      "Plumbers & Pipe Repair Technicians",
+      "Automobile Car & Bike Mechanics",
+      "Carpenters & Furniture Woodworkers",
+      "Security Guards (Day & Night Shift)",
+      "CCTV, Fingerprint & Access Control Technicians"
+    ]
+  },
+  "অন্যান্য": {
+    "Home & Living (Furniture & Decor)": [
+      "King & Queen Size Wooden Beds",
+      "Orthopedic & Spring Mattresses",
+      "4-Door & 3-Door Wooden & Steel Wardrobes",
+      "Modern 3+2+1 Sofa Sets & Couch",
+      "L-Shaped Sectional Corner Sofas",
+      "Solid Wood Divans & Daybeds",
+      "6-Seater & 4-Seater Dining Table Sets",
+      "Computer & Ergonomic Study Desks",
+      "Adjustable Ergonomic Office Chairs",
+      "Living Room TV Cabinets & Wall Showcases",
+      "Wooden & Metal Bookshelves",
+      "Modern Dressing Tables with Mirrors",
+      "Wooden & Metal Shoe Racks",
+      "Luxury Window Curtains & Drapery Rods",
+      "Persian & Turkish Floor Carpets & Rugs",
+      "100% Cotton Bed Sheets & Comforters",
+      "Modern Ceiling Chandeliers & Pendant Lamps",
+      "Wall Art, Islamic Calligraphy & Canvas Paintings",
+      "Non-Stick Marble Cookware & Fry Pans",
+      "Opal Glass & Ceramic Dinner Sets",
+      "Bathroom Vanities, Mirrors & Fixtures"
+    ],
+    "Fashion & Lifestyle": [
+      "Men's Exclusive Cotton & Silk Panjabis",
+      "Men's Casual & Formal Full-Sleeve Shirts",
+      "Men's Denim Jeans & Stretchable Chino Pants",
+      "Men's Winter Leather Jackets & Hoodies",
+      "Women's Jamdani, Katan & Silk Sarees",
+      "Women's Cotton Three Pieces & Salwar Kameez",
+      "Women's Designer Kurtis, Tops & Gowns",
+      "Dubai Borka, Abayas & Premium Hijabs",
+      "Men's Running Sneakers & Sports Shoes",
+      "Men's Pure Leather Formal Shoes",
+      "Men's Leather Sandals & Loafers",
+      "Women's Heels, Flats & Party Shoes",
+      "Luxury Analog & Quartz Wristwatches",
+      "Polarized & UV Protection Sunglasses",
+      "Men's Genuine Leather Wallets & Belts",
+      "Travel Luggage, Trolley Bags & Duffle Bags",
+      "School, College & Laptop Backpacks",
+      "22K Gold & Diamond Jewelry",
+      "Silver & Premium Imitation Jewelry",
+      "Face Wash, Serums & Organic Skincare",
+      "Lipsticks, Foundation & Makeup Kits",
+      "Imported Original Perfumes & Alcohol-Free Attars"
+    ],
+    "Sports & Fitness": [
+      "English Willow Grade-1 Cricket Bats",
+      "Kashmir Willow Tennis & Tape Cricket Bats",
+      "Cricket Leather Balls, Stumps & Practice Nets",
+      "Leg Guards, Batting Gloves & Helmets",
+      "FIFA Approved Match Footballs",
+      "Football Studs & Cleats Shoes",
+      "Carbon Fiber Professional Badminton Rackets",
+      "Yonex Feather & Nylon Shuttlecocks",
+      "Rubber Coated Gym Dumbbells & Barbells",
+      "Multi-Angle Adjustable Gym Weight Benches",
+      "Motorized Incline Home Treadmills",
+      "Indoor Magnetic Fitness Exercise Bikes",
+      "Original Club Cricket & Football Jerseys",
+      "Tournament Championship Carrom Boards & Coins",
+      "Wooden Chess Sets & Family Board Games",
+      "Table Tennis Bats, Nets & High-Bounce Balls"
+    ],
+    "Hobbies, Books & Music": [
+      "Acoustic Wooden Guitars with Gig Bags",
+      "Solid-Body Electric Guitars & Mini Amplifiers",
+      "61-Key & 88-Key Electronic Music Keyboards / Pianos",
+      "Bamboo Flutes, Violins & Traditional Harmoniums",
+      "NCTB School, College & Madrasah Textbooks",
+      "Medical, Engineering & IBA Admission Guidebooks",
+      "Bangla Literature, Fiction, Thriller & Novels",
+      "Tafseer, Hadith & Islamic Educational Books",
+      "English Bestseller & Self-Development Books",
+      "Sony PlayStation (PS4 & PS5) Consoles & Games",
+      "Microsoft Xbox Series X / Series S Consoles",
+      "Nintendo Switch OLED Gaming Consoles",
+      "Collectible Die-Cast Scale Cars & Action Figures"
+    ],
+    "Kids & Baby Products": [
+      "Newborn Baby Cotton Clothing Sets",
+      "Baby Rompers, Dungarees & Party Frocks",
+      "Foldable Baby Strollers & Lightweight Prams",
+      "Musical Baby Walkers with Safety Wheels",
+      "Wooden Baby Cots, Bassinets & Cribs",
+      "Adjustable Baby Feeding High Chairs",
+      "Disposable Baby Diapers & Soft Wet Wipes",
+      "Baby Skin Care Lotions, Powders & Bath Tubs",
+      "Battery-Operated Ride-On Electric Jeeps & Cars",
+      "Educational Wooden Puzzles & Building Blocks",
+      "Soft Plush Teddy Bears & Cartoon Dolls"
+    ],
+    "Pets & Animals": [
+      "Persian, Siamese & Local Kittens",
+      "German Shepherd, Golden Retriever & Puppies",
+      "Siraji, Lotan & Fancy Pigeons",
+      "Lovebirds, Cockatiels, Budgerigars & Macaws",
+      "Glass Aquarium Tanks, Cabinets & Hoods",
+      "Aquarium Power Filters, Air Pumps & LED Lights",
+      "Exotic Goldfish, Guppies & Tropical Aquarium Fish",
+      "Premium Cat Food (Drools, Me-O, Reflex, Royal Canin)",
+      "High-Protein Dog Food & Crunchy Treats",
+      "Clean Bird Seeds, Millet & Mineral Blocks",
+      "Spacious Pet Travel Carriers & Metal Cages",
+      "Pet Shampoos, Brushes & Neck Belts",
+      "Qurbani Cattle, Bulls & Dairy Cows",
+      "Khasi, Goats & Sheep",
+      "Desi Roosters, Hens, Ducks & Quails"
+    ],
+    "Agriculture & Farming": [
+      "High-Yield Hybrid Vegetable & Crop Seeds",
+      "Fruiting Plant Seedlings & Nursery Flower Trees",
+      "Bonsai, Indoor Plants & Ceramic Pots",
+      "100% Organic Vermicompost & Soil Conditioners",
+      "DAP, Urea & Potash Agricultural Fertilizers",
+      "Plant Insecticides, Fungicides & Battery Sprayers",
+      "Irrigation Water Pumps, Pipes & Drip Systems",
+      "Mini Power Tillers & Rice Harvesters",
+      "Nutritious Poultry Feed & Fish Floating Feed",
+      "High-Calcium Dairy Cattle & Goat Feed"
+    ],
+    "Business & Industrial": [
+      "Automatic Packaging, Sealing & Shrink Machines",
+      "Industrial Plastic, Injection & Paper Machinery",
+      "Commercial Screen & Offset Printing Presses",
+      "Industrial Raw Chemical Materials",
+      "Wholesale Garments Fabrics, Yarns & Threads",
+      "Bulk Office A4 Paper, Files & Stationery",
+      "Commercial Glass Door Deep Freezers & Chillers",
+      "POS Touch Screen Billing Machines & Barcode Scanners"
+    ],
+    "Services": [
+      "AC Master Servicing, Gas Charging & Shifting",
+      "Refrigerator & Washing Machine Fast Home Repair",
+      "Certified Electrician & Complete House Wiring Services",
+      "Plumbing Pipe Fitting & Sanitary Leakage Repair",
+      "Home, Apartment & Office Deep Cleaning Services",
+      "Professional House Shifting, Furniture & Pickup Movers",
+      "Wedding Photography, Cinematic Video & Drone Shoots",
+      "Birthday, Wedding & Corporate Stage Event Decor",
+      "Professional Catering, Chef & Serving Staff",
+      "Air Ticket Booking, Hotel Reservation & Visa Assistance",
+      "Business Trade License, VAT & Legal Advisory Services",
+      "Home & Online Tutoring Provider Services"
+    ]
+  }
+};
+```
+
+---
+
+<a id="part2"></a>
+## অংশ ২: হোমপেজের ক্যাটাগরি কম্পোনেন্ট ও লজিক (Homepage JSX & State)
+**ফাইল পাথ:** `src/app/page.js`
+
+### ২.১ স্টেট ভ্যারিয়েবলস (State Hooks):
+```javascript
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [activeCategory, setActiveCategory] = useState(null);
+  const [activeSub, setActiveSub] = useState(null);
+  const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(null);
+  const [listings, setListings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [subCatSearchQuery, setSubCatSearchQuery] = useState('');
+  const [customItemInput, setCustomItemInput] = useState('');
+  const [showOtherInput, setShowOtherInput] = useState(false);
+
+```
+
+### ২.২ ক্যাটাগরি কনফিগারেশন তালিকা (Icons & Color Gradients):
+```javascript
+  const categories = [
+    { 
+      name: 'Mobile Phones', 
+      icon: Smartphone, 
+      color: '#2563eb', 
+      bg: '#f0f7ff', 
+      border: '#bfdbfe', 
+      text: '#1e40af', 
+      gradient: 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #60a5fa 100%)' 
+    },
+    { 
+      name: 'Computers', 
+      icon: Laptop, 
+      color: '#059669', 
+      bg: '#ecfdf5', 
+      border: '#a7f3d0', 
+      text: '#065f46', 
+      gradient: 'linear-gradient(135deg, #047857 0%, #10b981 50%, #34d399 100%)' 
+    },
+    { 
+      name: 'Electronics', 
+      icon: Zap, 
+      color: '#d97706', 
+      bg: '#fffbeb', 
+      border: '#fde68a', 
+      text: '#92400e', 
+      gradient: 'linear-gradient(135deg, #b45309 0%, #f59e0b 50%, #fbbf24 100%)' 
+    },
+    { 
+      name: 'Vehicles', 
+      icon: Car, 
+      color: '#dc2626', 
+      bg: '#fef2f2', 
+      border: '#fca5a5', 
+      text: '#991b1b', 
+      gradient: 'linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #f87171 100%)' 
+    },
+    { 
+      name: 'Property', 
+      icon: HouseIcon, 
+      color: '#7c3aed', 
+      bg: '#f5f3ff', 
+      border: '#ddd6fe', 
+      text: '#5b21b6', 
+      gradient: 'linear-gradient(135deg, #6d28d9 0%, #8b5cf6 50%, #a78bfa 100%)' 
+    },
+    { 
+      name: 'Jobs', 
+      icon: Briefcase, 
+      color: '#db2777', 
+      bg: '#fdf2f8', 
+      border: '#fbcfe8', 
+      text: '#9d174d', 
+      gradient: 'linear-gradient(135deg, #be185d 0%, #ec4899 50%, #f472b6 100%)' 
+    },
+    { 
+      name: 'অন্যান্য', 
+      icon: Box, 
+      color: '#475569', 
+      bg: '#f8fafc', 
+      border: '#cbd5e1', 
+      text: '#1e293b', 
+      gradient: 'linear-gradient(135deg, #334155 0%, #64748b 50%, #94a3b8 100%)' 
+    },
+  ];
+```
+
+### ২.৩ হোমপেজের ক্যাটাগরি কার্ড সেকশন (JSX):
+```jsx
+      <div className={`container ${styles.categorySection}`}>
+        <div 
+          className={styles.sectionTitleToggle} 
+          onClick={() => setIsCategoriesExpanded(!isCategoriesExpanded)}
+        >
+          <div className={styles.titleLeft}>
+            <span className={styles.accentBar}></span>
+            <h2 className={styles.sectionTitleText}>
+              {t('browseCategories')}
+            </h2>
+          </div>
+          <div className={styles.chevronCircle}>
+            <svg 
+              className={`${styles.chevronIcon} ${isCategoriesExpanded ? styles.rotated : ''}`} 
+              width="18" 
+              height="18" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="3.5" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <div className={`${styles.sliderWrapper} ${isCategoriesExpanded ? styles.expanded : ''}`}>
+          <div className={styles.sliderContent}>
+            <div className={styles.categoryGrid}>
+              {categories.map((cat, i) => (
+                <div 
+                  key={i} 
+                  className={styles.categoryCard}
+                  style={{
+                    '--card-bg': cat.bg,
+                    '--card-border': cat.border,
+                    '--card-text': cat.text,
+                    '--icon-glow': cat.color
+                  }}
+                  onClick={() => {
+                    setActiveCategory(cat.name);
+                    setSelectedCategoryFilter(cat.name);
+                    setActiveSub(null);
+                    setShowCategoryModal(true);
+                  }}
+                >
+                  <div className={styles.iconBox} style={{ background: cat.gradient }}>
+                    <cat.icon size={20} color="#ffffff" className={styles.categoryIcon} />
+                  </div>
+                  <h3 style={{ color: cat.text }}>{t(cat.name)}</h3>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+```
+
+### ২.৪ ক্যাটাগরি পপআপ মোডাল (Subcategory Accordion & Search JSX):
+```jsx
+      {showCategoryModal && activeCategory && mounted && createPortal(
+        <div className={styles.modalOverlay} onClick={closeCategoryModal}>
+          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h2 className={styles.modalTitle}>{t(activeCategory)}</h2>
+              <button className={styles.modalCloseBtn} onClick={closeCategoryModal}>
+                {lang === 'bn' ? '← ফিরে যান' : '← Go Back'}
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              {/* Prominent Banner for viewing ALL items in this Category */}
+              <div 
+                style={{
+                  marginBottom: '0.65rem',
+                  padding: '0.85rem 1.1rem',
+                  background: 'linear-gradient(135deg, #008b5e 0%, #00704c 100%)',
+                  borderRadius: '12px',
+                  boxShadow: '0 4px 12px rgba(0, 139, 94, 0.25)',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s',
+                  flexShrink: 0
+                }}
+                onClick={() => {
+                  setSelectedCategoryFilter(activeCategory);
+                  closeCategoryModal();
+                }}
+              >
+                <Link 
+                  href={`/ads?category=${encodeURIComponent(activeCategory)}`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: '100%',
+                    color: 'white',
+                    textDecoration: 'none'
+                  }}
+                >
+                  <span style={{ fontWeight: 800, fontSize: '0.95rem' }}>
+                    🌐 {lang === 'bn' 
+                      ? `সকল ${t(activeCategory)} (সবগুলো অ্যাড)`
+                      : `All ${t(activeCategory)} (All Ads)`}
+                  </span>
+                  <span style={{ 
+                    background: 'rgba(255, 255, 255, 0.25)', 
+                    padding: '0.35rem 0.75rem', 
+                    borderRadius: '20px', 
+                    fontSize: '0.78rem', 
+                    fontWeight: 800,
+                    letterSpacing: '0.3px',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {lang === 'bn' ? 'সব দেখুন →' : 'View All →'}
+                  </span>
+                </Link>
+              </div>
+
+              {/* Subcategory & Item Search Bar */}
+              <div className={styles.subCatSearchWrapper}>
+                <Search size={18} className={styles.subCatSearchIcon} />
+                <input 
+                  type="text" 
+                  className={styles.subCatSearchInput}
+                  placeholder={lang === 'bn' ? `${t(activeCategory)}-এ সাব-ক্যাটাগরি বা আইটেম খুঁজুন...` : `Search subcategories or items in ${t(activeCategory)}...`}
+                  value={subCatSearchQuery}
+                  onChange={(e) => setSubCatSearchQuery(e.target.value)}
+                />
+                {subCatSearchQuery && (
+                  <button 
+                    type="button" 
+                    className={styles.subCatSearchClear}
+                    onClick={() => setSubCatSearchQuery('')}
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+
+              {CATEGORIES[activeCategory] ? (
+                <>
+                  {Object.entries(CATEGORIES[activeCategory])
+                    .filter(([sub, items]) => {
+                      if (!subCatSearchQuery.trim()) return true;
+                      const q = subCatSearchQuery.toLowerCase().trim();
+                      const matchSub = sub.toLowerCase().includes(q) || (t(sub) && t(sub).toLowerCase().includes(q));
+                      const matchItem = items.some(item => item.toLowerCase().includes(q) || (t(item) && t(item).toLowerCase().includes(q)));
+                      return matchSub || matchItem;
+                    })
+                    .map(([sub, items]) => {
+                      const q = subCatSearchQuery.toLowerCase().trim();
+                      const filteredItems = q 
+                        ? items.filter(item => item.toLowerCase().includes(q) || (t(item) && t(item).toLowerCase().includes(q)) || sub.toLowerCase().includes(q) || (t(sub) && t(sub).toLowerCase().includes(q)))
+                        : items;
+
+                      const isExpanded = q ? true : (activeSub === sub);
+
+                      return (
+                        <div key={sub} className={styles.subCatAccordionGroup}>
+                          <div 
+                            className={`${styles.subCatAccordionHeader} ${isExpanded ? styles.activeHeader : ''}`}
+                            onClick={() => {
+                              setActiveSub(prev => (prev === sub ? null : sub));
+                            }}
+                          >
+                            <div className={styles.subCatAccordionTitle}>
+                              <span className={styles.subHeaderDot}></span>
+                              <span>{t(sub)}</span>
+                              {q && (
+                                <span style={{fontSize: '0.75rem', color: '#008b5e', fontWeight: 700, marginLeft: '6px'}}>
+                                  ({filteredItems.length})
+                                </span>
+                              )}
+                            </div>
+                            <div className={`${styles.subChevronCircle} ${isExpanded ? styles.rotated : ''}`}>
+                              <ChevronDown size={18} />
+                            </div>
+                          </div>
+
+                          <div className={`${styles.accordionBody} ${isExpanded ? styles.expanded : ''}`}>
+                            <div className={styles.accordionContent}>
+                              <div className={styles.itemGrid}>
+                                <div 
+                                  className={styles.categoryLink} 
+                                  onClick={() => {
+                                    setSelectedCategoryFilter(sub);
+                                    closeCategoryModal();
+                                  }} 
+                                  style={{ background: '#e6f4ef', border: '1px solid #bbf7d0' }}
+                                >
+                                  <Link href={`/ads?category=${encodeURIComponent(sub)}`}>
+                                    <span style={{ fontWeight: 800, color: '#008b5e' }}>
+                                      🌐 {lang === 'bn' ? `সকল ${t(sub)}` : `All ${t(sub)}`}
+                                    </span>
+                                    <span className={styles.arrowIcon} style={{ color: '#008b5e' }}>→</span>
+                                  </Link>
+                                </div>
+                                {filteredItems.map(item => (
+                                  <div 
+                                    key={item} 
+                                    className={styles.categoryLink} 
+                                    onClick={() => {
+                                      setSelectedCategoryFilter(item);
+                                      closeCategoryModal();
+                                    }}
+                                  >
+                                    <Link href={`/ads?category=${encodeURIComponent(item)}`}>
+                                      <span>{t(item)}</span>
+                                      <span className={styles.arrowIcon}>→</span>
+                                    </Link>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                  {/* Other / Custom item card at the end */}
+                  <div className={styles.otherCustomCard}>
+                    <div 
+                      className={styles.otherCustomHeader}
+                      onClick={() => setShowOtherInput(!showOtherInput)}
+                    >
+                      <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                        <span style={{fontSize: '1.2rem'}}>🏷️</span>
+                        <span>{lang === 'bn' ? 'অন্যান্য (কাস্টম আইটেম)' : 'Other (Custom Item)'}</span>
+                      </div>
+                      <span style={{fontSize: '0.82rem', color: '#008b5e', fontWeight: 800}}>
+                        {showOtherInput ? (lang === 'bn' ? '▲ বন্ধ করুন' : '▲ Close') : (lang === 'bn' ? '▼ আপনার পণ্য লিখুন' : '▼ Type Custom Item')}
+                      </span>
+                    </div>
+
+                    {showOtherInput && (
+                      <form 
+                        className={styles.otherCustomInputGroup}
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          const val = customItemInput.trim();
+                          if (val) {
+                            closeCategoryModal();
+                            window.location.href = `/ads?search=${encodeURIComponent(val)}&category=${encodeURIComponent(activeCategory)}`;
+                          }
+                        }}
+                      >
+                        <input 
+                          type="text" 
+                          className={styles.otherCustomInput}
+                          placeholder={lang === 'bn' ? 'সে কি বিক্রয় বা খুঁজতে চান লিখুন...' : 'Type what you want to sell or find...'}
+                          value={customItemInput}
+                          onChange={(e) => setCustomItemInput(e.target.value)}
+                          autoFocus
+                        />
+                        <button type="submit" className={styles.otherCustomBtn}>
+                          {lang === 'bn' ? 'খুঁজুন →' : 'Search →'}
+                        </button>
+                      </form>
+                    )}
+                  </div>
+                </>
+```
+
+### ২.৫ ক্যাটাগরি ফিল্টারিং লজিক (Filtering Ads by Category):
+```javascript
+              if (!selectedCategoryFilter) return true;
+              const cat = selectedCategoryFilter;
+              if (ad.category_id === cat) return true;
+              
+              if (CATEGORIES[cat]) {
+                const subcategories = CATEGORIES[cat];
+                for (const [subKey, items] of Object.entries(subcategories)) {
+                  if (subKey === ad.category_id || items.includes(ad.category_id)) return true;
+                }
+              }
+              
+              for (const mainCatObj of Object.values(CATEGORIES)) {
+                if (mainCatObj[cat] && (mainCatObj[cat].includes(ad.category_id) || ad.category_id === cat)) {
+                  return true;
+                }
+              }
+              return false;
+            });
+
+            return displayedListings.length > 0 ? (
+              displayedListings.map((ad) => (
+                <Link href={`/ad/${ad.id}`} key={ad.id} className={styles.adCard}>
+                  <div className={styles.adImageWrapper}>
+                    {ad.is_featured ? (
+                      <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #10b981, #047857)', color: '#ffffff', fontWeight: 900, boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)' }}>
+```
+
+---
+
+<a id="part3"></a>
+## অংশ ৩: হোমপেজের ক্যাটাগরি সিএসএস (Homepage CSS Module)
+**ফাইল পাথ:** `src/app/page.module.css`
+
+### ৩.১ ক্যাটাগরি গ্রিড ও কার্ড ডিজাইন (Grid & Cards):
+```css
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+  margin-bottom: 0;
+  padding: 1.1rem 0.1rem 1.25rem 0.1rem;
+}
+
+@media (min-width: 480px) {
+  .categoryGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.85rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .categoryGrid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1.1rem;
+    padding: 1.5rem 0.2rem 2rem 0.2rem;
+  }
+}
+
+/* Professional Category Card Design */
+.categoryCard {
+  background: var(--card-bg, #ffffff);
+  padding: 1.05rem 0.5rem;
+  border-radius: 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  border: 1.5px solid var(--card-border, #f1f5f9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.categoryCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--icon-glow);
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.categoryCard:hover {
+  transform: translateY(-7px) scale(1.02);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.04);
+  border-color: var(--icon-glow);
+}
+
+.categoryCard:hover::before {
+  opacity: 1;
+}
+
+.categoryCard:active {
+  transform: scale(0.95);
+}
+
+.iconBox {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+  position: relative;
+}
+
+.iconBox::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  right: 4px;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 100%);
+  border-radius: 12px 12px 0 0;
+  pointer-events: none;
+}
+
+.categoryIcon {
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.categoryCard:hover .iconBox {
+  transform: scale(1.12);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+}
+
+.categoryCard:hover .categoryIcon {
+  transform: rotate(10deg) scale(1.15);
+}
+
+.categoryCard h3 {
+  font-size: 0.82rem;
+  font-weight: 850;
+  color: #1e293b;
+  line-height: 1.25;
+  margin: 0;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+  letter-spacing: -0.2px;
+}
+
+@media (max-width: 480px) {
+  .categoryCard {
+    padding: 0.85rem 0.35rem;
+    border-radius: 14px;
+    gap: 0.35rem;
+  }
+  .iconBox {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+  }
+  .categoryCard h3 {
+    font-size: 0.74rem;
+    font-weight: 850;
+  }
+}
+
+```
+
+### ৩.২ ক্যাটাগরি সেকশন ড্রপডাউন টগল বাটন:
+```css
+.categorySection {
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
+}
+
+.sectionTitleToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  width: 100%;
+  padding: 0.75rem 1.2rem;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.sectionTitleToggle:hover {
+  border-color: #008b5e;
+  box-shadow: 0 6px 20px rgba(0, 139, 94, 0.08);
+  background: #fafdfb;
+}
+
+.titleLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.sectionTitleText {
+  font-size: 1.15rem;
+  font-weight: 850;
+  color: #0f172a;
+  letter-spacing: -0.3px;
+  margin: 0;
+  text-align: left;
+}
+
+@media (max-width: 480px) {
+  .sectionTitleToggle {
+    padding: 0.65rem 1rem;
+    border-radius: 12px;
+  }
+  .accentBar {
+    height: 18px;
+    width: 4px;
+  }
+  .titleLeft {
+    gap: 0.65rem;
+  }
+  .sectionTitleText {
+    font-size: 0.98rem;
+    font-weight: 850;
+  }
+  .chevronCircle {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+.chevronCircle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+```
+
+### ৩.৩ পপআপ মোডাল, অ্যাকর্ডিয়ন, সার্চ ও কাস্টম আইটেম সিএসএস:
+```css
+   STUNNING ULTRA-PREMIUM CATEGORY SUBSELECTION MODAL (Centered)
+   ───────────────────────────────────────────────────────────── */
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: modalFadeIn 0.25s ease-out;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modalContent {
+  background: #ffffff;
+  width: 600px;
+  max-width: calc(100vw - 24px);
+  max-height: 80vh;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 10px 20px rgba(0, 0, 0, 0.15);
+  border: 1px solid #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: auto;
+  animation: modalPopIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalPopIn {
+  from { opacity: 0; transform: scale(0.92) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modalHeader {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3.5px solid #ffb703;
+  flex-shrink: 0;
+}
+
+.modalTitle {
+  font-size: 1.1rem;
+  font-weight: 850;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modalCloseBtn {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  padding: 0.35rem 0.75rem;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modalCloseBtn:hover {
+  background: #ffb703;
+  color: #0f172a;
+  border-color: #ffb703;
+  transform: translateX(-2px);
+}
+
+.modalBody {
+  padding: 1.1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  background: #f8fafc;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SMOOTH ACCORDION EXPAND / COLLAPSE ANIMATION
+   ───────────────────────────────────────────────────────────── */
+
+.subCatAccordionGroup {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.subCatAccordionGroup:hover {
+  border-color: #cbd5e1;
+}
+
+.subCatAccordionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.1rem;
+  cursor: pointer;
+  user-select: none;
+  background: #ffffff;
+  transition: background 0.2s ease;
+}
+
+.subCatAccordionHeader:hover {
+  background: #fafdfb;
+}
+
+.activeHeader {
+  background: #f0fdf4 !important;
+}
+
+.subCatAccordionTitle {
+  font-size: 0.95rem;
+  font-weight: 850;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  letter-spacing: -0.2px;
+}
+
+.subHeaderDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #008b5e;
+  flex-shrink: 0;
+}
+
+.subChevronCircle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease, color 0.25s ease;
+  flex-shrink: 0;
+}
+
+.subCatAccordionHeader:hover .subChevronCircle {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.subChevronCircle.rotated {
+  transform: rotate(180deg);
+  background: #008b5e;
+  color: #ffffff;
+}
+
+/* Accordion Slide Down / Up Animation */
+.accordionBody {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #f8fafc;
+}
+
+.accordionBody.expanded {
+  max-height: 1000px;
+  border-top: 1.5px solid #e2e8f0;
+}
+
+.accordionContent {
+  padding: 0.85rem 1rem 1rem 1rem;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.accordionBody.expanded .accordionContent {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.subGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.subHeader {
+  font-size: 0.92rem;
+  font-weight: 850;
+  color: #0f172a;
+  border-left: 4px solid #008b5e;
+  padding-left: 0.55rem;
+  margin-bottom: 0.2rem;
+  letter-spacing: -0.2px;
+}
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+  gap: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .modalOverlay {
+    padding: 0.75rem;
+    align-items: center;
+    justify-content: center;
+  }
+  .modalContent {
+    max-height: 75vh;
+    border-radius: 16px;
+  }
+  .itemGrid {
+    grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+    gap: 0.4rem;
+  }
+  .subGroup {
+    padding: 0.8rem;
+    border-radius: 12px;
+  }
+}
+
+.categoryLink {
+  display: flex;
+}
+
+.categoryLink a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 750;
+  color: #334155;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.categoryLink a:hover {
+  background: #008b5e;
+  color: #ffffff;
+  border-color: #008b5e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 139, 94, 0.25);
+}
+
+.arrowIcon {
+  font-weight: 900;
+  font-size: 0.82rem;
+  transition: transform 0.2s ease;
+  color: #94a3b8;
+}
+
+.categoryLink a:hover .arrowIcon {
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+.noSub {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* Subcategory Search Input inside Category Modal */
+.subCatSearchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 0.55rem 0.85rem;
+  gap: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+  margin-bottom: 0.2rem;
+  flex-shrink: 0;
+}
+
+.subCatSearchWrapper:focus-within {
+  border-color: #008b5e;
+  box-shadow: 0 0 0 3px rgba(0, 139, 94, 0.12);
+}
+
+.subCatSearchIcon {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.subCatSearchInput {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.88rem;
+  color: #0f172a;
+  background: transparent;
+  font-family: inherit;
+}
+
+.subCatSearchClear {
+  background: #f1f5f9;
+  border: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.subCatSearchClear:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+```
+
+---
+
+<a id="part4"></a>
+## অংশ ৪: পোস্ট অ্যাড পেজের ক্যাটাগরি সিলেক্টর কম্পোনেন্ট (Post Ad JSX & State)
+**ফাইল পাথ:** `src/app/post-ad/page.js`
+
+### ৪.১ কনফিগারেশন ও বাংলা নাম ম্যাপিং:
+```javascript
+const CAT_CONFIG = {
+  'Mobile Phones': { icon: Smartphone, color: '#2563eb', bg: '#f0f7ff', border: '#bfdbfe', text: '#1e40af', gradient: 'linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #60a5fa 100%)' },
+  Computers: { icon: Laptop, color: '#059669', bg: '#ecfdf5', border: '#a7f3d0', text: '#065f46', gradient: 'linear-gradient(135deg, #047857 0%, #10b981 50%, #34d399 100%)' },
+  Electronics: { icon: Zap, color: '#d97706', bg: '#fffbeb', border: '#fde68a', text: '#92400e', gradient: 'linear-gradient(135deg, #b45309 0%, #f59e0b 50%, #fbbf24 100%)' },
+  Vehicles: { icon: Car, color: '#dc2626', bg: '#fef2f2', border: '#fca5a5', text: '#991b1b', gradient: 'linear-gradient(135deg, #b91c1c 0%, #ef4444 50%, #f87171 100%)' },
+  Property: { icon: HouseIcon, color: '#7c3aed', bg: '#f5f3ff', border: '#ddd6fe', text: '#5b21b6', gradient: 'linear-gradient(135deg, #6d28d9 0%, #8b5cf6 50%, #a78bfa 100%)' },
+  Jobs: { icon: Briefcase, color: '#db2777', bg: '#fdf2f8', border: '#fbcfe8', text: '#9d174d', gradient: 'linear-gradient(135deg, #be185d 0%, #ec4899 50%, #f472b6 100%)' },
+  'অন্যান্য': { icon: Box, color: '#475569', bg: '#f8fafc', border: '#cbd5e1', text: '#1e293b', gradient: 'linear-gradient(135deg, #334155 0%, #64748b 50%, #94a3b8 100%)' },
+};
+
+const BN_CAT_NAMES = {
+  Electronics: 'ইলেকট্রনিক্স',
+  Computers: 'কম্পিউটার ও আইটি',
+  'Mobile Phones': 'মোবাইল ফোন',
+  Vehicles: 'গাড়ি ও যানবাহন',
+  Property: 'জমি ও ফ্ল্যাট',
+  Jobs: 'চাকরি',
+  'অন্যান্য': 'অন্যান্য',
+};
+
+export default function PostAd() {
+  const [user, setUser] = useState(null);
+  const { t, lang } = useLanguage();
+  const router = useRouter();
+```
+
+### ৪.২ স্টেট ভ্যারিয়েবলস:
+```javascript
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [selectedMainCategory, setSelectedMainCategory] = useState(null);
+  const [activeSub, setActiveSub] = useState(null);
+  const [displayCategory, setDisplayCategory] = useState('');
+  const [subCatSearchQuery, setSubCatSearchQuery] = useState('');
+  const [customItemInput, setCustomItemInput] = useState('');
+  const [showOtherInput, setShowOtherInput] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+  const [monthlyAdsCount, setMonthlyAdsCount] = useState(0);
+```
+
+### ৪.৩ ক্যাটাগরি সিলেক্ট ট্রিগার বাটন (Form Input JSX):
+```jsx
+          {/* === CATEGORY === */}
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>{t('selectCategory')} *</label>
+            <div className={styles.categorySelectBtn} onClick={() => setShowCategoryModal(true)}>
+              {displayCategory
+                ? <span className={styles.selectedCatText}>{displayCategory}</span>
+                : <span className={styles.placeholderText}>{t('selectCategory')}</span>
+              }
+              <span style={{ color: '#9ca3af' }}>▼</span>
+            </div>
+          </div>
+```
+
+### ৪.৪ ক্যাটাগরি নির্বাচন মোডাল (2-Level Modal JSX):
+```jsx
+      {showCategoryModal && mounted && createPortal(
+        <div
+          className={styles.modalOverlay}
+          onClick={() => { if (!selectedMainCategory) setShowCategoryModal(false); }}
+          onTouchMove={e => e.stopPropagation()}
+        >
+          <div className={styles.categoryModal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>
+                {selectedMainCategory
+                  ? selectedMainCategory
+                  : (lang === 'bn' ? 'ক্যাটাগরি নির্বাচন করুন' : 'Select Category')}
+              </h3>
+              <button 
+                className={styles.modalCloseBtn} 
+                onClick={() => { 
+                  setShowCategoryModal(false); 
+                  setSelectedMainCategory(null); 
+                  setActiveSub(null);
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              {!selectedMainCategory ? (
+                /* Level 1: Main Categories List */
+                <div className={styles.mainCatList}>
+                  {Object.keys(CATEGORIES).map(main => {
+                    const config = CAT_CONFIG[main] || CAT_CONFIG['অন্যান্য'];
+                    const Icon = config.icon;
+                    return (
+                      <div 
+                        key={main} 
+                        className={styles.mainCatItem} 
+                        onClick={() => {
+                          setSelectedMainCategory(main);
+                          setActiveSub(null);
+                        }}
+                      >
+                        <div className={styles.iconBox} style={{ background: config.gradient }}>
+                          <Icon size={16} color="#ffffff" />
+                        </div>
+                        <span className={styles.mainCatName}>{lang === 'bn' ? (BN_CAT_NAMES[main] || main) : main}</span>
+                        <span className={styles.mainCatArrow}>›</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                /* Level 2: Accordion Subcategories List */
+                <div className={styles.subCatPanel}>
+                  <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.2rem'}}>
+                    <button 
+                      className={styles.subCatBackBtn} 
+                      onClick={() => {
+                        setSelectedMainCategory(null);
+                        setSubCatSearchQuery('');
+                        setShowOtherInput(false);
+                      }}
+                      style={{margin: 0}}
+                    >
+                      ← {lang === 'bn' ? 'ফিরে যান' : 'Back'}
+                    </button>
+                    <span style={{fontWeight: 800, fontSize: '0.92rem', color: '#0f172a'}}>
+                      {lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory}
+                    </span>
+                  </div>
+
+                  {/* Subcategory & Item Search Bar */}
+                  <div className={styles.subCatSearchWrapper}>
+                    <Search size={18} className={styles.subCatSearchIcon} />
+                    <input 
+                      type="text" 
+                      className={styles.subCatSearchInput}
+                      placeholder={lang === 'bn' ? `${lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory}-এ সাব-ক্যাটাগরি বা আইটেম খুঁজুন...` : `Search in ${selectedMainCategory}...`}
+                      value={subCatSearchQuery}
+                      onChange={(e) => setSubCatSearchQuery(e.target.value)}
+                    />
+                    {subCatSearchQuery && (
+                      <button 
+                        type="button" 
+                        className={styles.subCatSearchClear}
+                        onClick={() => setSubCatSearchQuery('')}
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+
+                  <div className={styles.accordionContainer}>
+                    {CATEGORIES[selectedMainCategory] && Object.entries(CATEGORIES[selectedMainCategory])
+                      .filter(([sub, items]) => {
+                        if (!subCatSearchQuery.trim()) return true;
+                        const q = subCatSearchQuery.toLowerCase().trim();
+                        const matchSub = sub.toLowerCase().includes(q);
+                        const matchItem = items.some(item => item.toLowerCase().includes(q));
+                        return matchSub || matchItem;
+                      })
+                      .map(([sub, items]) => {
+                        const q = subCatSearchQuery.toLowerCase().trim();
+                        const filteredItems = q 
+                          ? items.filter(item => item.toLowerCase().includes(q) || sub.toLowerCase().includes(q))
+                          : items;
+                        const isExpanded = q ? true : (activeSub === sub);
+
+                        return (
+                          <div key={sub} className={styles.subCatAccordionGroup}>
+                            <div 
+                              className={`${styles.subCatAccordionHeader} ${isExpanded ? styles.activeHeader : ''}`}
+                              onClick={() => {
+                                setActiveSub(prev => (prev === sub ? null : sub));
+                              }}
+                            >
+                              <div className={styles.subCatAccordionTitle}>
+                                <span className={styles.subHeaderDot}></span>
+                                <span>{sub}</span>
+                                {q && (
+                                  <span style={{fontSize: '0.75rem', color: '#008b5e', fontWeight: 700, marginLeft: '6px'}}>
+                                    ({filteredItems.length})
+                                  </span>
+                                )}
+                              </div>
+                              <div className={`${styles.subChevronCircle} ${isExpanded ? styles.rotated : ''}`}>
+                                <ChevronDown size={18} />
+                              </div>
+                            </div>
+
+                            <div className={`${styles.accordionBody} ${isExpanded ? styles.expanded : ''}`}>
+                              <div className={styles.accordionContent}>
+                                <div className={styles.itemGrid}>
+                                  {filteredItems.map(item => (
+                                    <div 
+                                      key={item} 
+                                      className={styles.subCatItem}
+                                      onClick={() => {
+                                        setFormData({ ...formData, category_id: item });
+                                        const mainCatName = lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory;
+                                        setDisplayCategory(`${mainCatName} › ${sub} › ${item}`);
+                                        setShowCategoryModal(false);
+                                        setSelectedMainCategory(null);
+                                        setActiveSub(null);
+                                        setSubCatSearchQuery('');
+                                        setShowOtherInput(false);
+                                      }}
+                                    >
+                                      <span>{item}</span>
+                                      <span className={styles.arrowIcon}>→</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+
+                    {/* Other / Custom item card at the end */}
+                    <div className={styles.otherCustomCard}>
+                      <div 
+                        className={styles.otherCustomHeader}
+                        onClick={() => setShowOtherInput(!showOtherInput)}
+                      >
+                        <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+                          <span style={{fontSize: '1.2rem'}}>🏷️</span>
+                          <span>{lang === 'bn' ? 'অন্যান্য (কাস্টম আইটেম)' : 'Other (Custom Item)'}</span>
+                        </div>
+                        <span style={{fontSize: '0.82rem', color: '#008b5e', fontWeight: 800}}>
+                          {showOtherInput ? (lang === 'bn' ? '▲ বন্ধ করুন' : '▲ Close') : (lang === 'bn' ? '▼ আপনি যা বিক্রি করবেন লিখুন' : '▼ Type Custom Item')}
+                        </span>
+                      </div>
+
+                      {showOtherInput && (
+                        <div className={styles.otherCustomInputGroup}>
+                          <input 
+                            type="text" 
+                            className={styles.otherCustomInput}
+                            placeholder={lang === 'bn' ? 'সে কি বিক্রয় করতে চান সেটি লিখে দিন (যেমন: ওয়াইফাই ক্যামেরা, প্রজেক্টর...)' : 'Type what you want to sell...'}
+                            value={customItemInput}
+                            onChange={(e) => setCustomItemInput(e.target.value)}
+                            autoFocus
+                          />
+                          <button 
+                            type="button" 
+                            className={styles.otherCustomBtn}
+                            onClick={() => {
+                              const customVal = customItemInput.trim();
+                              if (customVal) {
+                                setFormData({ ...formData, category_id: customVal });
+                                const mainCatName = lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory;
+                                setDisplayCategory(`${mainCatName} › অন্যান্য › ${customVal}`);
+                                setShowCategoryModal(false);
+                                setSelectedMainCategory(null);
+                                setActiveSub(null);
+                                setCustomItemInput('');
+                                setShowOtherInput(false);
+                                setSubCatSearchQuery('');
+                              }
+                            }}
+                          >
+                            {lang === 'bn' ? 'নির্বাচন করুন ✓' : 'Confirm ✓'}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>,
+        document.body
+```
+
+---
+
+<a id="part5"></a>
+## অংশ ৫: পোস্ট অ্যাড পেজের ক্যাটাগরি সিএসএস (Post Ad CSS Module)
+**ফাইল পাথ:** `src/app/post-ad/post-ad.module.css`
+
+### ৫.১ মোডাল লেআউট:
+```css
+.categoryModal {
+  background: white;
+  width: 100%;
+  max-width: 560px;
+  border-radius: 18px 18px 0 0;
+  /* 90vh so categories are prominently visible, not bunched at the bottom */
+  height: 90vh;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.28s ease backwards;
+  overscroll-behavior: contain;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsiveness for Category Modal on Desktop */
+@media (min-width: 768px) {
+  .modalOverlay {
+    align-items: center;
+    padding: 1.5rem;
+  }
+
+  .categoryModal {
+    border-radius: 16px;
+    height: 80vh;
+    max-height: 600px;
+    animation: fadeInScale 0.2s ease-out;
+  }
+}
+
+.modalHeader {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3.5px solid #ffb703;
+  flex-shrink: 0;
+}
+
+.modalHeader h3 {
+  font-size: 1.1rem;
+  font-weight: 850;
+  color: #ffffff;
+  margin: 0;
+}
+
+.modalCloseBtn {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+}
+```
+
+### ৫.২ লেভেল ১ মেইন ক্যাটাগরি লিস্ট ডিজাইন:
+```css
+/* Main category items - 3D Gradient Icon List */
+.mainCatList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mainCatItem {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mainCatItem:hover {
+  border-color: #008b5e;
+  background: #fafdfb;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 139, 94, 0.1);
+}
+
+.iconBox {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.mainCatItem:hover .iconBox {
+  transform: scale(1.1);
+}
+
+.mainCatName {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: #0f172a;
+  flex: 1;
+}
+
+.mainCatArrow {
+  color: #9ca3af;
+  font-size: 1.1rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.mainCatItem:hover .mainCatArrow {
+  color: #008b5e;
+  transform: translateX(3px);
+}
+
+```
+
+### ৫.৩ লেভেল ২ সাব-ক্যাটাগরি অ্যাকর্ডিয়ন ও আইটেম ডিজাইন:
+```css
+.subCatPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.subCatBackBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 0.9rem;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 800;
+  font-size: 0.82rem;
+  color: #0f172a;
+  width: max-content;
+  transition: all 0.2s ease;
+  margin-bottom: 0.2rem;
+}
+
+.subCatBackBtn:hover {
+  background: #ffb703;
+  color: #0f172a;
+  border-color: #ffb703;
+  transform: translateX(-3px);
+}
+
+.accordionContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.subCatAccordionGroup {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1.5px solid #e2e8f0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.subCatAccordionGroup:hover {
+  border-color: #cbd5e1;
+}
+
+.subCatAccordionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  background: #ffffff;
+  transition: background 0.2s ease;
+}
+
+.subCatAccordionHeader:hover {
+  background: #fafdfb;
+}
+
+.activeHeader {
+  background: #f0fdf4 !important;
+}
+
+.subCatAccordionTitle {
+  font-size: 0.92rem;
+  font-weight: 850;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  letter-spacing: -0.2px;
+}
+
+.subHeaderDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #008b5e;
+  flex-shrink: 0;
+}
+
+.subChevronCircle {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease, color 0.25s ease;
+  flex-shrink: 0;
+}
+
+.subCatAccordionHeader:hover .subChevronCircle {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+.subChevronCircle.rotated {
+  transform: rotate(180deg);
+  background: #008b5e;
+  color: #ffffff;
+}
+
+/* Accordion Slide Down / Up Animation */
+.accordionBody {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  background: #f8fafc;
+}
+
+.accordionBody.expanded {
+  max-height: 1000px;
+  border-top: 1.5px solid #e2e8f0;
+}
+
+.accordionContent {
+  padding: 0.85rem 1rem 1rem 1rem;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.accordionBody.expanded .accordionContent {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.subCatHeader {
+  font-size: 0.9rem;
+  font-weight: 850;
+  color: #0f172a;
+  border-left: 4px solid #008b5e;
+  padding-left: 0.55rem;
+  margin-bottom: 0.2rem;
+  letter-spacing: -0.2px;
+}
+
+.itemGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+  gap: 0.5rem;
+}
+
+@media (max-width: 480px) {
+  .itemGrid {
+    grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+    gap: 0.4rem;
+  }
+}
+
+.subCatItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.55rem 0.75rem;
+  background: #f1f5f9;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 750;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.subCatItem:hover {
+  background: #008b5e;
+  color: #ffffff;
+  border-color: #008b5e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 139, 94, 0.25);
+}
+
+.arrowIcon {
+  font-weight: 900;
+  font-size: 0.82rem;
+  transition: transform 0.2s ease;
+  color: #94a3b8;
+}
+
+.subCatItem:hover .arrowIcon {
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+/* Dark Location Modal (keep existing style) */
+.darkModalOverlay {
+  position: fixed;
+```
+
+### ৫.৪ সার্চ বার ও অন্যান্য (কাস্টম আইটেম) ডিজাইন:
+```css
+/* Subcategory Search Input inside Category Modal */
+.subCatSearchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 0.55rem 0.85rem;
+  gap: 0.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+  margin-bottom: 0.2rem;
+  flex-shrink: 0;
+}
+
+.subCatSearchWrapper:focus-within {
+  border-color: #008b5e;
+  box-shadow: 0 0 0 3px rgba(0, 139, 94, 0.12);
+}
+
+.subCatSearchIcon {
+  color: #64748b;
+  flex-shrink: 0;
+}
+
+.subCatSearchInput {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 0.88rem;
+  color: #0f172a;
+  background: transparent;
+  font-family: inherit;
+}
+
+.subCatSearchClear {
+  background: #f1f5f9;
+  border: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.subCatSearchClear:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+/* Other / Custom item card */
+.otherCustomCard {
+  background: #ffffff;
+  border: 1.5px dashed #008b5e;
+  border-radius: 14px;
+  padding: 0.85rem 1rem;
+  margin-top: 0.35rem;
+  box-shadow: 0 2px 6px rgba(0, 139, 94, 0.04);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.otherCustomHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-weight: 850;
+  font-size: 0.92rem;
+  color: #008b5e;
+  user-select: none;
+}
+
+.otherCustomInputGroup {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.otherCustomInput {
+  flex: 1;
+  padding: 0.55rem 0.85rem;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.86rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.otherCustomInput:focus {
+  border-color: #008b5e;
+  box-shadow: 0 0 0 3px rgba(0, 139, 94, 0.1);
+}
+
+.otherCustomBtn {
+  background: #008b5e;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.otherCustomBtn:hover {
+  background: #00704c;
+}
+```
