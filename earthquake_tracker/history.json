@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000ttlw",
     "us7000ttm2",
     "emsc_20261028_0000068",
     "emsc_20261028_0000075",
@@ -499,7 +498,8 @@
     "emsc_20261107_0000118",
     "us7000twrq",
     "emsc_20261107_0000129",
-    "us7000twrt"
+    "us7000twrt",
+    "emsc_20261107_0000177"
   ],
   "replied_comment_ids": [
     "122117756493450344_910694425314791",
@@ -654,14 +654,6 @@
     "122121990981450344_1481809433829807"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261104_0000035",
-      "mag": 4.1,
-      "place": "KEPULAUAN TALAUD, INDONESIA",
-      "latitude": 4.73,
-      "longitude": 126.67,
-      "epoch_ms": 1793762525000
-    },
     {
       "id": "emsc_20261104_0000044",
       "mag": 4.1,
@@ -1053,6 +1045,14 @@
       "latitude": -18.2483,
       "longitude": -12.9445,
       "epoch_ms": 1794051338338
+    },
+    {
+      "id": "emsc_20261107_0000177",
+      "mag": 4.2,
+      "place": "NORTH OF PANAMA",
+      "latitude": 11.8278,
+      "longitude": -80.5608,
+      "epoch_ms": 1794063585000
     }
   ]
 }
