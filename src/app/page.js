@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { supabase } from '../lib/supabaseClient';
 import styles from './page.module.css';
 import { CATEGORIES, CATEGORY_TRANSLATIONS, getCategoryName } from '../lib/constants';
+import { isCategoryMatch } from '../lib/categoryMatcher';
 import { useLanguage } from '../context/LanguageContext';
 import { getRelativeTime, formatFullDate, formatPrice, getPromotionBadgeText, sortPremiumListings } from '../lib/utils';
 import { Heart, Smartphone, Laptop, Zap, Car, Home as HouseIcon, Briefcase, Box, ChevronDown, Search } from 'lucide-react';
@@ -86,110 +87,13 @@ const getSellerBadge = (profiles, lang) => {
   return null;
 };
 
-const LEGACY_MAP = {
-  // Electronics
-  'lithium battery': { main: 'Electronics', sub: 'batteries' },
-  'camera lights & softboxes': { main: 'Electronics', sub: 'lighting_emergency' },
-  'ইলেকট্রিক হিটার জগ': { main: 'Electronics', sub: 'kitchen_appliances' },
-
-  // Computers
-  'routers': { main: 'Computers', sub: 'wifi_routers' },
-  'router': { main: 'Computers', sub: 'wifi_routers' },
-  'ups': { main: 'Computers', sub: 'mini_ups_backup' },
-  'mini ups': { main: 'Computers', sub: 'mini_ups_backup' },
-
-  // Vehicles
-  'second-hand used registered motorcycles': { main: 'Vehicles', sub: 'motorcycles' },
-  'motorcycles': { main: 'Vehicles', sub: 'motorcycles' },
-  'motorcycle': { main: 'Vehicles', sub: 'motorcycles' }
-};
-
-const cleanText = (s) => (s ? String(s).toLowerCase().trim() : '');
-
-const isCategoryMatch = (adOrCat, filterKey) => {
-  if (!adOrCat || !filterKey) return false;
-
-  const rawCat = typeof adOrCat === 'object' ? (adOrCat.category_id || '') : adOrCat;
-  const rawTitle = typeof adOrCat === 'object' ? (adOrCat.title || '') : '';
-
-  const adCat = cleanText(rawCat);
-  const filter = cleanText(filterKey);
-  const title = cleanText(rawTitle);
-
-  if (!adCat && !title) return false;
-
-  // 1. Direct match (e.g. 'mobile_phones' === 'mobile_phones')
-  if (adCat === filter) return true;
-
-  // 2. Bilingual translation check (if ad saved with Bengali or English label)
-  const bnName = cleanText(CATEGORY_TRANSLATIONS.bn?.[filterKey]);
-  const enName = cleanText(CATEGORY_TRANSLATIONS.en?.[filterKey]);
-  if (bnName && adCat === bnName) return true;
-  if (enName && adCat === enName) return true;
-
-  // 3. Known Legacy Map Check
-  if (LEGACY_MAP[adCat]) {
-    const mapped = LEGACY_MAP[adCat];
-    if (filter === cleanText(mapped.main) || filter === cleanText(mapped.sub)) return true;
-  }
-
-  // 4. If filterKey is a main category, match all its subcategories and brands
-  if (CATEGORIES[filterKey]) {
-    // Smart keyword matching for legacy ads under main categories
-    if (filter === 'electronics' && (adCat.includes('ইলেকট্রিক') || adCat.includes('electronic') || adCat.includes('battery') || adCat.includes('ব্যাটারি') || adCat.includes('light') || adCat.includes('লাইট'))) {
-      return true;
-    }
-    if (filter === 'computers' && (adCat.includes('router') || adCat.includes('রাউটার') || adCat.includes('computer') || adCat.includes('কম্পিউটার') || adCat === 'ups')) {
-      return true;
-    }
-    if (filter === 'vehicles' && (adCat.includes('motorcycle') || adCat.includes('মোটরসাইকেল') || adCat.includes('car') || adCat.includes('গাড়ি') || adCat.includes('bike'))) {
-      return true;
-    }
-    if (filter === 'mobile phones' && (adCat.includes('mobile') || adCat.includes('মোবাইল') || adCat.includes('phone') || adCat.includes('ফোন'))) {
-      return true;
-    }
-
-    const subcategories = CATEGORIES[filterKey];
-    for (const [subKey, subData] of Object.entries(subcategories)) {
-      if (isCategoryMatch(adOrCat, subKey)) return true;
-      const brands = Array.isArray(subData) ? subData : (subData?.brands || []);
-      for (const b of brands) {
-        const cleanBrand = cleanText(b);
-        if (cleanBrand && (cleanBrand === adCat || cleanBrand.includes(adCat) || adCat.includes(cleanBrand))) return true;
-      }
-    }
-  }
-
-  // 5. If filterKey is a subcategory, match brand items & word stems under it
-  for (const mainCatObj of Object.values(CATEGORIES)) {
-    if (mainCatObj[filterKey]) {
-      // Direct word stem check (e.g. filterKey: "batteries", adCat: "Lithium battery" -> both contain "batter")
-      const stem = filter.replace(/ies$/, 'y').replace(/s$/, '').replace(/_/g, ' ');
-      if (stem.length >= 3 && adCat.includes(stem)) return true;
-
-      // Subcategory translations stem match
-      const subBn = cleanText(CATEGORY_TRANSLATIONS.bn?.[filterKey]);
-      const subEn = cleanText(CATEGORY_TRANSLATIONS.en?.[filterKey]);
-      if (subBn && (adCat.includes(subBn) || subBn.includes(adCat))) return true;
-      if (subEn && (adCat.includes(subEn) || subEn.includes(adCat))) return true;
-
-      const brands = Array.isArray(mainCatObj[filterKey]) ? mainCatObj[filterKey] : (mainCatObj[filterKey]?.brands || []);
-      for (const b of brands) {
-        const cleanBrand = cleanText(b);
-        if (cleanBrand && (cleanBrand === adCat || cleanBrand.includes(adCat) || adCat.includes(cleanBrand))) return true;
-      }
-    }
-  }
-
-  return false;
-};
-
 export default function Home() {
   const { t, lang } = useLanguage();
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeSub, setActiveSub] = useState(null);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(null);
+  const [activeCategoryModal, setActiveCategoryModal] = useState(null);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
@@ -480,17 +384,9 @@ export default function Home() {
                 return (
                   <div 
                     key={i} 
-                    className={`${styles.categoryCard} ${isSelected ? styles.cardActive : ''}`}
+                    className={`${styles.categoryCard} ${(selectedCategoryFilter === cat.name || (selectedCategoryFilter && CATEGORIES[cat.name] && CATEGORIES[cat.name][selectedCategoryFilter])) ? styles.cardActive : ''}`}
                     onClick={() => {
-                      if (isSelected) {
-                        setActiveCategory(null);
-                        setActiveSub(null);
-                        setSelectedCategoryFilter(null);
-                      } else {
-                        setActiveCategory(cat.name);
-                        setActiveSub(null);
-                        setSelectedCategoryFilter(cat.name);
-                      }
+                      setActiveCategoryModal(cat.name);
                     }}
                   >
                     <div className={styles.iconCircle} style={{ background: cat.bg, color: cat.color }}>
@@ -506,52 +402,6 @@ export default function Home() {
                 );
               })}
             </div>
-
-            {/* Level 2: Subcategory Pills Strip (সিলেক্ট করার সাথে সাথে স্লাইডার বন্ধ হয়ে উপরে চলে যাবে) */}
-            {activeCategory && CATEGORIES[activeCategory] && (
-              <div className={styles.subCategoryPanel}>
-                <div className={styles.subCategoryHeading}>
-                  <span>
-                    {lang === 'bn' 
-                      ? `${getCategoryName(activeCategory, lang)}-এর বিভাগসমূহ:` 
-                      : `Subcategories of ${getCategoryName(activeCategory, lang)}:`}
-                  </span>
-                </div>
-                <div className={styles.subCategoryTags}>
-                  {/* All in Category */}
-                  <button 
-                    type="button"
-                    className={`${styles.tagButton} ${!activeSub ? styles.activeTag : ''}`}
-                    onClick={() => {
-                      setActiveSub(null);
-                      setSelectedCategoryFilter(activeCategory);
-                      setIsCategoriesExpanded(false); // অটোমেটিক উপরে চলে যাবে
-                    }}
-                  >
-                    {lang === 'bn' ? `সকল ${getCategoryName(activeCategory, lang)}` : `All ${getCategoryName(activeCategory, lang)}`}
-                  </button>
-
-                  {/* Specific Subcategories */}
-                  {Object.keys(CATEGORIES[activeCategory]).map((subKey) => {
-                    const isSubActive = activeSub === subKey;
-                    return (
-                      <button
-                        type="button"
-                        key={subKey}
-                        className={`${styles.tagButton} ${isSubActive ? styles.activeTag : ''}`}
-                        onClick={() => {
-                          setActiveSub(subKey);
-                          setSelectedCategoryFilter(subKey);
-                          setIsCategoriesExpanded(false); // অটোমেটিক উপরে চলে যাবে
-                        }}
-                      >
-                        {getCategoryName(subKey, lang)}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -681,6 +531,105 @@ export default function Home() {
           })()}
         </div>
       </div>
+    
+      {/* Subcategory Scrollable Modal (Scrollable bottom-sheet popup) */}
+      {activeCategoryModal && CATEGORIES[activeCategoryModal] && mounted && createPortal(
+        <div 
+          className={styles.subModalOverlay} 
+          onClick={() => setActiveCategoryModal(null)}
+          onTouchMove={(e) => e.stopPropagation()}
+        >
+          <div 
+            className={styles.subModalContent} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.subModalHeader}>
+              <div className={styles.subModalTitleWrap}>
+                {(() => {
+                  const catObj = categories.find(c => c.name === activeCategoryModal);
+                  const Icon = catObj ? catObj.icon : Box;
+                  return (
+                    <div 
+                      className={styles.iconCircleSmall} 
+                      style={{ background: catObj ? catObj.bg : '#f1f5f9', color: catObj ? catObj.color : '#0f172a' }}
+                    >
+                      <Icon size={20} />
+                    </div>
+                  );
+                })()}
+                <div>
+                  <h3 className={styles.subModalTitle}>
+                    {getCategoryName(activeCategoryModal, lang)}
+                  </h3>
+                  <span className={styles.subModalSubtitle}>
+                    {lang === 'bn' 
+                      ? `${Object.keys(CATEGORIES[activeCategoryModal]).length} টি বিভাগ থেকে নির্বাচন করুন:` 
+                      : `Select from ${Object.keys(CATEGORIES[activeCategoryModal]).length} subcategories:`}
+                  </span>
+                </div>
+              </div>
+              <button 
+                type="button"
+                className={styles.subModalCloseBtn}
+                onClick={() => setActiveCategoryModal(null)}
+                aria-label="Close"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className={styles.subModalBody}>
+              {/* All in Category */}
+              <div 
+                className={`${styles.subModalItem} ${selectedCategoryFilter === activeCategoryModal ? styles.subModalItemActive : ''}`}
+                onClick={() => {
+                  setSelectedCategoryFilter(activeCategoryModal);
+                  setActiveCategory(activeCategoryModal);
+                  setActiveSub(null);
+                  setActiveCategoryModal(null);
+                  setIsCategoriesExpanded(false);
+                }}
+              >
+                <div className={styles.subModalItemLeft}>
+                  <span className={styles.allBadgeIcon}>★</span>
+                  <span className={styles.subModalItemTextBold}>
+                    {lang === 'bn' ? `সকল ${getCategoryName(activeCategoryModal, lang)}` : `All in ${getCategoryName(activeCategoryModal, lang)}`}
+                  </span>
+                </div>
+                <span className={styles.subModalArrow}>›</span>
+              </div>
+
+              {/* Subcategories */}
+              {Object.keys(CATEGORIES[activeCategoryModal]).map((subKey) => {
+                const isSelected = selectedCategoryFilter === subKey;
+                return (
+                  <div 
+                    key={subKey}
+                    className={`${styles.subModalItem} ${isSelected ? styles.subModalItemActive : ''}`}
+                    onClick={() => {
+                      setSelectedCategoryFilter(subKey);
+                      setActiveCategory(activeCategoryModal);
+                      setActiveSub(subKey);
+                      setActiveCategoryModal(null);
+                      setIsCategoriesExpanded(false);
+                    }}
+                  >
+                    <div className={styles.subModalItemLeft}>
+                      <span className={styles.subModalBullet}>•</span>
+                      <span className={styles.subModalItemText}>
+                        {getCategoryName(subKey, lang)}
+                      </span>
+                    </div>
+                    <span className={styles.subModalArrow}>›</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
     </div>
   );
 }

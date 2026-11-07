@@ -7,6 +7,7 @@ import { supabase } from '../../lib/supabaseClient';
 import { useLanguage } from '../../context/LanguageContext';
 import { getRelativeTime, formatPrice, getPromotionBadgeText, sortPremiumListings } from '../../lib/utils';
 import { LOCATIONS, CATEGORIES } from '../../lib/constants';
+import { isCategoryMatch } from '../../lib/categoryMatcher';
 import styles from './ads.module.css';
 import { Filter, ChevronDown, X, List, Grid, Heart, Search } from 'lucide-react';
 
@@ -267,16 +268,7 @@ function AdsContent() {
 
         // 1. Category Filter
         if (cat) {
-          if (CATEGORIES[cat]) {
-            const subcategories = CATEGORIES[cat];
-            const specificItems = [];
-            Object.entries(subcategories).forEach(([subKey, items]) => {
-              items.forEach(item => specificItems.push(item));
-            });
-            filtered = filtered.filter(item => specificItems.includes(item.category_id));
-          } else {
-            filtered = filtered.filter(item => item.category_id === cat);
-          }
+          filtered = filtered.filter(item => isCategoryMatch(item, cat));
         }
 
         // 2. Location Filter
