@@ -888,6 +888,77 @@ export default function AdDetails({ params }) {
                <div className={styles.description}>
                  <h3>{t('description')}</h3>
                  <p>{ad.description}</p>
+
+                 {/* Auto-Enriched Content Box for brief descriptions (< 30 words) */}
+                 {((ad.description || '').trim().split(/\s+/).filter(Boolean).length < 30) && (
+                   <div style={{
+                     marginTop: '1.25rem',
+                     padding: '1.1rem 1.25rem',
+                     background: '#f8fafc',
+                     borderRadius: '14px',
+                     border: '1.5px solid #e2e8f0',
+                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)'
+                   }}>
+                     <div style={{
+                       fontSize: '0.92rem',
+                       fontWeight: 800,
+                       color: '#0f172a',
+                       marginBottom: '0.75rem',
+                       display: 'flex',
+                       alignItems: 'center',
+                       gap: '6px'
+                     }}>
+                       <span>📋</span>
+                       <span>{lang === 'bn' ? 'পণ্যের মূল বিবরণ ও স্পেসিফিকেশন' : 'Key Specifications & Overview'}</span>
+                     </div>
+
+                     <div style={{
+                       display: 'grid',
+                       gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                       gap: '0.6rem',
+                       marginBottom: '1rem',
+                       fontSize: '0.86rem'
+                     }}>
+                       <div style={{ background: '#ffffff', padding: '0.55rem 0.8rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                         <span style={{ color: '#64748b', fontSize: '0.78rem', display: 'block' }}>{lang === 'bn' ? 'পণ্যের নাম' : 'Product Name'}</span>
+                         <strong style={{ color: '#0f172a' }}>{ad.title}</strong>
+                       </div>
+                       <div style={{ background: '#ffffff', padding: '0.55rem 0.8rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                         <span style={{ color: '#64748b', fontSize: '0.78rem', display: 'block' }}>{lang === 'bn' ? 'ক্যাটাগরি' : 'Category'}</span>
+                         <strong style={{ color: '#008b5e' }}>{ad.category_id || (lang === 'bn' ? 'সাধারণ পণ্য' : 'General')}</strong>
+                       </div>
+                       <div style={{ background: '#ffffff', padding: '0.55rem 0.8rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                         <span style={{ color: '#64748b', fontSize: '0.78rem', display: 'block' }}>{lang === 'bn' ? 'কন্ডিশন / অবস্থা' : 'Condition'}</span>
+                         <strong style={{ color: '#0f172a' }}>{ad.condition === 'New' ? (lang === 'bn' ? 'নতুন (Brand New)' : 'New') : (lang === 'bn' ? 'ব্যবহৃত (Used)' : 'Used')}</strong>
+                       </div>
+                       <div style={{ background: '#ffffff', padding: '0.55rem 0.8rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                         <span style={{ color: '#64748b', fontSize: '0.78rem', display: 'block' }}>{lang === 'bn' ? 'অবস্থান' : 'Location'}</span>
+                         <strong style={{ color: '#0f172a' }}>{ad.location || ad.district || (lang === 'bn' ? 'বাংলাদেশ' : 'Bangladesh')}</strong>
+                       </div>
+                     </div>
+
+                     {/* 1-Line Buyer Safety Checklist */}
+                     <div style={{
+                       background: '#ecfdf5',
+                       border: '1px solid #a7f3d0',
+                       borderRadius: '10px',
+                       padding: '0.65rem 0.9rem',
+                       display: 'flex',
+                       alignItems: 'center',
+                       gap: '8px',
+                       fontSize: '0.84rem',
+                       color: '#065f46',
+                       fontWeight: 650
+                     }}>
+                       <span style={{ fontSize: '1rem' }}>🛡️</span>
+                       <span>
+                         {lang === 'bn'
+                           ? 'নিরাপত্তা পরামর্শ: পণ্যটি সামনাসামনি দেখে যাচাই করে সরাসরি লেনদেন করুন। অগ্রিম কোনো টাকা পাঠাবেন না।'
+                           : 'Safety Tip: Inspect the item thoroughly in person and pay directly. Never send advance money.'}
+                       </span>
+                     </div>
+                   </div>
+                 )}
                  <div style={{ marginTop: '1.5rem', fontSize: '0.8rem', color: '#888', borderTop: '1px solid #eee', paddingTop: '1rem' }}>
                    {t('postedOn')} {formatFullDate(ad.created_at, lang)}
                  </div>
