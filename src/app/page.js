@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { supabase } from '../lib/supabaseClient';
 import styles from './page.module.css';
-import { CATEGORIES } from '../lib/constants';
+import { CATEGORIES, CATEGORY_TRANSLATIONS, getCategoryName } from '../lib/constants';
 import { useLanguage } from '../context/LanguageContext';
 import { getRelativeTime, formatFullDate, formatPrice, getPromotionBadgeText, sortPremiumListings } from '../lib/utils';
 import { Heart, Smartphone, Laptop, Zap, Car, Home as HouseIcon, Briefcase, Box, ChevronDown, Search } from 'lucide-react';
@@ -84,6 +84,104 @@ const getSellerBadge = (profiles, lang) => {
     );
   }
   return null;
+};
+
+const LEGACY_MAP = {
+  // Electronics
+  'lithium battery': { main: 'Electronics', sub: 'batteries' },
+  'camera lights & softboxes': { main: 'Electronics', sub: 'lighting_emergency' },
+  'ইলেকট্রিক হিটার জগ': { main: 'Electronics', sub: 'kitchen_appliances' },
+
+  // Computers
+  'routers': { main: 'Computers', sub: 'wifi_routers' },
+  'router': { main: 'Computers', sub: 'wifi_routers' },
+  'ups': { main: 'Computers', sub: 'mini_ups_backup' },
+  'mini ups': { main: 'Computers', sub: 'mini_ups_backup' },
+
+  // Vehicles
+  'second-hand used registered motorcycles': { main: 'Vehicles', sub: 'motorcycles' },
+  'motorcycles': { main: 'Vehicles', sub: 'motorcycles' },
+  'motorcycle': { main: 'Vehicles', sub: 'motorcycles' }
+};
+
+const cleanText = (s) => (s ? String(s).toLowerCase().trim() : '');
+
+const isCategoryMatch = (adOrCat, filterKey) => {
+  if (!adOrCat || !filterKey) return false;
+
+  const rawCat = typeof adOrCat === 'object' ? (adOrCat.category_id || '') : adOrCat;
+  const rawTitle = typeof adOrCat === 'object' ? (adOrCat.title || '') : '';
+
+  const adCat = cleanText(rawCat);
+  const filter = cleanText(filterKey);
+  const title = cleanText(rawTitle);
+
+  if (!adCat && !title) return false;
+
+  // 1. Direct match (e.g. 'mobile_phones' === 'mobile_phones')
+  if (adCat === filter) return true;
+
+  // 2. Bilingual translation check (if ad saved with Bengali or English label)
+  const bnName = cleanText(CATEGORY_TRANSLATIONS.bn?.[filterKey]);
+  const enName = cleanText(CATEGORY_TRANSLATIONS.en?.[filterKey]);
+  if (bnName && adCat === bnName) return true;
+  if (enName && adCat === enName) return true;
+
+  // 3. Known Legacy Map Check
+  if (LEGACY_MAP[adCat]) {
+    const mapped = LEGACY_MAP[adCat];
+    if (filter === cleanText(mapped.main) || filter === cleanText(mapped.sub)) return true;
+  }
+
+  // 4. If filterKey is a main category, match all its subcategories and brands
+  if (CATEGORIES[filterKey]) {
+    // Smart keyword matching for legacy ads under main categories
+    if (filter === 'electronics' && (adCat.includes('ইলেকট্রিক') || adCat.includes('electronic') || adCat.includes('battery') || adCat.includes('ব্যাটারি') || adCat.includes('light') || adCat.includes('লাইট'))) {
+      return true;
+    }
+    if (filter === 'computers' && (adCat.includes('router') || adCat.includes('রাউটার') || adCat.includes('computer') || adCat.includes('কম্পিউটার') || adCat === 'ups')) {
+      return true;
+    }
+    if (filter === 'vehicles' && (adCat.includes('motorcycle') || adCat.includes('মোটরসাইকেল') || adCat.includes('car') || adCat.includes('গাড়ি') || adCat.includes('bike'))) {
+      return true;
+    }
+    if (filter === 'mobile phones' && (adCat.includes('mobile') || adCat.includes('মোবাইল') || adCat.includes('phone') || adCat.includes('ফোন'))) {
+      return true;
+    }
+
+    const subcategories = CATEGORIES[filterKey];
+    for (const [subKey, subData] of Object.entries(subcategories)) {
+      if (isCategoryMatch(adOrCat, subKey)) return true;
+      const brands = Array.isArray(subData) ? subData : (subData?.brands || []);
+      for (const b of brands) {
+        const cleanBrand = cleanText(b);
+        if (cleanBrand && (cleanBrand === adCat || cleanBrand.includes(adCat) || adCat.includes(cleanBrand))) return true;
+      }
+    }
+  }
+
+  // 5. If filterKey is a subcategory, match brand items & word stems under it
+  for (const mainCatObj of Object.values(CATEGORIES)) {
+    if (mainCatObj[filterKey]) {
+      // Direct word stem check (e.g. filterKey: "batteries", adCat: "Lithium battery" -> both contain "batter")
+      const stem = filter.replace(/ies$/, 'y').replace(/s$/, '').replace(/_/g, ' ');
+      if (stem.length >= 3 && adCat.includes(stem)) return true;
+
+      // Subcategory translations stem match
+      const subBn = cleanText(CATEGORY_TRANSLATIONS.bn?.[filterKey]);
+      const subEn = cleanText(CATEGORY_TRANSLATIONS.en?.[filterKey]);
+      if (subBn && (adCat.includes(subBn) || subBn.includes(adCat))) return true;
+      if (subEn && (adCat.includes(subEn) || subEn.includes(adCat))) return true;
+
+      const brands = Array.isArray(mainCatObj[filterKey]) ? mainCatObj[filterKey] : (mainCatObj[filterKey]?.brands || []);
+      for (const b of brands) {
+        const cleanBrand = cleanText(b);
+        if (cleanBrand && (cleanBrand === adCat || cleanBrand.includes(adCat) || adCat.includes(cleanBrand))) return true;
+      }
+    }
+  }
+
+  return false;
 };
 
 export default function Home() {
@@ -325,7 +423,9 @@ export default function Home() {
           : 'BikroyNow - Largest Buy & Sell Marketplace in Bangladesh'}
       </h1>
 
+      {/* === CATEGORY SECTION WITH AUTO-COLLAPSE ON SELECTION === */}
       <div className={`container ${styles.categorySection}`}>
+        {/* Toggle Title Bar */}
         <div 
           className={styles.sectionTitleToggle} 
           onClick={() => setIsCategoriesExpanded(!isCategoriesExpanded)}
@@ -333,265 +433,128 @@ export default function Home() {
           <div className={styles.titleLeft}>
             <span className={styles.accentBar}></span>
             <h2 className={styles.sectionTitleText}>
-              {t('browseCategories')}
+              {lang === 'bn' ? 'ক্যাটাগরি ব্রাউজ করুন' : 'Browse Categories'}
             </h2>
           </div>
-          <div className={styles.chevronCircle}>
-            <svg 
-              className={`${styles.chevronIcon} ${isCategoriesExpanded ? styles.rotated : ''}`} 
-              width="18" 
-              height="18" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="3.5" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
+          <div className={styles.toggleRight}>
+            {selectedCategoryFilter && (
+              <button 
+                type="button"
+                className={styles.resetFilterBtn}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveCategory(null);
+                  setActiveSub(null);
+                  setSelectedCategoryFilter(null);
+                }}
+              >
+                {lang === 'bn' ? 'ফিল্টার রিসেট ✕' : 'Clear ✕'}
+              </button>
+            )}
+            <div className={styles.chevronCircle}>
+              <svg 
+                className={`${styles.chevronIcon} ${isCategoriesExpanded ? styles.rotated : ''}`} 
+                width="18" 
+                height="18" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="3.5" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
           </div>
         </div>
 
+        {/* Smooth Expandable Slider Content */}
         <div className={`${styles.sliderWrapper} ${isCategoriesExpanded ? styles.expanded : ''}`}>
           <div className={styles.sliderContent}>
+            {/* Level 1: Category Cards Grid */}
             <div className={styles.categoryGrid}>
-              {categories.map((cat, i) => (
-                <div 
-                  key={i} 
-                  className={styles.categoryCard}
-                  style={{
-                    '--card-bg': cat.bg,
-                    '--card-border': cat.border,
-                    '--card-text': cat.text,
-                    '--icon-glow': cat.color
-                  }}
-                  onClick={() => {
-                    setActiveCategory(cat.name);
-                    setSelectedCategoryFilter(cat.name);
-                    setActiveSub(null);
-                    setShowCategoryModal(true);
-                  }}
-                >
-                  <div className={styles.iconBox} style={{ background: cat.gradient }}>
-                    <cat.icon size={20} color="#ffffff" className={styles.categoryIcon} />
+              {categories.map((cat, i) => {
+                const isSelected = activeCategory === cat.name;
+                const subCount = CATEGORIES[cat.name] ? Object.keys(CATEGORIES[cat.name]).length : 0;
+                return (
+                  <div 
+                    key={i} 
+                    className={`${styles.categoryCard} ${isSelected ? styles.cardActive : ''}`}
+                    onClick={() => {
+                      if (isSelected) {
+                        setActiveCategory(null);
+                        setActiveSub(null);
+                        setSelectedCategoryFilter(null);
+                      } else {
+                        setActiveCategory(cat.name);
+                        setActiveSub(null);
+                        setSelectedCategoryFilter(cat.name);
+                      }
+                    }}
+                  >
+                    <div className={styles.iconCircle} style={{ background: cat.bg, color: cat.color }}>
+                      <cat.icon size={22} />
+                    </div>
+                    <div className={styles.catDetails}>
+                      <h3>{getCategoryName(cat.name, lang)}</h3>
+                      <span className={styles.itemCount}>
+                        {lang === 'bn' ? `${subCount} টি বিভাগ` : `${subCount} Subcategories`}
+                      </span>
+                    </div>
                   </div>
-                  <h3 style={{ color: cat.text }}>{t(cat.name)}</h3>
-                </div>
-              ))}
+                );
+              })}
             </div>
+
+            {/* Level 2: Subcategory Pills Strip (সিলেক্ট করার সাথে সাথে স্লাইডার বন্ধ হয়ে উপরে চলে যাবে) */}
+            {activeCategory && CATEGORIES[activeCategory] && (
+              <div className={styles.subCategoryPanel}>
+                <div className={styles.subCategoryHeading}>
+                  <span>
+                    {lang === 'bn' 
+                      ? `${getCategoryName(activeCategory, lang)}-এর বিভাগসমূহ:` 
+                      : `Subcategories of ${getCategoryName(activeCategory, lang)}:`}
+                  </span>
+                </div>
+                <div className={styles.subCategoryTags}>
+                  {/* All in Category */}
+                  <button 
+                    type="button"
+                    className={`${styles.tagButton} ${!activeSub ? styles.activeTag : ''}`}
+                    onClick={() => {
+                      setActiveSub(null);
+                      setSelectedCategoryFilter(activeCategory);
+                      setIsCategoriesExpanded(false); // অটোমেটিক উপরে চলে যাবে
+                    }}
+                  >
+                    {lang === 'bn' ? `সকল ${getCategoryName(activeCategory, lang)}` : `All ${getCategoryName(activeCategory, lang)}`}
+                  </button>
+
+                  {/* Specific Subcategories */}
+                  {Object.keys(CATEGORIES[activeCategory]).map((subKey) => {
+                    const isSubActive = activeSub === subKey;
+                    return (
+                      <button
+                        type="button"
+                        key={subKey}
+                        className={`${styles.tagButton} ${isSubActive ? styles.activeTag : ''}`}
+                        onClick={() => {
+                          setActiveSub(subKey);
+                          setSelectedCategoryFilter(subKey);
+                          setIsCategoriesExpanded(false); // অটোমেটিক উপরে চলে যাবে
+                        }}
+                      >
+                        {getCategoryName(subKey, lang)}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
-
-      {showCategoryModal && activeCategory && mounted && createPortal(
-        <div className={styles.modalOverlay} onClick={closeCategoryModal}>
-          <div className={styles.modalContent} onClick={e => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h2 className={styles.modalTitle}>{t(activeCategory)}</h2>
-              <button className={styles.modalCloseBtn} onClick={closeCategoryModal}>
-                {lang === 'bn' ? '← ফিরে যান' : '← Go Back'}
-              </button>
-            </div>
-            <div className={styles.modalBody}>
-              {/* Prominent Banner for viewing ALL items in this Category */}
-              <div 
-                style={{
-                  marginBottom: '0.65rem',
-                  padding: '0.85rem 1.1rem',
-                  background: 'linear-gradient(135deg, #008b5e 0%, #00704c 100%)',
-                  borderRadius: '12px',
-                  boxShadow: '0 4px 12px rgba(0, 139, 94, 0.25)',
-                  cursor: 'pointer',
-                  transition: 'transform 0.2s',
-                  flexShrink: 0
-                }}
-                onClick={() => {
-                  setSelectedCategoryFilter(activeCategory);
-                  closeCategoryModal();
-                }}
-              >
-                <Link 
-                  href={`/ads?category=${encodeURIComponent(activeCategory)}`}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    width: '100%',
-                    color: 'white',
-                    textDecoration: 'none'
-                  }}
-                >
-                  <span style={{ fontWeight: 800, fontSize: '0.95rem' }}>
-                    🌐 {lang === 'bn' 
-                      ? `সকল ${t(activeCategory)} (সবগুলো অ্যাড)`
-                      : `All ${t(activeCategory)} (All Ads)`}
-                  </span>
-                  <span style={{ 
-                    background: 'rgba(255, 255, 255, 0.25)', 
-                    padding: '0.35rem 0.75rem', 
-                    borderRadius: '20px', 
-                    fontSize: '0.78rem', 
-                    fontWeight: 800,
-                    letterSpacing: '0.3px',
-                    whiteSpace: 'nowrap'
-                  }}>
-                    {lang === 'bn' ? 'সব দেখুন →' : 'View All →'}
-                  </span>
-                </Link>
-              </div>
-
-              {/* Subcategory & Item Search Bar */}
-              <div className={styles.subCatSearchWrapper}>
-                <Search size={18} className={styles.subCatSearchIcon} />
-                <input 
-                  type="text" 
-                  className={styles.subCatSearchInput}
-                  placeholder={lang === 'bn' ? `${t(activeCategory)}-এ সাব-ক্যাটাগরি বা আইটেম খুঁজুন...` : `Search subcategories or items in ${t(activeCategory)}...`}
-                  value={subCatSearchQuery}
-                  onChange={(e) => setSubCatSearchQuery(e.target.value)}
-                />
-                {subCatSearchQuery && (
-                  <button 
-                    type="button" 
-                    className={styles.subCatSearchClear}
-                    onClick={() => setSubCatSearchQuery('')}
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
-
-              {CATEGORIES[activeCategory] ? (
-                <>
-                  {Object.entries(CATEGORIES[activeCategory])
-                    .filter(([sub, items]) => {
-                      if (!subCatSearchQuery.trim()) return true;
-                      const q = subCatSearchQuery.toLowerCase().trim();
-                      const matchSub = sub.toLowerCase().includes(q) || (t(sub) && t(sub).toLowerCase().includes(q));
-                      const matchItem = items.some(item => item.toLowerCase().includes(q) || (t(item) && t(item).toLowerCase().includes(q)));
-                      return matchSub || matchItem;
-                    })
-                    .map(([sub, items]) => {
-                      const q = subCatSearchQuery.toLowerCase().trim();
-                      const filteredItems = q 
-                        ? items.filter(item => item.toLowerCase().includes(q) || (t(item) && t(item).toLowerCase().includes(q)) || sub.toLowerCase().includes(q) || (t(sub) && t(sub).toLowerCase().includes(q)))
-                        : items;
-
-                      const isExpanded = q ? true : (activeSub === sub);
-
-                      return (
-                        <div key={sub} className={styles.subCatAccordionGroup}>
-                          <div 
-                            className={`${styles.subCatAccordionHeader} ${isExpanded ? styles.activeHeader : ''}`}
-                            onClick={() => {
-                              setActiveSub(prev => (prev === sub ? null : sub));
-                            }}
-                          >
-                            <div className={styles.subCatAccordionTitle}>
-                              <span className={styles.subHeaderDot}></span>
-                              <span>{t(sub)}</span>
-                              {q && (
-                                <span style={{fontSize: '0.75rem', color: '#008b5e', fontWeight: 700, marginLeft: '6px'}}>
-                                  ({filteredItems.length})
-                                </span>
-                              )}
-                            </div>
-                            <div className={`${styles.subChevronCircle} ${isExpanded ? styles.rotated : ''}`}>
-                              <ChevronDown size={18} />
-                            </div>
-                          </div>
-
-                          <div className={`${styles.accordionBody} ${isExpanded ? styles.expanded : ''}`}>
-                            <div className={styles.accordionContent}>
-                              <div className={styles.itemGrid}>
-                                <div 
-                                  className={styles.categoryLink} 
-                                  onClick={() => {
-                                    setSelectedCategoryFilter(sub);
-                                    closeCategoryModal();
-                                  }} 
-                                  style={{ background: '#e6f4ef', border: '1px solid #bbf7d0' }}
-                                >
-                                  <Link href={`/ads?category=${encodeURIComponent(sub)}`}>
-                                    <span style={{ fontWeight: 800, color: '#008b5e' }}>
-                                      🌐 {lang === 'bn' ? `সকল ${t(sub)}` : `All ${t(sub)}`}
-                                    </span>
-                                    <span className={styles.arrowIcon} style={{ color: '#008b5e' }}>→</span>
-                                  </Link>
-                                </div>
-                                {filteredItems.map(item => (
-                                  <div 
-                                    key={item} 
-                                    className={styles.categoryLink} 
-                                    onClick={() => {
-                                      setSelectedCategoryFilter(item);
-                                      closeCategoryModal();
-                                    }}
-                                  >
-                                    <Link href={`/ads?category=${encodeURIComponent(item)}`}>
-                                      <span>{t(item)}</span>
-                                      <span className={styles.arrowIcon}>→</span>
-                                    </Link>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-
-                  {/* Other / Custom item card at the end */}
-                  <div className={styles.otherCustomCard}>
-                    <div 
-                      className={styles.otherCustomHeader}
-                      onClick={() => setShowOtherInput(!showOtherInput)}
-                    >
-                      <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                        <span style={{fontSize: '1.2rem'}}>🏷️</span>
-                        <span>{lang === 'bn' ? 'অন্যান্য (কাস্টম আইটেম)' : 'Other (Custom Item)'}</span>
-                      </div>
-                      <span style={{fontSize: '0.82rem', color: '#008b5e', fontWeight: 800}}>
-                        {showOtherInput ? (lang === 'bn' ? '▲ বন্ধ করুন' : '▲ Close') : (lang === 'bn' ? '▼ আপনার পণ্য লিখুন' : '▼ Type Custom Item')}
-                      </span>
-                    </div>
-
-                    {showOtherInput && (
-                      <form 
-                        className={styles.otherCustomInputGroup}
-                        onSubmit={(e) => {
-                          e.preventDefault();
-                          const val = customItemInput.trim();
-                          if (val) {
-                            closeCategoryModal();
-                            window.location.href = `/ads?search=${encodeURIComponent(val)}&category=${encodeURIComponent(activeCategory)}`;
-                          }
-                        }}
-                      >
-                        <input 
-                          type="text" 
-                          className={styles.otherCustomInput}
-                          placeholder={lang === 'bn' ? 'সে কি বিক্রয় বা খুঁজতে চান লিখুন...' : 'Type what you want to sell or find...'}
-                          value={customItemInput}
-                          onChange={(e) => setCustomItemInput(e.target.value)}
-                          autoFocus
-                        />
-                        <button type="submit" className={styles.otherCustomBtn}>
-                          {lang === 'bn' ? 'খুঁজুন →' : 'Search →'}
-                        </button>
-                      </form>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <div className={styles.noSub}>{t('noSub')}</div>
-              )}
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
 
       <div className={`container ${styles.adSection}`}>
         {/* ── Featured Business Ads Slider (Prominently at the top) ── */}
@@ -608,7 +571,7 @@ export default function Home() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
           <h2 className={styles.sectionTitle} style={{ margin: 0 }}>
             {selectedCategoryFilter 
-              ? `${lang === 'bn' ? 'ক্যাটাগরি ভিত্তিক পোস্ট:' : 'Filtered Ads:'} ${t(selectedCategoryFilter)}`
+              ? `${lang === 'bn' ? 'ক্যাটাগরি ভিত্তিক পোস্ট:' : 'Filtered Ads:'} ${getCategoryName(selectedCategoryFilter, lang)}`
               : t('freshRecommendations')}
           </h2>
           {selectedCategoryFilter && (
@@ -647,24 +610,9 @@ export default function Home() {
               </div>
             ))
           ) : (() => {
-            const displayedListings = listings.filter(ad => {
+            const displayedListings = listings.filter((ad) => {
               if (!selectedCategoryFilter) return true;
-              const cat = selectedCategoryFilter;
-              if (ad.category_id === cat) return true;
-              
-              if (CATEGORIES[cat]) {
-                const subcategories = CATEGORIES[cat];
-                for (const [subKey, items] of Object.entries(subcategories)) {
-                  if (subKey === ad.category_id || items.includes(ad.category_id)) return true;
-                }
-              }
-              
-              for (const mainCatObj of Object.values(CATEGORIES)) {
-                if (mainCatObj[cat] && (mainCatObj[cat].includes(ad.category_id) || ad.category_id === cat)) {
-                  return true;
-                }
-              }
-              return false;
+              return isCategoryMatch(ad, selectedCategoryFilter);
             });
 
             return displayedListings.length > 0 ? (

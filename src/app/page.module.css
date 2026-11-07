@@ -916,3 +916,241 @@
 .otherCustomBtn:hover {
   background: #00704c;
 }
+
+
+/* ==============================================================
+   BIKROY STYLE CLEAN BILINGUAL CATEGORY BROWSER CSS
+   ============================================================== */
+.categorySection {
+  margin-top: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+/* Section Title Toggle Bar */
+.sectionTitleToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  width: 100%;
+  padding: 0.75rem 1.2rem;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sectionTitleToggle:hover {
+  border-color: #008b5e;
+  box-shadow: 0 6px 20px rgba(0, 139, 94, 0.08);
+  background: #fafdfb;
+}
+
+.titleLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.accentBar {
+  width: 4px;
+  height: 20px;
+  background: #008b5e;
+  border-radius: 3px;
+}
+
+.sectionTitleText {
+  font-size: 1.15rem;
+  font-weight: 850;
+  color: #0f172a;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+
+.toggleRight {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.resetFilterBtn {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.resetFilterBtn:hover {
+  background: #fca5a5;
+  color: #991b1b;
+}
+
+.chevronCircle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chevronIcon {
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chevronIcon.rotated {
+  transform: rotate(180deg);
+  stroke: #008b5e;
+}
+
+/* Slider Expand Animation */
+.sliderWrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sliderWrapper.expanded {
+  grid-template-rows: 1fr;
+}
+
+.sliderContent {
+  overflow: hidden;
+}
+
+/* Category Grid */
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.65rem;
+  padding-top: 1rem;
+}
+
+@media (min-width: 640px) {
+  .categoryGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.85rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .categoryGrid {
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+.categoryCard {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0.9rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: none;
+}
+
+.categoryCard::before {
+  display: none;
+}
+
+.categoryCard:hover {
+  border-color: #008b5e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 139, 94, 0.08);
+}
+
+.cardActive {
+  border-color: #008b5e !important;
+  background: #f0fdf4 !important;
+  box-shadow: 0 0 0 1.5px #008b5e !important;
+}
+
+.iconCircle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.catDetails h3 {
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.itemCount {
+  font-size: 0.72rem;
+  color: #64748b;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Subcategory Chips */
+.subCategoryPanel {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  margin-top: 0.85rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.subCategoryHeading {
+  font-size: 0.82rem;
+  font-weight: 750;
+  color: #64748b;
+  margin-bottom: 0.65rem;
+}
+
+.subCategoryTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tagButton {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 0.45rem 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tagButton:hover {
+  background: #e2e8f0;
+}
+
+.activeTag {
+  background: #008b5e !important;
+  color: #ffffff !important;
+  border-color: #008b5e !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}

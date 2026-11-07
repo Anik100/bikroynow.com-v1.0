@@ -1,1 +1,51 @@
-[]
+[
+  {
+    "id": "09ef3864-30f0-4594-bb5f-d30be966c1bd",
+    "listing_id": "6838fbac-2b5b-43ed-983d-8ad4aa65ce61",
+    "is_active": true,
+    "sort_order": 0,
+    "created_at": "2026-11-07T03:24:49.623315+00:00"
+  },
+  {
+    "id": "31e51181-241f-4539-9123-6e4d148cdd32",
+    "listing_id": "7911d2c9-c6eb-4a41-8d76-9cea7568cc98",
+    "is_active": true,
+    "sort_order": 0,
+    "created_at": "2026-11-04T17:24:13.356265+00:00"
+  },
+  {
+    "id": "53de4288-f5f9-4870-97ee-e47262a7c92f",
+    "listing_id": "341ba31b-a106-4122-b236-b62bbbb78cba",
+    "is_active": true,
+    "sort_order": 0,
+    "created_at": "2026-11-04T17:24:11.285169+00:00"
+  },
+  {
+    "id": "64ab91ba-9716-49d9-8909-62c2018b32f0",
+    "listing_id": "ba4e8880-322f-4dd1-80a9-a6ea6e50fc1e",
+    "is_active": true,
+    "sort_order": 0,
+    "created_at": "2026-11-04T17:11:46.018486+00:00"
+  },
+  {
+    "id": "074c0602-404f-48ed-84bd-5117a289f272",
+    "listing_id": "0bdc6d7f-55cc-4855-9cf4-89e30655ab68",
+    "is_active": true,
+    "sort_order": 0,
+    "created_at": "2026-11-04T17:11:46.344337+00:00"
+  },
+  {
+    "id": "76dbc508-3f95-42de-a2de-004e2073b877",
+    "listing_id": "e242748f-5236-4403-ba3c-855d0e0bd7bf",
+    "is_active": true,
+    "sort_order": 0,
+    "created_at": "2026-11-06T03:21:41.021248+00:00"
+  },
+  {
+    "id": "98902d7b-9703-447e-9806-cbea348daa7e",
+    "listing_id": "95bcbea3-995b-4616-9a1a-af28c1a3d517",
+    "is_active": true,
+    "sort_order": 0,
+    "created_at": "2026-11-06T10:32:52.240539+00:00"
+  }
+]

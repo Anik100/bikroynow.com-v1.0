@@ -932,3 +932,639 @@
 .otherCustomBtn:hover {
   background: #00704c;
 }
+
+
+/* ==============================================================
+   2-STEP BIKROY STYLE CATEGORY SELECTOR CSS
+   ============================================================== */
+.stepList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.stepNotice {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 0.4rem;
+}
+
+.stepHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 0.5rem;
+}
+
+.backButton {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background: #e2e8f0;
+}
+
+.activeCategoryTitle {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #008b5e;
+}
+
+.stepItem, .stepSubItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.stepItem:hover, .stepSubItem:hover {
+  background: #f0fdf4;
+  border-color: #008b5e;
+}
+
+.stepIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+}
+
+.stepText {
+  flex: 1;
+  font-size: 0.88rem;
+  font-weight: 750;
+  color: #1e293b;
+}
+
+.stepArrow {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+.subListGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+}
+
+
+/* ==============================================================
+   4-STEP MULTI-STEP BRAND & MODEL CATEGORY SELECTOR CSS
+   ============================================================== */
+.wizardStep {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.wizardNavHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.65rem;
+  border-bottom: 1.5px solid #e2e8f0;
+  margin-bottom: 0.2rem;
+}
+
+.backButton {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #0f172a;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background: #e2e8f0;
+}
+
+.currentBadge {
+  font-weight: 850;
+  font-size: 0.92rem;
+  color: #008b5e;
+  background: #e6f4ef;
+  padding: 0.35rem 0.85rem;
+  border-radius: 8px;
+}
+
+.stepNotice {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #64748b;
+  margin: 0;
+}
+
+.stepList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stepItem, .stepSubItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.stepItem:hover, .stepSubItem:hover {
+  background: #f0fdf4;
+  border-color: #008b5e;
+}
+
+.stepIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+}
+
+.stepText {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 750;
+  color: #1e293b;
+}
+
+.stepArrow {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+.subListGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+}
+
+/* Brand Grid & Search */
+.brandSearchBox {
+  margin-bottom: 0.4rem;
+}
+
+.brandSearchInput {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.brandSearchInput:focus {
+  border-color: #008b5e;
+  box-shadow: 0 0 0 3px rgba(0, 139, 94, 0.1);
+}
+
+.brandGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: 0.2rem;
+}
+
+@media (min-width: 480px) {
+  .brandGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.brandCard {
+  background: #ffffff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.65rem 0.5rem;
+  text-align: center;
+  font-size: 0.84rem;
+  font-weight: 750;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.brandCard:hover {
+  background: #008b5e;
+  color: #ffffff;
+  border-color: #008b5e;
+  transform: translateY(-2px);
+}
+
+.customBrandSection {
+  margin-top: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px dashed #cbd5e1;
+}
+
+.addCustomBrandBtn {
+  width: 100%;
+  padding: 0.65rem;
+  background: #f8fafc;
+  border: 1.5px dashed #008b5e;
+  border-radius: 10px;
+  color: #008b5e;
+  font-weight: 800;
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.addCustomBrandBtn:hover {
+  background: #e6f4ef;
+}
+
+.customBrandInputWrap {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.customInput {
+  flex: 1;
+  padding: 0.6rem 0.85rem;
+  border: 1.5px solid #008b5e;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.confirmSmallBtn {
+  background: #008b5e;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Step 4: Model Input Card */
+.modelInputCard {
+  background: #ffffff;
+  border: 1.5px solid #bbf7d0;
+  border-radius: 16px;
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 139, 94, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.modelIcon {
+  font-size: 2.2rem;
+  margin-bottom: 0.2rem;
+}
+
+.modelPromptTitle {
+  font-size: 1.05rem;
+  font-weight: 850;
+  color: #0f172a;
+  margin: 0;
+}
+
+.modelHelpText {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.modelInputField {
+  width: 100%;
+  max-width: 360px;
+  padding: 0.85rem 1rem;
+  border: 2px solid #008b5e;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  outline: none;
+  text-align: center;
+  margin-top: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 139, 94, 0.1);
+}
+
+.modelInputField:focus {
+  box-shadow: 0 0 0 4px rgba(0, 139, 94, 0.15);
+}
+
+.modelActionButtons {
+  width: 100%;
+  max-width: 360px;
+  margin-top: 0.5rem;
+}
+
+.confirmFinalBtn {
+  width: 100%;
+  padding: 0.85rem;
+  background: #008b5e;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 850;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 139, 94, 0.25);
+  transition: all 0.2s ease;
+}
+
+.confirmFinalBtn:hover {
+  background: #00704c;
+  transform: translateY(-2px);
+}
+
+
+/* ==============================================================
+   FINAL 2-CLICK CATEGORY MODAL & DYNAMIC BRAND/MODEL ROW CSS
+   ============================================================== */
+.stepList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.stepNotice {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 0.4rem;
+}
+
+.stepHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 0.5rem;
+}
+
+.backButton {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.backButton:hover {
+  background: #e2e8f0;
+}
+
+.activeCategoryTitle {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #008b5e;
+}
+
+.stepItem, .stepSubItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.stepItem:hover, .stepSubItem:hover {
+  background: #f0fdf4;
+  border-color: #008b5e;
+}
+
+.stepIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+}
+
+.stepText {
+  flex: 1;
+  font-size: 0.88rem;
+  font-weight: 750;
+  color: #1e293b;
+}
+
+.stepArrow {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #94a3b8;
+}
+
+.subListGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+}
+
+.brandModelRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px dashed #cbd5e1;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 640px) {
+  .brandModelRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.brandSelectWrapper select {
+  width: 100%;
+}
+
+.customBrandInputWrap {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.cancelCustomBtn {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: 8px;
+  padding: 0.6rem 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelCustomBtn:hover {
+  background: #fca5a5;
+}
+
+
+/* ==============================================================
+   PREMIUM REDESIGNED BRAND, MODEL & TITLE SECTION CSS
+   ============================================================== */
+.brandModelRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.1rem;
+  background: #f8fafc;
+  padding: 1.25rem;
+  border-radius: 14px;
+  border: 1.5px solid #e2e8f0;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+@media (min-width: 640px) {
+  .brandModelRow {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.premiumLabel {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #1e293b;
+  letter-spacing: -0.2px;
+}
+
+.selectWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.premiumSelect,
+.premiumInput {
+  width: 100%;
+  height: 48px;
+  padding: 0 1rem;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  color: #0f172a;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.premiumSelect:focus,
+.premiumInput:focus {
+  border-color: #008b5e;
+  box-shadow: 0 0 0 3.5px rgba(0, 139, 94, 0.12);
+  background: #ffffff;
+}
+
+/* বড় ও প্রফেশনাল টাইটেল বক্স */
+.titleSectionGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.premiumTitleInput {
+  width: 100%;
+  height: 52px;
+  padding: 0 1.15rem;
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #0f172a;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.premiumTitleInput:focus {
+  border-color: #008b5e;
+  box-shadow: 0 0 0 4px rgba(0, 139, 94, 0.14);
+}
+
+.inputHelperText {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-top: 0.2rem;
+}
+
+.customBrandInputWrap {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.cancelCustomBtn {
+  height: 48px;
+  padding: 0 1rem;
+  background: #fee2e2;
+  border: 1.5px solid #fca5a5;
+  color: #dc2626;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelCustomBtn:hover {
+  background: #fca5a5;
+}

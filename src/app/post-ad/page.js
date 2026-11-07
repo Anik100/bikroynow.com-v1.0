@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom';
 import { supabase } from '../../lib/supabaseClient';
 import { uploadToImgBB } from '../../lib/imgbb';
 import { compressImage } from '../../lib/utils';
-import { LOCATIONS, CATEGORIES } from '../../lib/constants';
+import { LOCATIONS, CATEGORIES, getCategoryName } from '../../lib/constants';
 import { useLanguage } from '../../context/LanguageContext';
 import { Smartphone, Laptop, Zap, Car, Home as HouseIcon, Briefcase, Box, ChevronRight, ChevronDown, Search } from 'lucide-react';
 import styles from './post-ad.module.css';
@@ -59,6 +59,32 @@ export default function PostAd() {
   const [newAdId, setNewAdId] = useState('');
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [selectedMainCategory, setSelectedMainCategory] = useState(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [selectedBrand, setSelectedBrand] = useState('');
+  const [isCustomBrand, setIsCustomBrand] = useState(false);
+  const [customBrandName, setCustomBrandName] = useState('');
+  const [modelInput, setModelInput] = useState('');
+
+  const handleBrandOrModelChange = (newBrand, newModel) => {
+    const brandVal = newBrand !== undefined ? newBrand : selectedBrand;
+    const modelVal = newModel !== undefined ? newModel : modelInput;
+    const generatedTitle = [brandVal, modelVal].filter(Boolean).join(' ');
+    
+    if (generatedTitle) {
+      setFormData(prev => ({
+        ...prev,
+        brand: brandVal,
+        model: modelVal,
+        title: generatedTitle
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        brand: brandVal,
+        model: modelVal
+      }));
+    }
+  };
   const [activeSub, setActiveSub] = useState(null);
   const [displayCategory, setDisplayCategory] = useState('');
   const [subCatSearchQuery, setSubCatSearchQuery] = useState('');
@@ -451,14 +477,125 @@ export default function PostAd() {
             </div>
           </div>
 
-          {/* === TITLE === */}
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>{lang === 'bn' ? 'পণ্যের নাম' : 'Product Name'} *</label>
+          {/* ক্যাটাগরি সিলেক্ট করার পর ব্র্যান্ড এবং মডেল ফিল্ড */}
+          {selectedSubCategory && (
+            <div className={styles.brandModelRow}>
+              {/* BRAND / PARTS SELECTION */}
+              <div className={styles.fieldGroup}>
+                <label className={styles.premiumLabel}>
+                  {selectedSubCategory === 'mobile_parts_components' 
+                    ? (lang === 'bn' ? 'যন্ত্রাংশ / পার্টসের ধরন নির্বাচন করুন' : 'Select Part / Component Type')
+                    : (selectedSubCategory === 'mobile_accessories'
+                        ? (lang === 'bn' ? 'এক্সেসরিজের ধরন নির্বাচন করুন' : 'Select Accessory Type')
+                        : (selectedSubCategory === 'batteries'
+                            ? (lang === 'bn' ? 'ব্যাটারির ধরন বা সেল নির্বাচন করুন' : 'Select Battery / Cell Type')
+                            : (lang === 'bn' ? 'ব্র্যান্ড / ধরন নির্বাচন করুন' : 'Select Brand / Type')
+                          )
+                      )
+                  }
+                </label>
+                {!isCustomBrand ? (
+                  <div className={styles.selectWrapper}>
+                    <select
+                      className={styles.premiumSelect}
+                      value={selectedBrand}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '__custom__') {
+                          setIsCustomBrand(true);
+                          setSelectedBrand('');
+                        } else {
+                          setSelectedBrand(val);
+                          handleBrandOrModelChange(val, undefined);
+                        }
+                      }}
+                    >
+                      <option value="">
+                        {selectedSubCategory === 'mobile_parts_components'
+                          ? (lang === 'bn' ? '-- পার্টস নির্বাচন করুন --' : '-- Select Part --')
+                          : (selectedSubCategory === 'batteries'
+                              ? (lang === 'bn' ? '-- ব্যাটারির ধরন নির্বাচন করুন --' : '-- Select Battery Type --')
+                              : (lang === 'bn' ? '-- নির্বাচন করুন --' : '-- Select Option --')
+                            )
+                        }
+                      </option>
+                      {(() => {
+                        const parentCat = Object.keys(CATEGORIES).find(k => CATEGORIES[k][selectedSubCategory]);
+                        const brands = CATEGORIES[parentCat]?.[selectedSubCategory]?.brands || [];
+                        return brands.map(b => <option key={b} value={b}>{b}</option>);
+                      })()}
+                      <option value="__custom__">➕ {lang === 'bn' ? 'অন্যান্য (তালিকায় নেই)' : 'Other (Not in list)'}</option>
+                    </select>
+                  </div>
+                ) : (
+                  <div className={styles.customBrandInputWrap}>
+                    <input
+                      type="text"
+                      className={styles.premiumInput}
+                      placeholder={lang === 'bn' ? 'পার্টস বা ব্র্যান্ডের নাম লিখুন...' : 'Enter part or brand name...'}
+                      value={customBrandName}
+                      onChange={(e) => {
+                        setCustomBrandName(e.target.value);
+                        setSelectedBrand(e.target.value);
+                        handleBrandOrModelChange(e.target.value, undefined);
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className={styles.cancelCustomBtn}
+                      onClick={() => {
+                        setIsCustomBrand(false);
+                        setCustomBrandName('');
+                        setSelectedBrand('');
+                        handleBrandOrModelChange('', undefined);
+                      }}
+                    >
+                      ✕
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* MODEL NUMBER INPUT - কোনো ডেমো নাম ছাড়া সম্পূর্ণ ক্লিন */}
+              {(() => {
+                const parentCat = Object.keys(CATEGORIES).find(k => CATEGORIES[k][selectedSubCategory]);
+                const hasModel = CATEGORIES[parentCat]?.[selectedSubCategory]?.hasModel;
+                if (!hasModel) return null;
+                return (
+                  <div className={styles.fieldGroup}>
+                    <label className={styles.premiumLabel}>
+                      {lang === 'bn' ? 'মডেল' : 'Model'}
+                    </label>
+                    <input
+                      type="text"
+                      className={styles.premiumInput}
+                      placeholder={lang === 'bn' ? 'মডেল লিখুন...' : 'Enter Model...'}
+                      value={modelInput}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setModelInput(val);
+                        handleBrandOrModelChange(undefined, val);
+                      }}
+                    />
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
+          {/* PRODUCT TITLE / AD TITLE - কোনো ডেমো নাম ছাড়া সম্পূর্ণ ক্লিন */}
+          <div className={styles.titleSectionGroup}>
+            <label className={styles.premiumLabel}>
+              {lang === 'bn' ? 'বিজ্ঞাপনের শিরোনাম (Ad Title) *' : 'Ad Title *'}
+            </label>
             <input
-              type="text" required className={styles.premiumInput}
+              type="text"
+              name="title"
+              className={styles.premiumTitleInput}
+              placeholder={lang === 'bn' ? 'বিজ্ঞাপনের শিরোনাম লিখুন...' : 'Enter Ad Title...'}
               value={formData.title}
-              onChange={e => setFormData({ ...formData, title: e.target.value })}
-              placeholder={lang === 'bn' ? 'পণ্যের নাম লিখুন...' : 'Enter product name...'}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              required
             />
           </div>
 
@@ -648,9 +785,8 @@ export default function PostAd() {
               <button 
                 className={styles.modalCloseBtn} 
                 onClick={() => { 
-                  setShowCategoryModal(false); 
-                  setSelectedMainCategory(null); 
-                  setActiveSub(null);
+                  setShowCategoryModal(false);
+                  resetCategoryWizard();
                 }}
               >
                 ×
@@ -659,185 +795,76 @@ export default function PostAd() {
 
             <div className={styles.modalBody}>
               {!selectedMainCategory ? (
-                /* Level 1: Main Categories List */
-                <div className={styles.mainCatList}>
+                /* Step 1: মূল ক্যাটাগরি */
+                <div className={styles.stepList}>
+                  <p className={styles.stepNotice}>
+                    {lang === 'bn' ? '১. একটি ক্যাটাগরি নির্বাচন করুন:' : '1. Select Category:'}
+                  </p>
                   {Object.keys(CATEGORIES).map(main => {
                     const config = CAT_CONFIG[main] || CAT_CONFIG['অন্যান্য'];
                     const Icon = config.icon;
                     return (
                       <div 
                         key={main} 
-                        className={styles.mainCatItem} 
-                        onClick={() => {
-                          setSelectedMainCategory(main);
-                          setActiveSub(null);
-                        }}
+                        className={styles.stepItem} 
+                        onClick={() => setSelectedMainCategory(main)}
                       >
-                        <div className={styles.iconBox} style={{ background: config.gradient }}>
-                          <Icon size={16} color="#ffffff" />
+                        <div className={styles.stepIcon} style={{ background: config.bg, color: config.color }}>
+                          <Icon size={18} />
                         </div>
-                        <span className={styles.mainCatName}>{lang === 'bn' ? (BN_CAT_NAMES[main] || main) : main}</span>
-                        <span className={styles.mainCatArrow}>›</span>
+                        <span className={styles.stepText}>{getCategoryName(main, lang)}</span>
+                        <span className={styles.stepArrow}>›</span>
                       </div>
                     );
                   })}
                 </div>
               ) : (
-                /* Level 2: Accordion Subcategories List */
-                <div className={styles.subCatPanel}>
-                  <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.2rem'}}>
+                /* Step 2: সাব-ক্যাটাগরি এবং নির্বাচন সম্পন্ন */
+                <div className={styles.stepList}>
+                  <div className={styles.stepHeader}>
                     <button 
-                      className={styles.subCatBackBtn} 
-                      onClick={() => {
-                        setSelectedMainCategory(null);
-                        setSubCatSearchQuery('');
-                        setShowOtherInput(false);
-                      }}
-                      style={{margin: 0}}
+                      type="button"
+                      className={styles.backButton} 
+                      onClick={() => setSelectedMainCategory(null)}
                     >
-                      ← {lang === 'bn' ? 'ফিরে যান' : 'Back'}
+                      ← {lang === 'bn' ? 'পূর্ববর্তী' : 'Back'}
                     </button>
-                    <span style={{fontWeight: 800, fontSize: '0.92rem', color: '#0f172a'}}>
-                      {lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory}
+                    <span className={styles.activeCategoryTitle}>
+                      {getCategoryName(selectedMainCategory, lang)}
                     </span>
                   </div>
 
-                  {/* Subcategory & Item Search Bar */}
-                  <div className={styles.subCatSearchWrapper}>
-                    <Search size={18} className={styles.subCatSearchIcon} />
-                    <input 
-                      type="text" 
-                      className={styles.subCatSearchInput}
-                      placeholder={lang === 'bn' ? `${lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory}-এ সাব-ক্যাটাগরি বা আইটেম খুঁজুন...` : `Search in ${selectedMainCategory}...`}
-                      value={subCatSearchQuery}
-                      onChange={(e) => setSubCatSearchQuery(e.target.value)}
-                    />
-                    {subCatSearchQuery && (
-                      <button 
-                        type="button" 
-                        className={styles.subCatSearchClear}
-                        onClick={() => setSubCatSearchQuery('')}
-                      >
-                        ×
-                      </button>
-                    )}
-                  </div>
+                  <p className={styles.stepNotice}>
+                    {lang === 'bn' ? '২. সাব-ক্যাটাগরি নির্বাচন করুন:' : '2. Select Subcategory:'}
+                  </p>
 
-                  <div className={styles.accordionContainer}>
-                    {CATEGORIES[selectedMainCategory] && Object.entries(CATEGORIES[selectedMainCategory])
-                      .filter(([sub, items]) => {
-                        if (!subCatSearchQuery.trim()) return true;
-                        const q = subCatSearchQuery.toLowerCase().trim();
-                        const matchSub = sub.toLowerCase().includes(q);
-                        const matchItem = items.some(item => item.toLowerCase().includes(q));
-                        return matchSub || matchItem;
-                      })
-                      .map(([sub, items]) => {
-                        const q = subCatSearchQuery.toLowerCase().trim();
-                        const filteredItems = q 
-                          ? items.filter(item => item.toLowerCase().includes(q) || sub.toLowerCase().includes(q))
-                          : items;
-                        const isExpanded = q ? true : (activeSub === sub);
-
-                        return (
-                          <div key={sub} className={styles.subCatAccordionGroup}>
-                            <div 
-                              className={`${styles.subCatAccordionHeader} ${isExpanded ? styles.activeHeader : ''}`}
-                              onClick={() => {
-                                setActiveSub(prev => (prev === sub ? null : sub));
-                              }}
-                            >
-                              <div className={styles.subCatAccordionTitle}>
-                                <span className={styles.subHeaderDot}></span>
-                                <span>{sub}</span>
-                                {q && (
-                                  <span style={{fontSize: '0.75rem', color: '#008b5e', fontWeight: 700, marginLeft: '6px'}}>
-                                    ({filteredItems.length})
-                                  </span>
-                                )}
-                              </div>
-                              <div className={`${styles.subChevronCircle} ${isExpanded ? styles.rotated : ''}`}>
-                                <ChevronDown size={18} />
-                              </div>
-                            </div>
-
-                            <div className={`${styles.accordionBody} ${isExpanded ? styles.expanded : ''}`}>
-                              <div className={styles.accordionContent}>
-                                <div className={styles.itemGrid}>
-                                  {filteredItems.map(item => (
-                                    <div 
-                                      key={item} 
-                                      className={styles.subCatItem}
-                                      onClick={() => {
-                                        setFormData({ ...formData, category_id: item });
-                                        const mainCatName = lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory;
-                                        setDisplayCategory(`${mainCatName} › ${sub} › ${item}`);
-                                        setShowCategoryModal(false);
-                                        setSelectedMainCategory(null);
-                                        setActiveSub(null);
-                                        setSubCatSearchQuery('');
-                                        setShowOtherInput(false);
-                                      }}
-                                    >
-                                      <span>{item}</span>
-                                      <span className={styles.arrowIcon}>→</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })}
-
-                    {/* Other / Custom item card at the end */}
-                    <div className={styles.otherCustomCard}>
+                  <div className={styles.subListGrid}>
+                    {Object.keys(CATEGORIES[selectedMainCategory]).map(subKey => (
                       <div 
-                        className={styles.otherCustomHeader}
-                        onClick={() => setShowOtherInput(!showOtherInput)}
+                        key={subKey}
+                        className={styles.stepSubItem}
+                        onClick={() => {
+                          const mainName = getCategoryName(selectedMainCategory, lang);
+                          const subName = getCategoryName(subKey, lang);
+                          
+                          setSelectedSubCategory(subKey);
+                          setSelectedBrand('');
+                          setModelInput('');
+                          setFormData(prev => ({ 
+                            ...prev, 
+                            category_id: subKey,
+                            brand: '',
+                            model: ''
+                          }));
+                          setDisplayCategory(`${mainName} › ${subName}`);
+                          setShowCategoryModal(false);
+                          setSelectedMainCategory(null);
+                        }}
                       >
-                        <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-                          <span style={{fontSize: '1.2rem'}}>🏷️</span>
-                          <span>{lang === 'bn' ? 'অন্যান্য (কাস্টম আইটেম)' : 'Other (Custom Item)'}</span>
-                        </div>
-                        <span style={{fontSize: '0.82rem', color: '#008b5e', fontWeight: 800}}>
-                          {showOtherInput ? (lang === 'bn' ? '▲ বন্ধ করুন' : '▲ Close') : (lang === 'bn' ? '▼ আপনি যা বিক্রি করবেন লিখুন' : '▼ Type Custom Item')}
-                        </span>
+                        <span>{getCategoryName(subKey, lang)}</span>
+                        <span className={styles.stepArrow}>›</span>
                       </div>
-
-                      {showOtherInput && (
-                        <div className={styles.otherCustomInputGroup}>
-                          <input 
-                            type="text" 
-                            className={styles.otherCustomInput}
-                            placeholder={lang === 'bn' ? 'সে কি বিক্রয় করতে চান সেটি লিখে দিন (যেমন: ওয়াইফাই ক্যামেরা, প্রজেক্টর...)' : 'Type what you want to sell...'}
-                            value={customItemInput}
-                            onChange={(e) => setCustomItemInput(e.target.value)}
-                            autoFocus
-                          />
-                          <button 
-                            type="button" 
-                            className={styles.otherCustomBtn}
-                            onClick={() => {
-                              const customVal = customItemInput.trim();
-                              if (customVal) {
-                                setFormData({ ...formData, category_id: customVal });
-                                const mainCatName = lang === 'bn' ? (BN_CAT_NAMES[selectedMainCategory] || selectedMainCategory) : selectedMainCategory;
-                                setDisplayCategory(`${mainCatName} › অন্যান্য › ${customVal}`);
-                                setShowCategoryModal(false);
-                                setSelectedMainCategory(null);
-                                setActiveSub(null);
-                                setCustomItemInput('');
-                                setShowOtherInput(false);
-                                setSubCatSearchQuery('');
-                              }
-                            }}
-                          >
-                            {lang === 'bn' ? 'নির্বাচন করুন ✓' : 'Confirm ✓'}
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                    ))}
                   </div>
                 </div>
               )}
