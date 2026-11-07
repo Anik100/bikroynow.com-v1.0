@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261028_0000167",
     "nc75458907",
     "emsc_20261028_0000184",
     "emsc_20261028_0000186",
@@ -499,7 +498,8 @@
     "emsc_20261107_0000288",
     "us7000twun",
     "emsc_20261107_0000291",
-    "us7000twur"
+    "us7000twur",
+    "emsc_20261107_0000292"
   ],
   "replied_comment_ids": [
     "122117767125450344_1599589281115855",
@@ -659,14 +659,6 @@
     "122121805197450344_2361852207969175"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261105_0000131",
-      "mag": 4.3,
-      "place": "SOUTHWEST OF SUMATRA, INDONESIA",
-      "latitude": -6.68,
-      "longitude": 102.58,
-      "epoch_ms": 1793872077000
-    },
     {
       "id": "emsc_20261105_0000137",
       "mag": 5.2,
@@ -1058,6 +1050,14 @@
       "latitude": 6.706,
       "longitude": 123.6541,
       "epoch_ms": 1794093935852
+    },
+    {
+      "id": "emsc_20261107_0000292",
+      "mag": 5.1,
+      "place": "SAMOA ISLANDS REGION",
+      "latitude": -15.6837,
+      "longitude": -172.9847,
+      "epoch_ms": 1794094029444
     }
   ]
 }
