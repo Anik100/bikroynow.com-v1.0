@@ -1,8 +1,7 @@
 /**
  * BikroyNow Message Notification & Audio Helper
- * Plays Melodic Chime (Tone 3) and shows system popup notification.
- * Smartly mutes alert when both users are actively chatting inside the room,
- * while notifying when browsing other pages or outside the browser/in background.
+ * Plays Melodic Chime (Tone 3) and shows Android Status Bar / Desktop Notifications.
+ * Uses Service Worker on mobile to support Android's top pull-down notification shade.
  */
 
 let sharedAudioCtx = null;
@@ -59,12 +58,23 @@ export const playNotificationSound = () => {
     const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.catch(() => {
-        // Autoplay policy or format fallback: use Web Audio API synthesizer
         playSynthesizedMelodicChime();
       });
     }
   } catch (err) {
     playSynthesizedMelodicChime();
+  }
+};
+
+// Auto-register Service Worker on mobile / desktop browsers
+export const registerServiceWorker = async () => {
+  if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return null;
+  try {
+    const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+    return reg;
+  } catch (err) {
+    console.warn('[ServiceWorker] Registration failed:', err);
+    return null;
   }
 };
 
@@ -75,6 +85,9 @@ export const requestNotificationPermission = async () => {
 
   try {
     const perm = await Notification.requestPermission();
+    if (perm === 'granted') {
+      registerServiceWorker();
+    }
     return perm;
   } catch (e) {
     return 'denied';
@@ -82,16 +95,11 @@ export const requestNotificationPermission = async () => {
 };
 
 /**
- * Checks if the user is currently on the screen actively viewing this chat room.
- * Returns true ONLY if:
- * 1. The browser tab is currently visible (not hidden/backgrounded)
- * 2. The window currently has focus
- * 3. The current URL pathname matches `/chat/[chatId]`
+ * Checks if the user is currently on screen actively viewing this chat room.
  */
 export const isUserActivelyViewingChat = (chatId) => {
   if (typeof window === 'undefined') return false;
 
-  // If the browser tab is hidden or minimized, user is NOT actively viewing
   const isDocVisible = document.visibilityState === 'visible';
   const hasFocus = typeof document.hasFocus === 'function' ? document.hasFocus() : true;
   if (!isDocVisible || !hasFocus) {
@@ -108,7 +116,7 @@ export const isUserActivelyViewingChat = (chatId) => {
 };
 
 export const playMessageNotification = ({
-  title = 'BikroyNow: নতুন মেসেজ এসেছে!',
+  title = 'BikroyNow: নতুন মেসেজ এসেছে! 💬',
   body = 'আপনার বিজ্ঞাপনে একজন ক্রেতা মেসেজ পাঠিয়েছেন।',
   url = '/chat',
   chatId = null,
@@ -116,34 +124,47 @@ export const playMessageNotification = ({
 } = {}) => {
   if (typeof window === 'undefined') return;
 
-  // SMART FILTER:
-  // If the user is actively inside this chat room looking at the conversation,
-  // do NOT play sound or show popup (to avoid annoying repeat chimes while actively chatting).
+  // SMART FILTER: Mute alert when user is actively focused inside this room
   if (!force && chatId && isUserActivelyViewingChat(chatId)) {
     return;
   }
 
-  // 1. Play Tone 3 sound
+  // 1. Play Tone 3 Melodic sound
   playNotificationSound();
 
-  // 2. Browser System Notification
+  // 2. Android Status Bar Notification & Desktop System Notification
   if ('Notification' in window && Notification.permission === 'granted') {
-    try {
-      const n = new Notification(title, {
-        body,
-        icon: '/favicon.ico',
-        badge: '/favicon.ico',
-        tag: 'bikroynow-new-message',
-        renotify: true
+    const notificationOptions = {
+      body,
+      icon: '/icon-192.png',
+      badge: '/favicon-48x48.png',
+      vibrate: [200, 100, 200],
+      tag: 'bikroynow-new-message',
+      renotify: true,
+      data: { url }
+    };
+
+    // On Android Mobile Chrome, showNotification via Service Worker is mandatory
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.ready.then((reg) => {
+        reg.showNotification(title, notificationOptions);
+      }).catch(() => {
+        try {
+          const n = new Notification(title, notificationOptions);
+          n.onclick = () => {
+            window.focus();
+            if (url && typeof window !== 'undefined') window.location.href = url;
+          };
+        } catch (e) {}
       });
-      n.onclick = () => {
-        window.focus();
-        if (url && typeof window !== 'undefined') {
-          window.location.href = url;
-        }
-      };
-    } catch (e) {
-      console.warn('[NotificationAudio] Desktop notification error:', e);
+    } else {
+      try {
+        const n = new Notification(title, notificationOptions);
+        n.onclick = () => {
+          window.focus();
+          if (url && typeof window !== 'undefined') window.location.href = url;
+        };
+      } catch (e) {}
     }
   }
 };

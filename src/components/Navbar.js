@@ -9,7 +9,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { LOCATIONS } from '../lib/constants';
 import ProfileMenu from './ProfileMenu';
 import OnboardingModal from './OnboardingModal';
-import { playMessageNotification, requestNotificationPermission } from '../lib/notificationAudio';
+import { playMessageNotification, requestNotificationPermission, registerServiceWorker } from '../lib/notificationAudio';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
@@ -90,6 +90,24 @@ export default function Navbar() {
   const isHomePage = pathname === '/';
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
+  const [showNotificationBanner, setShowNotificationBanner] = useState(false);
+
+  useEffect(() => {
+    registerServiceWorker();
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      if (Notification.permission === 'default') {
+        const timer = setTimeout(() => {
+          try {
+            const dismissed = localStorage.getItem('bikroynow_notif_banner_dismissed');
+            if (!dismissed) {
+              setShowNotificationBanner(true);
+            }
+          } catch(e){}
+        }, 2200);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, []);
   const prevUnreadRef = useRef(null);
   const isFirstFetchRef = useRef(true);
 
@@ -806,6 +824,78 @@ export default function Navbar() {
             } : null);
           }}
         />
+      )}
+      {/* Mobile & Desktop Message Notification Enable Banner */}
+      {showNotificationBanner && (
+        <div style={{
+          position: 'fixed',
+          bottom: '76px',
+          left: '12px',
+          right: '12px',
+          maxWidth: '460px',
+          margin: '0 auto',
+          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+          color: '#ffffff',
+          borderRadius: '16px',
+          padding: '0.85rem 1rem',
+          boxShadow: '0 12px 30px rgba(0,0,0,0.35)',
+          zIndex: 99999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '0.75rem',
+          border: '1px solid rgba(255,255,255,0.1)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+            <span style={{ fontSize: '1.4rem' }}>🔔</span>
+            <div>
+              <div style={{ fontSize: '0.86rem', fontWeight: 800 }}>
+                {lang === 'bn' ? 'মেসেজ নোটিফিকেশন চালু করুন' : 'Enable Message Alerts'}
+              </div>
+              <div style={{ fontSize: '0.74rem', color: '#94a3b8' }}>
+                {lang === 'bn' ? 'ক্রেতা মেসেজ পাঠালে মোবাইলের উপরে নোটিফিকেশন পাবেন' : 'Get alerts when buyers send messages'}
+              </div>
+            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center', flexShrink: 0 }}>
+            <button
+              type="button"
+              onClick={async () => {
+                setShowNotificationBanner(false);
+                await requestNotificationPermission();
+              }}
+              style={{
+                background: '#10b981',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '10px',
+                padding: '0.45rem 0.85rem',
+                fontSize: '0.8rem',
+                fontWeight: 800,
+                cursor: 'pointer'
+              }}
+            >
+              {lang === 'bn' ? 'অনুমতি দিন' : 'Allow'}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowNotificationBanner(false);
+                try { localStorage.setItem('bikroynow_notif_banner_dismissed', 'true'); } catch(e){}
+              }}
+              style={{
+                background: 'transparent',
+                color: '#94a3b8',
+                border: 'none',
+                fontSize: '1.1rem',
+                cursor: 'pointer',
+                padding: '0.2rem'
+              }}
+            >
+              ✕
+            </button>
+          </div>
+        </div>
       )}
     </header>
   );
