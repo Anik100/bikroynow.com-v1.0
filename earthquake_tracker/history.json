@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "us7000ttmb",
     "emsc_20261028_0000095",
     "emsc_20261028_0000103",
     "us7000ttmh",
@@ -499,7 +498,8 @@
     "emsc_20261107_0000180",
     "emsc_20261107_0000184",
     "emsc_20261107_0000186",
-    "us7000twss"
+    "us7000twss",
+    "emsc_20261107_0000187"
   ],
   "replied_comment_ids": [
     "122117756493450344_910694425314791",
@@ -654,14 +654,6 @@
     "122121990981450344_1481809433829807"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261104_0000093",
-      "mag": 4.0,
-      "place": "OAXACA, MEXICO",
-      "latitude": 16.958,
-      "longitude": -94.071,
-      "epoch_ms": 1793778732000
-    },
     {
       "id": "emsc_20261104_0000101",
       "mag": 4.1,
@@ -1053,6 +1045,14 @@
       "latitude": -19.7402,
       "longitude": 14.6467,
       "epoch_ms": 1794064970149
+    },
+    {
+      "id": "emsc_20261107_0000187",
+      "mag": 4.1,
+      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
+      "latitude": 40.3,
+      "longitude": 142.7,
+      "epoch_ms": 1794066150000
     }
   ]
 }
