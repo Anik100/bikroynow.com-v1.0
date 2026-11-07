@@ -472,7 +472,8 @@ export default function ChatWindow({ params }) {
             playMessageNotification({
               title: chat?.partner?.name || (lang === 'bn' ? 'নতুন মেসেজ এসেছে 💬' : 'New Message 💬'),
               body: payload.new.content || (payload.new.image_url ? '📷 [ছবি]' : '...'),
-              url: `/chat/${effectiveId}`
+              url: `/chat/${effectiveId}`,
+              chatId: effectiveId
             });
           }
           setMessages(prev => {

@@ -1,6 +1,8 @@
 /**
  * BikroyNow Message Notification & Audio Helper
  * Plays Melodic Chime (Tone 3) and shows system popup notification.
+ * Smartly mutes alert when both users are actively chatting inside the room,
+ * while notifying when browsing other pages or outside the browser/in background.
  */
 
 let sharedAudioCtx = null;
@@ -56,7 +58,7 @@ export const playNotificationSound = () => {
     audio.volume = 0.8;
     const playPromise = audio.play();
     if (playPromise !== undefined) {
-      playPromise.catch((err) => {
+      playPromise.catch(() => {
         // Autoplay policy or format fallback: use Web Audio API synthesizer
         playSynthesizedMelodicChime();
       });
@@ -79,8 +81,47 @@ export const requestNotificationPermission = async () => {
   }
 };
 
-export const playMessageNotification = ({ title = 'BikroyNow: নতুন মেসেজ এসেছে!', body = 'আপনার বিজ্ঞাপনে একজন ক্রেতা মেসেজ পাঠিয়েছেন।', url = '/chat' } = {}) => {
+/**
+ * Checks if the user is currently on the screen actively viewing this chat room.
+ * Returns true ONLY if:
+ * 1. The browser tab is currently visible (not hidden/backgrounded)
+ * 2. The window currently has focus
+ * 3. The current URL pathname matches `/chat/[chatId]`
+ */
+export const isUserActivelyViewingChat = (chatId) => {
+  if (typeof window === 'undefined') return false;
+
+  // If the browser tab is hidden or minimized, user is NOT actively viewing
+  const isDocVisible = document.visibilityState === 'visible';
+  const hasFocus = typeof document.hasFocus === 'function' ? document.hasFocus() : true;
+  if (!isDocVisible || !hasFocus) {
+    return false;
+  }
+
+  if (chatId) {
+    const path = window.location.pathname;
+    const targetPath = `/chat/${chatId}`;
+    return path === targetPath || path === `${targetPath}/`;
+  }
+
+  return false;
+};
+
+export const playMessageNotification = ({
+  title = 'BikroyNow: নতুন মেসেজ এসেছে!',
+  body = 'আপনার বিজ্ঞাপনে একজন ক্রেতা মেসেজ পাঠিয়েছেন।',
+  url = '/chat',
+  chatId = null,
+  force = false
+} = {}) => {
   if (typeof window === 'undefined') return;
+
+  // SMART FILTER:
+  // If the user is actively inside this chat room looking at the conversation,
+  // do NOT play sound or show popup (to avoid annoying repeat chimes while actively chatting).
+  if (!force && chatId && isUserActivelyViewingChat(chatId)) {
+    return;
+  }
 
   // 1. Play Tone 3 sound
   playNotificationSound();

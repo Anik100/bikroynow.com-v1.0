@@ -159,7 +159,8 @@ export default function Navbar() {
               playMessageNotification({
                 title: lang === 'bn' ? 'BikroyNow: নতুন মেসেজ এসেছে! 💬' : 'BikroyNow: New Message Received! 💬',
                 body: previewText,
-                url: newChat?.id ? `/chat/${newChat.id}` : '/chat'
+                url: newChat?.id ? `/chat/${newChat.id}` : '/chat',
+                chatId: newChat?.id
               });
             }
             isFirstFetchRef.current = false;
