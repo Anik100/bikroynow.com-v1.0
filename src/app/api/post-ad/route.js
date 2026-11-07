@@ -6,6 +6,17 @@ import { doesPackageQualifyForSlider } from '../../../lib/membershipManagerHelpe
 import { notifySearchEngines } from '../../../lib/seoPinger';
 import crypto from 'crypto';
 
+// Helper to prevent database operations from hanging API requests
+const withTimeout = (promise, ms, fallback) => {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms))
+  ]).catch((err) => {
+    console.warn(`[API /api/post-ad] Async operation bypassed (${err?.message || 'timeout'}):`, err);
+    return fallback;
+  });
+};
+
 export async function POST(req) {
   try {
     const body = await req.json();
@@ -24,24 +35,20 @@ export async function POST(req) {
     let validUserId = body.user_id;
     let userProfile = null;
 
-    if (serverSupabase) {
+    if (serverSupabase && validUserId) {
       try {
-        const { data: allProfs } = await serverSupabase.from('profiles').select('id, email, membership_type, membership_expires_at');
-        if (allProfs && allProfs.length > 0) {
-          const cleanUser = String(body.user_id || '').toLowerCase().trim();
-          let matched = allProfs.find(p => p.id === body.user_id || p.email?.toLowerCase() === cleanUser);
-          if (!matched) {
-            matched = allProfs.find(p => p.email && 'user-' + p.email.toLowerCase().replace(/[^a-z0-9]/g, '') === cleanUser);
-          }
-          if (matched) {
-            validUserId = matched.id;
-            userProfile = matched;
-          } else {
-            validUserId = allProfs[0].id;
-            userProfile = allProfs[0];
-          }
+        const query = isValidUUID(validUserId)
+          ? serverSupabase.from('profiles').select('id, email, membership_type, membership_expires_at').eq('id', validUserId).maybeSingle()
+          : serverSupabase.from('profiles').select('id, email, membership_type, membership_expires_at').limit(1).maybeSingle();
+
+        const profRes = await withTimeout(query, 3500, { data: null });
+        if (profRes?.data) {
+          validUserId = profRes.data.id;
+          userProfile = profRes.data;
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn('Profile lookup bypassed:', e);
+      }
     }
 
     const adId = isValidUUID(body.id) ? body.id : crypto.randomUUID();
@@ -50,12 +57,16 @@ export async function POST(req) {
     let verificationRequired = true;
     if (serverSupabase) {
       try {
-        const { data: settingRow } = await serverSupabase
-          .from('admin_settings')
-          .select('value')
-          .eq('key', 'ad_verification_required')
-          .maybeSingle();
-        if (settingRow && (settingRow.value === 'false' || settingRow.value === false)) {
+        const settingRes = await withTimeout(
+          serverSupabase
+            .from('admin_settings')
+            .select('value')
+            .eq('key', 'ad_verification_required')
+            .maybeSingle(),
+          3000,
+          { data: null }
+        );
+        if (settingRes?.data && (settingRes.data.value === 'false' || settingRes.data.value === false)) {
           verificationRequired = false;
         }
       } catch (e) {
@@ -72,8 +83,7 @@ export async function POST(req) {
     const qualifiesForSlider = hasActiveMembership && doesPackageQualifyForSlider(userProfile.membership_type);
 
     // CRITICAL:
-    // If verification is ON: ALL newly posted ads MUST go to 'pending' for admin moderation.
-    // They must NEVER be auto-approved while verification is ON.
+    // If verification is ON: ALL newly posted ads go to 'pending' for admin moderation.
     // If verification is OFF: ads go directly live ('active').
     const initialStatus = verificationRequired ? 'pending' : 'active';
     const initialPromotion = hasActiveMembership ? userProfile.membership_type : (body.promotion_type || null);
@@ -116,25 +126,30 @@ export async function POST(req) {
       } catch (e) {}
     }
 
-    // 2. Insert to Supabase DB (primary source of truth)
+    // 2. Insert to Supabase DB with 5s timeout protection
     if (serverSupabase) {
       try {
-        const { data: inserted, error: sbErr } = await serverSupabase
-          .from('listings')
-          .insert([newAd])
-          .select();
+        const insertRes = await withTimeout(
+          serverSupabase
+            .from('listings')
+            .insert([newAd])
+            .select(),
+          5500,
+          { data: null, error: new Error('Insert timed out') }
+        );
+
+        const inserted = insertRes?.data;
+        const sbErr = insertRes?.error;
 
         if (sbErr) {
-          console.error('Supabase listings insert error:', sbErr);
+          console.error('Supabase listings insert error or timeout:', sbErr);
         } else if (inserted && inserted.length > 0) {
           if (!verificationRequired && qualifiesForSlider) {
-            try {
-              await serverSupabase.from('featured_ads').upsert({
-                listing_id: inserted[0].id,
-                is_active: true,
-                sort_order: 0
-              }, { onConflict: 'listing_id' });
-            } catch (e) {}
+            serverSupabase.from('featured_ads').upsert({
+              listing_id: inserted[0].id,
+              is_active: true,
+              sort_order: 0
+            }, { onConflict: 'listing_id' }).catch(() => {});
           }
           if (initialStatus === 'active') {
             notifySearchEngines(inserted[0].id);
@@ -151,7 +166,7 @@ export async function POST(req) {
       }
     }
 
-    // 3. Fallback only if Supabase is unavailable
+    // 3. Fallback only if Supabase is unavailable or timed out
     if (initialStatus === 'active') {
       saveGlobalListing(newAd);
       notifySearchEngines(newAd.id);
