@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "emsc_20261028_0000037",
-    "us7000ttlm",
     "us7000ttlk",
     "emsc_20261028_0000042",
     "emsc_20261028_0000043",
@@ -499,7 +497,9 @@
     "us7000twqe",
     "emsc_20261106_0000299",
     "emsc_20261107_0000065",
-    "us7000twqr"
+    "us7000twqr",
+    "emsc_20261107_0000073",
+    "us7000twqw"
   ],
   "replied_comment_ids": [
     "122117756493450344_910694425314791",
@@ -654,14 +654,6 @@
     "122121990981450344_1481809433829807"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261103_0000308",
-      "mag": 4.4,
-      "place": "TAJIKISTAN",
-      "latitude": 39.3364,
-      "longitude": 73.321,
-      "epoch_ms": 1793746234030
-    },
     {
       "id": "emsc_20261103_0000313",
       "mag": 4.1,
@@ -1053,6 +1045,14 @@
       "latitude": 5.89,
       "longitude": 94.89,
       "epoch_ms": 1794034449000
+    },
+    {
+      "id": "us7000twqw",
+      "mag": 4.6,
+      "place": "South Sandwich Islands region",
+      "latitude": -57.9579,
+      "longitude": -25.8023,
+      "epoch_ms": 1794035650868
     }
   ]
 }
