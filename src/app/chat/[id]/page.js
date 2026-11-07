@@ -7,6 +7,7 @@ import { supabase } from '../../../lib/supabaseClient';
 import { uploadToImgBB } from '../../../lib/imgbb';
 import { useLanguage } from '../../../context/LanguageContext';
 import { getRelativeTime, formatLastSeen, compressImage } from '../../../lib/utils';
+import { playMessageNotification, requestNotificationPermission } from '../../../lib/notificationAudio';
 import styles from '../chat.module.css';
 import { Send, Camera, ChevronLeft, Loader2, User as UserIcon, ZoomIn, ZoomOut, X, Trash2, ShieldAlert, ShieldCheck } from 'lucide-react';
 
@@ -404,6 +405,7 @@ export default function ChatWindow({ params }) {
         }
       } catch (e) {}
 
+      requestNotificationPermission();
       // Mark messages as read when opening room
       markAsRead(activeUser.id);
 
@@ -466,6 +468,13 @@ export default function ChatWindow({ params }) {
         filter: `chat_id=eq.${effectiveId}`
       }, (payload) => {
         if (payload.new && !isCancelled) {
+          if (payload.new.sender_id !== activeUser?.id && payload.new.sender_id !== user?.id) {
+            playMessageNotification({
+              title: chat?.partner?.name || (lang === 'bn' ? 'নতুন মেসেজ এসেছে 💬' : 'New Message 💬'),
+              body: payload.new.content || (payload.new.image_url ? '📷 [ছবি]' : '...'),
+              url: `/chat/${effectiveId}`
+            });
+          }
           setMessages(prev => {
             const filtered = prev.filter(m => !String(m.id).startsWith('temp-') || m.content !== payload.new.content);
             if (filtered.some(m => m.id === payload.new.id)) return filtered;

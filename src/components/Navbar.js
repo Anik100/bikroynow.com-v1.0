@@ -9,6 +9,7 @@ import { useLanguage } from '../context/LanguageContext';
 import { LOCATIONS } from '../lib/constants';
 import ProfileMenu from './ProfileMenu';
 import OnboardingModal from './OnboardingModal';
+import { playMessageNotification, requestNotificationPermission } from '../lib/notificationAudio';
 import styles from './Navbar.module.css';
 
 export default function Navbar() {
@@ -89,6 +90,8 @@ export default function Navbar() {
   const isHomePage = pathname === '/';
   const [unreadCount, setUnreadCount] = useState(0);
   const [unreadSupportCount, setUnreadSupportCount] = useState(0);
+  const prevUnreadRef = useRef(null);
+  const isFirstFetchRef = useRef(true);
 
   // Helper to validate Supabase UUIDs
   const isValidUUID = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
@@ -150,6 +153,17 @@ export default function Navbar() {
           if (Array.isArray(json.chats)) {
             // Sum unreadCount from all active chat sessions
             const totalUnread = json.chats.reduce((sum, chat) => sum + (chat.unreadCount || 0), 0);
+            if (!isFirstFetchRef.current && prevUnreadRef.current !== null && totalUnread > prevUnreadRef.current) {
+              const newChat = json.chats.find(c => (c.unreadCount || 0) > 0);
+              const previewText = newChat?.lastMessage?.content || (lang === 'bn' ? 'আপনার বিজ্ঞাপনে একটি নতুন মেসেজ এসেছে।' : 'You have a new message.');
+              playMessageNotification({
+                title: lang === 'bn' ? 'BikroyNow: নতুন মেসেজ এসেছে! 💬' : 'BikroyNow: New Message Received! 💬',
+                body: previewText,
+                url: newChat?.id ? `/chat/${newChat.id}` : '/chat'
+              });
+            }
+            isFirstFetchRef.current = false;
+            prevUnreadRef.current = totalUnread;
             setUnreadCount(totalUnread);
           }
         }
