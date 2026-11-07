@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000ttlt",
-    "emsc_20261028_0000057",
     "us7000ttlw",
     "us7000ttm2",
     "emsc_20261028_0000068",
@@ -499,7 +497,9 @@
     "emsc_20261107_0000111",
     "emsc_20261107_0000116",
     "emsc_20261107_0000118",
-    "us7000twrq"
+    "us7000twrq",
+    "emsc_20261107_0000129",
+    "us7000twrt"
   ],
   "replied_comment_ids": [
     "122117756493450344_910694425314791",
@@ -654,14 +654,6 @@
     "122121990981450344_1481809433829807"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261104_0000031",
-      "mag": 4.2,
-      "place": "BONIN ISLANDS, JAPAN REGION",
-      "latitude": 27.0774,
-      "longitude": 140.2929,
-      "epoch_ms": 1793760029495
-    },
     {
       "id": "emsc_20261104_0000035",
       "mag": 4.1,
@@ -1053,6 +1045,14 @@
       "latitude": 36.2821,
       "longitude": 141.4313,
       "epoch_ms": 1794049664340
+    },
+    {
+      "id": "us7000twrt",
+      "mag": 4.9,
+      "place": "southern Mid-Atlantic Ridge",
+      "latitude": -18.2483,
+      "longitude": -12.9445,
+      "epoch_ms": 1794051338338
     }
   ]
 }
