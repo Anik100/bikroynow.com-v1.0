@@ -1,6 +1,5 @@
 {
   "posted_ids": [
-    "pr2026301000",
     "emsc_20261028_0000160",
     "us7000ttnc",
     "emsc_20261028_0000169",
@@ -499,7 +498,8 @@
     "us7000twtv",
     "emsc_20261107_0000252",
     "emsc_20261107_0000264",
-    "us7000twu1"
+    "us7000twu1",
+    "emsc_20261107_0000285"
   ],
   "replied_comment_ids": [
     "122117767125450344_1599589281115855",
@@ -659,14 +659,6 @@
     "122121805197450344_2361852207969175"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261105_0000076",
-      "mag": 4.3,
-      "place": "SOUTHWEST OF SUMATRA, INDONESIA",
-      "latitude": -6.68,
-      "longitude": 102.59,
-      "epoch_ms": 1793856558000
-    },
     {
       "id": "emsc_20261105_0000087",
       "mag": 4.4,
@@ -1058,6 +1050,14 @@
       "latitude": -3.905,
       "longitude": 128.5121,
       "epoch_ms": 1794084938512
+    },
+    {
+      "id": "emsc_20261107_0000285",
+      "mag": 5.3,
+      "place": "CENTRAL MID-ATLANTIC RIDGE",
+      "latitude": 7.4749,
+      "longitude": -36.9378,
+      "epoch_ms": 1794093428310
     }
   ]
 }
