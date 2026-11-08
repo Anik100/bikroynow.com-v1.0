@@ -18,6 +18,19 @@ from fetcher import load_history, save_history, history_lock
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "")
 PAGE_LINK = "facebook.com/earthquaketracker247"
 FOLLOW_CTA = f"Follow {PAGE_LINK}"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+PROMPT_FILE = os.path.join(BASE_DIR, "comment_system_prompt.txt")
+
+def load_system_prompt_template():
+    if os.path.exists(PROMPT_FILE):
+        try:
+            with open(PROMPT_FILE, "r", encoding="utf-8") as f:
+                content = f.read().strip()
+                if content and "Earthquake Tracker" in content and "facebook.com/earthquaketracker247" in content:
+                    return content
+        except Exception as e:
+            print(f"⚠️ Note reading prompt file: {e}", flush=True)
+    return None
 
 def parse_post_context(post_context):
     """
@@ -144,8 +157,20 @@ def generate_ai_comment_reply(comment_text, user_name="Friend", post_context="",
             else:
                 earlier_instruction = "This is a recent earthquake alert. "
 
-            prompt = (
-                "You are Earthquake Tracker official AI assistant on Facebook. "
+            custom_system_prompt = load_system_prompt_template()
+            if custom_system_prompt:
+                prompt = (
+                    f"{custom_system_prompt}\n\n"
+                    f"--- LIVE COMMENT CONTEXT ---\n"
+                    f"Post Details: \"{ctx_clean}\"\n"
+                    f"Post Timing Status: {earlier_instruction}\n"
+                    f"User Name: \"{clean_user or 'a follower'}\"\n"
+                    f"User Comment: \"{text_clean}\"\n\n"
+                    f"Generate the exact, concise, and empathetic reply now:"
+                )
+            else:
+                prompt = (
+                    "You are Earthquake Tracker official AI assistant on Facebook. "
                 "This is an international page with a worldwide global audience. "
                 f"Post Details: \"{ctx_clean}\". "
                 f"{earlier_instruction}"

@@ -1,0 +1,50 @@
+name: Weekly AI Comment Prompt Optimizer
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Executes every Sunday at 00:00 UTC
+  workflow_dispatch:   # Allows manual trigger anytime from GitHub Actions UI
+
+permissions:
+  contents: write
+
+concurrency:
+  group: weekly-ai-optimizer
+  cancel-in-progress: false
+
+jobs:
+  optimize-comment-ai:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code Repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Python Dependencies
+        run: |
+          pip install -r earthquake_tracker/requirements.txt
+
+      - name: Run Weekly Prompt Optimizer Engine
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID || '1305415129314506' }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python earthquake_tracker/weekly_prompt_optimizer.py
+
+      - name: Commit and Push Refined Prompt State
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add earthquake_tracker/comment_system_prompt.txt \
+                  earthquake_tracker/weekly_feedback_log.json \
+                  earthquake_tracker/weekly_audit_report.md || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Autonomous weekly AI comment prompt refinement [skip ci]" && git pull --rebase origin main && git push)
