@@ -244,7 +244,9 @@
     "emsc_20261108_0000232",
     "emsc_20261108_0000233",
     "us7000twyw",
-    "emsc_20261108_0000239"
+    "emsc_20261108_0000239",
+    "emsc_20261108_0000249",
+    "us7000twz2"
   ],
   "recent_posted_events": [
     {
@@ -350,6 +352,14 @@
       "latitude": 7.4617,
       "longitude": -80.4883,
       "epoch_ms": 1794167459000
+    },
+    {
+      "id": "us7000twz2",
+      "mag": 4.8,
+      "place": "38 km E of Onagawa Ch\u014d, Japan",
+      "latitude": 38.3824,
+      "longitude": 141.8815,
+      "epoch_ms": 1794168990710
     }
   ]
 }
