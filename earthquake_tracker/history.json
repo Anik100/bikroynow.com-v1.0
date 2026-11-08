@@ -217,7 +217,8 @@
     "emsc_20261106_0000252",
     "emsc_20261106_0000242",
     "emsc_20261108_0000113",
-    "us7000twx1"
+    "us7000twx1",
+    "emsc_20261108_0000134"
   ],
   "recent_posted_events": [
     {
@@ -227,6 +228,14 @@
       "latitude": 39.8759,
       "longitude": 143.5133,
       "epoch_ms": 1794129816440
+    },
+    {
+      "id": "emsc_20261108_0000134",
+      "mag": 4.1,
+      "place": "MICHOACAN, MEXICO",
+      "latitude": 18.327,
+      "longitude": -101.869,
+      "epoch_ms": 1794136715000
     }
   ]
 }
