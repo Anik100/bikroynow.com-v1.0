@@ -481,8 +481,8 @@ def compose_landscape_frame(segment_type, event_data, total_m40_count, digest_da
 
     elif segment_type == "event":
         ev = event_data
-        map_x, map_y = 50, 140
-        map_w, map_h = 1160, 740
+        map_x, map_y = 40, 115
+        map_w, map_h = 1120, 790
 
         if map_img:
             frame.paste(map_img, (map_x, map_y))
@@ -491,54 +491,104 @@ def compose_landscape_frame(segment_type, event_data, total_m40_count, digest_da
 
         draw.rectangle([(map_x, map_y), (map_x + map_w, map_y + map_h)], outline="#2b476e", width=2)
 
-        # Map Tag
-        draw.rectangle([(map_x + 20, map_y + 20), (map_x + 280, map_y + 65)], fill="#0c1626")
-        draw.text((map_x + 150, map_y + 42), f"🛰️ SATELLITE VIEW (M{ev['mag']:.1f})", font=get_font(16, bold=True), fill="#4fc3f7", anchor="mm")
+        # 1. Overlay on the Map: Prominent Epicenter Target + Location Tag
+        mc_x = map_x + map_w // 2
+        mc_y = map_y + map_h // 2
 
-        # Right Data Card
-        card_x = 1240
-        card_y = 140
-        card_w = 630
-        card_h = 740
-        draw.rectangle([(card_x, card_y), (card_x + card_w, card_y + card_h)], fill="#0f1e31", outline="#254266", width=2)
+        # Glowing concentric radar circles at epicenter
+        draw.ellipse([(mc_x - 55, mc_y - 55), (mc_x + 55, mc_y + 55)], outline="#ff1744", width=3)
+        draw.ellipse([(mc_x - 90, mc_y - 90), (mc_x + 90, mc_y + 90)], outline="#ff5252", width=2)
+        draw.ellipse([(mc_x - 130, mc_y - 130), (mc_x + 130, mc_y + 130)], outline="#ff8a80", width=1)
+        draw.ellipse([(mc_x - 14, mc_y - 14), (mc_x + 14, mc_y + 14)], fill="#ff1744", outline="#ffffff", width=2)
 
-        rank_text = f"EVENT #{event_rank} OF {total_events}"
-        draw.rectangle([(card_x + 30, card_y + 30), (card_x + 250, card_y + 75)], fill="#1a2f4a")
-        draw.text((card_x + 140, card_y + 52), rank_text, font=get_font(18, bold=True), fill="#ffffff", anchor="mm")
-
-        mag_col = get_mag_color(ev["mag"])
-        draw.rectangle([(card_x + 30, card_y + 105), (card_x + 300, card_y + 205)], fill=mag_col)
-        draw.text((card_x + 165, card_y + 155), f"M {ev['mag']:.1f}", font=get_font(56, bold=True), fill="#ffffff", anchor="mm")
-
-        draw.text((card_x + 330, card_y + 135), "MAGNITUDE", font=get_font(18, bold=True), fill="#9fbcd9")
-        draw.text((card_x + 330, card_y + 175), "Mww / Mb (USGS)", font=get_font(16, bold=False), fill="#7ea5c9")
-
-        draw.text((card_x + 30, card_y + 245), "EPICENTER REGION", font=get_font(16, bold=True), fill="#7ea5c9")
+        # Parse Place Name for prominent map badge
         place_str = ev["place"]
-        if len(place_str) > 30 and "," in place_str:
-            p_parts = place_str.split(",")
-            draw.text((card_x + 30, card_y + 285), p_parts[0].strip()[:32], font=get_font(26, bold=True), fill="#ffffff")
-            draw.text((card_x + 30, card_y + 325), ",".join(p_parts[1:]).strip()[:32], font=get_font(22, bold=True), fill="#4fc3f7")
+        if "," in place_str:
+            parts = place_str.split(",")
+            dist_txt = parts[0].strip()
+            loc_country = parts[1].strip()
         else:
-            draw.text((card_x + 30, card_y + 295), place_str[:32], font=get_font(26, bold=True), fill="#ffffff")
+            dist_txt = "EPICENTER ZONE"
+            loc_country = place_str.strip()
 
-        grid_y = card_y + 390
-        row_h = 60
-        draw.line([(card_x + 30, grid_y - 15), (card_x + card_w - 30, grid_y - 15)], fill="#1f3552", width=1)
+        # Location Badge on the Map (Directly above epicenter with pointer line)
+        tag_w = min(680, max(440, len(loc_country) * 22 + 90))
+        tag_h = 82
+        tag_x = max(map_x + 20, min(map_x + map_w - tag_w - 20, mc_x - tag_w // 2))
+        tag_y = mc_y - 148 if mc_y - 148 > map_y + 30 else mc_y + 60
+
+        draw.line([(mc_x, mc_y), (tag_x + tag_w // 2, tag_y + (tag_h if tag_y < mc_y else 0))], fill="#ff1744", width=3)
+
+        overlay_map = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        om_draw = ImageDraw.Draw(overlay_map)
+        om_draw.rounded_rectangle([(tag_x, tag_y), (tag_x + tag_w, tag_y + tag_h)], radius=14, fill=(10, 18, 34, 240), outline=(239, 68, 68, 255), width=3)
+        frame.paste(overlay_map, (0, 0), overlay_map)
+        draw = ImageDraw.Draw(frame)
+
+        draw.text((tag_x + 20, tag_y + 12), f"📍 {loc_country.upper()[:28]}", font=get_font(28, bold=True), fill="#38bdf8")
+        draw.text((tag_x + 20, tag_y + 48), f"● {dist_txt[:34]}", font=get_font(20, bold=True), fill="#fbbf24")
+
+        # Map Header Tag
+        draw.rectangle([(map_x + 20, map_y + 20), (map_x + 320, map_y + 68)], fill="#0c1626")
+        draw.text((map_x + 170, map_y + 44), f"🛰️ SATELLITE RADAR (M{ev['mag']:.1f})", font=get_font(18, bold=True), fill="#4fc3f7", anchor="mm")
+
+        # 2. Right Data Card - REDESIGNED FOR MAXIMUM MOBILE LEGIBILITY (HUGE, BOLD FONTS)
+        card_x = 1180
+        card_y = 115
+        card_w = 700
+        card_h = 790
+        draw.rounded_rectangle([(card_x, card_y), (card_x + card_w, card_y + card_h)], radius=18, fill="#0c1626", outline="#254266", width=3)
+
+        # Top Rank & Climax Badges
+        is_strongest = (event_rank == total_events)
+        badge_w = 330 if not is_strongest else 300
+        draw.rounded_rectangle([(card_x + 30, card_y + 25), (card_x + 30 + badge_w, card_y + 75)], radius=12, fill="#1e3a5f", outline="#38bdf8", width=2)
+        rank_text = f"EVENT #{event_rank} OF {total_events}"
+        draw.text((card_x + 30 + badge_w // 2, card_y + 50), rank_text, font=get_font(22, bold=True), fill="#ffffff", anchor="mm")
+
+        if is_strongest:
+            draw.rounded_rectangle([(card_x + 350, card_y + 25), (card_x + card_w - 30, card_y + 75)], radius=12, fill="#7f1d1d", outline="#ef4444", width=2)
+            draw.text((card_x + 350 + (card_w - 380) // 2, card_y + 50), "🔥 STRONGEST EVENT", font=get_font(20, bold=True), fill="#fca5a5", anchor="mm")
+
+        # Magnitude Highlight Block
+        mag_col = get_mag_color(ev["mag"])
+        draw.rounded_rectangle([(card_x + 30, card_y + 95), (card_x + 280, card_y + 215)], radius=16, fill=mag_col, outline="#ffffff", width=2)
+        draw.text((card_x + 155, card_y + 155), f"M {ev['mag']:.1f}", font=get_font(68, bold=True), fill="#ffffff", anchor="mm")
+
+        draw.text((card_x + 305, card_y + 120), "MAGNITUDE", font=get_font(24, bold=True), fill="#94a3b8")
+        draw.text((card_x + 305, card_y + 156), "USGS & EMSC Verified", font=get_font(19, bold=True), fill="#38bdf8")
+        draw.text((card_x + 305, card_y + 190), f"Focal Depth: {ev['depth_km']} km", font=get_font(20, bold=True), fill="#ffffff")
+
+        # Location Section (Highlighted Card)
+        draw.rounded_rectangle([(card_x + 30, card_y + 230), (card_x + card_w - 30, card_y + 345)], radius=14, fill="#07111e", outline="#1e3a5f", width=2)
+        draw.text((card_x + 50, card_y + 245), "📍 EPICENTER REGION", font=get_font(18, bold=True), fill="#38bdf8")
+        draw.text((card_x + 50, card_y + 278), loc_country[:24].upper(), font=get_font(34, bold=True), fill="#ffffff")
+        draw.text((card_x + 50, card_y + 316), dist_txt[:34], font=get_font(22, bold=True), fill="#fbbf24")
+
+        # 4 High-Impact Data Rows (Spacious & Big Fonts)
+        grid_y = card_y + 365
+        row_h = 95
+        draw.line([(card_x + 30, grid_y), (card_x + card_w - 30, grid_y)], fill="#1f3552", width=2)
 
         details = [
             ("⏱️ LOCAL TIME", ev.get("local_time_short", ev["time_utc"])),
             ("🌐 TIME (UTC)", ev["time_utc"]),
-            ("📏 DEPTH", f"{ev['depth_km']} km below surface"),
-            ("📍 COORDINATES", f"{ev['lat']:.2f}°, {ev['lon']:.2f}°"),
+            ("📏 DEPTH", f"{ev['depth_km']} km below ground"),
             ("🌊 TSUNAMI", "NO IMMEDIATE THREAT" if not ev["tsunami"] else "COASTAL ADVISORY")
         ]
 
         for i, (label, val) in enumerate(details):
-            curr_y = grid_y + (i * row_h)
-            draw.text((card_x + 30, curr_y), label, font=get_font(16, bold=True), fill="#7ea5c9")
-            color_val = "#38bdf8" if "LOCAL" in label else ("#ffffff" if "TSUNAMI" not in label else ("#00e676" if not ev["tsunami"] else "#ff1744"))
-            draw.text((card_x + 230, curr_y), val, font=get_font(18, bold=True), fill=color_val)
+            curr_y = grid_y + (i * row_h) + 12
+            draw.text((card_x + 40, curr_y), label, font=get_font(20, bold=True), fill="#94a3b8")
+            if "LOCAL" in label:
+                val_color = "#38bdf8"
+            elif "TSUNAMI" in label:
+                val_color = "#00e676" if not ev["tsunami"] else "#ff1744"
+            else:
+                val_color = "#ffffff"
+            draw.text((card_x + 40, curr_y + 32), val, font=get_font(26, bold=True), fill=val_color)
+            if i < len(details) - 1:
+                draw.line([(card_x + 30, curr_y + 75), (card_x + card_w - 30, curr_y + 75)], fill="#142438", width=1)
 
     # 3. Bottom Subtitle & Ticker Bar
     sub_y = 930
@@ -546,7 +596,7 @@ def compose_landscape_frame(segment_type, event_data, total_m40_count, digest_da
     draw.line([(0, sub_y), (W, sub_y)], fill="#1e324c", width=2)
 
     if subtitle_text:
-        draw.text((W // 2, sub_y + 65), subtitle_text, font=get_font(25, bold=True), fill="#ffffff", anchor="mm")
+        draw.text((W // 2, sub_y + 65), subtitle_text, font=get_font(28, bold=True), fill="#ffffff", anchor="mm")
 
     return frame
 
@@ -629,10 +679,10 @@ def compose_story_frame(segment_type, event_data, total_m40_count, digest_date_s
 
     elif segment_type == "event":
         ev = event_data
-        map_x = 80
-        map_y = 220
-        map_w = 920
-        map_h = 800
+        map_x = 50
+        map_y = 190
+        map_w = 980
+        map_h = 790
 
         if map_img:
             frame.paste(map_img, (map_x, map_y))
@@ -641,40 +691,85 @@ def compose_story_frame(segment_type, event_data, total_m40_count, digest_date_s
 
         draw.rectangle([(map_x, map_y), (map_x + map_w, map_y + map_h)], outline="#2b476e", width=2)
 
-        # Rank badge
-        draw.rectangle([(map_x + 20, map_y + 20), (map_x + 260, map_y + 70)], fill="#0c1626")
-        draw.text((map_x + 140, map_y + 45), f"TOP EVENT #{event_rank} OF {total_events}", font=get_font(18, bold=True), fill="#ffffff", anchor="mm")
+        # 1. Overlay on the Map: Prominent Epicenter Target + Location Tag
+        mc_x = map_x + map_w // 2
+        mc_y = map_y + map_h // 2
 
-        # Lower Data Card
-        card_x = 80
-        card_y = 1060
-        card_w = 920
-        card_h = 580
-        draw.rectangle([(card_x, card_y), (card_x + card_w, card_y + card_h)], fill="#0f1e31", outline="#254266", width=2)
+        draw.ellipse([(mc_x - 55, mc_y - 55), (mc_x + 55, mc_y + 55)], outline="#ff1744", width=3)
+        draw.ellipse([(mc_x - 90, mc_y - 90), (mc_x + 90, mc_y + 90)], outline="#ff5252", width=2)
+        draw.ellipse([(mc_x - 14, mc_y - 14), (mc_x + 14, mc_y + 14)], fill="#ff1744", outline="#ffffff", width=2)
+
+        place_str = ev["place"]
+        if "," in place_str:
+            parts = place_str.split(",")
+            dist_txt = parts[0].strip()
+            loc_country = parts[1].strip()
+        else:
+            dist_txt = "EPICENTER ZONE"
+            loc_country = place_str.strip()
+
+        tag_w = min(680, max(440, len(loc_country) * 22 + 90))
+        tag_h = 82
+        tag_x = max(map_x + 20, min(map_x + map_w - tag_w - 20, mc_x - tag_w // 2))
+        tag_y = mc_y - 148 if mc_y - 148 > map_y + 30 else mc_y + 60
+
+        draw.line([(mc_x, mc_y), (tag_x + tag_w // 2, tag_y + (tag_h if tag_y < mc_y else 0))], fill="#ff1744", width=3)
+
+        overlay_map = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        om_draw = ImageDraw.Draw(overlay_map)
+        om_draw.rounded_rectangle([(tag_x, tag_y), (tag_x + tag_w, tag_y + tag_h)], radius=14, fill=(10, 18, 34, 240), outline=(239, 68, 68, 255), width=3)
+        frame.paste(overlay_map, (0, 0), overlay_map)
+        draw = ImageDraw.Draw(frame)
+
+        draw.text((tag_x + 20, tag_y + 12), f"📍 {loc_country.upper()[:28]}", font=get_font(28, bold=True), fill="#38bdf8")
+        draw.text((tag_x + 20, tag_y + 48), f"● {dist_txt[:34]}", font=get_font(20, bold=True), fill="#fbbf24")
+
+        # Map Header Rank badge
+        is_strongest = (event_rank == total_events)
+        draw.rectangle([(map_x + 20, map_y + 20), (map_x + 360, map_y + 70)], fill="#0c1626")
+        rank_badge_text = f"EVENT #{event_rank} OF {total_events}" if not is_strongest else f"EVENT #{event_rank} (STRONGEST)"
+        draw.text((map_x + 190, map_y + 45), rank_badge_text, font=get_font(20, bold=True), fill="#ffffff" if not is_strongest else "#fca5a5", anchor="mm")
+
+        # 2. Lower Data Card (High-Impact Mobile Layout)
+        card_x = 50
+        card_y = 1010
+        card_w = 980
+        card_h = 650
+        draw.rounded_rectangle([(card_x, card_y), (card_x + card_w, card_y + card_h)], radius=20, fill="#0c1626", outline="#254266", width=3)
 
         mag_col = get_mag_color(ev["mag"])
-        draw.rectangle([(card_x + 40, card_y + 35), (card_x + 260, card_y + 130)], fill=mag_col)
-        draw.text((card_x + 150, card_y + 82), f"M {ev['mag']:.1f}", font=get_font(48, bold=True), fill="#ffffff", anchor="mm")
+        draw.rounded_rectangle([(card_x + 40, card_y + 35), (card_x + 270, card_y + 145)], radius=16, fill=mag_col, outline="#ffffff", width=2)
+        draw.text((card_x + 155, card_y + 90), f"M {ev['mag']:.1f}", font=get_font(60, bold=True), fill="#ffffff", anchor="mm")
 
-        draw.text((card_x + 290, card_y + 60), "MAGNITUDE (USGS / EMSC)", font=get_font(18, bold=True), fill="#7ea5c9")
-        draw.text((card_x + 290, card_y + 98), f"Depth: {ev['depth_km']} km", font=get_font(22, bold=True), fill="#ffffff")
+        draw.text((card_x + 300, card_y + 50), "MAGNITUDE", font=get_font(24, bold=True), fill="#94a3b8")
+        draw.text((card_x + 300, card_y + 88), "USGS & EMSC Verified", font=get_font(20, bold=True), fill="#38bdf8")
+        draw.text((card_x + 300, card_y + 120), f"Focal Depth: {ev['depth_km']} km", font=get_font(22, bold=True), fill="#ffffff")
 
-        draw.text((card_x + 40, card_y + 175), "LOCATION", font=get_font(18, bold=True), fill="#7ea5c9")
-        draw.text((card_x + 40, card_y + 215), ev["place"][:36], font=get_font(28, bold=True), fill="#ffffff")
+        # Location box
+        draw.rounded_rectangle([(card_x + 40, card_y + 165), (card_x + card_w - 40, card_y + 275)], radius=14, fill="#07111e", outline="#1e3a5f", width=2)
+        draw.text((card_x + 60, card_y + 180), "📍 EPICENTER REGION", font=get_font(18, bold=True), fill="#38bdf8")
+        draw.text((card_x + 60, card_y + 210), loc_country[:28].upper(), font=get_font(34, bold=True), fill="#ffffff")
+        draw.text((card_x + 60, card_y + 248), dist_txt[:38], font=get_font(22, bold=True), fill="#fbbf24")
 
-        draw.line([(card_x + 40, card_y + 270), (card_x + card_w - 40, card_y + 270)], fill="#1f3552", width=1)
+        # Grid rows
+        grid_y = card_y + 295
+        row_h = 82
+        draw.line([(card_x + 40, grid_y), (card_x + card_w - 40, grid_y)], fill="#1f3552", width=2)
 
-        draw.text((card_x + 40, card_y + 300), "⏱️ LOCAL TIME", font=get_font(18, bold=True), fill="#7ea5c9")
-        draw.text((card_x + 350, card_y + 300), ev.get("local_time_short", ev["time_utc"]), font=get_font(22, bold=True), fill="#38bdf8")
+        details_story = [
+            ("⏱️ LOCAL TIME", ev.get("local_time_short", ev["time_utc"])),
+            ("🌐 TIME (UTC)", ev["time_utc"]),
+            ("📏 FOCAL DEPTH", f"{ev['depth_km']} km below surface"),
+            ("🌊 TSUNAMI ALERT", "NO IMMEDIATE THREAT" if not ev["tsunami"] else "COASTAL ADVISORY")
+        ]
 
-        draw.text((card_x + 40, card_y + 360), "🌐 TIME (UTC)", font=get_font(18, bold=True), fill="#7ea5c9")
-        draw.text((card_x + 350, card_y + 360), ev["time_utc"], font=get_font(22, bold=True), fill="#ffffff")
-
-        draw.text((card_x + 40, card_y + 420), "📍 COORDINATES", font=get_font(18, bold=True), fill="#7ea5c9")
-        draw.text((card_x + 350, card_y + 420), f"{ev['lat']:.2f}°, {ev['lon']:.2f}°", font=get_font(20, bold=True), fill="#ffffff")
-
-        draw.text((card_x + 40, card_y + 480), "🌊 TSUNAMI ALERT", font=get_font(18, bold=True), fill="#7ea5c9")
-        draw.text((card_x + 350, card_y + 480), "NO IMMEDIATE THREAT" if not ev["tsunami"] else "COASTAL ADVISORY", font=get_font(20, bold=True), fill="#00e676" if not ev["tsunami"] else "#ff1744")
+        for i, (label, val) in enumerate(details_story):
+            curr_y = grid_y + (i * row_h) + 8
+            draw.text((card_x + 50, curr_y), label, font=get_font(20, bold=True), fill="#94a3b8")
+            val_col = "#38bdf8" if "LOCAL" in label else ("#00e676" if "TSUNAMI" in label and not ev["tsunami"] else "#ffffff")
+            draw.text((card_x + 50, curr_y + 32), val, font=get_font(26, bold=True), fill=val_col)
+            if i < len(details_story) - 1:
+                draw.line([(card_x + 40, curr_y + 70), (card_x + card_w - 40, curr_y + 70)], fill="#142438", width=1)
 
     # Bottom Subtitle Area
     sub_y = 1680
@@ -725,8 +820,10 @@ def render_segment_clip(segment_type, event_data, total_m40_count, digest_date_s
         "-i", "-",
         "-i", audio_path,
         "-c:v", "libx264",
-        "-preset", "ultrafast",
-        "-crf", "22",
+        "-preset", "fast",
+        "-crf", "17",
+        "-profile:v", "high",
+        "-level", "4.2",
         "-c:a", "aac",
         "-b:a", "192k",
         "-pix_fmt", "yuv420p",
@@ -755,8 +852,10 @@ def render_segment_clip(segment_type, event_data, total_m40_count, digest_date_s
         "-i", "-",
         "-i", audio_path,
         "-c:v", "libx264",
-        "-preset", "ultrafast",
-        "-crf", "22",
+        "-preset", "fast",
+        "-crf", "17",
+        "-profile:v", "high",
+        "-level", "4.2",
         "-c:a", "aac",
         "-b:a", "192k",
         "-pix_fmt", "yuv420p",
@@ -795,8 +894,8 @@ def render_dual_digest_videos(top_events, total_m40_count, digest_date_str, all_
             geoapify_key=GEOAPIFY_KEY
         )
         if raw_map:
-            map_images_l[idx] = raw_map.resize((1160, 740), Image.Resampling.BILINEAR)
-            map_images_s[idx] = raw_map.resize((920, 800), Image.Resampling.BILINEAR)
+            map_images_l[idx] = raw_map.resize((1120, 790), Image.Resampling.LANCZOS)
+            map_images_s[idx] = raw_map.resize((980, 790), Image.Resampling.LANCZOS)
         else:
             map_images_l[idx] = None
             map_images_s[idx] = None
