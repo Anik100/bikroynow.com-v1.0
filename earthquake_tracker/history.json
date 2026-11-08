@@ -240,7 +240,8 @@
     "emsc_20261108_0000202",
     "emsc_20261108_0000220",
     "emsc_20261108_0000222",
-    "emsc_20261108_0000228"
+    "emsc_20261108_0000228",
+    "emsc_20261108_0000232"
   ],
   "recent_posted_events": [
     {
@@ -322,6 +323,14 @@
       "latitude": 0.94,
       "longitude": 120.72,
       "epoch_ms": 1794164813000
+    },
+    {
+      "id": "emsc_20261108_0000232",
+      "mag": 4.1,
+      "place": "OFF COAST OF OAXACA, MEXICO",
+      "latitude": 15.183,
+      "longitude": -94.563,
+      "epoch_ms": 1794164942000
     }
   ]
 }
