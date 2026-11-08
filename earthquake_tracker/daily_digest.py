@@ -148,10 +148,21 @@ def fetch_daily_seismic_events(local_data_path=None):
 
     filtered.sort(key=lambda x: x["mag"], reverse=True)
     total_m45_count = len(filtered)
-    top_events = filtered[:5]
+
+    # Dynamic Selection Logic:
+    # 1. If multiple M5.0+ quakes occurred today (e.g. 5, 8, 10), cover all M5.0+ events (up to a max cap of 8).
+    # 2. If fewer than 5 M5.0+ quakes occurred, supplement with top M4.5-M4.9 events to have at least 5 events.
+    # 3. If total quakes today is fewer than 5, cover all available events without padding.
+    m5_plus = [e for e in filtered if e["mag"] >= 5.0]
+    m45_to_49 = [e for e in filtered if 4.5 <= e["mag"] < 5.0]
+
+    if len(m5_plus) >= 5:
+        top_events = m5_plus[:8]
+    else:
+        top_events = (m5_plus + m45_to_49)[:min(5, len(filtered))]
 
     print(f"✅ Filtered {total_m45_count} earthquakes (M4.5+) across the globe in the 22:00 UTC tracking window.", flush=True)
-    print(f"📋 Selected Top {len(top_events)} most significant quakes for the 1:1 synced Daily Digest video.", flush=True)
+    print(f"📋 Selected {len(top_events)} most significant quakes (including {len(m5_plus)} M5.0+ events) for the 1:1 synced Daily Digest video.", flush=True)
 
     return top_events, total_m45_count, digest_date_str, filtered
 
@@ -1094,6 +1105,41 @@ def upload_story_video_to_page(story_video_path):
         print(f"❌ Story upload exception: {e}", flush=True)
         return False
 
+def check_and_dispatch_realtime_priority(reason="pre-check"):
+    """
+    Real-Time Priority Interceptor:
+    Checks if any fresh real-time earthquake occurred.
+    If detected:
+    1. Pauses Daily Digest execution.
+    2. Dispatches tracker_pipeline to post the real-time alert (photo/video reel + page story) immediately!
+    3. Waits for a short cooldown (120 seconds) so the real-time alert establishes reach on Facebook.
+    4. Resumes Daily Digest.
+    """
+    try:
+        from fetcher import fetch_latest_earthquakes
+        from tracker_pipeline import run_pipeline as run_realtime_tracker
+
+        pending = fetch_latest_earthquakes()
+        if pending:
+            print("\n" + "🚨" * 35, flush=True)
+            print(f"🚨 [REAL-TIME PRIORITY INTERCEPT: {reason.upper()}]", flush=True)
+            print(f"🚨 {len(pending)} NEW REAL-TIME EARTHQUAKE(S) DETECTED! Pausing Daily Digest...", flush=True)
+            print("🚨 Priority Rule: Instant Real-Time Alert must be published to Facebook FIRST!", flush=True)
+            print("🚨" * 35 + "\n", flush=True)
+
+            # Publish real-time alert immediately
+            run_realtime_tracker()
+
+            # Wait cooldown (120s) so the real-time alert is seen first on Facebook
+            cooldown_seconds = 120
+            print(f"⏳ Cooldown active: Waiting {cooldown_seconds}s for real-time alert to establish reach before resuming Daily Digest...", flush=True)
+            time.sleep(cooldown_seconds)
+            print("▶️ Cooldown complete. Resuming Daily Digest pipeline...\n", flush=True)
+            return True
+    except Exception as e:
+        print(f"⚠️ Real-time priority gate check note: {e}", flush=True)
+    return False
+
 # ==============================================================================
 # 7. PIPELINE ORCHESTRATOR
 # ==============================================================================
@@ -1105,6 +1151,9 @@ def run_daily_digest_pipeline(local_data_path=None, skip_upload=False):
     print("⏱️ Tracking Window: 22:00 UTC to 22:00 UTC (Past 24 Hours)", flush=True)
     print(f"⏱️ Execution Time: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}", flush=True)
     print("=" * 70, flush=True)
+
+    # Priority Gate: Check for fresh unposted real-time quakes before starting
+    check_and_dispatch_realtime_priority(reason="initial-pipeline-start")
 
     # 1. Fetch & Filter Data
     top_events, total_m45_count, digest_date_str, all_filtered = fetch_daily_seismic_events(local_data_path)
@@ -1126,6 +1175,9 @@ def run_daily_digest_pipeline(local_data_path=None, skip_upload=False):
         print(f"📁 Landscape Video: {landscape_path}")
         print(f"📁 Story Video: {story_path}")
         return True
+
+    # Priority Gate: Check again if any earthquake struck while video was rendering
+    check_and_dispatch_realtime_priority(reason="pre-facebook-upload")
 
     # Post 1: Main Feed Video
     feed_success = upload_landscape_video_to_feed(landscape_path, top_events, total_m45_count, digest_date_str)
