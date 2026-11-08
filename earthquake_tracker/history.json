@@ -231,7 +231,8 @@
     "emsc_20261108_0000146",
     "us7000twxn",
     "emsc_20261108_0000183",
-    "emsc_20261107_0000248"
+    "emsc_20261107_0000248",
+    "emsc_20261108_0000190"
   ],
   "recent_posted_events": [
     {
@@ -273,6 +274,14 @@
       "latitude": 14.427,
       "longitude": -93.244,
       "epoch_ms": 1794151600000
+    },
+    {
+      "id": "emsc_20261108_0000190",
+      "mag": 4.4,
+      "place": "HALMAHERA, INDONESIA",
+      "latitude": 2.6,
+      "longitude": 128.47,
+      "epoch_ms": 1794156314000
     }
   ]
 }
