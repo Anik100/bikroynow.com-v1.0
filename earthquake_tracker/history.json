@@ -220,7 +220,9 @@
     "us7000twx1",
     "emsc_20261108_0000134",
     "emsc_20261108_0000137",
-    "us7000twxf"
+    "us7000twxf",
+    "emsc_20261108_0000146",
+    "us7000twxn"
   ],
   "recent_posted_events": [
     {
@@ -246,6 +248,14 @@
       "latitude": -19.688,
       "longitude": -70.1661,
       "epoch_ms": 1794139112140
+    },
+    {
+      "id": "us7000twxn",
+      "mag": 4.7,
+      "place": "Southwest Indian Ridge",
+      "latitude": -27.6901,
+      "longitude": 64.443,
+      "epoch_ms": 1794140957722
     }
   ]
 }
