@@ -237,7 +237,8 @@
     "us7000twyc",
     "emsc_20261108_0000199",
     "emsc_20261108_0000202",
-    "emsc_20261108_0000220"
+    "emsc_20261108_0000220",
+    "emsc_20261108_0000222"
   ],
   "recent_posted_events": [
     {
@@ -303,6 +304,14 @@
       "latitude": 7.4238,
       "longitude": -80.0076,
       "epoch_ms": 1794162353000
+    },
+    {
+      "id": "emsc_20261108_0000222",
+      "mag": 4.4,
+      "place": "VERACRUZ, MEXICO",
+      "latitude": 17.443,
+      "longitude": -94.636,
+      "epoch_ms": 1794161900000
     }
   ]
 }
