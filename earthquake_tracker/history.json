@@ -1,7 +1,5 @@
 {
   "posted_ids": [
-    "us7000ttnz",
-    "emsc_20261028_0000195",
     "emsc_20261028_0000200",
     "us7000ttp2",
     "emsc_20261028_0000203",
@@ -499,7 +497,9 @@
     "emsc_20261108_0000028",
     "emsc_20261108_0000031",
     "emsc_20261107_0000308",
-    "us7000twvb"
+    "us7000twvb",
+    "emsc_20261108_0000042",
+    "us7000twvh"
   ],
   "replied_comment_ids": [
     "122117057115450344_1416278657237303",
@@ -662,14 +662,6 @@
     "122121805197450344_1830383448311293"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261105_0000223",
-      "mag": 4.7,
-      "place": "KASHMIR-XINJIANG BORDER REGION",
-      "latitude": 35.2749,
-      "longitude": 77.9021,
-      "epoch_ms": 1793897792000
-    },
     {
       "id": "us7000tw8r",
       "mag": 6.1,
@@ -1061,6 +1053,14 @@
       "latitude": 31.3572,
       "longitude": 77.6482,
       "epoch_ms": 1794103848000
+    },
+    {
+      "id": "us7000twvh",
+      "mag": 4.3,
+      "place": "76 km WNW of Murghob, Tajikistan",
+      "latitude": 38.4508,
+      "longitude": 73.1675,
+      "epoch_ms": 1794106210197
     }
   ]
 }
