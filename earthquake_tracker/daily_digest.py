@@ -69,17 +69,16 @@ def get_font(size, bold=True):
             return ImageFont.load_default()
 
 # ==============================================================================
-# 1. 22:00 UTC TRACKING WINDOW & DATA FILTERING
+# 1. 24-HOUR TRACKING WINDOW & DATA FILTERING
 # ==============================================================================
 
 def fetch_daily_seismic_events(local_data_path=None):
     """
     Fetches earthquakes from USGS API (or local file fallback).
-    Filters events with magnitude >= 4.5 recorded within the 24-hour cycle
-    (22:00 UTC to 22:00 UTC).
-    Sorts by magnitude descending and selects the top 5 most significant quakes.
+    Filters events with magnitude >= 4.0 recorded within the past 24 hours.
+    Selects the top 5 most significant quakes arranged in ascending order.
     """
-    print("📡 Fetching 24-hour seismic events (22:00 UTC to 22:00 UTC Tracking Window)...", flush=True)
+    print("📡 Fetching past 24-hour seismic events (Global 24H Tracking Window)...", flush=True)
     data = None
 
     if local_data_path and os.path.exists(local_data_path):
@@ -175,11 +174,14 @@ def fetch_daily_seismic_events(local_data_path=None):
     filtered.sort(key=lambda x: x["mag"], reverse=True)
     total_m40_count = len(filtered)
 
-    # Feature the Top 5 most significant earthquakes of the day
+    # 1. Select the Top 5 most significant earthquakes of the day
     top_events = filtered[:min(5, len(filtered))]
 
-    print(f"✅ Filtered {total_m40_count} earthquakes (M4.0+) across the globe in the 22:00 UTC tracking window.", flush=True)
-    print(f"📋 Selected Top {len(top_events)} most significant quakes for the 1:1 synced Daily Digest video.", flush=True)
+    # 2. Sort the selected Top 5 in ascending order (from lowest to highest magnitude)
+    top_events.sort(key=lambda x: x["mag"])
+
+    print(f"✅ Filtered {total_m40_count} earthquakes (M4.0+) across the globe in the past 24 hours.", flush=True)
+    print(f"📋 Selected Top {len(top_events)} quakes, arranged in ascending magnitude order.", flush=True)
 
     return top_events, total_m40_count, digest_date_str, filtered
 
@@ -395,7 +397,7 @@ def compose_landscape_frame(segment_type, event_data, total_m40_count, digest_da
     draw.text((110, 47), "● 24H DIGEST", font=get_font(18, bold=True), fill="#ffffff", anchor="mm")
 
     draw.text((210, 32), "DAILY GLOBAL SEISMIC DIGEST", font=font_title, fill="#ffffff")
-    draw.text((210, 68), f"{digest_date_str.upper()} • 22:00 UTC TO 22:00 UTC (PAST 24 HOURS)", font=get_font(16, bold=True), fill="#38bdf8")
+    draw.text((210, 68), f"{digest_date_str.upper()} • DAILY 24-HOUR SEISMIC ROUNDUP", font=get_font(16, bold=True), fill="#38bdf8")
 
     draw.text((W - 50, 48), "EARTHQUAKE TRACKER", font=font_brand, fill="#38bdf8", anchor="rm")
 
@@ -419,7 +421,7 @@ def compose_landscape_frame(segment_type, event_data, total_m40_count, digest_da
             pill_w = 580
             pill_x = (W - pill_w) // 2
             draw.rounded_rectangle([(pill_x, cy + 105), (pill_x + pill_w, cy + 148)], radius=20, fill="#132742", outline="#2563eb", width=2)
-            draw.text((W // 2, cy + 126), "⏱️ 22:00 UTC TO 22:00 UTC (PAST 24 HOURS)", font=get_font(18, bold=True), fill="#38bdf8", anchor="mm")
+            draw.text((W // 2, cy + 126), "⏱️ PAST 24 HOURS EARTHQUAKE DIGEST", font=get_font(18, bold=True), fill="#38bdf8", anchor="mm")
 
             # Two High-Impact Stat Boxes
             gap = 50
@@ -463,7 +465,7 @@ def compose_landscape_frame(segment_type, event_data, total_m40_count, digest_da
             pill_w = 580
             pill_x = (W - pill_w) // 2
             draw.rounded_rectangle([(pill_x, cy + 105), (pill_x + pill_w, cy + 148)], radius=20, fill="#132742", outline="#2563eb", width=2)
-            draw.text((W // 2, cy + 126), "⏱️ 22:00 UTC TO 22:00 UTC COMPREHENSIVE BULLETIN", font=get_font(18, bold=True), fill="#38bdf8", anchor="mm")
+            draw.text((W // 2, cy + 126), "⏱️ 24-HOUR GLOBAL SEISMIC SUMMARY", font=get_font(18, bold=True), fill="#38bdf8", anchor="mm")
 
             draw.rounded_rectangle([(cx + 70, cy + 185), (cx + card_w - 70, cy + 350)], radius=20, fill="#0d1b30", outline="#10b981", width=3)
             draw.text((W // 2, cy + 240), "GLOBAL TECTONIC STATUS: BASELINE ACTIVITY", font=get_font(28, bold=True), fill="#00e676", anchor="mm")
@@ -569,7 +571,7 @@ def compose_story_frame(segment_type, event_data, total_m40_count, digest_date_s
     draw.text((W // 2, 52), "● 24H BULLETIN", font=get_font(16, bold=True), fill="#ffffff", anchor="mm")
 
     draw.text((W // 2, 115), "GLOBAL SEISMIC DIGEST", font=get_font(32, bold=True), fill="#ffffff", anchor="mm")
-    draw.text((W // 2, 150), f"{digest_date_str.upper()} • 22:00 UTC TO 22:00 UTC", font=get_font(17, bold=True), fill="#38bdf8", anchor="mm")
+    draw.text((W // 2, 150), f"{digest_date_str.upper()} • PAST 24 HOURS DIGEST", font=get_font(17, bold=True), fill="#38bdf8", anchor="mm")
 
     if segment_type in ["intro", "outro"]:
         card_w, card_h = 920, 1240
@@ -585,7 +587,7 @@ def compose_story_frame(segment_type, event_data, total_m40_count, digest_date_s
 
         if segment_type == "intro":
             draw.text((W // 2, cy + 70), "24-HOUR SEISMIC REVIEW", font=get_font(36, bold=True), fill="#ffffff", anchor="mm")
-            draw.text((W // 2, cy + 120), "22:00 UTC to 22:00 UTC Window", font=get_font(22, bold=False), fill="#7ea5c9", anchor="mm")
+            draw.text((W // 2, cy + 120), "Daily 24-Hour Seismic Roundup", font=get_font(22, bold=False), fill="#7ea5c9", anchor="mm")
 
             # Card 1: Count
             box1_y = cy + 170
@@ -611,7 +613,7 @@ def compose_story_frame(segment_type, event_data, total_m40_count, digest_date_s
         else:
             # Outro Slide Story
             draw.text((W // 2, cy + 90), "TECTONIC REVIEW & SAFETY", font=get_font(36, bold=True), fill="#ffffff", anchor="mm")
-            draw.text((W // 2, cy + 150), "22:00 UTC to 22:00 UTC Summary", font=get_font(22, bold=False), fill="#7ea5c9", anchor="mm")
+            draw.text((W // 2, cy + 150), "24-Hour Global Activity Summary", font=get_font(22, bold=False), fill="#7ea5c9", anchor="mm")
 
             draw.rounded_rectangle([(cx + 50, cy + 240), (cx + card_w - 50, cy + 500)], radius=20, fill="#0d1b30", outline="#10b981", width=3)
             draw.text((W // 2, cy + 310), "GLOBAL ACTIVITY STATUS", font=get_font(24, bold=True), fill="#9fbcd9", anchor="mm")
@@ -809,7 +811,7 @@ def render_dual_digest_videos(top_events, total_m40_count, digest_date_str, all_
     # ==========================================
     print("🎙️ Generating Segment 0: Intro Voiceover...", flush=True)
     intro_script = (
-        f"Good evening. This is the Daily Global Seismic Digest from Earthquake Tracker for 22:00 UTC to 22:00 UTC. "
+        f"Welcome to Earthquake Tracker. Here is your global seismic update covering the past 24 hours. "
         f"Today, {total_m40_count} earthquakes of magnitude 4.0 or greater were recorded worldwide, "
         f"verified by official USGS and EMSC monitoring networks. "
         f"Here are today's top {len(top_events)} most significant seismic events."
@@ -823,7 +825,7 @@ def render_dual_digest_videos(top_events, total_m40_count, digest_date_str, all_
     print(f"🎥 Rendering Segment 0: Intro ({intro_dur:.2f}s)...", flush=True)
     render_segment_clip(
         segment_type="intro",
-        event_data=top_events[0] if top_events else None,
+        event_data=max(top_events, key=lambda x: x["mag"]) if top_events else None,
         total_m40_count=total_m40_count,
         digest_date_str=digest_date_str,
         map_img_l=None,
@@ -876,7 +878,12 @@ def render_dual_digest_videos(top_events, total_m40_count, digest_date_str, all_
         else:
             time_phrase = f"at {ev.get('local_voice', '')} local time, or {ev['time_utc']}"
 
-        ev_sentence_1 = f"At rank {ord_word}, a notable magnitude {ev['mag']:.1f} earthquake struck {clean_place} {time_phrase}."
+        if idx == len(top_events) - 1:
+            ev_sentence_1 = f"And for today's strongest event, a powerful magnitude {ev['mag']:.1f} earthquake struck {clean_place} {time_phrase}."
+        elif idx == 0:
+            ev_sentence_1 = f"Starting with event {ord_word}, a notable magnitude {ev['mag']:.1f} earthquake struck {clean_place} {time_phrase}."
+        else:
+            ev_sentence_1 = f"At event {ord_word}, a notable magnitude {ev['mag']:.1f} earthquake struck {clean_place} {time_phrase}."
         ev_sentence_2 = f"{depth_desc}, while {tsunami_desc}"
         event_script = f"{ev_sentence_1} {ev_sentence_2}"
 
@@ -913,10 +920,10 @@ def render_dual_digest_videos(top_events, total_m40_count, digest_date_str, all_
     # ==========================================
     print("🎙️ Generating Segment Outro: Safety & Sign-off...", flush=True)
     outro_script = (
-        "In review, global seismic energy release across the 22:00 UTC to 22:00 UTC tracking window "
+        "In review, global seismic energy release across the past 24 hours "
         "remained within expected planetary baselines, with no trans-oceanic tsunami threat. "
-        "Remember to practice essential earthquake safety: Drop, Cover, and Hold On during unexpected tremors. "
-        "Follow facebook.com/earthquaketracker247 for 24/7 automated real-time alerts. Stay safe, and good night."
+        "Remember to practice essential earthquake safety: Drop, Cover, and Hold On during unexpected ground shaking. "
+        "Stay safe, and follow facebook.com/earthquaketracker247 for continuous global updates."
     )
     outro_audio = os.path.join(OUTPUT_DIR, "seg_outro.mp3")
     outro_timings, outro_dur = generate_segment_audio(outro_script, outro_audio)
@@ -927,7 +934,7 @@ def render_dual_digest_videos(top_events, total_m40_count, digest_date_str, all_
     print(f"🎥 Rendering Segment Outro ({outro_dur:.2f}s)...", flush=True)
     render_segment_clip(
         segment_type="outro",
-        event_data=top_events[0] if top_events else None,
+        event_data=max(top_events, key=lambda x: x["mag"]) if top_events else None,
         total_m40_count=total_m40_count,
         digest_date_str=digest_date_str,
         map_img_l=None,
@@ -1004,31 +1011,31 @@ def render_dual_digest_videos(top_events, total_m40_count, digest_date_str, all_
 # ==============================================================================
 
 def create_digest_post_caption(top_events, total_m40_count, digest_date_str):
-    """Creates a structured Facebook bulletin post highlighting the 22:00 UTC tracking window."""
+    """Creates a structured Facebook bulletin post covering the past 24 hours."""
     bulletin_lines = []
     for idx, ev in enumerate(top_events):
-        bulletin_lines.append(f"• Rank #{idx + 1}: M {ev['mag']:.1f} — {ev['place']} ({ev.get('local_time_short', ev['time_utc'])} / {ev['time_utc']}, Depth: {ev['depth_km']}km)")
+        bulletin_lines.append(f"• Event #{idx + 1}: M {ev['mag']:.1f} — {ev['place']} ({ev.get('local_time_short', ev['time_utc'])} / {ev['time_utc']}, Depth: {ev['depth_km']}km)")
 
     bulletin_text = "\n".join(bulletin_lines)
-    strongest_ev = top_events[0] if top_events else None
+    strongest_ev = max(top_events, key=lambda x: x["mag"]) if top_events else None
     strongest_str = f"Magnitude {strongest_ev['mag']:.1f} — {strongest_ev['place']}" if strongest_ev else "None"
 
     caption = (
         f"🌍 DAILY GLOBAL SEISMIC DIGEST | {digest_date_str.upper()}\n"
-        f"⏱️ Tracking Window: 22:00 UTC to 22:00 UTC (Past 24 Hours)\n\n"
-        f"This comprehensive daily bulletin summarizes all significant earthquakes recorded between 22:00 UTC and 22:00 UTC across the globe, verified by official USGS and EMSC sensor networks.\n\n"
+        f"⏱️ Tracking Window: Past 24 Hours Worldwide\n\n"
+        f"This comprehensive daily bulletin summarizes all significant earthquakes recorded over the past 24 hours across the globe, verified by official USGS and EMSC sensor networks.\n\n"
         f"📊 24-Hour Global Seismic Summary:\n"
         f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
         f"• Total M4.0+ Earthquakes Detected: {total_m40_count}\n"
         f"• Strongest Event: {strongest_str}\n"
         f"• Tsunami Threat Status: NO DESTRUCTIVE TRANS-OCEANIC THREAT\n"
         f"• Monitoring Stations: USGS & EMSC Corroborated\n\n"
-        f"📋 Top {len(top_events)} Significant Seismic Events (22:00 UTC to 22:00 UTC):\n"
+        f"📋 Top {len(top_events)} Significant Seismic Events (Past 24 Hours):\n"
         f"{bulletin_text}\n\n"
         f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
         f"🛡️ SAFETY ADVISORY:\n"
         f"During sudden ground shaking, always remember to Drop, Cover, and Hold On! Maintain an accessible emergency family kit.\n\n"
-        f"Follow facebook.com/earthquaketracker247 for official safety guidelines and 24/7 live updates!\n\n"
+        f"Follow facebook.com/earthquaketracker247 for continuous global updates and 24/7 live alerts!\n\n"
         f"#EarthquakeTracker #DailyDigest #GlobalSeismic #USGS #EMSC #EarthquakeAlert #24hDigest #SeismicActivity"
     )
     return caption
@@ -1040,7 +1047,7 @@ def upload_landscape_video_to_feed(landscape_video_path, top_events, total_m40_c
         return False
 
     url = f"https://graph-video.facebook.com/v20.0/{FB_PAGE_ID}/videos"
-    title = f"🌍 Daily Global Seismic Digest — {digest_date_str} (22:00 UTC Window)"
+    title = f"🌍 Daily Global Seismic Digest — {digest_date_str} (Past 24 Hours)"
     description = create_digest_post_caption(top_events, total_m40_count, digest_date_str)
 
     print(f"📤 Uploading 16:9 Landscape Video to Facebook Page Feed ({FB_PAGE_ID})...", flush=True)
@@ -1172,7 +1179,7 @@ def run_daily_digest_pipeline(local_data_path=None, skip_upload=False):
     """Runs the complete end-to-end Daily Global Seismic Digest pipeline."""
     print("=" * 70, flush=True)
     print("🌍 24-HOUR DAILY GLOBAL SEISMIC DIGEST PIPELINE", flush=True)
-    print("⏱️ Tracking Window: 22:00 UTC to 22:00 UTC (Past 24 Hours)", flush=True)
+    print("⏱️ Tracking Window: Past 24 Hours Worldwide", flush=True)
     print(f"⏱️ Execution Time: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M:%S UTC')}", flush=True)
     print("=" * 70, flush=True)
 

@@ -2,8 +2,8 @@ name: Daily Global Seismic Digest
 
 on:
   schedule:
-    # Runs daily at 22:00 UTC (22:00 UTC to 22:00 UTC 24-hour cycle)
-    - cron: '0 22 * * *'
+    # Runs daily at 12:00 UTC (Past 24 Hours Daily Cycle)
+    - cron: '0 12 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
