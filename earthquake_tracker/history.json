@@ -235,7 +235,8 @@
     "emsc_20261108_0000190",
     "us7000twyd",
     "us7000twyc",
-    "emsc_20261108_0000199"
+    "emsc_20261108_0000199",
+    "emsc_20261108_0000202"
   ],
   "recent_posted_events": [
     {
@@ -285,6 +286,14 @@
       "latitude": 2.6,
       "longitude": 128.47,
       "epoch_ms": 1794156314000
+    },
+    {
+      "id": "emsc_20261108_0000202",
+      "mag": 4.4,
+      "place": "OFF COAST OF CENTRAL AMERICA",
+      "latitude": 11.4131,
+      "longitude": -89.9675,
+      "epoch_ms": 1794158457000
     }
   ]
 }
