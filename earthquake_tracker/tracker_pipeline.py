@@ -18,8 +18,13 @@ from config import OUTPUT_DIR, VIDEO_MIN_MAGNITUDE
 from fetcher import fetch_latest_earthquakes, mark_event_as_posted
 from tts_engine import create_audio_voiceover
 from video_engine import create_earthquake_video
-from infographic_engine import create_earthquake_infographic_photo
-from fb_publisher import upload_video_to_facebook, upload_photo_to_facebook
+from infographic_engine import create_earthquake_infographic_photo, create_story_infographic_photo
+from fb_publisher import (
+    upload_video_to_facebook,
+    upload_photo_to_facebook,
+    upload_photo_story_to_page,
+    upload_story_video_to_page
+)
 
 import threading
 import concurrent.futures
@@ -112,6 +117,39 @@ def process_priority_worker(idx, event, publish_locks):
             upload_video_to_facebook(media_item["media_path"], event)
             mark_event_as_posted(event)
             print(f"✨ Successfully published Video Reel M{mag} [{event_id}]: {place}\n", flush=True)
+
+        # 4. Facebook Stories Automation:
+        # Rule A: M4.5 to M5.5 -> Post 1080x1920 Infographic Photo to Page Story
+        # Rule B: M5.5+ -> Post 9:16 Video Reel to Page Story
+        if 4.5 <= mag < 5.5:
+            try:
+                print(f"📲 [STORY PHOTO M{mag}] Generating & publishing vertical Story image for [{event_id}]...", flush=True)
+                story_img_path = os.path.join(OUTPUT_DIR, f"story_photo_{event_id}.png")
+                create_story_infographic_photo(event, story_img_path)
+                upload_photo_story_to_page(story_img_path)
+                try:
+                    if os.path.exists(story_img_path):
+                        os.remove(story_img_path)
+                except Exception:
+                    pass
+            except Exception as se:
+                print(f"⚠️ Story photo upload error for [{event_id}]: {se}", flush=True)
+        elif mag >= 5.5:
+            try:
+                print(f"📲 [STORY VIDEO M{mag}] Sharing Video Reel to Page Story for [{event_id}]...", flush=True)
+                if media_item.get("media_type") == "video" and os.path.exists(media_item.get("media_path", "")):
+                    upload_story_video_to_page(media_item["media_path"])
+                else:
+                    story_img_path = os.path.join(OUTPUT_DIR, f"story_photo_{event_id}.png")
+                    create_story_infographic_photo(event, story_img_path)
+                    upload_photo_story_to_page(story_img_path)
+                    try:
+                        if os.path.exists(story_img_path):
+                            os.remove(story_img_path)
+                    except Exception:
+                        pass
+            except Exception as ve:
+                print(f"⚠️ Story video upload error for [{event_id}]: {ve}", flush=True)
 
     except Exception as e:
         print(f"❌ Error in priority worker for M{mag} [{event_id}]: {e}", flush=True)

@@ -187,3 +187,117 @@ def upload_video_to_facebook(video_path, event):
         except Exception as e:
             print(f"❌ Upload Failed: {e}")
             return False
+
+
+def upload_photo_story_to_page(image_path):
+    """
+    Publishes an image directly to Facebook Page Stories via Meta Graph API:
+    Step 1: Upload photo as unpublished (published=false) to /{PAGE_ID}/photos
+    Step 2: Publish photo to page stories via /{PAGE_ID}/photo_stories
+    """
+    if not FB_PAGE_ACCESS_TOKEN or not FB_PAGE_ID:
+        print("⚠️ Facebook Page Access Token or Page ID missing. Skipping Photo Story.", flush=True)
+        return False
+
+    print(f"📲 Publishing Photo to Facebook Page Story ({FB_PAGE_ID})...", flush=True)
+    try:
+        # Step 1: Upload photo as unpublished asset
+        upload_url = f"https://graph.facebook.com/v20.0/{FB_PAGE_ID}/photos"
+        with open(image_path, "rb") as img_file:
+            payload = {
+                "published": False,
+                "access_token": FB_PAGE_ACCESS_TOKEN
+            }
+            files = {
+                "source": img_file
+            }
+            res_upload = requests.post(upload_url, data=payload, files=files, timeout=60).json()
+
+        if "id" not in res_upload:
+            print(f"❌ Photo Story Step 1 failed (upload asset): {res_upload}", flush=True)
+            return False
+
+        photo_id = res_upload["id"]
+        print(f"  ↳ Photo asset uploaded! Photo ID: {photo_id}", flush=True)
+
+        # Step 2: Publish to photo_stories
+        story_url = f"https://graph.facebook.com/v20.0/{FB_PAGE_ID}/photo_stories"
+        story_payload = {
+            "photo_id": photo_id,
+            "access_token": FB_PAGE_ACCESS_TOKEN
+        }
+        res_story = requests.post(story_url, data=story_payload, timeout=30).json()
+
+        if res_story.get("success") or "post_id" in res_story or "id" in res_story:
+            print(f"✅ Photo Story published successfully! Response: {res_story}", flush=True)
+            return True
+        else:
+            print(f"❌ Photo Story Step 2 failed: {res_story}", flush=True)
+            return False
+    except Exception as e:
+        print(f"❌ Photo Story exception: {e}", flush=True)
+        return False
+
+def upload_story_video_to_page(video_path):
+    """
+    Uploads a vertical 9:16 video directly to Facebook Page Stories
+    using Meta's 3-step Page Video Stories API.
+    """
+    if not FB_PAGE_ACCESS_TOKEN or not FB_PAGE_ID:
+        print("⚠️ Facebook Access Token or Page ID not configured. Skipping Story Video.", flush=True)
+        return False
+
+    print(f"📲 Publishing 9:16 Video to Facebook Page Stories ({FB_PAGE_ID})...", flush=True)
+    try:
+        # Step 1: Initialize Story upload session
+        init_url = f"https://graph.facebook.com/v20.0/{FB_PAGE_ID}/video_stories"
+        init_payload = {
+            "upload_phase": "start",
+            "access_token": FB_PAGE_ACCESS_TOKEN
+        }
+        r_init = requests.post(init_url, data=init_payload, timeout=20)
+        init_res = r_init.json()
+
+        if "upload_url" not in init_res or "video_id" not in init_res:
+            print(f"❌ Video Story start session failed: {init_res}", flush=True)
+            return False
+
+        upload_url = init_res["upload_url"]
+        video_id = init_res["video_id"]
+        print(f"  ↳ Video Story session created! Video ID: {video_id}", flush=True)
+
+        # Step 2: Upload video binary to upload_url
+        file_size = os.path.getsize(video_path)
+        headers = {
+            "Authorization": f"OAuth {FB_PAGE_ACCESS_TOKEN}",
+            "offset": "0",
+            "file_size": str(file_size)
+        }
+        with open(video_path, "rb") as f:
+            r_up = requests.post(upload_url, headers=headers, data=f, timeout=180)
+            if r_up.status_code != 200:
+                print(f"❌ Video Story binary upload failed: {r_up.status_code} {r_up.text}", flush=True)
+                return False
+
+        print("  ↳ Video Story binary uploaded successfully.", flush=True)
+
+        # Step 3: Finish Story upload session & publish
+        fin_url = f"https://graph.facebook.com/v20.0/{FB_PAGE_ID}/video_stories"
+        fin_payload = {
+            "upload_phase": "finish",
+            "video_id": video_id,
+            "video_state": "PUBLISHED",
+            "access_token": FB_PAGE_ACCESS_TOKEN
+        }
+        r_fin = requests.post(fin_url, data=fin_payload, timeout=30)
+        fin_res = r_fin.json()
+
+        if fin_res.get("success") or "id" in fin_res or fin_res.get("post_id"):
+            print(f"✅ Facebook Page Video Story published successfully! Response: {fin_res}", flush=True)
+            return True
+        else:
+            print(f"⚠️ Story finish response: {fin_res}", flush=True)
+            return True
+    except Exception as e:
+        print(f"❌ Story Video upload exception: {e}", flush=True)
+        return False
