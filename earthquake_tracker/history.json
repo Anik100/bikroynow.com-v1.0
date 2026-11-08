@@ -239,7 +239,8 @@
     "emsc_20261108_0000199",
     "emsc_20261108_0000202",
     "emsc_20261108_0000220",
-    "emsc_20261108_0000222"
+    "emsc_20261108_0000222",
+    "emsc_20261108_0000228"
   ],
   "recent_posted_events": [
     {
@@ -313,6 +314,14 @@
       "latitude": 17.443,
       "longitude": -94.636,
       "epoch_ms": 1794161900000
+    },
+    {
+      "id": "emsc_20261108_0000228",
+      "mag": 4.3,
+      "place": "MINAHASA, SULAWESI, INDONESIA",
+      "latitude": 0.94,
+      "longitude": 120.72,
+      "epoch_ms": 1794164813000
     }
   ]
 }
