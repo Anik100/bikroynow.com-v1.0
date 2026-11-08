@@ -25,11 +25,13 @@ import edge_tts
 import imageio_ffmpeg
 
 # Project configuration
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+OUTPUT_DIR = os.path.join(BASE_DIR, "output")
+EARTH_TEXTURE_PATH = os.path.join(BASE_DIR, "earth_texture_hd.jpg")
+
 try:
-    from config import FB_PAGE_ID, FB_PAGE_ACCESS_TOKEN, OUTPUT_DIR
+    from config import FB_PAGE_ID, FB_PAGE_ACCESS_TOKEN
 except ImportError:
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    OUTPUT_DIR = os.path.join(BASE_DIR, "output")
     FB_PAGE_ID = os.environ.get("FB_PAGE_ID", "1305415129314506")
     FB_PAGE_ACCESS_TOKEN = os.environ.get("FB_PAGE_ACCESS_TOKEN", "")
 
@@ -98,13 +100,12 @@ def fetch_daily_seismic_events(local_data_path=None):
 
     if not data or "features" not in data:
         print("❌ No valid seismic GeoJSON data available.", flush=True)
-        return [], 0, datetime.now(timezone.utc).strftime("%B %d, %Y")
+        return [], 0, datetime.now(timezone.utc).strftime("%B %d, %Y"), []
 
     features = data.get("features", [])
     now_utc = datetime.now(timezone.utc)
     digest_date_str = now_utc.strftime("%B %d, %Y")
 
-    # Filter events: magnitude >= 4.5
     filtered = []
     seen_ids = set()
 
@@ -122,7 +123,6 @@ def fetch_daily_seismic_events(local_data_path=None):
             continue
         seen_ids.add(fid)
 
-        # Convert epoch ms to UTC time string
         epoch_ms = props.get("time", 0)
         dt_utc = datetime.fromtimestamp(epoch_ms / 1000.0, tz=timezone.utc)
         utc_time_str = dt_utc.strftime("%H:%M UTC")
@@ -146,16 +146,14 @@ def fetch_daily_seismic_events(local_data_path=None):
             "tsunami": tsunami
         })
 
-    # Sort descending by magnitude
     filtered.sort(key=lambda x: x["mag"], reverse=True)
     total_m45_count = len(filtered)
-
-    # Select top 5 most significant events for crisp broadcast
     top_events = filtered[:5]
+
     print(f"✅ Filtered {total_m45_count} earthquakes (M4.5+) across the globe in the 22:00 UTC tracking window.", flush=True)
     print(f"📋 Selected Top {len(top_events)} most significant quakes for the 1:1 synced Daily Digest video.", flush=True)
 
-    return top_events, total_m45_count, digest_date_str
+    return top_events, total_m45_count, digest_date_str, filtered
 
 # ==============================================================================
 # 2. ATOMIC AUDIO SYNTHESIS PER SEGMENT (edge-tts)
@@ -166,7 +164,7 @@ async def _synthesize_edge_tts(script, voice, output_audio_path):
     Asynchronously calls edge-tts to generate voiceover for a single atomic segment
     and extracts sentence-level timing data relative to this segment (starting at 0.0s).
     """
-    comm = edge_tts.Communicate(text=script, voice=voice)
+    comm = edge_tts.Communicate(text=script, voice=voice, rate="+5%")
     sentence_timings = []
 
     with open(output_audio_path, "wb") as f:
@@ -183,7 +181,6 @@ async def _synthesize_edge_tts(script, voice, output_audio_path):
                     "duration": dur
                 })
 
-    # Accurately probe duration using imageio_ffmpeg
     audio_duration = sentence_timings[-1]["end"] + 0.4 if sentence_timings else 5.0
     try:
         p = subprocess.run([imageio_ffmpeg.get_ffmpeg_exe(), "-i", output_audio_path], capture_output=True, text=True)
@@ -216,7 +213,6 @@ def fetch_satellite_map(lat, lon, width=1280, height=720, zoom=5, geoapify_key=N
     """
     headers = {"User-Agent": "EarthquakeTrackerDailyDigest/1.0"}
 
-    # 1. Try Geoapify Static Maps API if key provided
     if geoapify_key:
         try:
             url = (
@@ -233,7 +229,6 @@ def fetch_satellite_map(lat, lon, width=1280, height=720, zoom=5, geoapify_key=N
         except Exception as e:
             print(f"⚠️ Geoapify map note: {e}, falling back to ESRI...", flush=True)
 
-    # 2. High-Resolution ESRI World Imagery Fallback
     try:
         n_tiles = 2 ** zoom
         xtile = int((lon + 180.0) / 360.0 * n_tiles)
@@ -266,7 +261,6 @@ def fetch_satellite_map(lat, lon, width=1280, height=720, zoom=5, geoapify_key=N
         top = max(0, (ch - height) // 2)
         map_crop = composite.crop((left, top, left + width, top + height))
 
-        # Red epicenter marker with crosshairs
         draw = ImageDraw.Draw(map_crop)
         cx_pt = width // 2
         cy_pt = height // 2
@@ -288,7 +282,7 @@ def fetch_satellite_map(lat, lon, width=1280, height=720, zoom=5, geoapify_key=N
         return blank
 
 # ==============================================================================
-# 4. FRAME COMPOSITION (16:9 LANDSCAPE & 9:16 VERTICAL STORY)
+# 4. HIGH-TECH BROADCAST GRAPHICS ENGINE (16:9 & 9:16)
 # ==============================================================================
 
 def get_mag_color(mag):
@@ -298,14 +292,67 @@ def get_mag_color(mag):
         return "#ff9100"  # Vibrant Orange
     return "#ffd600"      # Gold / Yellow
 
-def compose_landscape_frame(segment_type, event_data, total_m45_count, digest_date_str, map_img, subtitle_text, event_rank=1, total_events=5):
+def draw_world_background(W, H, all_events=None):
     """
-    Composes a single 1920x1080 (16:9) frame with dark glassmorphic data cards,
-    satellite imagery, clear typography, and synced subtitles.
-    Explicitly displays the 22:00 UTC to 22:00 UTC tracking window.
+    Renders a dark, high-tech world satellite background with glowing epicenter markers.
+    Produces an authentic global operations / newsroom studio visual.
+    """
+    canvas = Image.new("RGB", (W, H), "#040812")
+    if os.path.exists(EARTH_TEXTURE_PATH):
+        try:
+            raw_bg = Image.open(EARTH_TEXTURE_PATH).convert("RGBA")
+            if W > H:
+                raw_bg = raw_bg.resize((W, H), Image.Resampling.BILINEAR)
+            else:
+                bw, bh = raw_bg.size
+                crop_w = int(bh * (W / H))
+                left = max(0, (bw - crop_w) // 2)
+                raw_bg = raw_bg.crop((left, 0, left + crop_w, bh)).resize((W, H), Image.Resampling.BILINEAR)
+
+            tint = Image.new("RGBA", (W, H), (4, 9, 22, 210))
+            bg = Image.alpha_composite(raw_bg, tint).convert("RGB")
+            canvas.paste(bg, (0, 0))
+        except Exception as e:
+            pass
+
+    draw = ImageDraw.Draw(canvas)
+    step_x = 120 if W > H else 90
+    step_y = 100 if W > H else 120
+    for gx in range(0, W, step_x):
+        draw.line([(gx, 0), (gx, H)], fill="#0f223d25", width=1)
+    for gy in range(0, H, step_y):
+        draw.line([(0, gy), (W, gy)], fill="#0f223d25", width=1)
+
+    # Plot all earthquakes as glowing dots across the world map
+    if all_events and W > H:
+        for ev in all_events:
+            lon = ev.get("lon", 0)
+            lat = ev.get("lat", 0)
+            mag = ev.get("mag", 4.5)
+            x = int((lon + 180.0) / 360.0 * W)
+            y = int((90.0 - lat) / 180.0 * H)
+
+            r = 7 if mag >= 5.2 else 5
+            col = "#ef4444" if mag >= 5.5 else ("#f59e0b" if mag >= 5.0 else "#fbbf24")
+            draw.ellipse([(x - r * 2, y - r * 2), (x + r * 2, y + r * 2)], outline=col, width=1)
+            draw.ellipse([(x - r, y - r), (x + r, y + r)], fill=col)
+
+    return canvas
+
+def compose_landscape_frame(segment_type, event_data, total_m45_count, digest_date_str, map_img, subtitle_text, event_rank=1, total_events=5, all_events=None):
+    """
+    Composes a broadcast-quality 1920x1080 (16:9) frame:
+    - High-tech world map satellite background with glowing epicenters for Intro & Outro
+    - Sleek glassmorphism telemetry cards with glowing neon borders
+    - Centered dynamic subtitles
     """
     W, H = 1920, 1080
-    frame = Image.new("RGB", (W, H), "#060b14")
+
+    if segment_type in ["intro", "outro"]:
+        frame = draw_world_background(W, H, all_events)
+    else:
+        frame = Image.new("RGB", (W, H), "#060b14")
+
     draw = ImageDraw.Draw(frame)
 
     # 1. Header Bar
@@ -316,55 +363,91 @@ def compose_landscape_frame(segment_type, event_data, total_m45_count, digest_da
     font_brand = get_font(26, bold=True)
 
     # Live badge
-    draw.rectangle([(40, 24), (170, 70)], fill="#ff1744")
-    draw.text((105, 47), "24H DIGEST", font=get_font(18, bold=True), fill="#ffffff", anchor="mm")
+    draw.rounded_rectangle([(40, 24), (180, 70)], radius=8, fill="#dc2626")
+    draw.text((110, 47), "● 24H DIGEST", font=get_font(18, bold=True), fill="#ffffff", anchor="mm")
 
-    draw.text((200, 34), "DAILY GLOBAL SEISMIC DIGEST", font=font_title, fill="#ffffff")
-    draw.text((200, 68), f"{digest_date_str.upper()} • 22:00 UTC TO 22:00 UTC (PAST 24 HOURS)", font=get_font(16, bold=True), fill="#7ea5c9")
+    draw.text((210, 32), "DAILY GLOBAL SEISMIC DIGEST", font=font_title, fill="#ffffff")
+    draw.text((210, 68), f"{digest_date_str.upper()} • 22:00 UTC TO 22:00 UTC (PAST 24 HOURS)", font=get_font(16, bold=True), fill="#38bdf8")
 
-    draw.text((W - 50, 48), "EARTHQUAKE TRACKER", font=font_brand, fill="#4fc3f7", anchor="rm")
+    draw.text((W - 50, 48), "EARTHQUAKE TRACKER", font=font_brand, fill="#38bdf8", anchor="rm")
 
     # 2. Main Content Layout
     if segment_type in ["intro", "outro"]:
-        card_w, card_h = 1300, 680
+        card_w, card_h = 1440, 720
         cx = (W - card_w) // 2
-        cy = 150
-        draw.rectangle([(cx, cy), (cx + card_w, cy + card_h)], fill="#0f1f33", outline="#254266", width=2)
+        cy = 140
+
+        # Glassmorphic container with translucent backing
+        overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        ol_draw = ImageDraw.Draw(overlay)
+        ol_draw.rounded_rectangle([(cx, cy), (cx + card_w, cy + card_h)], radius=24, fill=(9, 19, 36, 235), outline=(37, 72, 117, 240), width=3)
+        ol_draw.rounded_rectangle([(cx + 40, cy), (cx + card_w - 40, cy + 4)], radius=2, fill=(56, 189, 248, 255))
+        frame.paste(overlay, (0, 0), overlay)
+        draw = ImageDraw.Draw(frame)
 
         if segment_type == "intro":
-            draw.text((W // 2, cy + 90), "GLOBAL SEISMIC SUMMARY", font=get_font(46, bold=True), fill="#ffffff", anchor="mm")
-            draw.text((W // 2, cy + 150), "22:00 UTC to 22:00 UTC • Past 24 Hours Worldwide", font=get_font(24, bold=False), fill="#7ea5c9", anchor="mm")
+            draw.text((W // 2, cy + 65), "24-HOUR GLOBAL SEISMIC REVIEW", font=get_font(42, bold=True), fill="#ffffff", anchor="mm")
 
-            b1_x = cx + 120
-            b2_x = cx + 700
-            by = cy + 240
-            draw.rectangle([(b1_x, by), (b1_x + 480, by + 260)], fill="#162942", outline="#2d4f7a", width=2)
-            draw.text((b1_x + 240, by + 60), f"{total_m45_count}", font=get_font(72, bold=True), fill="#ff9100", anchor="mm")
-            draw.text((b1_x + 240, by + 150), "M 4.5+ EARTHQUAKES", font=get_font(24, bold=True), fill="#ffffff", anchor="mm")
-            draw.text((b1_x + 240, by + 200), "Recorded in Tracking Window", font=get_font(18, bold=False), fill="#9fbcd9", anchor="mm")
+            pill_w = 580
+            pill_x = (W - pill_w) // 2
+            draw.rounded_rectangle([(pill_x, cy + 105), (pill_x + pill_w, cy + 148)], radius=20, fill="#132742", outline="#2563eb", width=2)
+            draw.text((W // 2, cy + 126), "⏱️ 22:00 UTC TO 22:00 UTC (PAST 24 HOURS)", font=get_font(18, bold=True), fill="#38bdf8", anchor="mm")
 
+            # Two High-Impact Stat Boxes
+            gap = 50
+            box_w = (card_w - 140 - gap) // 2
+            box_h = 360
+            box_y = cy + 185
+            b1_x = cx + 70
+            b2_x = b1_x + box_w + gap
+
+            # Box 1: Total Earthquakes (Left - Glowing Amber)
+            draw.rounded_rectangle([(b1_x, box_y), (b1_x + box_w, box_y + box_h)], radius=20, fill="#0d1b30", outline="#f59e0b", width=3)
+            draw.rounded_rectangle([(b1_x + 30, box_y + 25), (b1_x + 230, box_y + 65)], radius=10, fill="#1c2d47")
+            draw.text((b1_x + 130, box_y + 45), "GLOBAL ACTIVITY", font=get_font(16, bold=True), fill="#f59e0b", anchor="mm")
+
+            draw.text((b1_x + box_w // 2, box_y + 165), f"{total_m45_count}", font=get_font(105, bold=True), fill="#fbbf24", anchor="mm")
+            draw.text((b1_x + box_w // 2, box_y + 260), "M 4.5+ EARTHQUAKES", font=get_font(26, bold=True), fill="#ffffff", anchor="mm")
+            draw.text((b1_x + box_w // 2, box_y + 305), "Detected Worldwide Today", font=get_font(19, bold=False), fill="#94a3b8", anchor="mm")
+
+            # Box 2: Strongest Quake (Right - Glowing Red)
             max_mag = event_data["mag"] if event_data else 4.5
             top_place = event_data["place"] if event_data else "Global Fault Zones"
-            draw.rectangle([(b2_x, by), (b2_x + 480, by + 260)], fill="#162942", outline="#2d4f7a", width=2)
-            draw.text((b2_x + 240, by + 60), f"M {max_mag:.1f}", font=get_font(72, bold=True), fill=get_mag_color(max_mag), anchor="mm")
-            draw.text((b2_x + 240, by + 150), "STRONGEST EVENT", font=get_font(24, bold=True), fill="#ffffff", anchor="mm")
-            draw.text((b2_x + 240, by + 200), top_place[:30], font=get_font(18, bold=False), fill="#9fbcd9", anchor="mm")
+            draw.rounded_rectangle([(b2_x, box_y), (b2_x + box_w, box_y + box_h)], radius=20, fill="#0d1b30", outline="#ef4444", width=3)
+            draw.rounded_rectangle([(b2_x + 30, box_y + 25), (b2_x + 250, box_y + 65)], radius=10, fill="#1c2d47")
+            draw.text((b2_x + 140, box_y + 45), "STRONGEST EVENT", font=get_font(16, bold=True), fill="#ef4444", anchor="mm")
 
-            draw.text((W // 2, cy + 580), "Monitored & Verified 24/7 by USGS and EMSC Global Sensor Networks", font=get_font(20, bold=True), fill="#4fc3f7", anchor="mm")
+            draw.text((b2_x + box_w // 2, box_y + 165), f"M {max_mag:.1f}", font=get_font(95, bold=True), fill="#ef4444", anchor="mm")
+            draw.text((b2_x + box_w // 2, box_y + 260), top_place[:34], font=get_font(25, bold=True), fill="#ffffff", anchor="mm")
+            time_txt = event_data.get("time_utc", "Recent") if event_data else ""
+            depth_txt = f"{event_data.get('depth_km', 10)} km" if event_data else ""
+            draw.text((b2_x + box_w // 2, box_y + 305), f"Depth: {depth_txt} • {time_txt}", font=get_font(19, bold=False), fill="#38bdf8", anchor="mm")
+
+            # Footer Strip
+            foot_y = cy + card_h - 75
+            draw.line([(cx + 40, foot_y), (cx + card_w - 40, foot_y)], fill="#1a3556", width=2)
+            draw.text((W // 2, foot_y + 38), "🌐 Monitored 24/7 by Global Seismic Station Networks • No Oceanic Tsunami Hazard", font=get_font(20, bold=True), fill="#38bdf8", anchor="mm")
+
         else:
             # Outro Slide
-            draw.text((W // 2, cy + 90), "24-HOUR SEISMIC REVIEW & SAFETY", font=get_font(42, bold=True), fill="#ffffff", anchor="mm")
-            draw.text((W // 2, cy + 150), "22:00 UTC to 22:00 UTC Comprehensive Bulletin", font=get_font(24, bold=False), fill="#7ea5c9", anchor="mm")
+            draw.text((W // 2, cy + 65), "24-HOUR SEISMIC REVIEW & SAFETY", font=get_font(40, bold=True), fill="#ffffff", anchor="mm")
 
-            draw.rectangle([(cx + 120, cy + 230), (cx + card_w - 120, cy + 390)], fill="#162942", outline="#2d4f7a", width=2)
-            draw.text((W // 2, cy + 280), "GLOBAL TECTONIC STATUS: BASELINE ACTIVITY", font=get_font(26, bold=True), fill="#00e676", anchor="mm")
-            draw.text((W // 2, cy + 340), "No Destructive Trans-Oceanic Tsunami Generated Today", font=get_font(22, bold=False), fill="#ffffff", anchor="mm")
+            pill_w = 580
+            pill_x = (W - pill_w) // 2
+            draw.rounded_rectangle([(pill_x, cy + 105), (pill_x + pill_w, cy + 148)], radius=20, fill="#132742", outline="#2563eb", width=2)
+            draw.text((W // 2, cy + 126), "⏱️ 22:00 UTC TO 22:00 UTC COMPREHENSIVE BULLETIN", font=get_font(18, bold=True), fill="#38bdf8", anchor="mm")
 
-            draw.rectangle([(cx + 120, cy + 420), (cx + card_w - 120, cy + 560)], fill="#1a3556", outline="#38bdf8", width=2)
-            draw.text((W // 2, cy + 465), "SAFETY ADVISORY: DROP, COVER, AND HOLD ON!", font=get_font(24, bold=True), fill="#facc15", anchor="mm")
-            draw.text((W // 2, cy + 515), "Follow facebook.com/earthquaketracker247 for 24/7 live updates", font=get_font(20, bold=False), fill="#ffffff", anchor="mm")
+            draw.rounded_rectangle([(cx + 70, cy + 185), (cx + card_w - 70, cy + 350)], radius=20, fill="#0d1b30", outline="#10b981", width=3)
+            draw.text((W // 2, cy + 240), "GLOBAL TECTONIC STATUS: BASELINE ACTIVITY", font=get_font(28, bold=True), fill="#00e676", anchor="mm")
+            draw.text((W // 2, cy + 300), "No Destructive Trans-Oceanic Tsunami Generated Today", font=get_font(22, bold=False), fill="#ffffff", anchor="mm")
 
-            draw.text((W // 2, cy + 620), "Earthquake Tracker • Continuous Global Seismic Monitoring", font=get_font(18, bold=True), fill="#7ea5c9", anchor="mm")
+            draw.rounded_rectangle([(cx + 70, cy + 380), (cx + card_w - 70, cy + 545)], radius=20, fill="#0d1b30", outline="#f59e0b", width=3)
+            draw.text((W // 2, cy + 435), "SAFETY ADVISORY: DROP, COVER, AND HOLD ON!", font=get_font(26, bold=True), fill="#facc15", anchor="mm")
+            draw.text((W // 2, cy + 490), "Follow facebook.com/earthquaketracker247 for 24/7 live updates", font=get_font(21, bold=False), fill="#ffffff", anchor="mm")
+
+            foot_y = cy + card_h - 75
+            draw.line([(cx + 40, foot_y), (cx + card_w - 40, foot_y)], fill="#1a3556", width=2)
+            draw.text((W // 2, foot_y + 38), "Earthquake Tracker • Continuous Global Seismic Monitoring", font=get_font(18, bold=True), fill="#7ea5c9", anchor="mm")
 
     elif segment_type == "event":
         ev = event_data
@@ -436,61 +519,82 @@ def compose_landscape_frame(segment_type, event_data, total_m45_count, digest_da
 
     return frame
 
-def compose_story_frame(segment_type, event_data, total_m45_count, digest_date_str, map_img, subtitle_text, event_rank=1, total_events=5):
+def compose_story_frame(segment_type, event_data, total_m45_count, digest_date_str, map_img, subtitle_text, event_rank=1, total_events=5, all_events=None):
     """
     Composes a vertical 1080x1920 (9:16) frame optimized for Facebook Page Stories.
-    Explicitly displays the 22:00 UTC to 22:00 UTC tracking window.
     """
     W, H = 1080, 1920
-    frame = Image.new("RGB", (W, H), "#060b14")
+
+    if segment_type in ["intro", "outro"]:
+        frame = draw_world_background(W, H, all_events)
+    else:
+        frame = Image.new("RGB", (W, H), "#060b14")
+
     draw = ImageDraw.Draw(frame)
 
     # Top Header
     draw.rectangle([(0, 0), (W, 180)], fill="#0c1626")
     draw.line([(0, 180), (W, 180)], fill="#1f334d", width=2)
 
-    draw.rectangle([(W // 2 - 110, 30), (W // 2 + 110, 75)], fill="#ff1744")
-    draw.text((W // 2, 52), "24H BULLETIN", font=get_font(16, bold=True), fill="#ffffff", anchor="mm")
+    draw.rounded_rectangle([(W // 2 - 110, 30), (W // 2 + 110, 75)], radius=8, fill="#dc2626")
+    draw.text((W // 2, 52), "● 24H BULLETIN", font=get_font(16, bold=True), fill="#ffffff", anchor="mm")
 
     draw.text((W // 2, 115), "GLOBAL SEISMIC DIGEST", font=get_font(32, bold=True), fill="#ffffff", anchor="mm")
-    draw.text((W // 2, 150), f"{digest_date_str.upper()} • 22:00 UTC TO 22:00 UTC", font=get_font(17, bold=True), fill="#7ea5c9", anchor="mm")
+    draw.text((W // 2, 150), f"{digest_date_str.upper()} • 22:00 UTC TO 22:00 UTC", font=get_font(17, bold=True), fill="#38bdf8", anchor="mm")
 
     if segment_type in ["intro", "outro"]:
-        card_w, card_h = 920, 1200
+        card_w, card_h = 920, 1240
         cx = (W - card_w) // 2
-        cy = 260
-        draw.rectangle([(cx, cy), (cx + card_w, cy + card_h)], fill="#0f1f33", outline="#254266", width=2)
+        cy = 240
+
+        overlay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        ol_draw = ImageDraw.Draw(overlay)
+        ol_draw.rounded_rectangle([(cx, cy), (cx + card_w, cy + card_h)], radius=24, fill=(9, 19, 36, 235), outline=(37, 72, 117, 240), width=3)
+        ol_draw.rounded_rectangle([(cx + 30, cy), (cx + card_w - 30, cy + 4)], radius=2, fill=(56, 189, 248, 255))
+        frame.paste(overlay, (0, 0), overlay)
+        draw = ImageDraw.Draw(frame)
 
         if segment_type == "intro":
-            draw.text((W // 2, cy + 120), "24-HOUR SEISMIC REVIEW", font=get_font(38, bold=True), fill="#ffffff", anchor="mm")
-            draw.text((W // 2, cy + 180), "22:00 UTC to 22:00 UTC Window", font=get_font(22, bold=False), fill="#7ea5c9", anchor="mm")
+            draw.text((W // 2, cy + 70), "24-HOUR SEISMIC REVIEW", font=get_font(36, bold=True), fill="#ffffff", anchor="mm")
+            draw.text((W // 2, cy + 120), "22:00 UTC to 22:00 UTC Window", font=get_font(22, bold=False), fill="#7ea5c9", anchor="mm")
 
-            draw.text((W // 2, cy + 340), f"{total_m45_count}", font=get_font(110, bold=True), fill="#ff9100", anchor="mm")
-            draw.text((W // 2, cy + 440), "M4.5+ EARTHQUAKES DETECTED", font=get_font(28, bold=True), fill="#ffffff", anchor="mm")
+            # Card 1: Count
+            box1_y = cy + 170
+            box_h = 420
+            draw.rounded_rectangle([(cx + 40, box1_y), (cx + card_w - 40, box1_y + box_h)], radius=20, fill="#0d1b30", outline="#f59e0b", width=3)
+            draw.text((W // 2, box1_y + 130), f"{total_m45_count}", font=get_font(120, bold=True), fill="#fbbf24", anchor="mm")
+            draw.text((W // 2, box1_y + 260), "M 4.5+ EARTHQUAKES TODAY", font=get_font(30, bold=True), fill="#ffffff", anchor="mm")
+            draw.text((W // 2, box1_y + 320), "Detected Worldwide in Tracking Window", font=get_font(22, bold=False), fill="#94a3b8", anchor="mm")
 
+            # Card 2: Strongest
+            box2_y = box1_y + box_h + 35
             max_mag = event_data["mag"] if event_data else 4.5
             top_place = event_data["place"] if event_data else "Global Waters"
-            draw.text((W // 2, cy + 620), f"STRONGEST EVENT: M {max_mag:.1f}", font=get_font(34, bold=True), fill=get_mag_color(max_mag), anchor="mm")
-            draw.text((W // 2, cy + 680), top_place[:32], font=get_font(24, bold=False), fill="#9fbcd9", anchor="mm")
+            draw.rounded_rectangle([(cx + 40, box2_y), (cx + card_w - 40, box2_y + box_h)], radius=20, fill="#0d1b30", outline="#ef4444", width=3)
+            draw.text((W // 2, box2_y + 110), f"M {max_mag:.1f}", font=get_font(100, bold=True), fill="#ef4444", anchor="mm")
+            draw.text((W // 2, box2_y + 220), "STRONGEST EVENT", font=get_font(26, bold=True), fill="#fca5a5", anchor="mm")
+            draw.text((W // 2, box2_y + 280), top_place[:30], font=get_font(24, bold=True), fill="#ffffff", anchor="mm")
+            time_txt = event_data.get("time_utc", "Recent") if event_data else ""
+            depth_txt = f"{event_data.get('depth_km', 10)} km" if event_data else ""
+            draw.text((W // 2, box2_y + 340), f"Depth: {depth_txt} • {time_txt}", font=get_font(20, bold=False), fill="#38bdf8", anchor="mm")
 
-            draw.text((W // 2, cy + 860), "Monitored 24/7 by USGS & EMSC", font=get_font(24, bold=True), fill="#4fc3f7", anchor="mm")
-            draw.text((W // 2, cy + 920), "No Destructive Tsunami Generated", font=get_font(22, bold=False), fill="#00e676", anchor="mm")
+            draw.text((W // 2, cy + card_h - 45), "Monitored 24/7 by Global Sensor Networks", font=get_font(20, bold=True), fill="#38bdf8", anchor="mm")
         else:
-            # Outro Slide
-            draw.text((W // 2, cy + 120), "TECTONIC REVIEW & SAFETY", font=get_font(36, bold=True), fill="#ffffff", anchor="mm")
-            draw.text((W // 2, cy + 180), "22:00 UTC to 22:00 UTC Summary", font=get_font(22, bold=False), fill="#7ea5c9", anchor="mm")
+            # Outro Slide Story
+            draw.text((W // 2, cy + 90), "TECTONIC REVIEW & SAFETY", font=get_font(36, bold=True), fill="#ffffff", anchor="mm")
+            draw.text((W // 2, cy + 150), "22:00 UTC to 22:00 UTC Summary", font=get_font(22, bold=False), fill="#7ea5c9", anchor="mm")
 
-            draw.rectangle([(cx + 50, cy + 280), (cx + card_w - 50, cy + 500)], fill="#162942", outline="#2d4f7a", width=2)
-            draw.text((W // 2, cy + 350), "GLOBAL ACTIVITY STATUS", font=get_font(24, bold=True), fill="#9fbcd9", anchor="mm")
-            draw.text((W // 2, cy + 410), "EXPECTED BASELINE", font=get_font(38, bold=True), fill="#00e676", anchor="mm")
-            draw.text((W // 2, cy + 460), "No Oceanic Tsunami Threat", font=get_font(20, bold=False), fill="#ffffff", anchor="mm")
+            draw.rounded_rectangle([(cx + 50, cy + 240), (cx + card_w - 50, cy + 500)], radius=20, fill="#0d1b30", outline="#10b981", width=3)
+            draw.text((W // 2, cy + 310), "GLOBAL ACTIVITY STATUS", font=get_font(24, bold=True), fill="#9fbcd9", anchor="mm")
+            draw.text((W // 2, cy + 380), "EXPECTED BASELINE", font=get_font(42, bold=True), fill="#00e676", anchor="mm")
+            draw.text((W // 2, cy + 440), "No Oceanic Tsunami Threat", font=get_font(22, bold=False), fill="#ffffff", anchor="mm")
 
-            draw.rectangle([(cx + 50, cy + 540), (cx + card_w - 50, cy + 820)], fill="#1a3556", outline="#38bdf8", width=2)
-            draw.text((W // 2, cy + 610), "SAFETY ADVISORY", font=get_font(24, bold=True), fill="#facc15", anchor="mm")
-            draw.text((W // 2, cy + 670), "DROP, COVER, AND HOLD ON!", font=get_font(28, bold=True), fill="#ffffff", anchor="mm")
-            draw.text((W // 2, cy + 740), "Maintain emergency supplies at all times", font=get_font(20, bold=False), fill="#9fbcd9", anchor="mm")
+            draw.rounded_rectangle([(cx + 50, cy + 550), (cx + card_w - 50, cy + 860)], radius=20, fill="#0d1b30", outline="#f59e0b", width=3)
+            draw.text((W // 2, cy + 620), "SAFETY ADVISORY", font=get_font(26, bold=True), fill="#facc15", anchor="mm")
+            draw.text((W // 2, cy + 690), "DROP, COVER, AND HOLD ON!", font=get_font(30, bold=True), fill="#ffffff", anchor="mm")
+            draw.text((W // 2, cy + 760), "Maintain emergency supplies at all times", font=get_font(21, bold=False), fill="#94a3b8", anchor="mm")
 
-            draw.text((W // 2, cy + 980), "Follow facebook.com/earthquaketracker247", font=get_font(22, bold=True), fill="#4fc3f7", anchor="mm")
+            draw.text((W // 2, cy + 1040), "Follow facebook.com/earthquaketracker247", font=get_font(22, bold=True), fill="#38bdf8", anchor="mm")
 
     elif segment_type == "event":
         ev = event_data
@@ -565,7 +669,7 @@ def compose_story_frame(segment_type, event_data, total_m45_count, digest_date_s
 # 5. ATOMIC 1:1 CLIP RENDERING & MERGING ENGINE
 # ==============================================================================
 
-def render_segment_clip(segment_type, event_data, total_m45_count, digest_date_str, map_img_l, map_img_s, audio_path, sentence_timings, audio_duration, out_landscape_mp4, out_story_mp4, event_rank=1, total_events=5, fps=24):
+def render_segment_clip(segment_type, event_data, total_m45_count, digest_date_str, map_img_l, map_img_s, audio_path, sentence_timings, audio_duration, out_landscape_mp4, out_story_mp4, event_rank=1, total_events=5, all_events=None, fps=24):
     """
     Renders an atomic video clip whose duration is 100% matched to its audio file.
     No drift, no desynchronization.
@@ -603,7 +707,7 @@ def render_segment_clip(segment_type, event_data, total_m45_count, digest_date_s
     for f_idx in range(total_frames):
         t_sec = f_idx / fps
         sub = get_sub(t_sec)
-        frame = compose_landscape_frame(segment_type, event_data, total_m45_count, digest_date_str, map_img_l, sub, event_rank, total_events)
+        frame = compose_landscape_frame(segment_type, event_data, total_m45_count, digest_date_str, map_img_l, sub, event_rank, total_events, all_events)
         pipe_l.stdin.write(frame.tobytes())
 
     pipe_l.stdin.close()
@@ -633,16 +737,16 @@ def render_segment_clip(segment_type, event_data, total_m45_count, digest_date_s
     for f_idx in range(total_frames):
         t_sec = f_idx / fps
         sub = get_sub(t_sec)
-        frame = compose_story_frame(segment_type, event_data, total_m45_count, digest_date_str, map_img_s, sub, event_rank, total_events)
+        frame = compose_story_frame(segment_type, event_data, total_m45_count, digest_date_str, map_img_s, sub, event_rank, total_events, all_events)
         pipe_s.stdin.write(frame.tobytes())
 
     pipe_s.stdin.close()
     pipe_s.wait()
 
-def render_dual_digest_videos(top_events, total_m45_count, digest_date_str):
+def render_dual_digest_videos(top_events, total_m45_count, digest_date_str, all_events=None):
     """
     Renders both Landscape (16:9) and Story (9:16) videos using the atomic 1:1 sync architecture:
-    - Segment 0: Intro (Overview)
+    - Segment 0: Crisp Intro (Overview with glowing map & cards)
     - Segments 1 to N: Dedicated Earthquake clips (Map + Data card 100% synced with that quake's audio)
     - Segment Outro: Conclusion & Safety Advisory
     - Final Concatenation via FFmpeg concat demuxer (lossless & instant).
@@ -672,15 +776,13 @@ def render_dual_digest_videos(top_events, total_m45_count, digest_date_str):
     story_clips = []
 
     # ==========================================
-    # SEGMENT 0: INTRO
+    # SEGMENT 0: INTRO (CRISP & PUNCHY)
     # ==========================================
     print("🎙️ Generating Segment 0: Intro Voiceover...", flush=True)
     intro_script = (
-        f"Good evening. This is the 24-hour Daily Global Seismic Digest from Earthquake Tracker, "
-        f"covering the international monitoring window from 22:00 UTC to 22:00 UTC. "
-        f"Over this 24-hour period from 22:00 UTC to 22:00 UTC, international monitoring networks from USGS and EMSC "
-        f"recorded {total_m45_count} earthquakes measuring magnitude 4.5 or greater worldwide. "
-        f"Here are the day's top {len(top_events)} most significant seismic events."
+        f"Good evening. This is the Daily Global Seismic Digest from Earthquake Tracker for 22:00 UTC to 22:00 UTC. "
+        f"Today, {total_m45_count} earthquakes of magnitude 4.5 or greater were detected worldwide. "
+        f"Here are today's top {len(top_events)} most significant seismic events."
     )
     intro_audio = os.path.join(OUTPUT_DIR, "seg_0_intro.mp3")
     intro_timings, intro_dur = generate_segment_audio(intro_script, intro_audio)
@@ -701,7 +803,8 @@ def render_dual_digest_videos(top_events, total_m45_count, digest_date_str):
         audio_duration=intro_dur,
         out_landscape_mp4=c0_l,
         out_story_mp4=c0_s,
-        total_events=len(top_events)
+        total_events=len(top_events),
+        all_events=all_events
     )
     landscape_clips.append(c0_l)
     story_clips.append(c0_s)
@@ -763,7 +866,8 @@ def render_dual_digest_videos(top_events, total_m45_count, digest_date_str):
             out_landscape_mp4=c_ev_l,
             out_story_mp4=c_ev_s,
             event_rank=idx + 1,
-            total_events=len(top_events)
+            total_events=len(top_events),
+            all_events=all_events
         )
         landscape_clips.append(c_ev_l)
         story_clips.append(c_ev_s)
@@ -798,7 +902,8 @@ def render_dual_digest_videos(top_events, total_m45_count, digest_date_str):
         audio_duration=outro_dur,
         out_landscape_mp4=c_out_l,
         out_story_mp4=c_out_s,
-        total_events=len(top_events)
+        total_events=len(top_events),
+        all_events=all_events
     )
     landscape_clips.append(c_out_l)
     story_clips.append(c_out_s)
@@ -815,7 +920,6 @@ def render_dual_digest_videos(top_events, total_m45_count, digest_date_str):
     concat_txt_l = os.path.join(OUTPUT_DIR, "concat_landscape.txt")
     with open(concat_txt_l, "w", encoding="utf-8") as f:
         for clip in landscape_clips:
-            # Use forward slashes or safe paths for FFmpeg concat demuxer
             clean_p = clip.replace("\\", "/")
             f.write(f"file '{clean_p}'\n")
     temp_files.append(concat_txt_l)
@@ -1003,7 +1107,7 @@ def run_daily_digest_pipeline(local_data_path=None, skip_upload=False):
     print("=" * 70, flush=True)
 
     # 1. Fetch & Filter Data
-    top_events, total_m45_count, digest_date_str = fetch_daily_seismic_events(local_data_path)
+    top_events, total_m45_count, digest_date_str, all_filtered = fetch_daily_seismic_events(local_data_path)
     if not top_events:
         print("ℹ️ No M4.5+ earthquakes recorded in the past 24 hours. Daily Digest complete.", flush=True)
         return True
@@ -1012,7 +1116,8 @@ def run_daily_digest_pipeline(local_data_path=None, skip_upload=False):
     landscape_path, story_path = render_dual_digest_videos(
         top_events=top_events,
         total_m45_count=total_m45_count,
-        digest_date_str=digest_date_str
+        digest_date_str=digest_date_str,
+        all_events=all_filtered
     )
 
     # 3. Multi-Publishing to Facebook
