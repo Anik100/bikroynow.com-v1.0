@@ -26,6 +26,16 @@ import imageio_ffmpeg
 
 # Project configuration
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
+try:
+    from time_utils import get_earthquake_times
+except ImportError:
+    try:
+        from earthquake_tracker.time_utils import get_earthquake_times
+    except ImportError:
+        get_earthquake_times = None
 OUTPUT_DIR = os.path.join(BASE_DIR, "output")
 EARTH_TEXTURE_PATH = os.path.join(BASE_DIR, "earth_texture_hd.jpg")
 
@@ -115,7 +125,7 @@ def fetch_daily_seismic_events(local_data_path=None):
         coords = geom.get("coordinates", [0, 0, 0])
 
         mag = props.get("mag")
-        if mag is None or mag < 4.5:
+        if mag is None or mag < 4.0:
             continue
 
         fid = feat.get("id") or props.get("code") or f"{coords[1]}_{coords[0]}"
@@ -133,11 +143,27 @@ def fetch_daily_seismic_events(local_data_path=None):
         lat = coords[1]
         tsunami = (props.get("tsunami") or 0) == 1
 
+        local_time_short = utc_time_str
+        local_voice_time = dt_utc.strftime("%I:%M %p")
+        is_utc_same = True
+
+        if get_earthquake_times:
+            try:
+                t_info = get_earthquake_times(epoch_ms, lat, lon)
+                local_time_short = t_info.get("local_short", utc_time_str)
+                local_voice_time = t_info.get("local_voice", local_voice_time)
+                is_utc_same = t_info.get("is_utc_same", False)
+            except Exception:
+                pass
+
         filtered.append({
             "id": fid,
             "mag": float(mag),
             "place": place,
             "time_utc": utc_time_str,
+            "local_time_short": local_time_short,
+            "local_voice": local_voice_time,
+            "is_utc_same": is_utc_same,
             "epoch_ms": epoch_ms,
             "dt_utc": dt_utc,
             "lat": lat,
@@ -147,24 +173,15 @@ def fetch_daily_seismic_events(local_data_path=None):
         })
 
     filtered.sort(key=lambda x: x["mag"], reverse=True)
-    total_m45_count = len(filtered)
+    total_m40_count = len(filtered)
 
-    # Dynamic Selection Logic:
-    # 1. If multiple M5.0+ quakes occurred today (e.g. 5, 8, 10), cover all M5.0+ events (up to a max cap of 8).
-    # 2. If fewer than 5 M5.0+ quakes occurred, supplement with top M4.5-M4.9 events to have at least 5 events.
-    # 3. If total quakes today is fewer than 5, cover all available events without padding.
-    m5_plus = [e for e in filtered if e["mag"] >= 5.0]
-    m45_to_49 = [e for e in filtered if 4.5 <= e["mag"] < 5.0]
+    # Feature the Top 5 most significant earthquakes of the day
+    top_events = filtered[:min(5, len(filtered))]
 
-    if len(m5_plus) >= 5:
-        top_events = m5_plus[:8]
-    else:
-        top_events = (m5_plus + m45_to_49)[:min(5, len(filtered))]
+    print(f"✅ Filtered {total_m40_count} earthquakes (M4.0+) across the globe in the 22:00 UTC tracking window.", flush=True)
+    print(f"📋 Selected Top {len(top_events)} most significant quakes for the 1:1 synced Daily Digest video.", flush=True)
 
-    print(f"✅ Filtered {total_m45_count} earthquakes (M4.5+) across the globe in the 22:00 UTC tracking window.", flush=True)
-    print(f"📋 Selected {len(top_events)} most significant quakes (including {len(m5_plus)} M5.0+ events) for the 1:1 synced Daily Digest video.", flush=True)
-
-    return top_events, total_m45_count, digest_date_str, filtered
+    return top_events, total_m40_count, digest_date_str, filtered
 
 # ==============================================================================
 # 2. ATOMIC AUDIO SYNTHESIS PER SEGMENT (edge-tts)
@@ -350,7 +367,7 @@ def draw_world_background(W, H, all_events=None):
 
     return canvas
 
-def compose_landscape_frame(segment_type, event_data, total_m45_count, digest_date_str, map_img, subtitle_text, event_rank=1, total_events=5, all_events=None):
+def compose_landscape_frame(segment_type, event_data, total_m40_count, digest_date_str, map_img, subtitle_text, event_rank=1, total_events=5, all_events=None):
     """
     Composes a broadcast-quality 1920x1080 (16:9) frame:
     - High-tech world map satellite background with glowing epicenters for Intro & Outro
@@ -417,8 +434,8 @@ def compose_landscape_frame(segment_type, event_data, total_m45_count, digest_da
             draw.rounded_rectangle([(b1_x + 30, box_y + 25), (b1_x + 230, box_y + 65)], radius=10, fill="#1c2d47")
             draw.text((b1_x + 130, box_y + 45), "GLOBAL ACTIVITY", font=get_font(16, bold=True), fill="#f59e0b", anchor="mm")
 
-            draw.text((b1_x + box_w // 2, box_y + 165), f"{total_m45_count}", font=get_font(105, bold=True), fill="#fbbf24", anchor="mm")
-            draw.text((b1_x + box_w // 2, box_y + 260), "M 4.5+ EARTHQUAKES", font=get_font(26, bold=True), fill="#ffffff", anchor="mm")
+            draw.text((b1_x + box_w // 2, box_y + 165), f"{total_m40_count}", font=get_font(105, bold=True), fill="#fbbf24", anchor="mm")
+            draw.text((b1_x + box_w // 2, box_y + 260), "M 4.0+ EARTHQUAKES", font=get_font(26, bold=True), fill="#ffffff", anchor="mm")
             draw.text((b1_x + box_w // 2, box_y + 305), "Detected Worldwide Today", font=get_font(19, bold=False), fill="#94a3b8", anchor="mm")
 
             # Box 2: Strongest Quake (Right - Glowing Red)
@@ -437,7 +454,7 @@ def compose_landscape_frame(segment_type, event_data, total_m45_count, digest_da
             # Footer Strip
             foot_y = cy + card_h - 75
             draw.line([(cx + 40, foot_y), (cx + card_w - 40, foot_y)], fill="#1a3556", width=2)
-            draw.text((W // 2, foot_y + 38), "🌐 Monitored 24/7 by Global Seismic Station Networks • No Oceanic Tsunami Hazard", font=get_font(20, bold=True), fill="#38bdf8", anchor="mm")
+            draw.text((W // 2, foot_y + 38), "🌐 Monitored & Verified by USGS and EMSC Global Sensor Networks • No Tsunami Threat", font=get_font(20, bold=True), fill="#38bdf8", anchor="mm")
 
         else:
             # Outro Slide
@@ -508,17 +525,18 @@ def compose_landscape_frame(segment_type, event_data, total_m45_count, digest_da
         draw.line([(card_x + 30, grid_y - 15), (card_x + card_w - 30, grid_y - 15)], fill="#1f3552", width=1)
 
         details = [
-            ("⏱️ TIME (UTC)", ev["time_utc"]),
+            ("⏱️ LOCAL TIME", ev.get("local_time_short", ev["time_utc"])),
+            ("🌐 TIME (UTC)", ev["time_utc"]),
             ("📏 DEPTH", f"{ev['depth_km']} km below surface"),
-            ("🌐 COORDINATES", f"{ev['lat']:.2f}°, {ev['lon']:.2f}°"),
-            ("🌊 TSUNAMI", "NO IMMEDIATE THREAT" if not ev["tsunami"] else "COASTAL ADVISORY"),
-            ("🏛️ MONITORING", "USGS & EMSC Verified")
+            ("📍 COORDINATES", f"{ev['lat']:.2f}°, {ev['lon']:.2f}°"),
+            ("🌊 TSUNAMI", "NO IMMEDIATE THREAT" if not ev["tsunami"] else "COASTAL ADVISORY")
         ]
 
         for i, (label, val) in enumerate(details):
             curr_y = grid_y + (i * row_h)
             draw.text((card_x + 30, curr_y), label, font=get_font(16, bold=True), fill="#7ea5c9")
-            draw.text((card_x + 230, curr_y), val, font=get_font(18, bold=True), fill="#ffffff" if "TSUNAMI" not in label else ("#00e676" if not ev["tsunami"] else "#ff1744"))
+            color_val = "#38bdf8" if "LOCAL" in label else ("#ffffff" if "TSUNAMI" not in label else ("#00e676" if not ev["tsunami"] else "#ff1744"))
+            draw.text((card_x + 230, curr_y), val, font=get_font(18, bold=True), fill=color_val)
 
     # 3. Bottom Subtitle & Ticker Bar
     sub_y = 930
@@ -530,7 +548,7 @@ def compose_landscape_frame(segment_type, event_data, total_m45_count, digest_da
 
     return frame
 
-def compose_story_frame(segment_type, event_data, total_m45_count, digest_date_str, map_img, subtitle_text, event_rank=1, total_events=5, all_events=None):
+def compose_story_frame(segment_type, event_data, total_m40_count, digest_date_str, map_img, subtitle_text, event_rank=1, total_events=5, all_events=None):
     """
     Composes a vertical 1080x1920 (9:16) frame optimized for Facebook Page Stories.
     """
@@ -573,8 +591,8 @@ def compose_story_frame(segment_type, event_data, total_m45_count, digest_date_s
             box1_y = cy + 170
             box_h = 420
             draw.rounded_rectangle([(cx + 40, box1_y), (cx + card_w - 40, box1_y + box_h)], radius=20, fill="#0d1b30", outline="#f59e0b", width=3)
-            draw.text((W // 2, box1_y + 130), f"{total_m45_count}", font=get_font(120, bold=True), fill="#fbbf24", anchor="mm")
-            draw.text((W // 2, box1_y + 260), "M 4.5+ EARTHQUAKES TODAY", font=get_font(30, bold=True), fill="#ffffff", anchor="mm")
+            draw.text((W // 2, box1_y + 130), f"{total_m40_count}", font=get_font(120, bold=True), fill="#fbbf24", anchor="mm")
+            draw.text((W // 2, box1_y + 260), "M 4.0+ EARTHQUAKES TODAY", font=get_font(30, bold=True), fill="#ffffff", anchor="mm")
             draw.text((W // 2, box1_y + 320), "Detected Worldwide in Tracking Window", font=get_font(22, bold=False), fill="#94a3b8", anchor="mm")
 
             # Card 2: Strongest
@@ -589,7 +607,7 @@ def compose_story_frame(segment_type, event_data, total_m45_count, digest_date_s
             depth_txt = f"{event_data.get('depth_km', 10)} km" if event_data else ""
             draw.text((W // 2, box2_y + 340), f"Depth: {depth_txt} • {time_txt}", font=get_font(20, bold=False), fill="#38bdf8", anchor="mm")
 
-            draw.text((W // 2, cy + card_h - 45), "Monitored 24/7 by Global Sensor Networks", font=get_font(20, bold=True), fill="#38bdf8", anchor="mm")
+            draw.text((W // 2, cy + card_h - 45), "Monitored & Verified by USGS and EMSC", font=get_font(20, bold=True), fill="#38bdf8", anchor="mm")
         else:
             # Outro Slide Story
             draw.text((W // 2, cy + 90), "TECTONIC REVIEW & SAFETY", font=get_font(36, bold=True), fill="#ffffff", anchor="mm")
@@ -644,17 +662,17 @@ def compose_story_frame(segment_type, event_data, total_m45_count, digest_date_s
 
         draw.line([(card_x + 40, card_y + 270), (card_x + card_w - 40, card_y + 270)], fill="#1f3552", width=1)
 
-        draw.text((card_x + 40, card_y + 300), "⏱️ TIME (UTC)", font=get_font(18, bold=True), fill="#7ea5c9")
-        draw.text((card_x + 350, card_y + 300), ev["time_utc"], font=get_font(24, bold=True), fill="#ffffff")
+        draw.text((card_x + 40, card_y + 300), "⏱️ LOCAL TIME", font=get_font(18, bold=True), fill="#7ea5c9")
+        draw.text((card_x + 350, card_y + 300), ev.get("local_time_short", ev["time_utc"]), font=get_font(22, bold=True), fill="#38bdf8")
 
-        draw.text((card_x + 40, card_y + 360), "🌐 COORDINATES", font=get_font(18, bold=True), fill="#7ea5c9")
-        draw.text((card_x + 350, card_y + 360), f"{ev['lat']:.2f}°, {ev['lon']:.2f}°", font=get_font(20, bold=True), fill="#ffffff")
+        draw.text((card_x + 40, card_y + 360), "🌐 TIME (UTC)", font=get_font(18, bold=True), fill="#7ea5c9")
+        draw.text((card_x + 350, card_y + 360), ev["time_utc"], font=get_font(22, bold=True), fill="#ffffff")
 
-        draw.text((card_x + 40, card_y + 420), "🌊 TSUNAMI ALERT", font=get_font(18, bold=True), fill="#7ea5c9")
-        draw.text((card_x + 350, card_y + 420), "NO THREAT" if not ev["tsunami"] else "ADVISORY", font=get_font(20, bold=True), fill="#00e676" if not ev["tsunami"] else "#ff1744")
+        draw.text((card_x + 40, card_y + 420), "📍 COORDINATES", font=get_font(18, bold=True), fill="#7ea5c9")
+        draw.text((card_x + 350, card_y + 420), f"{ev['lat']:.2f}°, {ev['lon']:.2f}°", font=get_font(20, bold=True), fill="#ffffff")
 
-        draw.text((card_x + 40, card_y + 480), "🏛️ DATA SOURCE", font=get_font(18, bold=True), fill="#7ea5c9")
-        draw.text((card_x + 350, card_y + 480), "USGS & EMSC Corroborated", font=get_font(20, bold=True), fill="#4fc3f7")
+        draw.text((card_x + 40, card_y + 480), "🌊 TSUNAMI ALERT", font=get_font(18, bold=True), fill="#7ea5c9")
+        draw.text((card_x + 350, card_y + 480), "NO IMMEDIATE THREAT" if not ev["tsunami"] else "COASTAL ADVISORY", font=get_font(20, bold=True), fill="#00e676" if not ev["tsunami"] else "#ff1744")
 
     # Bottom Subtitle Area
     sub_y = 1680
@@ -680,7 +698,7 @@ def compose_story_frame(segment_type, event_data, total_m45_count, digest_date_s
 # 5. ATOMIC 1:1 CLIP RENDERING & MERGING ENGINE
 # ==============================================================================
 
-def render_segment_clip(segment_type, event_data, total_m45_count, digest_date_str, map_img_l, map_img_s, audio_path, sentence_timings, audio_duration, out_landscape_mp4, out_story_mp4, event_rank=1, total_events=5, all_events=None, fps=24):
+def render_segment_clip(segment_type, event_data, total_m40_count, digest_date_str, map_img_l, map_img_s, audio_path, sentence_timings, audio_duration, out_landscape_mp4, out_story_mp4, event_rank=1, total_events=5, all_events=None, fps=24):
     """
     Renders an atomic video clip whose duration is 100% matched to its audio file.
     No drift, no desynchronization.
@@ -718,7 +736,7 @@ def render_segment_clip(segment_type, event_data, total_m45_count, digest_date_s
     for f_idx in range(total_frames):
         t_sec = f_idx / fps
         sub = get_sub(t_sec)
-        frame = compose_landscape_frame(segment_type, event_data, total_m45_count, digest_date_str, map_img_l, sub, event_rank, total_events, all_events)
+        frame = compose_landscape_frame(segment_type, event_data, total_m40_count, digest_date_str, map_img_l, sub, event_rank, total_events, all_events)
         pipe_l.stdin.write(frame.tobytes())
 
     pipe_l.stdin.close()
@@ -748,13 +766,13 @@ def render_segment_clip(segment_type, event_data, total_m45_count, digest_date_s
     for f_idx in range(total_frames):
         t_sec = f_idx / fps
         sub = get_sub(t_sec)
-        frame = compose_story_frame(segment_type, event_data, total_m45_count, digest_date_str, map_img_s, sub, event_rank, total_events, all_events)
+        frame = compose_story_frame(segment_type, event_data, total_m40_count, digest_date_str, map_img_s, sub, event_rank, total_events, all_events)
         pipe_s.stdin.write(frame.tobytes())
 
     pipe_s.stdin.close()
     pipe_s.wait()
 
-def render_dual_digest_videos(top_events, total_m45_count, digest_date_str, all_events=None):
+def render_dual_digest_videos(top_events, total_m40_count, digest_date_str, all_events=None):
     """
     Renders both Landscape (16:9) and Story (9:16) videos using the atomic 1:1 sync architecture:
     - Segment 0: Crisp Intro (Overview with glowing map & cards)
@@ -792,7 +810,8 @@ def render_dual_digest_videos(top_events, total_m45_count, digest_date_str, all_
     print("🎙️ Generating Segment 0: Intro Voiceover...", flush=True)
     intro_script = (
         f"Good evening. This is the Daily Global Seismic Digest from Earthquake Tracker for 22:00 UTC to 22:00 UTC. "
-        f"Today, {total_m45_count} earthquakes of magnitude 4.5 or greater were detected worldwide. "
+        f"Today, {total_m40_count} earthquakes of magnitude 4.0 or greater were recorded worldwide, "
+        f"verified by official USGS and EMSC monitoring networks. "
         f"Here are today's top {len(top_events)} most significant seismic events."
     )
     intro_audio = os.path.join(OUTPUT_DIR, "seg_0_intro.mp3")
@@ -805,7 +824,7 @@ def render_dual_digest_videos(top_events, total_m45_count, digest_date_str, all_
     render_segment_clip(
         segment_type="intro",
         event_data=top_events[0] if top_events else None,
-        total_m45_count=total_m45_count,
+        total_m40_count=total_m40_count,
         digest_date_str=digest_date_str,
         map_img_l=None,
         map_img_s=None,
@@ -852,8 +871,13 @@ def render_dual_digest_videos(top_events, total_m45_count, digest_date_str, all_
         else:
             tsunami_desc = "sensors and oceanic buoys confirm no tsunami hazard."
 
-        ev_sentence_1 = f"At rank {ord_word}, a notable magnitude {ev['mag']:.1f} earthquake struck {clean_place} at {ev['time_utc']}."
-        ev_sentence_2 = f"{depth_desc}, with ground motion verified independently by USGS and EMSC stations, while {tsunami_desc}"
+        if ev.get("is_utc_same", False):
+            time_phrase = f"at {ev['time_utc']}"
+        else:
+            time_phrase = f"at {ev.get('local_voice', '')} local time, or {ev['time_utc']}"
+
+        ev_sentence_1 = f"At rank {ord_word}, a notable magnitude {ev['mag']:.1f} earthquake struck {clean_place} {time_phrase}."
+        ev_sentence_2 = f"{depth_desc}, while {tsunami_desc}"
         event_script = f"{ev_sentence_1} {ev_sentence_2}"
 
         print(f"🎙️ Generating Segment {idx + 1}: Event M{ev['mag']:.1f} Voiceover...", flush=True)
@@ -867,7 +891,7 @@ def render_dual_digest_videos(top_events, total_m45_count, digest_date_str, all_
         render_segment_clip(
             segment_type="event",
             event_data=ev,
-            total_m45_count=total_m45_count,
+            total_m40_count=total_m40_count,
             digest_date_str=digest_date_str,
             map_img_l=map_images_l.get(idx),
             map_img_s=map_images_s.get(idx),
@@ -904,7 +928,7 @@ def render_dual_digest_videos(top_events, total_m45_count, digest_date_str, all_
     render_segment_clip(
         segment_type="outro",
         event_data=top_events[0] if top_events else None,
-        total_m45_count=total_m45_count,
+        total_m40_count=total_m40_count,
         digest_date_str=digest_date_str,
         map_img_l=None,
         map_img_s=None,
@@ -979,11 +1003,11 @@ def render_dual_digest_videos(top_events, total_m45_count, digest_date_str, all_
 # 6. FACEBOOK MULTI-PUBLISHING (FEED VIDEO & PAGE STORY)
 # ==============================================================================
 
-def create_digest_post_caption(top_events, total_m45_count, digest_date_str):
+def create_digest_post_caption(top_events, total_m40_count, digest_date_str):
     """Creates a structured Facebook bulletin post highlighting the 22:00 UTC tracking window."""
     bulletin_lines = []
     for idx, ev in enumerate(top_events):
-        bulletin_lines.append(f"• Rank #{idx + 1}: M {ev['mag']:.1f} — {ev['place']} ({ev['time_utc']}, Depth: {ev['depth_km']}km)")
+        bulletin_lines.append(f"• Rank #{idx + 1}: M {ev['mag']:.1f} — {ev['place']} ({ev.get('local_time_short', ev['time_utc'])} / {ev['time_utc']}, Depth: {ev['depth_km']}km)")
 
     bulletin_text = "\n".join(bulletin_lines)
     strongest_ev = top_events[0] if top_events else None
@@ -995,11 +1019,11 @@ def create_digest_post_caption(top_events, total_m45_count, digest_date_str):
         f"This comprehensive daily bulletin summarizes all significant earthquakes recorded between 22:00 UTC and 22:00 UTC across the globe, verified by official USGS and EMSC sensor networks.\n\n"
         f"📊 24-Hour Global Seismic Summary:\n"
         f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        f"• Total M4.5+ Earthquakes Detected: {total_m45_count}\n"
+        f"• Total M4.0+ Earthquakes Detected: {total_m40_count}\n"
         f"• Strongest Event: {strongest_str}\n"
         f"• Tsunami Threat Status: NO DESTRUCTIVE TRANS-OCEANIC THREAT\n"
         f"• Monitoring Stations: USGS & EMSC Corroborated\n\n"
-        f"📋 Top Significant Seismic Events (22:00 UTC to 22:00 UTC):\n"
+        f"📋 Top {len(top_events)} Significant Seismic Events (22:00 UTC to 22:00 UTC):\n"
         f"{bulletin_text}\n\n"
         f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
         f"🛡️ SAFETY ADVISORY:\n"
@@ -1009,7 +1033,7 @@ def create_digest_post_caption(top_events, total_m45_count, digest_date_str):
     )
     return caption
 
-def upload_landscape_video_to_feed(landscape_video_path, top_events, total_m45_count, digest_date_str):
+def upload_landscape_video_to_feed(landscape_video_path, top_events, total_m40_count, digest_date_str):
     """Uploads the 16:9 Landscape Video to the Facebook Page Main Feed."""
     if not FB_PAGE_ACCESS_TOKEN or not FB_PAGE_ID:
         print("⚠️ Facebook Access Token or Page ID missing. Skipping Feed Video upload.", flush=True)
@@ -1017,7 +1041,7 @@ def upload_landscape_video_to_feed(landscape_video_path, top_events, total_m45_c
 
     url = f"https://graph-video.facebook.com/v20.0/{FB_PAGE_ID}/videos"
     title = f"🌍 Daily Global Seismic Digest — {digest_date_str} (22:00 UTC Window)"
-    description = create_digest_post_caption(top_events, total_m45_count, digest_date_str)
+    description = create_digest_post_caption(top_events, total_m40_count, digest_date_str)
 
     print(f"📤 Uploading 16:9 Landscape Video to Facebook Page Feed ({FB_PAGE_ID})...", flush=True)
     try:
@@ -1156,15 +1180,15 @@ def run_daily_digest_pipeline(local_data_path=None, skip_upload=False):
     check_and_dispatch_realtime_priority(reason="initial-pipeline-start")
 
     # 1. Fetch & Filter Data
-    top_events, total_m45_count, digest_date_str, all_filtered = fetch_daily_seismic_events(local_data_path)
+    top_events, total_m40_count, digest_date_str, all_filtered = fetch_daily_seismic_events(local_data_path)
     if not top_events:
-        print("ℹ️ No M4.5+ earthquakes recorded in the past 24 hours. Daily Digest complete.", flush=True)
+        print("ℹ️ No M4.0+ earthquakes recorded in the past 24 hours. Daily Digest complete.", flush=True)
         return True
 
     # 2. Render Dual Videos using Atomic 1:1 Synced Segments
     landscape_path, story_path = render_dual_digest_videos(
         top_events=top_events,
-        total_m45_count=total_m45_count,
+        total_m40_count=total_m40_count,
         digest_date_str=digest_date_str,
         all_events=all_filtered
     )
@@ -1180,7 +1204,7 @@ def run_daily_digest_pipeline(local_data_path=None, skip_upload=False):
     check_and_dispatch_realtime_priority(reason="pre-facebook-upload")
 
     # Post 1: Main Feed Video
-    feed_success = upload_landscape_video_to_feed(landscape_path, top_events, total_m45_count, digest_date_str)
+    feed_success = upload_landscape_video_to_feed(landscape_path, top_events, total_m40_count, digest_date_str)
     # Post 2: Page Video Story
     story_success = upload_story_video_to_page(story_path)
 
