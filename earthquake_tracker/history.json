@@ -269,7 +269,8 @@
     "emsc_20261109_0000063",
     "emsc_20261109_0000065",
     "emsc_20261109_0000071",
-    "us7000tx1f"
+    "us7000tx1f",
+    "emsc_20261109_0000075"
   ],
   "recent_posted_events": [
     {
@@ -455,6 +456,14 @@
       "latitude": 36.2471,
       "longitude": 141.8299,
       "epoch_ms": 1794199971519
+    },
+    {
+      "id": "emsc_20261109_0000075",
+      "mag": 4.3,
+      "place": "OFFSHORE OAXACA, MEXICO",
+      "latitude": 15.832,
+      "longitude": -98.728,
+      "epoch_ms": 1794199505000
     }
   ]
 }
