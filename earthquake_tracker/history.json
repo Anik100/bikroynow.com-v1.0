@@ -320,7 +320,8 @@
     "us7000tx6m",
     "emsc_20261109_0000291",
     "emsc_20261109_0000296",
-    "emsc_20261109_0000303"
+    "emsc_20261109_0000303",
+    "emsc_20261109_0000305"
   ],
   "recent_posted_events": [
     {
@@ -706,6 +707,14 @@
       "latitude": 13.7865,
       "longitude": -83.4503,
       "epoch_ms": 1794256773000
+    },
+    {
+      "id": "emsc_20261109_0000305",
+      "mag": 4.1,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.36,
+      "longitude": 123.86,
+      "epoch_ms": 1794258394000
     }
   ]
 }
