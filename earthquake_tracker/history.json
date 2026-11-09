@@ -321,7 +321,8 @@
     "emsc_20261109_0000291",
     "emsc_20261109_0000296",
     "emsc_20261109_0000303",
-    "emsc_20261109_0000305"
+    "emsc_20261109_0000305",
+    "emsc_20261109_0000322"
   ],
   "recent_posted_events": [
     {
@@ -715,6 +716,14 @@
       "latitude": -8.36,
       "longitude": 123.86,
       "epoch_ms": 1794258394000
+    },
+    {
+      "id": "emsc_20261109_0000322",
+      "mag": 4.7,
+      "place": "NEAR ISLANDS, ALEUTIAN ISLANDS",
+      "latitude": 52.7289,
+      "longitude": 171.6154,
+      "epoch_ms": 1794261787165
     }
   ]
 }
