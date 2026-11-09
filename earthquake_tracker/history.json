@@ -260,7 +260,8 @@
     "emsc_20261109_0000039",
     "us7000tx0x",
     "emsc_20261109_0000046",
-    "us7000tx0v"
+    "us7000tx0v",
+    "emsc_20261109_0000048"
   ],
   "recent_posted_events": [
     {
@@ -406,6 +407,14 @@
       "latitude": -25.1858,
       "longitude": -176.9956,
       "epoch_ms": 1794190917196
+    },
+    {
+      "id": "emsc_20261109_0000048",
+      "mag": 6.3,
+      "place": "SANTA CRUZ ISLANDS",
+      "latitude": -10.8769,
+      "longitude": 165.6144,
+      "epoch_ms": 1794195302360
     }
   ]
 }
