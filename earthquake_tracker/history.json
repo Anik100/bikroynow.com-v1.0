@@ -252,7 +252,9 @@
     "us7000tx0f",
     "emsc_20261108_0000293",
     "emsc_20261109_0000019",
-    "emsc_20261108_0000294"
+    "emsc_20261108_0000294",
+    "emsc_20261109_0000027",
+    "us7000tx0p"
   ],
   "recent_posted_events": [
     {
@@ -382,6 +384,14 @@
       "latitude": -4.02,
       "longitude": 100.19,
       "epoch_ms": 1794186768000
+    },
+    {
+      "id": "us7000tx0p",
+      "mag": 4.3,
+      "place": "63 km NE of Keren, Eritrea",
+      "latitude": 16.1771,
+      "longitude": 38.8821,
+      "epoch_ms": 1794186691600
     }
   ]
 }
