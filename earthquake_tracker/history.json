@@ -293,7 +293,8 @@
     "us7000tx39",
     "emsc_20261109_0000153",
     "emsc_20261109_0000157",
-    "us7000tx3c"
+    "us7000tx3c",
+    "emsc_20261109_0000161"
   ],
   "recent_posted_events": [
     {
@@ -575,6 +576,14 @@
       "latitude": 4.1741,
       "longitude": 127.7802,
       "epoch_ms": 1794223507473
+    },
+    {
+      "id": "emsc_20261109_0000161",
+      "mag": 4.0,
+      "place": "OFF COAST OF LOS LAGOS, CHILE",
+      "latitude": -41.72,
+      "longitude": -76.17,
+      "epoch_ms": 1794224734000
     }
   ]
 }
