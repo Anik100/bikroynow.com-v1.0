@@ -270,7 +270,8 @@
     "emsc_20261109_0000065",
     "emsc_20261109_0000071",
     "us7000tx1f",
-    "emsc_20261109_0000075"
+    "emsc_20261109_0000075",
+    "emsc_20261109_0000077"
   ],
   "recent_posted_events": [
     {
@@ -464,6 +465,14 @@
       "latitude": 15.832,
       "longitude": -98.728,
       "epoch_ms": 1794199505000
+    },
+    {
+      "id": "emsc_20261109_0000077",
+      "mag": 4.6,
+      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
+      "latitude": 36.4941,
+      "longitude": 141.4485,
+      "epoch_ms": 1794200513640
     }
   ]
 }
