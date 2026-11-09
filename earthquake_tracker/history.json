@@ -285,7 +285,8 @@
     "emsc_20261109_0000136",
     "us7000tx32",
     "emsc_20261109_0000139",
-    "us7000tx34"
+    "us7000tx34",
+    "emsc_20261109_0000142"
   ],
   "recent_posted_events": [
     {
@@ -543,6 +544,14 @@
       "latitude": -2.9775,
       "longitude": 130.5842,
       "epoch_ms": 1794218018135
+    },
+    {
+      "id": "emsc_20261109_0000142",
+      "mag": 5.8,
+      "place": "NORTHERN PERU",
+      "latitude": -4.9211,
+      "longitude": -75.0969,
+      "epoch_ms": 1794219837260
     }
   ]
 }
