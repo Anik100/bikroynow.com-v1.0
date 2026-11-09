@@ -250,7 +250,8 @@
     "us7000twz2",
     "emsc_20261109_0000014",
     "us7000tx0f",
-    "emsc_20261108_0000293"
+    "emsc_20261108_0000293",
+    "emsc_20261109_0000019"
   ],
   "recent_posted_events": [
     {
@@ -372,6 +373,14 @@
       "latitude": -23.8089,
       "longitude": 179.4209,
       "epoch_ms": 1794185219150
+    },
+    {
+      "id": "emsc_20261109_0000019",
+      "mag": 4.2,
+      "place": "SOUTHWEST OF SUMATRA, INDONESIA",
+      "latitude": -4.02,
+      "longitude": 100.19,
+      "epoch_ms": 1794186768000
     }
   ]
 }
