@@ -308,7 +308,9 @@
     "emsc_20261109_0000232",
     "emsc_20261109_0000240",
     "emsc_20261109_0000247",
-    "emsc_20261109_0000273"
+    "emsc_20261109_0000273",
+    "emsc_20261109_0000276",
+    "us7000tx6j"
   ],
   "recent_posted_events": [
     {
@@ -646,6 +648,14 @@
       "latitude": 14.406,
       "longitude": -93.15,
       "epoch_ms": 1794250056000
+    },
+    {
+      "id": "us7000tx6j",
+      "mag": 4.6,
+      "place": "206 km E of Kirakira, Solomon Islands",
+      "latitude": -10.5301,
+      "longitude": 163.8048,
+      "epoch_ms": 1794250305515
     }
   ]
 }
