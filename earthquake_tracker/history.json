@@ -274,7 +274,8 @@
     "emsc_20261109_0000077",
     "us7000tx1i",
     "emsc_20261109_0000081",
-    "us7000tx1p"
+    "us7000tx1p",
+    "emsc_20261109_0000085"
   ],
   "recent_posted_events": [
     {
@@ -484,6 +485,14 @@
       "latitude": -10.912,
       "longitude": 165.6396,
       "epoch_ms": 1794201416823
+    },
+    {
+      "id": "emsc_20261109_0000085",
+      "mag": 4.1,
+      "place": "OFF E. COAST OF N. ISLAND, N.Z.",
+      "latitude": -36.6344,
+      "longitude": 177.7378,
+      "epoch_ms": 1794203418344
     }
   ]
 }
