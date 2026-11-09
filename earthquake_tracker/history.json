@@ -287,7 +287,8 @@
     "emsc_20261109_0000139",
     "us7000tx34",
     "emsc_20261109_0000142",
-    "us7000tx38"
+    "us7000tx38",
+    "emsc_20261109_0000143"
   ],
   "recent_posted_events": [
     {
@@ -553,6 +554,14 @@
       "latitude": -4.9211,
       "longitude": -75.0969,
       "epoch_ms": 1794219837260
+    },
+    {
+      "id": "emsc_20261109_0000143",
+      "mag": 4.1,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.27,
+      "longitude": 121.47,
+      "epoch_ms": 1794220734000
     }
   ]
 }
