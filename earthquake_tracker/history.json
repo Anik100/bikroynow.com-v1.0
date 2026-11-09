@@ -267,7 +267,8 @@
     "emsc_20261107_0000322",
     "emsc_20261109_0000062",
     "emsc_20261109_0000063",
-    "emsc_20261109_0000065"
+    "emsc_20261109_0000065",
+    "emsc_20261109_0000071"
   ],
   "recent_posted_events": [
     {
@@ -445,6 +446,14 @@
       "latitude": -12.69,
       "longitude": 45.51,
       "epoch_ms": 1794198945200
+    },
+    {
+      "id": "emsc_20261109_0000071",
+      "mag": 5.7,
+      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
+      "latitude": 36.2471,
+      "longitude": 141.8299,
+      "epoch_ms": 1794199971519
     }
   ]
 }
