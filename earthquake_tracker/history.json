@@ -256,7 +256,9 @@
     "emsc_20261108_0000294",
     "emsc_20261109_0000027",
     "us7000tx0p",
-    "emsc_20261108_0000295"
+    "emsc_20261108_0000295",
+    "emsc_20261109_0000039",
+    "us7000tx0x"
   ],
   "recent_posted_events": [
     {
@@ -394,6 +396,14 @@
       "latitude": 16.1771,
       "longitude": 38.8821,
       "epoch_ms": 1794186691600
+    },
+    {
+      "id": "us7000tx0x",
+      "mag": 4.9,
+      "place": "south of the Fiji Islands",
+      "latitude": -25.1858,
+      "longitude": -176.9956,
+      "epoch_ms": 1794190917196
     }
   ]
 }
