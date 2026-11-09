@@ -307,7 +307,8 @@
     "us7000tx48",
     "emsc_20261109_0000232",
     "emsc_20261109_0000240",
-    "emsc_20261109_0000247"
+    "emsc_20261109_0000247",
+    "emsc_20261109_0000273"
   ],
   "recent_posted_events": [
     {
@@ -637,6 +638,14 @@
       "latitude": -2.9,
       "longitude": 130.37,
       "epoch_ms": 1794243163000
+    },
+    {
+      "id": "emsc_20261109_0000273",
+      "mag": 4.1,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 14.406,
+      "longitude": -93.15,
+      "epoch_ms": 1794250056000
     }
   ]
 }
