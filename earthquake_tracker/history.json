@@ -323,25 +323,11 @@
     "emsc_20261109_0000303",
     "emsc_20261109_0000305",
     "emsc_20261109_0000322",
-    "us7000tx7h"
+    "us7000tx7h",
+    "emsc_20261109_0000339",
+    "emsc_20261109_0000340"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261108_0000113",
-      "mag": 4.7,
-      "place": "OFF EAST COAST OF HONSHU, JAPAN",
-      "latitude": 39.8759,
-      "longitude": 143.5133,
-      "epoch_ms": 1794129816440
-    },
-    {
-      "id": "emsc_20261108_0000134",
-      "mag": 4.1,
-      "place": "MICHOACAN, MEXICO",
-      "latitude": 18.327,
-      "longitude": -101.869,
-      "epoch_ms": 1794136715000
-    },
     {
       "id": "emsc_20261108_0000137",
       "mag": 5.1,
@@ -725,6 +711,22 @@
       "latitude": 52.7289,
       "longitude": 171.6154,
       "epoch_ms": 1794261787165
+    },
+    {
+      "id": "emsc_20261109_0000339",
+      "mag": 4.0,
+      "place": "SOUTHWEST OF SUMATRA, INDONESIA",
+      "latitude": -5.18,
+      "longitude": 101.82,
+      "epoch_ms": 1794268034000
+    },
+    {
+      "id": "emsc_20261109_0000340",
+      "mag": 4.2,
+      "place": "NEPAL-INDIA BORDER REGION",
+      "latitude": 26.9864,
+      "longitude": 86.5341,
+      "epoch_ms": 1794268437000
     }
   ]
 }
