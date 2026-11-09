@@ -272,7 +272,9 @@
     "us7000tx1f",
     "emsc_20261109_0000075",
     "emsc_20261109_0000077",
-    "us7000tx1i"
+    "us7000tx1i",
+    "emsc_20261109_0000081",
+    "us7000tx1p"
   ],
   "recent_posted_events": [
     {
@@ -474,6 +476,14 @@
       "latitude": 36.4941,
       "longitude": 141.4485,
       "epoch_ms": 1794200513640
+    },
+    {
+      "id": "us7000tx1p",
+      "mag": 4.8,
+      "place": "26 km SW of Lata, Solomon Islands",
+      "latitude": -10.912,
+      "longitude": 165.6396,
+      "epoch_ms": 1794201416823
     }
   ]
 }
