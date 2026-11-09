@@ -247,7 +247,8 @@
     "us7000twyw",
     "emsc_20261108_0000239",
     "emsc_20261108_0000249",
-    "us7000twz2"
+    "us7000twz2",
+    "emsc_20261109_0000014"
   ],
   "recent_posted_events": [
     {
@@ -361,6 +362,14 @@
       "latitude": 38.3824,
       "longitude": 141.8815,
       "epoch_ms": 1794168990710
+    },
+    {
+      "id": "emsc_20261109_0000014",
+      "mag": 5.1,
+      "place": "SOUTH OF FIJI ISLANDS",
+      "latitude": -23.8089,
+      "longitude": 179.4209,
+      "epoch_ms": 1794185219150
     }
   ]
 }
