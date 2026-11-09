@@ -276,7 +276,9 @@
     "emsc_20261109_0000081",
     "us7000tx1p",
     "emsc_20261109_0000085",
-    "emsc_20261109_0000090"
+    "emsc_20261109_0000090",
+    "emsc_20261109_0000107",
+    "us7000tx2g"
   ],
   "recent_posted_events": [
     {
@@ -502,6 +504,14 @@
       "latitude": -22.42,
       "longitude": -68.52,
       "epoch_ms": 1794205354000
+    },
+    {
+      "id": "us7000tx2g",
+      "mag": 4.6,
+      "place": "54 km S of Klyuchi, Russia",
+      "latitude": 55.8343,
+      "longitude": 160.9753,
+      "epoch_ms": 1794207853845
     }
   ]
 }
