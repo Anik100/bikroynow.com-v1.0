@@ -275,7 +275,8 @@
     "us7000tx1i",
     "emsc_20261109_0000081",
     "us7000tx1p",
-    "emsc_20261109_0000085"
+    "emsc_20261109_0000085",
+    "emsc_20261109_0000090"
   ],
   "recent_posted_events": [
     {
@@ -493,6 +494,14 @@
       "latitude": -36.6344,
       "longitude": 177.7378,
       "epoch_ms": 1794203418344
+    },
+    {
+      "id": "emsc_20261109_0000090",
+      "mag": 4.0,
+      "place": "ANTOFAGASTA, CHILE",
+      "latitude": -22.42,
+      "longitude": -68.52,
+      "epoch_ms": 1794205354000
     }
   ]
 }
