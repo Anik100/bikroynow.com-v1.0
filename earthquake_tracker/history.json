@@ -311,7 +311,9 @@
     "emsc_20261109_0000273",
     "emsc_20261109_0000276",
     "us7000tx6j",
-    "emsc_20261109_0000279"
+    "emsc_20261109_0000279",
+    "us7000tx6l",
+    "emsc_20261109_0000280"
   ],
   "recent_posted_events": [
     {
@@ -665,6 +667,14 @@
       "latitude": -23.675,
       "longitude": -179.9613,
       "epoch_ms": 1794251387863
+    },
+    {
+      "id": "emsc_20261109_0000280",
+      "mag": 4.3,
+      "place": "PERU-ECUADOR BORDER REGION",
+      "latitude": -3.47,
+      "longitude": -77.26,
+      "epoch_ms": 1794251994000
     }
   ]
 }
