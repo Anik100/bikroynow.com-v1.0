@@ -314,7 +314,8 @@
     "emsc_20261109_0000279",
     "us7000tx6l",
     "emsc_20261109_0000280",
-    "emsc_20261109_0000282"
+    "emsc_20261109_0000282",
+    "emsc_20261109_0000285"
   ],
   "recent_posted_events": [
     {
@@ -676,6 +677,14 @@
       "latitude": -3.47,
       "longitude": -77.26,
       "epoch_ms": 1794251994000
+    },
+    {
+      "id": "emsc_20261109_0000285",
+      "mag": 4.1,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.89,
+      "longitude": -94.066,
+      "epoch_ms": 1794252032000
     }
   ]
 }
