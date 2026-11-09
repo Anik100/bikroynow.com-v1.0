@@ -304,7 +304,8 @@
     "emsc_20261109_0000211",
     "emsc_20261109_0000217",
     "us7000tx47",
-    "us7000tx48"
+    "us7000tx48",
+    "emsc_20261109_0000232"
   ],
   "recent_posted_events": [
     {
@@ -618,6 +619,14 @@
       "latitude": -28.1602,
       "longitude": 74.2637,
       "epoch_ms": 1794236674240
+    },
+    {
+      "id": "emsc_20261109_0000232",
+      "mag": 4.1,
+      "place": "CERAM SEA, INDONESIA",
+      "latitude": -2.94,
+      "longitude": 130.41,
+      "epoch_ms": 1794241564000
     }
   ]
 }
