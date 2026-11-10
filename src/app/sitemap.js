@@ -1,10 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
-import { getGlobalListings } from '../lib/globalListingsStore';
 
 export const dynamic = 'force-dynamic';
 
-export default async function sitemap() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bikroynow.com';
+const CANONICAL_BASE = 'https://www.bikroynow.com';
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || CANONICAL_BASE;
+
+/**
+ * Builds the dynamic array of valid sitemap URLs
+ */
+export async function buildSitemapData() {
   const now = new Date();
 
   // 1. Static core routes
@@ -71,7 +75,7 @@ export default async function sitemap() {
     },
   ];
 
-  // 2. High-Value Category Landing Routes (Clean 1-param URLs without XML ampersand issues)
+  // 2. High-Value Category Landing Routes
   const mainCategories = [
     'Mobile Phones',
     'Computers',
@@ -79,6 +83,7 @@ export default async function sitemap() {
     'Vehicles',
     'Property',
     'Jobs',
+    'অন্যান্য',
   ];
 
   const categoryRoutes = mainCategories.map((cat) => ({
@@ -88,7 +93,7 @@ export default async function sitemap() {
     priority: 0.85,
   }));
 
-  // 3. High-Value Location Landing Routes (Clean 1-param URLs without XML ampersand issues)
+  // 3. High-Value Location Landing Routes
   const majorLocations = [
     'Dhaka',
     'Chattogram',
@@ -112,29 +117,54 @@ export default async function sitemap() {
     priority: 0.85,
   }));
 
-  // 4. Dynamic active ad listings
+  // 4. Dynamic active ad listings (excluding sold, deleted, or pending)
   let adRoutes = [];
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     let listings = [];
+    const deletedIds = new Set();
+
     if (supabaseUrl && anonKey) {
       const supabase = createClient(supabaseUrl, anonKey, {
         auth: { persistSession: false },
       });
+
+      // Fetch blacklist of permanently deleted ads
+      try {
+        const { data: setRow } = await supabase
+          .from('admin_settings')
+          .select('value')
+          .eq('key', 'deleted_listing_ids')
+          .maybeSingle();
+        if (setRow?.value) {
+          const parsed = JSON.parse(setRow.value);
+          if (Array.isArray(parsed)) parsed.forEach((id) => deletedIds.add(String(id)));
+        }
+      } catch (e) {}
+
+      // Fetch active & approved listings only
       const { data } = await supabase
         .from('listings')
         .select('id, created_at, status')
         .or('status.eq.active,status.eq.approved')
-        .limit(2000);
+        .limit(3000);
+
       if (Array.isArray(data) && data.length > 0) {
-        listings = data;
+        listings = data.filter(
+          (item) => item.status !== 'deleted' && !deletedIds.has(String(item.id))
+        );
       }
     }
 
-    if (listings.length === 0) {
-      listings = getGlobalListings().filter((l) => l.status === 'active' || l.status === 'approved');
+    // Fallback to local server store if Supabase unavailable
+    if (listings.length === 0 && typeof window === 'undefined') {
+      try {
+        const { getGlobalListings } = await import('../lib/globalListingsStore');
+        const local = getGlobalListings();
+        listings = local.filter((l) => (l.status === 'active' || l.status === 'approved') && !deletedIds.has(String(l.id)));
+      } catch (e) {}
     }
 
     adRoutes = listings.map((ad) => ({
@@ -153,4 +183,8 @@ export default async function sitemap() {
     ...locationRoutes,
     ...adRoutes,
   ];
+}
+
+export default async function sitemap() {
+  return await buildSitemapData();
 }

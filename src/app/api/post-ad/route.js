@@ -151,9 +151,8 @@ export async function POST(req) {
               sort_order: 0
             }, { onConflict: 'listing_id' }).catch(() => {});
           }
-          if (initialStatus === 'active') {
-            notifySearchEngines(inserted[0].id);
-          }
+          // Real-Time Instant Indexing Hook
+          notifySearchEngines(inserted[0].id);
           return NextResponse.json({ 
             success: true, 
             ad: { ...inserted[0], is_featured: Boolean(!verificationRequired && qualifiesForSlider) },
