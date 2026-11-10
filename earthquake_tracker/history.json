@@ -325,17 +325,10 @@
     "emsc_20261109_0000322",
     "us7000tx7h",
     "emsc_20261109_0000339",
-    "emsc_20261109_0000340"
+    "emsc_20261109_0000340",
+    "emsc_20261109_0000341"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261108_0000137",
-      "mag": 5.1,
-      "place": "TARAPACA, CHILE",
-      "latitude": -19.688,
-      "longitude": -70.1661,
-      "epoch_ms": 1794139112140
-    },
     {
       "id": "us7000twxn",
       "mag": 4.7,
@@ -727,6 +720,14 @@
       "latitude": 26.9864,
       "longitude": 86.5341,
       "epoch_ms": 1794268437000
+    },
+    {
+      "id": "emsc_20261109_0000341",
+      "mag": 5.0,
+      "place": "SOUTH OF FIJI ISLANDS",
+      "latitude": -24.4824,
+      "longitude": -177.2803,
+      "epoch_ms": 1794267921429
     }
   ]
 }
