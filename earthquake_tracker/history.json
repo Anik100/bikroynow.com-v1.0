@@ -368,17 +368,10 @@
     "us7000txc3",
     "emsc_20261110_0000269",
     "emsc_20261110_0000272",
-    "emsc_20261110_0000281"
+    "emsc_20261110_0000281",
+    "emsc_20261110_0000284"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tx0x",
-      "mag": 4.9,
-      "place": "south of the Fiji Islands",
-      "latitude": -25.1858,
-      "longitude": -176.9956,
-      "epoch_ms": 1794190917196
-    },
     {
       "id": "emsc_20261109_0000048",
       "mag": 6.3,
@@ -770,6 +763,14 @@
       "latitude": 15.214,
       "longitude": -94.626,
       "epoch_ms": 1794337200000
+    },
+    {
+      "id": "emsc_20261110_0000284",
+      "mag": 4.1,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 9.75,
+      "longitude": 126.51,
+      "epoch_ms": 1794338620000
     }
   ]
 }
