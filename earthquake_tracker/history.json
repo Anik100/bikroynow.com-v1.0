@@ -335,17 +335,10 @@
     "emsc_20261110_0000017",
     "us7000tx8i",
     "emsc_20261110_0000040",
-    "us7000tx8s"
+    "us7000tx8s",
+    "emsc_20261110_0000047"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261108_0000220",
-      "mag": 4.3,
-      "place": "PANAMA",
-      "latitude": 7.4238,
-      "longitude": -80.0076,
-      "epoch_ms": 1794162353000
-    },
     {
       "id": "emsc_20261108_0000222",
       "mag": 4.4,
@@ -737,6 +730,14 @@
       "latitude": -10.9433,
       "longitude": 165.4888,
       "epoch_ms": 1794281871500
+    },
+    {
+      "id": "emsc_20261110_0000047",
+      "mag": 4.2,
+      "place": "KEPULAUAN BABAR, INDONESIA",
+      "latitude": -7.13,
+      "longitude": 129.67,
+      "epoch_ms": 1794283522000
     }
   ]
 }
