@@ -189,7 +189,7 @@ export default function FeaturedSlider({ lang = 'en' }) {
                 />
                 <img
                   src={listing1.images[0]}
-                  alt={listing1.title || 'Featured Ad 1'}
+                  alt={listing1?.title ? `${listing1.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'} loading="lazy" decoding="async"
                   className={styles.slideImage}
                 />
               </>
@@ -240,7 +240,7 @@ export default function FeaturedSlider({ lang = 'en' }) {
                 />
                 <img
                   src={listing2.images[0]}
-                  alt={listing2.title || 'Featured Ad 2'}
+                  alt={listing2?.title ? `${listing2.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'} loading="lazy" decoding="async"
                   className={styles.slideImage}
                 />
               </>

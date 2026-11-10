@@ -1,7 +1,9 @@
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bikroynow.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bikroynow.com';
 
 export const metadata = {
-  title: 'সব ধরণের বিজ্ঞাপন দেখুন | All Classified Ads in Bangladesh | BikroyNow',
+  title: {
+    absolute: 'সব ধরণের বিজ্ঞাপন দেখুন | All Classified Ads in Bangladesh - BikroyNow',
+  },
   description: 'বাংলাদেশে নতুন ও পুরাতন মোবাইল ফোন, ব্যবহৃত ল্যাপটপ, গাড়ি, বাইক, ইলেক্ট্রনিক্স এবং ফ্ল্যাট কেনাবেচা করুন। Browse thousands of verified classified listings on BikroyNow.',
   keywords: [
     'সব বিজ্ঞাপন', 'all classified ads bd', 'পুরাতন পণ্য ক্রয় বিক্রয়', 'buy and sell bangladesh',

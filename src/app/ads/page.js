@@ -659,7 +659,9 @@ function AdsContent() {
                           </button>
                           <img 
                             src={ad.images[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
-                            alt={ad.title} 
+                            alt={`${ad.condition === 'New' ? (lang === 'bn' ? 'নতুন' : 'Brand New') : (lang === 'bn' ? 'ব্যবহৃত' : 'Used')} ${ad.title} for sale in ${ad.location || 'Bangladesh'} - BikroyNow`} 
+                            loading="lazy"
+                            decoding="async"
                           />
                         </div>
                         

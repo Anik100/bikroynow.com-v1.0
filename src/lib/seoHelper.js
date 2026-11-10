@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
-import { getGlobalListings } from './globalListingsStore';
+
 
 const CANONICAL_BASE = 'https://www.bikroynow.com';
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || CANONICAL_BASE;
@@ -26,6 +26,16 @@ export async function getAdForSeo(id) {
         .maybeSingle();
 
       if (data && !error) {
+        if (data.user_id) {
+          try {
+            const { data: prof } = await supabase
+              .from('profiles')
+              .select('*')
+              .eq('id', data.user_id)
+              .maybeSingle();
+            if (prof) data.profiles = prof;
+          } catch (e) {}
+        }
         return data;
       }
     }
@@ -34,11 +44,14 @@ export async function getAdForSeo(id) {
   }
 
   // Fallback to local server store
-  try {
-    const localList = getGlobalListings();
-    const found = localList.find((item) => String(item.id) === String(id));
-    if (found) return found;
-  } catch (err) {}
+  if (typeof window === 'undefined') {
+    try {
+      const { getGlobalListings } = await import('./globalListingsStore');
+      const localList = getGlobalListings();
+      const found = localList.find((item) => String(item.id) === String(id));
+      if (found) return found;
+    } catch (err) {}
+  }
 
   return null;
 }
@@ -46,11 +59,11 @@ export async function getAdForSeo(id) {
 /**
  * Programmatic SEO Engine for BikroyNow listings
  * Generates:
- * - seo_title: [Condition] + [Brand & Model] + Price in + [Location] | BikroyNow (55-65 chars)
- * - meta_description: [Location]-এ ভালো কন্ডিশনে ব্যবহৃত [Product] কিনুন সেরা দামে। Check condition, original photos, and buy safely on BikroyNow. (145-158 chars)
+ * - seo_title: [Product Name] - Price in [Location] | BikroyNow (<60 chars)
+ * - meta_description: High-CTR bilingual description (140-160 chars)
  * - seo_slug: [condition]-[model]-[location]
  * - schema_json: Schema.org Product markup with offer, price, condition, availability
- * - enriched_content: Structured specification box and buyer safety checklist for brief descriptions (< 30 words)
+ * - enriched_content: Structured specification box and buyer safety checklist
  * - bilingual_keywords: Natural keywords in EN & BN
  */
 export function generateProgrammaticSeo(ad, id) {
@@ -58,51 +71,53 @@ export function generateProgrammaticSeo(ad, id) {
 
   const titleClean = (ad.title || '').trim();
   const price = Number(ad.price || 0);
-  const priceFormatted = price.toLocaleString();
+  const priceFormatted = price.toLocaleString('en-US');
   const locationClean = (ad.location || ad.district || ad.division || 'Bangladesh').trim();
   const condition = (ad.condition || 'Used').trim();
   const isNew = condition.toLowerCase() === 'new';
   const categoryClean = (ad.category_id || 'Classified').trim();
   const canonicalUrl = `${CANONICAL_BASE}/ad/${id}`;
 
-  // 1. Long-Tail SEO Title Generation (55 to 65 chars target)
-  // Format: [Condition] [Product Title] Price in [Location] | BikroyNow
-  const startsWithCondition = new RegExp(`^${condition}\\b`, 'i').test(titleClean);
-  const titlePrefix = startsWithCondition ? '' : `${condition} `;
-  let baseSeoTitle = `${titlePrefix}${titleClean} Price in ${locationClean} | BikroyNow`;
+  // 1. High-CTR SEO Title Generation (<60 chars target)
+  // Example Title: "[Product Name] - Price in [City] | BikroyNow"
+  const suffix = ` - Price in ${locationClean} | BikroyNow`;
+  let seo_title = `${titleClean}${suffix}`;
 
-  if (baseSeoTitle.length > 65) {
-    const maxCoreLen = 65 - (titlePrefix.length + locationClean.length + 22);
-    const trimmedTitle = maxCoreLen > 15 ? titleClean.slice(0, maxCoreLen).trim() : titleClean.slice(0, 25).trim();
-    baseSeoTitle = `${titlePrefix}${trimmedTitle} Price in ${locationClean} | BikroyNow`;
+  if (seo_title.length > 58) {
+    const maxTitleLen = Math.max(15, 58 - suffix.length);
+    const shortTitle = titleClean.length > maxTitleLen ? `${titleClean.slice(0, maxTitleLen - 1).trim()}…` : titleClean;
+    seo_title = `${shortTitle}${suffix}`;
   }
-  const seo_title = baseSeoTitle;
 
-  // 2. Bilingual Meta Description (145 to 158 chars target)
-  // Structure: [Location]-এ ভালো কন্ডিশনে ব্যবহৃত [Product Name] কিনুন সেরা দামে। Check condition, original photos, and buy safely on BikroyNow.
-  const conditionBn = isNew ? 'নতুন' : 'ব্যবহৃত';
-  const condPhraseBn = isNew ? 'আকর্ষণীয় অফারে নতুন' : 'ভালো কন্ডিশনে ব্যবহৃত';
-  const suffixEn = isNew 
-    ? ' Check specs, original photos, and buy safely on BikroyNow.'
-    : ' Check condition, original photos, and buy safely on BikroyNow.';
+  if (seo_title.length > 60) {
+    seo_title = `${seo_title.slice(0, 57).trim()}…`;
+  }
+
+  // 2. High-CTR Bilingual Meta Description (140 to 160 chars target)
+  // Structure: [Location]-এ ভালো কন্ডিশনে ব্যবহৃত [Product] কিনুন মাত্র ৳[Price] টাকায়। Check condition, photos, and buy safely on BikroyNow.
+  const condPhraseBn = isNew ? 'নতুন' : 'ভালো কন্ডিশনে ব্যবহৃত';
+  const ctaEn = isNew 
+    ? ' Check specs, original photos & buy safely on BikroyNow.'
+    : ' Check photos, specs & buy safely on BikroyNow.';
   
-  const prefixBn = `${locationClean}-এ ${condPhraseBn} ${titleClean} কিনুন সেরা দামে।`;
-  let meta_description = `${prefixBn}${suffixEn}`;
+  const baseBn = `${locationClean}-এ ${condPhraseBn} ${titleClean} কিনুন মাত্র ৳${priceFormatted} টাকায়।`;
+  let meta_description = `${baseBn}${ctaEn}`;
 
-  if (meta_description.length > 158) {
-    const allowedPrefix = 158 - suffixEn.length;
-    const truncatedTitle = titleClean.slice(0, Math.max(15, allowedPrefix - (locationClean.length + condPhraseBn.length + 20))).trim();
-    meta_description = `${locationClean}-এ ${condPhraseBn} ${truncatedTitle} কিনুন সেরা দামে।${suffixEn}`;
-  } else if (meta_description.length < 145) {
-    const extraPrice = ` মাত্র ৳${priceFormatted} টাকায়।`;
-    const expanded = `${locationClean}-এ ${condPhraseBn} ${titleClean} কিনুন${extraPrice}${suffixEn}`;
+  if (meta_description.length > 160) {
+    const allowedBn = 160 - ctaEn.length;
+    const truncatedTitle = titleClean.slice(0, Math.max(15, allowedBn - (locationClean.length + condPhraseBn.length + 30))).trim();
+    meta_description = `${locationClean}-এ ${condPhraseBn} ${truncatedTitle}… কিনুন মাত্র ৳${priceFormatted} টাকায়।${ctaEn}`;
+  } else if (meta_description.length < 140) {
+    const expandedCta = isNew
+      ? ' আসল ছবি ও বিবরণ দেখে সরাসরি কিনুন। Buy safely on BikroyNow.'
+      : ' আসল ছবি দেখে সরাসরি বিক্রেতার সাথে যোগাযোগ করুন। Buy safely on BikroyNow.';
+    const expanded = `${baseBn}${expandedCta}`;
     if (expanded.length <= 160) {
       meta_description = expanded;
     }
   }
 
   // 3. Dynamic Slug & URL Optimization
-  // Format: [condition]-[exact-model-name]-[city-or-district]
   const stopWords = new Set(['a', 'an', 'the', 'and', 'in', 'for', 'of', 'at', 'by', 'with', 'on', 'to']);
   const slugTitle = titleClean
     .toLowerCase()
@@ -121,6 +136,8 @@ export function generateProgrammaticSeo(ad, id) {
   const seo_slug = `${slugCondition}-${slugTitle}-${slugLocation}`.replace(/-+/g, '-').replace(/^-|-$/g, '');
 
   // 4. Schema.org Product Structured Data
+  // Strict decimal price formatting to ensure Google does not misinterpret thousands as decimals
+  const formattedPriceString = price.toFixed(2);
   const coverImage = (Array.isArray(ad.images) && ad.images.length > 0)
     ? ad.images[0]
     : `${CANONICAL_BASE}/icon.svg`;
@@ -132,18 +149,29 @@ export function generateProgrammaticSeo(ad, id) {
     name: titleClean,
     image: Array.isArray(ad.images) && ad.images.length > 0 ? ad.images : [coverImage],
     description: meta_description,
+    sku: String(id),
     category: categoryClean,
+    brand: {
+      '@type': 'Brand',
+      name: ad.brand || 'BikroyNow Verified',
+    },
     itemCondition: isNew ? 'https://schema.org/NewCondition' : 'https://schema.org/UsedCondition',
     offers: {
       '@type': 'Offer',
       priceCurrency: 'BDT',
-      price: price,
-      priceValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      price: formattedPriceString,
+      priceValidUntil: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       itemCondition: isNew ? 'https://schema.org/NewCondition' : 'https://schema.org/UsedCondition',
       availability: (ad.status === 'active' || ad.status === 'approved') 
         ? 'https://schema.org/InStock' 
         : 'https://schema.org/OutOfStock',
       url: canonicalUrl,
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: formattedPriceString,
+        priceCurrency: 'BDT',
+        valueAddedTaxIncluded: true,
+      },
       seller: {
         '@type': 'Organization',
         name: 'BikroyNow Verified Seller',
@@ -158,7 +186,7 @@ export function generateProgrammaticSeo(ad, id) {
     `${titleClean} price in Bangladesh`,
     `${titleClean} price in ${locationClean}`,
     `${condition} ${titleClean}`,
-    `${conditionBn} ${titleClean}`,
+    `${condPhraseBn} ${titleClean}`,
     `${titleClean} দাম কত`,
     `${titleClean} কিনুন`,
     `buy ${titleClean} online`,
@@ -168,7 +196,7 @@ export function generateProgrammaticSeo(ad, id) {
     'BikroyNow classified ads'
   ];
 
-  // 6. Content Enrichment (if description < 30 words)
+  // 6. Content Enrichment (Structured specs & safety guidelines)
   const rawDesc = (ad.description || '').trim();
   const wordCount = rawDesc.split(/\s+/).filter(Boolean).length;
   const isBrief = wordCount < 30;
@@ -217,7 +245,9 @@ export function buildAdMetadata(ad, id) {
     : `${CANONICAL_BASE}/icon.svg`;
 
   return {
-    title: progSeo.seo_title,
+    title: {
+      absolute: progSeo.seo_title,
+    },
     description: progSeo.meta_description,
     keywords: progSeo.bilingual_keywords,
     alternates: {
@@ -229,7 +259,7 @@ export function buildAdMetadata(ad, id) {
       url: canonicalUrl,
       siteName: 'BikroyNow',
       locale: 'bn_BD',
-      type: 'article',
+      type: 'website',
       images: [
         {
           url: coverImage,
@@ -244,6 +274,13 @@ export function buildAdMetadata(ad, id) {
       title: progSeo.seo_title,
       description: progSeo.meta_description,
       images: [coverImage],
+    },
+    other: {
+      'og:type': 'product',
+      'product:price:amount': Number(ad.price || 0).toFixed(2),
+      'product:price:currency': 'BDT',
+      'product:availability': (ad.status === 'active' || ad.status === 'approved') ? 'in stock' : 'out of stock',
+      'product:condition': (ad.condition || 'Used').toLowerCase() === 'new' ? 'new' : 'used',
     },
     robots: {
       index: ad.status === 'active' || ad.status === 'approved',

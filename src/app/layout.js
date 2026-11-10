@@ -5,7 +5,7 @@ import { LanguageProvider } from '../context/LanguageContext';
 import PageTransition from '../components/PageTransition';
 import AiSupportWidget from '../components/AiSupportWidget';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://bikroynow.com';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bikroynow.com';
 
 export const metadata = {
   metadataBase: new URL(siteUrl),

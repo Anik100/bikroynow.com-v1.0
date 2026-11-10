@@ -321,11 +321,23 @@ export default function Home() {
 
   return (
     <div className={styles.homeContainer}>
-      <h1 className={styles.seoMainHeading}>
-        {lang === 'bn' 
-          ? 'বিক্রয়নও - বাংলাদেশের সবচেয়ে বড় ও বিশ্বস্ত অনলাইন মার্কেটপ্লেস' 
-          : 'BikroyNow - Largest Buy & Sell Marketplace in Bangladesh'}
-      </h1>
+      {/* === HERO BANNER & PRIMARY VISIBLE H1 === */}
+      <section className={styles.heroSection}>
+        <div className="container">
+          <div className={styles.heroContent}>
+            <h1 className={styles.heroTitle}>
+              {lang === 'bn' 
+                ? 'বাংলাদেশে ব্যবহৃত ও নতুন পণ্য সহজে কেনাবেচা করুন' 
+                : 'Buy & Sell Used and New Products Easily in Bangladesh'}
+            </h1>
+            <p className={styles.heroSubtitle}>
+              {lang === 'bn'
+                ? 'BikroyNow হলো বাংলাদেশের বিশ্বস্ত অনলাইন মার্কেটপ্লেস। ব্যবহৃত মোবাইল ফোন, কম্পিউটার, ল্যাপটপ, ইলেকট্রনিক্স, বাইক, গাড়ি ও প্রপার্টির সেরা ডিল খুঁজে নিন অথবা ফ্রি বিজ্ঞাপন দিন।'
+                : 'BikroyNow is Bangladesh’s trusted classifieds marketplace. Find the best deals on verified used mobiles, laptops, electronics, vehicles, and properties or post your ad for free.'}
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* === CATEGORY SECTION WITH AUTO-COLLAPSE ON SELECTION === */}
       <div className={`container ${styles.categorySection}`}>
@@ -491,7 +503,7 @@ export default function Home() {
                     </button>
                     <img 
                       src={ad.images[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
-                      alt={ad.title} 
+                      alt={`${ad.condition === 'New' ? (lang === 'bn' ? 'নতুন' : 'Brand New') : (lang === 'bn' ? 'ব্যবহৃত' : 'Used')} ${ad.title} for sale in ${ad.location || 'Bangladesh'} - BikroyNow`} 
                       className={styles.adImage}
                       loading="lazy"
                       decoding="async"
@@ -531,6 +543,51 @@ export default function Home() {
           })()}
         </div>
       </div>
+
+      {/* === COMPREHENSIVE SEO CONTENT & BUYER GUIDE SECTION === */}
+      <section className={styles.seoGuideSection}>
+        <div className="container">
+          <div className={styles.seoGuideCard}>
+            <h2 className={styles.seoGuideHeading}>
+              {lang === 'bn'
+                ? 'BikroyNow – বাংলাদেশের বিশ্বস্ত লোকাল কেনাবেচার প্ল্যাটফর্ম'
+                : 'BikroyNow – Bangladesh’s Trusted Local Buy & Sell Marketplace'}
+            </h2>
+            <p>
+              {lang === 'bn'
+                ? 'BikroyNow.com বাংলাদেশে নির্ভরযোগ্য ও আধুনিক অনলাইন ক্লাসিফাইড মার্কেটপ্লেস। এখানে আপনি আপনার ব্যবহৃত মোবাইল ফোন, কম্পিউটার ও ল্যাপটপ, হোম অ্যাপ্লায়েন্স, ইলেকট্রনিক্স গেজেট, ব্যবহৃত মোটরসাইকেল, গাড়ি, ফ্ল্যাট ও জমি কেনাবেচা করতে পারেন খুব সহজেই কোনো মধ্যস্বত্বভোগী ছাড়া।'
+                : 'BikroyNow.com is Bangladesh’s premier modern online classifieds platform. Easily buy and sell second-hand smartphones, laptops, electronics, vehicles, and real estate directly with verified local buyers and sellers across Dhaka, Chittagong, Tangail, Sylhet, and all 64 districts.'}
+            </p>
+            
+            <div className={styles.seoGuideGrid}>
+              <div className={styles.seoGuideBox}>
+                <h3>{lang === 'bn' ? '⚡ দ্রুত ও সহজ কেনাবেচা' : '⚡ Fast & Simple Trading'}</h3>
+                <p>
+                  {lang === 'bn'
+                    ? 'কয়েক ক্লিকেই আপনার পণ্যের ছবি ও বিবরণ দিয়ে ১০০% বিনামূল্যে বিজ্ঞাপন পোস্ট করুন এবং মুহূর্তেই হাজারো সম্ভাব্য ক্রেতার কাছে পৌঁছান।'
+                    : 'Post free advertisements in under two minutes with original photos and details to reach thousands of interested local buyers instantly.'}
+                </p>
+              </div>
+              <div className={styles.seoGuideBox}>
+                <h3>{lang === 'bn' ? '🛡️ নিরাপদ ও সরাসরি লেনদেন' : '🛡️ Safe & Verified Direct Deals'}</h3>
+                <p>
+                  {lang === 'bn'
+                    ? 'বিক্রেতার সাথে সরাসরি চ্যাট বা ফোনে কথা বলে পণ্যের আসল অবস্থা যাচাই করুন। সামনাসামনি দেখা করে পণ্য বুঝে নিয়ে লেনদেন সম্পন্ন করুন।'
+                    : 'Communicate directly with sellers via live chat or phone. Inspect the product in person to ensure authentic condition before making payment.'}
+                </p>
+              </div>
+              <div className={styles.seoGuideBox}>
+                <h3>{lang === 'bn' ? '📍 ৬৪ জেলার স্থানীয় মার্কেটপ্লেস' : '📍 Local Marketplace in 64 Districts'}</h3>
+                <p>
+                  {lang === 'bn'
+                    ? 'ঢাকা, চট্টগ্রাম, রাজশাহী, খুলনা, সিলেট, বরিশাল, রংপুর এবং ময়মনসিংহসহ সারা বাংলাদেশের যেকোনো শহর ও উপজেলা থেকে সহজেই কেনাকাটা করুন।'
+                    : 'Find deals right in your neighborhood across Dhaka, Chittagong, Tangail, Sylhet, and every district across Bangladesh.'}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     
       {/* Subcategory Scrollable Modal (Scrollable bottom-sheet popup) */}
       {activeCategoryModal && CATEGORIES[activeCategoryModal] && mounted && createPortal(
