@@ -373,17 +373,10 @@
     "emsc_20261110_0000290",
     "us7000txea",
     "emsc_20261110_0000319",
-    "emsc_20261110_0000329"
+    "emsc_20261110_0000329",
+    "emsc_20261110_0000332"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000063",
-      "mag": 4.2,
-      "place": "OAXACA, MEXICO",
-      "latitude": 16.346,
-      "longitude": -97.916,
-      "epoch_ms": 1794197520000
-    },
     {
       "id": "emsc_20261109_0000065",
       "mag": 4.4,
@@ -775,6 +768,14 @@
       "latitude": 4.19,
       "longitude": 97.49,
       "epoch_ms": 1794351922000
+    },
+    {
+      "id": "emsc_20261110_0000332",
+      "mag": 4.0,
+      "place": "OFFSHORE GUERRERO, MEXICO",
+      "latitude": 16.775,
+      "longitude": -100.164,
+      "epoch_ms": 1794352371000
     }
   ]
 }
