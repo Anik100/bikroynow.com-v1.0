@@ -357,17 +357,10 @@
     "emsc_20261110_0000213",
     "us7000txb8",
     "emsc_20261110_0000227",
-    "us7000txbc"
+    "us7000txbc",
+    "emsc_20261110_0000232"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261108_0000239",
-      "mag": 4.4,
-      "place": "PANAMA",
-      "latitude": 7.4617,
-      "longitude": -80.4883,
-      "epoch_ms": 1794167459000
-    },
     {
       "id": "us7000twz2",
       "mag": 4.8,
@@ -759,6 +752,14 @@
       "latitude": 13.6155,
       "longitude": -90.819,
       "epoch_ms": 1794324238586
+    },
+    {
+      "id": "emsc_20261110_0000232",
+      "mag": 5.2,
+      "place": "KEPULAUAN OBI, INDONESIA",
+      "latitude": -1.009,
+      "longitude": 128.504,
+      "epoch_ms": 1794325897840
     }
   ]
 }
