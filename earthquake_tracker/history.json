@@ -362,17 +362,10 @@
     "us7000txbi",
     "us7000txbj",
     "emsc_20261110_0000242",
-    "emsc_20261110_0000258"
+    "emsc_20261110_0000258",
+    "emsc_20261110_0000259"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000014",
-      "mag": 5.1,
-      "place": "SOUTH OF FIJI ISLANDS",
-      "latitude": -23.8089,
-      "longitude": 179.4209,
-      "epoch_ms": 1794185219150
-    },
     {
       "id": "emsc_20261109_0000019",
       "mag": 4.2,
@@ -764,6 +757,14 @@
       "latitude": -8.7133,
       "longitude": 147.9477,
       "epoch_ms": 1794332211050
+    },
+    {
+      "id": "emsc_20261110_0000259",
+      "mag": 5.3,
+      "place": "MID-INDIAN RIDGE",
+      "latitude": -20.8245,
+      "longitude": 68.4996,
+      "epoch_ms": 1794332190490
     }
   ]
 }
