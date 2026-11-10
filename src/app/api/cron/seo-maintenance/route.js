@@ -8,7 +8,7 @@ export const maxDuration = 60; // Allow up to 60s for full database maintenance 
 
 /**
  * Daily Automated SEO Maintenance & Self-Healing Cron Pipeline
- * Scheduled to run daily at 03:00 AM UTC (Off-peak low-traffic hours)
+ * Scheduled to run daily at 21:00 UTC (03:00 AM Bangladesh Time BST / Off-peak)
  */
 export async function GET(req) {
   return await handleMaintenance(req);
@@ -41,7 +41,7 @@ async function handleMaintenance(req) {
   const report = {
     success: false,
     timestamp: new Date().toISOString(),
-    schedule: '03:00 UTC (Off-peak daily maintenance)',
+    schedule: '21:00 UTC (03:00 AM Bangladesh Time BST - Off-peak)',
     scannedListings: 0,
     healedListings: 0,
     healedDetails: [],

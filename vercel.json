@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/seo-maintenance",
-      "schedule": "0 3 * * *"
+      "schedule": "0 21 * * *"
     }
   ]
 }
