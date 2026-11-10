@@ -327,17 +327,10 @@
     "emsc_20261109_0000339",
     "emsc_20261109_0000340",
     "emsc_20261109_0000341",
-    "us7000tx7v"
+    "us7000tx7v",
+    "emsc_20261110_0000002"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000twxn",
-      "mag": 4.7,
-      "place": "Southwest Indian Ridge",
-      "latitude": -27.6901,
-      "longitude": 64.443,
-      "epoch_ms": 1794140957722
-    },
     {
       "id": "emsc_20261108_0000183",
       "mag": 4.1,
@@ -729,6 +722,14 @@
       "latitude": -24.4824,
       "longitude": -177.2803,
       "epoch_ms": 1794267921429
+    },
+    {
+      "id": "emsc_20261110_0000002",
+      "mag": 4.4,
+      "place": "NEAR N COAST OF PAPUA, INDONESIA",
+      "latitude": -1.97,
+      "longitude": 139.1,
+      "epoch_ms": 1794269481000
     }
   ]
 }
