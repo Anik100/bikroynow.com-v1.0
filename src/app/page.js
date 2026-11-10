@@ -530,22 +530,11 @@ export default function Home() {
       <section className={styles.seoGuideSection}>
         <div className="container">
           <div className={styles.seoGuideCard}>
-            <h1 className={styles.seoMainH1}>
-              {lang === 'bn' 
-                ? 'বাংলাদেশে ব্যবহৃত ও নতুন পণ্য সহজে কেনাবেচা করুন' 
-                : 'Buy & Sell Used and New Products Easily in Bangladesh'}
-            </h1>
-            <p className={styles.seoMainDesc}>
-              {lang === 'bn'
-                ? 'BikroyNow হলো বাংলাদেশের বিশ্বস্ত অনলাইন মার্কেটপ্লেস। ব্যবহৃত মোবাইল ফোন, কম্পিউটার, ল্যাপটপ, ইলেকট্রনিক্স, বাইক, গাড়ি ও প্রপার্টির সেরা ডিল খুঁজে নিন অথবা ফ্রি বিজ্ঞাপন দিন।'
-                : 'BikroyNow is Bangladesh’s trusted classifieds marketplace. Find the best deals on verified used mobiles, laptops, electronics, vehicles, and properties or post your ad for free.'}
-            </p>
-
-            <h2 className={styles.seoGuideHeading}>
+            <h1 className={styles.seoGuideHeading}>
               {lang === 'bn'
                 ? 'BikroyNow – বাংলাদেশের বিশ্বস্ত লোকাল কেনাবেচার প্ল্যাটফর্ম'
                 : 'BikroyNow – Bangladesh’s Trusted Local Buy & Sell Marketplace'}
-            </h2>
+            </h1>
             <p>
               {lang === 'bn'
                 ? 'BikroyNow.com বাংলাদেশে নির্ভরযোগ্য ও আধুনিক অনলাইন ক্লাসিফাইড মার্কেটপ্লেস। এখানে আপনি আপনার ব্যবহৃত মোবাইল ফোন, কম্পিউটার ও ল্যাপটপ, হোম অ্যাপ্লায়েন্স, ইলেকট্রনিক্স গেজেট, ব্যবহৃত মোটরসাইকেল, গাড়ি, ফ্ল্যাট ও জমি কেনাবেচা করতে পারেন খুব সহজেই কোনো মধ্যস্বত্বভোগী ছাড়া।'

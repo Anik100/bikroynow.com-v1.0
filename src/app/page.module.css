@@ -4,30 +4,6 @@
   padding-bottom: 5rem;
 }
 
-.seoMainH1 {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: #0f172a;
-  letter-spacing: -0.2px;
-  margin-bottom: 0.45rem;
-  line-height: 1.4;
-}
-
-@media (min-width: 768px) {
-  .seoMainH1 {
-    font-size: 1.35rem;
-  }
-}
-
-.seoMainDesc {
-  font-size: 0.88rem;
-  color: #475569;
-  line-height: 1.6;
-  margin-bottom: 1.2rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #f1f5f9;
-}
-
 .seoGuideSection {
   margin-top: 2rem;
   margin-bottom: 1.5rem;
@@ -43,10 +19,17 @@
 
 .seoGuideHeading {
   font-size: 1.2rem;
-  font-weight: 800;
+  font-weight: 850;
   color: #0f172a;
+  letter-spacing: -0.2px;
   margin-bottom: 0.75rem;
   line-height: 1.4;
+}
+
+@media (min-width: 768px) {
+  .seoGuideHeading {
+    font-size: 1.4rem;
+  }
 }
 
 .seoGuideCard p {
