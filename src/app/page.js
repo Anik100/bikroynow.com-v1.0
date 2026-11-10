@@ -321,24 +321,6 @@ export default function Home() {
 
   return (
     <div className={styles.homeContainer}>
-      {/* === HERO BANNER & PRIMARY VISIBLE H1 === */}
-      <section className={styles.heroSection}>
-        <div className="container">
-          <div className={styles.heroContent}>
-            <h1 className={styles.heroTitle}>
-              {lang === 'bn' 
-                ? 'বাংলাদেশে ব্যবহৃত ও নতুন পণ্য সহজে কেনাবেচা করুন' 
-                : 'Buy & Sell Used and New Products Easily in Bangladesh'}
-            </h1>
-            <p className={styles.heroSubtitle}>
-              {lang === 'bn'
-                ? 'BikroyNow হলো বাংলাদেশের বিশ্বস্ত অনলাইন মার্কেটপ্লেস। ব্যবহৃত মোবাইল ফোন, কম্পিউটার, ল্যাপটপ, ইলেকট্রনিক্স, বাইক, গাড়ি ও প্রপার্টির সেরা ডিল খুঁজে নিন অথবা ফ্রি বিজ্ঞাপন দিন।'
-                : 'BikroyNow is Bangladesh’s trusted classifieds marketplace. Find the best deals on verified used mobiles, laptops, electronics, vehicles, and properties or post your ad for free.'}
-            </p>
-          </div>
-        </div>
-      </section>
-
       {/* === CATEGORY SECTION WITH AUTO-COLLAPSE ON SELECTION === */}
       <div className={`container ${styles.categorySection}`}>
         {/* Toggle Title Bar */}
@@ -544,10 +526,21 @@ export default function Home() {
         </div>
       </div>
 
-      {/* === COMPREHENSIVE SEO CONTENT & BUYER GUIDE SECTION === */}
+      {/* === COMPREHENSIVE BOTTOM SEO CONTENT & BUYER GUIDE SECTION === */}
       <section className={styles.seoGuideSection}>
         <div className="container">
           <div className={styles.seoGuideCard}>
+            <h1 className={styles.seoMainH1}>
+              {lang === 'bn' 
+                ? 'বাংলাদেশে ব্যবহৃত ও নতুন পণ্য সহজে কেনাবেচা করুন' 
+                : 'Buy & Sell Used and New Products Easily in Bangladesh'}
+            </h1>
+            <p className={styles.seoMainDesc}>
+              {lang === 'bn'
+                ? 'BikroyNow হলো বাংলাদেশের বিশ্বস্ত অনলাইন মার্কেটপ্লেস। ব্যবহৃত মোবাইল ফোন, কম্পিউটার, ল্যাপটপ, ইলেকট্রনিক্স, বাইক, গাড়ি ও প্রপার্টির সেরা ডিল খুঁজে নিন অথবা ফ্রি বিজ্ঞাপন দিন।'
+                : 'BikroyNow is Bangladesh’s trusted classifieds marketplace. Find the best deals on verified used mobiles, laptops, electronics, vehicles, and properties or post your ad for free.'}
+            </p>
+
             <h2 className={styles.seoGuideHeading}>
               {lang === 'bn'
                 ? 'BikroyNow – বাংলাদেশের বিশ্বস্ত লোকাল কেনাবেচার প্ল্যাটফর্ম'
