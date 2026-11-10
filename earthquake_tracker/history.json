@@ -330,17 +330,10 @@
     "us7000tx7v",
     "emsc_20261110_0000002",
     "emsc_20261110_0000011",
-    "us7000tx8d"
+    "us7000tx8d",
+    "emsc_20261110_0000017"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261108_0000190",
-      "mag": 4.4,
-      "place": "HALMAHERA, INDONESIA",
-      "latitude": 2.6,
-      "longitude": 128.47,
-      "epoch_ms": 1794156314000
-    },
     {
       "id": "emsc_20261108_0000202",
       "mag": 4.4,
@@ -732,6 +725,14 @@
       "latitude": -8.0178,
       "longitude": 130.3141,
       "epoch_ms": 1794275607800
+    },
+    {
+      "id": "emsc_20261110_0000017",
+      "mag": 4.9,
+      "place": "NORTH OF FRANZ JOSEF LAND",
+      "latitude": 86.7236,
+      "longitude": 65.2936,
+      "epoch_ms": 1794276003024
     }
   ]
 }
