@@ -367,17 +367,10 @@
     "us7000txc0",
     "us7000txc3",
     "emsc_20261110_0000269",
-    "emsc_20261110_0000272"
+    "emsc_20261110_0000272",
+    "emsc_20261110_0000281"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tx0p",
-      "mag": 4.3,
-      "place": "63 km NE of Keren, Eritrea",
-      "latitude": 16.1771,
-      "longitude": 38.8821,
-      "epoch_ms": 1794186691600
-    },
     {
       "id": "us7000tx0x",
       "mag": 4.9,
@@ -769,6 +762,14 @@
       "latitude": 15.214,
       "longitude": -94.608,
       "epoch_ms": 1794334051000
+    },
+    {
+      "id": "emsc_20261110_0000281",
+      "mag": 4.2,
+      "place": "OFF COAST OF OAXACA, MEXICO",
+      "latitude": 15.214,
+      "longitude": -94.626,
+      "epoch_ms": 1794337200000
     }
   ]
 }
