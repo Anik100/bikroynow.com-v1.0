@@ -349,17 +349,10 @@
     "emsc_20261110_0000069",
     "emsc_20261110_0000071",
     "emsc_20261109_0000357",
-    "emsc_20261110_0000165"
+    "emsc_20261110_0000165",
+    "emsc_20261110_0000169"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261108_0000228",
-      "mag": 4.3,
-      "place": "MINAHASA, SULAWESI, INDONESIA",
-      "latitude": 0.94,
-      "longitude": 120.72,
-      "epoch_ms": 1794164813000
-    },
     {
       "id": "emsc_20261108_0000232",
       "mag": 4.1,
@@ -751,6 +744,14 @@
       "latitude": 21.829,
       "longitude": 96.282,
       "epoch_ms": 1794312268000
+    },
+    {
+      "id": "emsc_20261110_0000169",
+      "mag": 4.1,
+      "place": "CENTRAL PERU",
+      "latitude": -9.9,
+      "longitude": -76.38,
+      "epoch_ms": 1794313425000
     }
   ]
 }
