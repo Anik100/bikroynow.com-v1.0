@@ -417,17 +417,10 @@
     "emsc_20261111_0000177",
     "emsc_20261111_0000217",
     "emsc_20261111_0000209",
-    "emsc_20261111_0000183"
+    "emsc_20261111_0000183",
+    "emsc_20261111_0000250"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000296",
-      "mag": 4.0,
-      "place": "CERAM SEA, INDONESIA",
-      "latitude": -2.92,
-      "longitude": 130.41,
-      "epoch_ms": 1794254658000
-    },
     {
       "id": "emsc_20261109_0000303",
       "mag": 4.3,
@@ -819,6 +812,14 @@
       "latitude": -8.88,
       "longitude": 121.79,
       "epoch_ms": 1794403566000
+    },
+    {
+      "id": "emsc_20261111_0000250",
+      "mag": 5.2,
+      "place": "BOUGAINVILLE REGION, P.N.G.",
+      "latitude": -6.247,
+      "longitude": 154.655,
+      "epoch_ms": 1794418698150
     }
   ]
 }
