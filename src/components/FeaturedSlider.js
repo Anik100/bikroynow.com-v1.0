@@ -11,7 +11,7 @@ const SLIDE_DURATION = 5000; // 5 seconds
 
 export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] }) {
   const [featuredAds, setFeaturedAds] = useState(initialFeaturedAds || []);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(initialFeaturedAds && initialFeaturedAds.length > 0 ? false : true);
   const [progress, setProgress] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -19,6 +19,8 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
   const timerRef = useRef(null);
   const progressRef = useRef(null);
   const startTimeRef = useRef(null);
+
+  const totalPages = Math.max(1, Math.ceil(featuredAds.length / 2));
 
   useEffect(() => {
     fetchFeaturedAds();
@@ -102,31 +104,31 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
     timerRef.current = setTimeout(() => {
       setIsAnimating(true);
       setTimeout(() => {
-        setCurrentIndex(prev => (prev + 1) % featuredAds.length);
+        setCurrentPage(prev => (prev + 1) % totalPages);
         setIsAnimating(false);
       }, 300);
     }, SLIDE_DURATION);
-  }, [featuredAds.length, stopAutoSlide]);
+  }, [totalPages, stopAutoSlide]);
 
   useEffect(() => {
-    if (featuredAds.length > 1) {
+    if (totalPages > 1) {
       startAutoSlide();
     }
     return () => stopAutoSlide();
-  }, [featuredAds, currentIndex, startAutoSlide, stopAutoSlide]);
+  }, [totalPages, currentPage, startAutoSlide, stopAutoSlide]);
 
-  const goToSlide = (index) => {
-    if (index === currentIndex) return;
+  const goToPage = (pageIndex) => {
+    if (pageIndex === currentPage) return;
     setIsAnimating(true);
     setTimeout(() => {
-      setCurrentIndex(index);
+      setCurrentPage(pageIndex);
       setIsAnimating(false);
     }, 250);
     startAutoSlide();
   };
 
-  const goNext = () => goToSlide((currentIndex + 1) % featuredAds.length);
-  const goPrev = () => goToSlide((currentIndex - 1 + featuredAds.length) % featuredAds.length);
+  const goNext = () => goToPage((currentPage + 1) % totalPages);
+  const goPrev = () => goToPage((currentPage - 1 + totalPages) % totalPages);
 
   if (loading && featuredAds.length === 0) {
     return (
@@ -161,27 +163,23 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
     );
   }
 
-  const currentAd1 = featuredAds[currentIndex];
-  const listing1 = currentAd1?.listing;
-  const isFirstSlide = currentIndex === 0;
+  // Pairwise ad indexing: Each page shows 2 brand new ads!
+  const firstIndex = (currentPage * 2) % featuredAds.length;
+  const secondIndex = (currentPage * 2 + 1) % featuredAds.length;
 
-  // Second ad for desktop split view (if 2 or more exist)
-  const secondIndex = (currentIndex + 1) % featuredAds.length;
+  const currentAd1 = featuredAds[firstIndex];
+  const listing1 = currentAd1?.listing;
+  const isFirstSlide = currentPage === 0;
+
   const currentAd2 = featuredAds.length > 1 ? featuredAds[secondIndex] : featuredAds[0];
   const listing2 = currentAd2?.listing;
 
   return (
     <div className={styles.sliderContainer}>
-      {/* Featured Badge (Mobile View) */}
-      <div className={styles.mobileFeaturedBadge}>
-        <Star size={11} fill="#fff" color="#fff" />
-        {lang === 'bn' ? 'বিজনেস ফিচার্ড অ্যাড' : 'Business Featured Ad'}
-      </div>
-
-      {/* Slide Count */}
-      {featuredAds.length > 1 && (
+      {/* Slide Count Indicator (shows current pair out of total pairs) */}
+      {totalPages > 1 && (
         <div className={styles.slideCount}>
-          {currentIndex + 1} / {featuredAds.length}
+          {currentPage + 1} / {totalPages}
         </div>
       )}
 
@@ -194,33 +192,26 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
         >
           <div className={styles.slideImageWrapper}>
             {listing1?.images?.[0] ? (
-              <>
-                <div 
-                  className={styles.blurredBg} 
-                  style={{ backgroundImage: `url(${listing1.images[0]})` }} 
-                />
-                <Image
-                  src={listing1.images[0]}
-                  alt={listing1?.title ? `${listing1.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
-                  fill
-                  priority={isFirstSlide}
-                  loading={isFirstSlide ? "eager" : "lazy"}
-                  fetchPriority={isFirstSlide ? "high" : "auto"}
-                  sizes="(max-width: 768px) 100vw, 450px"
-                  quality={80}
-                  style={{ objectFit: 'cover' }}
-                  className={styles.slideImage}
-                />
-              </>
+              <Image
+                src={listing1.images[0]}
+                alt={listing1?.title ? `${listing1.title} - ফিচার্ড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
+                fill
+                priority={isFirstSlide}
+                loading={isFirstSlide ? "eager" : "lazy"}
+                fetchPriority={isFirstSlide ? "high" : "auto"}
+                sizes="(max-width: 768px) 50vw, 450px"
+                quality={90}
+                style={{ objectFit: 'cover' }}
+                className={styles.slideImage}
+              />
             ) : (
               <div className={styles.noImageBg}>
                 <span className={styles.noImageLogo}>BikroyNow<span>.com</span></span>
               </div>
             )}
-            <div className={styles.slideGradient} />
             <div className={styles.cardBadge}>
-              <Star size={10} fill="#fff" color="#fff" />
-              <span>{lang === 'bn' ? 'স্পনসরড অ্যাড' : 'Sponsored'}</span>
+              <Star size={10} fill="#f59e0b" color="#f59e0b" />
+              <span>{lang === 'bn' ? 'ফিচার্ড' : 'Featured'}</span>
             </div>
           </div>
 
@@ -234,50 +225,40 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
               )}
               {listing1?.location && (
                 <span className={styles.slideLocation}>
-                  <MapPin size={13} color="#38bdf8" /> {listing1.location}
+                  <MapPin size={11} color="#38bdf8" /> {listing1.location}
                 </span>
               )}
-            </div>
-            <div className={styles.slideAction}>
-              <span>{lang === 'bn' ? 'বিস্তারিত দেখুন' : 'View Details'}</span>
-              <ArrowRight size={15} />
             </div>
           </div>
         </Link>
 
-        {/* Card 2 (Desktop Widescreen Dual View) */}
+        {/* Card 2 */}
         <Link
           href={listing2 ? `/ad/${listing2.id}` : '#'}
           className={`${styles.slideCard} ${styles.desktopSecondCard}`}
         >
           <div className={styles.slideImageWrapper}>
             {listing2?.images?.[0] ? (
-              <>
-                <div 
-                  className={styles.blurredBg} 
-                  style={{ backgroundImage: `url(${listing2.images[0]})` }} 
-                />
-                <Image
-                  src={listing2.images[0]}
-                  alt={listing2?.title ? `${listing2.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
-                  fill
-                  priority={false}
-                  loading="lazy"
-                  fetchPriority="low"
-                  sizes="(max-width: 768px) 100vw, 450px"
-                  quality={75}
-                  style={{ objectFit: 'cover' }}
-                  className={styles.slideImage}
-                />
-              </>
+              <Image
+                src={listing2.images[0]}
+                alt={listing2?.title ? `${listing2.title} - ফিচার্ড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
+                fill
+                priority={false}
+                loading="lazy"
+                fetchPriority="low"
+                sizes="(max-width: 768px) 50vw, 450px"
+                quality={90}
+                style={{ objectFit: 'cover' }}
+                className={styles.slideImage}
+              />
             ) : (
               <div className={styles.noImageBg}>
                 <span className={styles.noImageLogo}>BikroyNow<span>.com</span></span>
               </div>
             )}
-            <div className={styles.cardBadge} style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}>
-              <Star size={10} fill="#fff" color="#fff" />
-              <span>{lang === 'bn' ? 'বিজনেস ফিচার্ড' : 'Featured'}</span>
+            <div className={styles.cardBadge}>
+              <Star size={10} fill="#f59e0b" color="#f59e0b" />
+              <span>{lang === 'bn' ? 'ফিচার্ড' : 'Featured'}</span>
             </div>
           </div>
 
@@ -291,13 +272,9 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
               )}
               {listing2?.location && (
                 <span className={styles.slideLocation}>
-                  <MapPin size={13} color="#38bdf8" /> {listing2.location}
+                  <MapPin size={11} color="#38bdf8" /> {listing2.location}
                 </span>
               )}
-            </div>
-            <div className={styles.slideAction}>
-              <span>{lang === 'bn' ? 'বিস্তারিত দেখুন' : 'View Details'}</span>
-              <ArrowRight size={15} />
             </div>
           </div>
         </Link>
@@ -312,7 +289,7 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
       </div>
 
       {/* Navigation Buttons */}
-      {featuredAds.length > 1 && (
+      {totalPages > 1 && (
         <>
           <button 
             className={`${styles.navBtn} ${styles.navLeft}`} 
@@ -331,11 +308,11 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
 
           {/* Indicator Dots */}
           <div className={styles.dots}>
-            {featuredAds.map((_, i) => (
+            {Array.from({ length: totalPages }).map((_, i) => (
               <button
                 key={i}
-                className={`${styles.dot} ${i === currentIndex ? styles.dotActive : ''}`}
-                onClick={() => goToSlide(i)}
+                className={`${styles.dot} ${i === currentPage ? styles.dotActive : ''}`}
+                onClick={() => goToPage(i)}
                 aria-label={lang === 'bn' ? `স্লাইড ${i + 1}` : `Slide ${i + 1}`}
               />
             ))}

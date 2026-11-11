@@ -1,63 +1,64 @@
 /* ======================================
-   FeaturedSlider.module.css - Dual Desktop Widescreen Layout
+   FeaturedSlider.module.css - Side-by-Side Dual View with Professional Golden Frame
    ====================================== */
 
 .sliderContainer {
   position: relative;
   width: 100%;
-  border-radius: 20px;
+  border-radius: 18px;
   overflow: hidden;
-  background: transparent;
+  background: linear-gradient(180deg, rgba(245, 158, 11, 0.05) 0%, rgba(15, 23, 42, 0.95) 100%);
   margin-bottom: 1.25rem;
-  height: 300px;
-  min-height: 300px;
-  max-height: 300px;
+  height: 215px;
+  min-height: 215px;
+  max-height: 215px;
+  box-sizing: border-box;
+  padding: 3px;
+
+  /* ── Sleek Professional Golden Border & Ambient Glow ── */
+  border: 1.5px solid rgba(245, 158, 11, 0.75);
+  box-shadow: 
+    0 0 0 1px rgba(251, 191, 36, 0.2),
+    0 0 16px -2px rgba(245, 158, 11, 0.3),
+    0 4px 18px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* ── Mobile Featured Badge ─────────────────── */
-.mobileFeaturedBadge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  z-index: 25;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #fff;
-  font-size: 0.65rem;
-  font-weight: 900;
-  padding: 0.3rem 0.65rem;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  letter-spacing: 0.4px;
-  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.4);
-  text-transform: uppercase;
+.sliderContainer:hover {
+  border-color: rgba(245, 158, 11, 0.95);
+  box-shadow: 
+    0 0 0 1px rgba(251, 191, 36, 0.4),
+    0 0 20px -1px rgba(245, 158, 11, 0.42),
+    0 6px 22px rgba(0, 0, 0, 0.4);
 }
 
+/* ── Sleek Slide Count Indicator (Top Right) ── */
 .slideCount {
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 9px;
+  right: 9px;
   z-index: 25;
-  background: rgba(15, 23, 42, 0.7);
+  background: rgba(15, 23, 42, 0.8);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: #f8fafc;
-  font-size: 0.7rem;
-  font-weight: 850;
-  padding: 0.25rem 0.65rem;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
 /* ── Slides Wrapper & Animation ───────────── */
 .slidesWrapper {
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  height: 300px;
-  min-height: 300px;
-  max-height: 300px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .slideShow {
@@ -74,66 +75,76 @@
 
 .desktopSecondCard,
 .slideCard.desktopSecondCard {
-  display: block !important;
+  display: flex !important;
 }
 
-/* ── Individual Card Layout (Mobile Default) ── */
+/* ── Individual Card Layout (Side by Side Dual View) ── */
 .slideCard {
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  height: 145px;
+  height: 100%;
   text-decoration: none;
   overflow: hidden;
   position: relative;
-  border-radius: 16px;
+  border-radius: 13px;
   background: #0f172a;
-  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.16);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(245, 158, 11, 0.18);
   flex-shrink: 0;
+  box-sizing: border-box;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
+.slideCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(245, 158, 11, 0.55);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.35);
+}
+
+/* ── Product Photo Container (144px Height) ── */
 .slideImageWrapper {
   position: relative;
   width: 100%;
-  height: 145px;
+  height: 144px;
   background: #020617;
   overflow: hidden;
-}
-
-.blurredBg {
-  display: none;
 }
 
 .slideImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 5s ease;
+  transition: transform 0.45s ease;
 }
 
 .slideCard:hover .slideImage {
-  transform: scale(1.06);
+  transform: scale(1.05);
 }
 
+/* ── Uniform Premium Badge (Top Left) ── */
 .cardBadge {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 8px;
+  left: 8px;
   z-index: 15;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: #ffffff;
-  font-size: 0.65rem;
-  font-weight: 850;
-  padding: 0.22rem 0.6rem;
-  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  text-transform: uppercase;
+  gap: 3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  letter-spacing: 0.2px;
 }
 
-/* No-image fallback */
+/* ── Fallback when ad has no image ── */
 .noImageBg {
   width: 100%;
   height: 100%;
@@ -144,7 +155,7 @@
 }
 
 .noImageLogo {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 900;
   color: rgba(255, 255, 255, 0.95);
 }
@@ -153,78 +164,80 @@
   color: #f59e0b;
 }
 
-.slideGradient {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 85%;
-  background: linear-gradient(to top, rgba(15, 23, 42, 0.98) 0%, rgba(15, 23, 42, 0.5) 60%, transparent 100%);
-  pointer-events: none;
-}
-
+/* ── Card Info Container (65px Height - Centered and tight, zero empty gap) ── */
 .slideInfo {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 1rem 1.2rem;
-  pointer-events: none;
-  z-index: 15;
+  position: static;
+  width: 100%;
+  height: calc(100% - 144px);
+  padding: 0.35rem 0.6rem 0.4rem;
+  pointer-events: auto;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  border-top: 1px solid rgba(245, 158, 11, 0.12);
+  box-sizing: border-box;
 }
 
 .slideTitle {
   color: #ffffff;
-  font-size: 1rem;
-  font-weight: 800;
-  margin: 0 0 0.35rem 0;
+  font-size: 0.8rem;
+  font-weight: 750;
+  margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+  line-height: 1.2;
 }
 
 .slideMeta {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin-top: 1px;
 }
 
 .slidePrice {
   color: #34d399;
-  font-size: 1.05rem;
-  font-weight: 900;
+  font-size: 0.88rem;
+  font-weight: 850;
+  white-space: nowrap;
 }
 
 .slideLocation {
-  color: rgba(255, 255, 255, 0.85);
-  font-size: 0.78rem;
+  color: #cbd5e1;
+  font-size: 0.68rem;
   font-weight: 600;
   display: flex;
   align-items: center;
   gap: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .slideAction {
   display: none;
 }
 
-/* ── Progress Bar ───────────────────── */
+/* ── Golden Progress Bar (Pinned to Frame Bottom) ── */
 .progressBarWrap {
-  height: 4px;
-  background: rgba(255, 255, 255, 0.12);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: rgba(245, 158, 11, 0.15);
   width: 100%;
-  margin-top: 0.8rem;
-  border-radius: 4px;
-  overflow: hidden;
+  margin: 0;
+  z-index: 25;
 }
 
 .progressBarFill {
   height: 100%;
-  background: linear-gradient(90deg, #10b981, #34d399);
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
   border-radius: 0 2px 2px 0;
 }
 
@@ -234,35 +247,35 @@
   top: 48%;
   transform: translateY(-50%);
   z-index: 30;
-  width: 38px;
-  height: 38px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(10px);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(245, 158, 11, 0.4);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
-  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
 }
 
 .navBtn:hover {
-  background: #008b5e;
-  border-color: #008b5e;
-  transform: translateY(-50%) scale(1.12);
-  box-shadow: 0 6px 20px rgba(0, 139, 94, 0.45);
+  background: #d97706;
+  border-color: #f59e0b;
+  transform: translateY(-50%) scale(1.1);
 }
 
-.navLeft { left: -12px; }
-.navRight { right: -12px; }
+.navLeft { left: 6px; }
+.navRight { right: 6px; }
 
 /* ── Indicator Dots ─────────────────── */
 .dots {
   position: absolute;
-  bottom: -22px;
+  bottom: -20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -271,10 +284,10 @@
 }
 
 .dot {
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: rgba(203, 213, 225, 0.5);
+  background: rgba(203, 213, 225, 0.45);
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -282,12 +295,53 @@
 }
 
 .dotActive {
-  background: #008b5e;
-  width: 22px;
+  background: #f59e0b;
+  width: 18px;
   border-radius: 6px;
 }
 
-/* ── Desktop Widescreen Layout (2 Ads Side-by-Side) ───────────── */
+/* ── Placeholder for Zero-CLS Loading ── */
+.placeholder {
+  width: 100%;
+  height: 215px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid rgba(245, 158, 11, 0.5);
+  box-sizing: border-box;
+}
+
+.placeholderContent {
+  text-align: center;
+  padding: 1rem;
+}
+
+.placeholderLogo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+.placeholderLogo span {
+  color: #f59e0b;
+}
+
+.placeholderText {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-top: 0.35rem;
+}
+
+.placeholderSub {
+  color: #64748b;
+  font-size: 0.72rem;
+  display: block;
+  margin-top: 0.2rem;
+}
+
+/* ── Desktop View (min-width: 769px) ── */
 @media (min-width: 769px) {
   .sliderContainer {
     margin-top: 1.25rem;
@@ -295,196 +349,78 @@
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
-    height: 175px;
-    min-height: 175px;
-    max-height: 175px;
-  }
-
-  .mobileFeaturedBadge {
-    display: none;
+    height: 215px;
+    min-height: 215px;
+    max-height: 215px;
+    padding: 4px;
   }
 
   .slidesWrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    height: 175px;
-    min-height: 175px;
-    max-height: 175px;
-  }
-
-  .desktopSecondCard,
-  .slideCard.desktopSecondCard {
-    display: flex !important;
-  }
-
-  .slideCard {
-    display: flex;
-    flex-direction: column;
-    height: 175px;
-    position: relative;
-    border-radius: 14px;
-    background: #0f172a;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.16);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
-
-  .slideCard:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.3);
-    border-color: rgba(16, 185, 129, 0.4);
+    gap: 1.2rem;
   }
 
   .slideImageWrapper {
-    height: 100px;
-    width: 100%;
-    position: relative;
-    overflow: hidden;
-    background: #020617;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .blurredBg {
-    display: block;
-    position: absolute;
-    inset: 0;
-    background-size: cover;
-    background-position: center;
-    filter: blur(25px) opacity(0.35) scale(1.2);
-  }
-
-  .slideImage {
-    position: relative;
-    z-index: 5;
-    width: auto;
-    height: auto;
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain;
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
-  }
-
-  .slideGradient {
-    display: none;
+    height: 144px;
   }
 
   .slideInfo {
-    position: static;
-    width: 100%;
-    height: calc(175px - 100px);
-    padding: 0.45rem 0.75rem;
-    pointer-events: auto;
-    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    height: calc(100% - 144px);
+    padding: 0.4rem 0.85rem;
   }
 
   .slideTitle {
     font-size: 0.88rem;
-    font-weight: 850;
-    color: #ffffff;
-    margin: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-shadow: none;
-  }
-
-  .slideMeta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.35rem;
-    margin-top: 0.1rem;
   }
 
   .slidePrice {
-    font-size: 0.88rem;
-    color: #34d399;
-    font-weight: 900;
-    background: rgba(16, 185, 129, 0.12);
-    padding: 0.15rem 0.45rem;
-    border-radius: 6px;
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    font-size: 0.92rem;
   }
 
   .slideLocation {
-    font-size: 0.7rem;
-    color: #cbd5e1;
-    background: rgba(255, 255, 255, 0.06);
-    padding: 0.15rem 0.4rem;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-  }
-
-  .slideAction {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    margin-top: 0.1rem;
-    background: linear-gradient(135deg, #008b5e 0%, #05b078 100%);
-    color: #ffffff;
-    font-size: 0.7rem;
-    font-weight: 800;
-    padding: 0.25rem 0.65rem;
-    border-radius: 6px;
-    box-shadow: 0 2px 5px rgba(0, 139, 94, 0.25);
-    transition: all 0.2s ease;
-    width: max-content;
-  }
-
-  .slideCard:hover .slideAction {
-    transform: translateX(4px);
-    background: linear-gradient(135deg, #00a872 0%, #008b5e 100%);
+    font-size: 0.72rem;
   }
 
   .placeholder {
-    height: 175px;
+    height: 215px;
   }
 }
 
-/* ── Mobile Optimization ─────────────────── */
+/* ── Mobile Optimization (max-width: 480px) ── */
 @media (max-width: 480px) {
   .sliderContainer {
-    height: 300px;
-    min-height: 300px;
-    max-height: 300px;
+    height: 215px;
+    min-height: 215px;
+    max-height: 215px;
+    padding: 3px;
   }
 
   .slidesWrapper {
-    height: 300px;
-    min-height: 300px;
-    max-height: 300px;
-    gap: 0.5rem;
-  }
-
-  .slideCard {
-    height: 145px;
+    gap: 0.45rem;
   }
 
   .slideImageWrapper {
-    height: 145px;
+    height: 144px;
+  }
+
+  .slideInfo {
+    height: calc(100% - 144px);
+    padding: 0.35rem 0.6rem 0.4rem;
   }
 
   .slideTitle {
-    font-size: 0.88rem;
+    font-size: 0.8rem;
   }
 
   .slidePrice {
-    font-size: 0.95rem;
+    font-size: 0.86rem;
   }
 
   .navBtn {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
   }
 
   .placeholder {
-    height: 300px;
+    height: 215px;
   }
 }
