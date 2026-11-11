@@ -401,17 +401,10 @@
     "us7000txi0",
     "us7000txi2",
     "emsc_20261111_0000122",
-    "emsc_20261111_0000106"
+    "emsc_20261111_0000106",
+    "emsc_20261111_0000130"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000171",
-      "mag": 4.6,
-      "place": "CENTRAL TURKEY",
-      "latitude": 37.5,
-      "longitude": 35.69,
-      "epoch_ms": 1794227301070
-    },
     {
       "id": "emsc_20261109_0000211",
       "mag": 4.4,
@@ -803,6 +796,14 @@
       "latitude": 2.77,
       "longitude": 93.22,
       "epoch_ms": 1794390268000
+    },
+    {
+      "id": "emsc_20261111_0000130",
+      "mag": 4.3,
+      "place": "PANAMA",
+      "latitude": 7.539,
+      "longitude": -81.4241,
+      "epoch_ms": 1794392405000
     }
   ]
 }
