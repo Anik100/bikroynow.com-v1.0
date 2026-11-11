@@ -409,17 +409,10 @@
     "emsc_20261111_0000152",
     "us7000txis",
     "emsc_20261111_0000156",
-    "us7000txir"
+    "us7000txir",
+    "emsc_20261111_0000160"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000273",
-      "mag": 4.1,
-      "place": "OFFSHORE CHIAPAS, MEXICO",
-      "latitude": 14.406,
-      "longitude": -93.15,
-      "epoch_ms": 1794250056000
-    },
     {
       "id": "us7000tx6j",
       "mag": 4.6,
@@ -811,6 +804,14 @@
       "latitude": -7.9445,
       "longitude": 130.2513,
       "epoch_ms": 1794396744685
+    },
+    {
+      "id": "emsc_20261111_0000160",
+      "mag": 4.0,
+      "place": "CERAM SEA, INDONESIA",
+      "latitude": -2.91,
+      "longitude": 130.51,
+      "epoch_ms": 1794399014000
     }
   ]
 }
