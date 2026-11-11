@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './Footer.module.css';
-import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Youtube, MapPin, Phone, Mail } from 'lucide-react';
 
 export default function Footer() {
   const pathname = usePathname();
@@ -25,11 +25,27 @@ export default function Footer() {
           </ul>
         </div>
         <div className={styles.column}>
-          <h3>Help & Support</h3>
+          <h3>Help &amp; Support</h3>
           <ul>
             <li><Link href="/faq">FAQ</Link></li>
             <li><Link href="/stay-safe">Stay safe</Link></li>
             <li><Link href="/contact">Contact Us</Link></li>
+            <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.45rem', color: 'var(--text-light)', fontSize: '0.88rem', lineHeight: 1.4 }}>
+              <MapPin size={15} style={{ flexShrink: 0, marginTop: '2px', color: 'var(--primary-orange)' }} />
+              <span>Nagarpur, Tangail, Bangladesh</span>
+            </li>
+            <li>
+              <a href="tel:+8809612488488" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
+                <Phone size={15} style={{ flexShrink: 0, color: 'var(--primary-orange)' }} />
+                <span>+880 9612-488488</span>
+              </a>
+            </li>
+            <li>
+              <a href="mailto:support@bikroynow.com" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
+                <Mail size={15} style={{ flexShrink: 0, color: 'var(--primary-orange)' }} />
+                <span>support@bikroynow.com</span>
+              </a>
+            </li>
           </ul>
         </div>
         <div className={styles.column}>
@@ -61,7 +77,7 @@ export default function Footer() {
       </div>
       <div className={styles.bottomBar}>
         <div className="container">
-          <p>&copy; {new Date().getFullYear()} BikroyNow.com</p>
+          <p>&copy; {new Date().getFullYear()} BikroyNow.com &bull; Nagarpur, Tangail, Bangladesh &bull; support@bikroynow.com</p>
         </div>
       </div>
     </footer>

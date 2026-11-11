@@ -24,10 +24,10 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bikroynow.com';
 export const metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: 'BikroyNow.com - Buy & Sell Anything in Bangladesh',
+    default: 'BikroyNow.com - Buy & Sell Electronics & More in Bangladesh',
     template: '%s | BikroyNow.com',
   },
-  description: 'BikroyNow.com - The largest online marketplace in Bangladesh to buy, sell, and find used mobile phones, second-hand laptops, routers, cars, bikes, properties, and jobs safely and fast. বাংলাদেশের বিশ্বস্ত অনলাইন কেনাবেচা মার্কেটপ্লেস।',
+  description: "BikroyNow.com is Bangladesh's trusted online marketplace to buy and sell used mobiles, laptops, routers, bikes, and electronics safely and fast.",
   keywords: [
     // Brand Variations
     'BikroyNow', 'bikroynow.com', 'bikroy now', 'বিক্রয়নও', 'বিক্রয় নাও', 'bikroyhut', 'bikroy marketplace',
@@ -68,8 +68,8 @@ export const metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: 'BikroyNow.com - Buy & Sell Anything in Bangladesh',
-    description: 'The largest online marketplace in Bangladesh to buy, sell, and find electronics, mobile phones, cars, and properties.',
+    title: 'BikroyNow.com - Buy & Sell Electronics & More in Bangladesh',
+    description: "BikroyNow.com is Bangladesh's trusted online marketplace to buy and sell used mobiles, laptops, routers, bikes, and electronics safely and fast.",
     url: siteUrl,
     siteName: 'BikroyNow',
     locale: 'bn_BD',
@@ -93,8 +93,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'BikroyNow.com - Buy & Sell Anything in Bangladesh',
-    description: 'The largest online marketplace in Bangladesh to buy, sell, and find electronics, mobiles, and more.',
+    title: 'BikroyNow.com - Buy & Sell Electronics & More in Bangladesh',
+    description: "BikroyNow.com is Bangladesh's trusted online marketplace to buy and sell used mobiles, laptops, routers, bikes, and electronics safely and fast.",
     images: [`${siteUrl}/opengraph-image`],
   },
   icons: {
@@ -145,9 +145,43 @@ const jsonLd = {
     {
       '@type': 'Organization',
       '@id': `${siteUrl}/#organization`,
-      name: 'BikroyNow',
+      name: 'BikroyNow.com',
       url: siteUrl,
       logo: `${siteUrl}/icon.svg`,
+      contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: '+8809612488488',
+        email: 'support@bikroynow.com',
+        contactType: 'customer support',
+        areaServed: 'BD',
+        availableLanguage: ['bn', 'en'],
+      },
+    },
+    {
+      '@type': 'LocalBusiness',
+      '@id': `${siteUrl}/#localbusiness`,
+      name: 'BikroyNow.com',
+      url: 'https://www.bikroynow.com',
+      image: `${siteUrl}/og-image.png`,
+      logo: `${siteUrl}/icon.svg`,
+      description: "BikroyNow.com is Bangladesh's trusted online marketplace to buy and sell used mobiles, laptops, routers, bikes, and electronics safely and fast.",
+      telephone: '+8809612488488',
+      email: 'support@bikroynow.com',
+      priceRange: 'BDT',
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Nagarpur',
+        addressLocality: 'Nagarpur',
+        addressRegion: 'Tangail',
+        addressCountry: 'BD',
+      },
+      areaServed: {
+        '@type': 'Country',
+        name: 'Bangladesh',
+      },
+      sameAs: [
+        'https://www.facebook.com/profile.php?id=61592653021446',
+      ],
     },
   ],
 };
