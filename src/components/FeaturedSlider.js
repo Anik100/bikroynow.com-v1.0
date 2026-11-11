@@ -226,12 +226,71 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
     );
   }
 
+  const renderSlideCard = (listItem, { isPriority = false, isLazy = false, fetchPriority = 'auto', extraClass = '' } = {}) => (
+    <Link
+      href={listItem ? `/ad/${listItem.id}` : '#'}
+      className={`${styles.slideCard} ${extraClass}`.trim()}
+    >
+      <div className={styles.slideImageWrapper}>
+        {listItem?.images?.[0] ? (
+          <Image
+            src={listItem.images[0]}
+            alt={listItem?.title ? `${listItem.title} - ফিচার্ড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
+            fill
+            priority={isPriority}
+            loading={isLazy ? 'lazy' : 'eager'}
+            fetchPriority={fetchPriority}
+            sizes="(max-width: 768px) 50vw, 450px"
+            quality={90}
+            style={{ objectFit: 'cover' }}
+            className={styles.slideImage}
+          />
+        ) : (
+          <div className={styles.noImageBg}>
+            <span className={styles.noImageLogo}>BikroyNow<span>.com</span></span>
+          </div>
+        )}
+        <div className={styles.cardBadge}>
+          <Star size={10} fill="#f59e0b" color="#f59e0b" />
+          <span>{lang === 'bn' ? 'ফিচার্ড' : 'Featured'}</span>
+        </div>
+      </div>
+
+      <div className={styles.slideInfo}>
+        <h3 className={styles.slideTitle}>{listItem?.title}</h3>
+        <div className={styles.slideMeta}>
+          {listItem?.price > 0 && (
+            <span className={styles.slidePrice}>
+              {lang === 'bn' ? `৳ ${Number(listItem.price).toLocaleString('bn-BD')}` : `Tk ${Number(listItem.price).toLocaleString()}`}
+            </span>
+          )}
+          {listItem?.location && (
+            <span className={styles.slideLocation}>
+              <MapPin size={12} color="#38bdf8" style={{ flexShrink: 0 }} /> {listItem.location}
+            </span>
+          )}
+        </div>
+        <div className={styles.slideAction}>
+          <span>{lang === 'bn' ? 'বিজ্ঞাপন দেখুন' : 'View Ad'}</span>
+          <ArrowRight size={13} />
+        </div>
+      </div>
+    </Link>
+  );
+
   return (
     <div className={styles.sliderContainer}>
+      {/* Single crisp Slide Count Indicator at top-right */}
+      {totalPages > 1 && (
+        <div className={styles.slideCount} aria-hidden="true" suppressHydrationWarning>
+          {currentPage + 1} / {totalPages}
+        </div>
+      )}
+
       {/* ── Horizontal Sliding Track (Smooth App-Style Carousel, Zero-Flicker Pre-paint) ── */}
       <div 
         id="featured-slider-track"
-        className={styles.sliderTrack} 
+        className={`${styles.sliderTrack} ${totalPages > 1 ? styles.multiPageTrack : ''}`.trim()} 
         suppressHydrationWarning
       >
         {Array.from({ length: totalPages }).map((_, pageIdx) => {
@@ -246,109 +305,33 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
 
           return (
             <div key={pageIdx} className={styles.slidePage}>
-              {/* Slide Count Indicator (embedded per slide for instant 0ms accuracy on reload) */}
-              {totalPages > 1 && (
-                <div className={styles.slideCount} aria-hidden="true">
-                  {pageIdx + 1} / {totalPages}
-                </div>
-              )}
+              {renderSlideCard(list1, {
+                isPriority: isLCP || isCurrent,
+                isLazy: !(isLCP || isCurrent),
+                fetchPriority: isLCP || isCurrent ? 'high' : 'auto'
+              })}
 
-              {/* Card 1 */}
-              <Link
-                href={list1 ? `/ad/${list1.id}` : '#'}
-                className={styles.slideCard}
-              >
-                <div className={styles.slideImageWrapper}>
-                  {list1?.images?.[0] ? (
-                    <Image
-                      src={list1.images[0]}
-                      alt={list1?.title ? `${list1.title} - ফিচার্ড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
-                      fill
-                      priority={isLCP || isCurrent}
-                      loading={isLCP || isCurrent ? "eager" : "lazy"}
-                      fetchPriority={isLCP || isCurrent ? "high" : "auto"}
-                      sizes="(max-width: 768px) 50vw, 450px"
-                      quality={90}
-                      style={{ objectFit: 'cover' }}
-                      className={styles.slideImage}
-                    />
-                  ) : (
-                    <div className={styles.noImageBg}>
-                      <span className={styles.noImageLogo}>BikroyNow<span>.com</span></span>
-                    </div>
-                  )}
-                  <div className={styles.cardBadge}>
-                    <Star size={10} fill="#f59e0b" color="#f59e0b" />
-                    <span>{lang === 'bn' ? 'ফিচার্ড' : 'Featured'}</span>
-                  </div>
-                </div>
-
-                <div className={styles.slideInfo}>
-                  <h3 className={styles.slideTitle}>{list1?.title}</h3>
-                  <div className={styles.slideMeta}>
-                    {list1?.price > 0 && (
-                      <span className={styles.slidePrice}>
-                        {lang === 'bn' ? `৳ ${Number(list1.price).toLocaleString('bn-BD')}` : `Tk ${Number(list1.price).toLocaleString()}`}
-                      </span>
-                    )}
-                    {list1?.location && (
-                      <span className={styles.slideLocation}>
-                        <MapPin size={11} color="#38bdf8" /> {list1.location}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </Link>
-
-              {/* Card 2 */}
-              <Link
-                href={list2 ? `/ad/${list2.id}` : '#'}
-                className={`${styles.slideCard} ${styles.desktopSecondCard}`}
-              >
-                <div className={styles.slideImageWrapper}>
-                  {list2?.images?.[0] ? (
-                    <Image
-                      src={list2.images[0]}
-                      alt={list2?.title ? `${list2?.title} - ফিচার্ড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
-                      fill
-                      priority={false}
-                      loading={isCurrent ? "eager" : "lazy"}
-                      fetchPriority={isCurrent ? "high" : "low"}
-                      sizes="(max-width: 768px) 50vw, 450px"
-                      quality={90}
-                      style={{ objectFit: 'cover' }}
-                      className={styles.slideImage}
-                    />
-                  ) : (
-                    <div className={styles.noImageBg}>
-                      <span className={styles.noImageLogo}>BikroyNow<span>.com</span></span>
-                    </div>
-                  )}
-                  <div className={styles.cardBadge}>
-                    <Star size={10} fill="#f59e0b" color="#f59e0b" />
-                    <span>{lang === 'bn' ? 'ফিচার্ড' : 'Featured'}</span>
-                  </div>
-                </div>
-
-                <div className={styles.slideInfo}>
-                  <h3 className={styles.slideTitle}>{list2?.title}</h3>
-                  <div className={styles.slideMeta}>
-                    {list2?.price > 0 && (
-                      <span className={styles.slidePrice}>
-                        {lang === 'bn' ? `৳ ${Number(list2.price).toLocaleString('bn-BD')}` : `Tk ${Number(list2.price).toLocaleString()}`}
-                      </span>
-                    )}
-                    {list2?.location && (
-                      <span className={styles.slideLocation}>
-                        <MapPin size={11} color="#38bdf8" /> {list2.location}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </Link>
+              {renderSlideCard(list2, {
+                isPriority: false,
+                isLazy: !isCurrent,
+                fetchPriority: isCurrent ? 'high' : 'low',
+                extraClass: styles.desktopSecondCard
+              })}
             </div>
           );
         })}
+
+        {/* Desktop-only Clone of Page 0 so 4-card laptop view never shows a half-empty slide */}
+        {totalPages > 1 && (
+          <div className={`${styles.slidePage} ${styles.desktopClonePage}`} aria-hidden="true">
+            {renderSlideCard(featuredAds[0]?.listing, { isPriority: false, isLazy: true })}
+            {renderSlideCard((featuredAds.length > 1 ? featuredAds[1] : featuredAds[0])?.listing, {
+              isPriority: false,
+              isLazy: true,
+              extraClass: styles.desktopSecondCard
+            })}
+          </div>
+        )}
       </div>
 
       {/* Progress Bar */}

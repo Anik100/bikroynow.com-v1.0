@@ -711,40 +711,47 @@ export default function ChatWindow({ params }) {
               <ChevronLeft size={20} />
             </button>
             <div className={styles.headerPartner}>
-              <div style={{fontWeight: '800', color: '#0f172a', fontSize: '1rem'}}>{partner?.full_name || 'User'}</div>
-              <div style={{
-                fontSize: '0.75rem', 
-                color: isOnline(partner?.last_seen) ? '#16a34a' : '#64748b', 
-                fontWeight: '700', 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '5px'
-              }}>
-                <span style={{ 
-                  width: '8px', 
-                  height: '8px', 
-                  borderRadius: '50%', 
-                  background: isOnline(partner?.last_seen) ? '#22c55e' : '#94a3b8',
-                  boxShadow: isOnline(partner?.last_seen) ? '0 0 6px rgba(34, 197, 94, 0.6)' : 'none'
-                }} />
-                <span>{formatLastSeen(partner?.last_seen, lang)}</span>
+              <div className={styles.partnerName}>{partner?.full_name || 'User'}</div>
+              <div
+                className={styles.partnerStatus}
+                style={{ color: isOnline(partner?.last_seen) ? '#16a34a' : '#64748b' }}
+              >
+                <span
+                  style={{
+                    width: '8px',
+                    height: '8px',
+                    borderRadius: '50%',
+                    flexShrink: 0,
+                    background: isOnline(partner?.last_seen) ? '#22c55e' : '#94a3b8',
+                    boxShadow: isOnline(partner?.last_seen) ? '0 0 6px rgba(34, 197, 94, 0.6)' : 'none'
+                  }}
+                />
+                <span className={styles.partnerStatusText}>{formatLastSeen(partner?.last_seen, lang)}</span>
               </div>
             </div>
           </div>
-          <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
-            {chat.listing && (
-              <Link href={`/ad/${chat.listing_id || ''}`} style={{display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none', background: '#f8fafc', padding: '0.35rem 0.65rem', borderRadius: '12px', border: '1px solid #e2e8f0'}}>
-                <div style={{textAlign: 'right', display: 'flex', flexDirection: 'column'}}>
-                  <span style={{fontSize: '0.82rem', fontWeight: 700, color: '#1e293b', maxWidth: '140px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'}}>
+          {chat.listing && (
+            <div className={styles.headerListingWrap}>
+              <Link href={`/ad/${chat.listing_id || ''}`} className={styles.headerListingCard}>
+                <img
+                  src={chat.listing?.images?.[0] || 'https://via.placeholder.com/100'}
+                  alt="Listing"
+                  className={styles.headerListingImg}
+                />
+                <div className={styles.headerListingText}>
+                  <span className={styles.headerListingTitle}>
                     {chat.listing?.title}
                   </span>
-                  <span style={{fontSize: '0.75rem', fontWeight: 800, color: '#008b5e'}}>
-                    {chat.listing?.price ? `Tk ${Number(chat.listing.price).toLocaleString()}` : ''}
-                  </span>
+                  {chat.listing?.price > 0 && (
+                    <span className={styles.headerListingPrice}>
+                      {`Tk ${Number(chat.listing.price).toLocaleString()}`}
+                    </span>
+                  )}
                 </div>
-                <img src={chat.listing?.images?.[0] || 'https://via.placeholder.com/100'} alt="Listing" style={{width: '38px', height: '38px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #cbd5e1'}} />
               </Link>
-            )}
+            </div>
+          )}
+          <div className={styles.headerActions}>
             <button
               type="button"
               title={isBlockedByMe ? (lang === 'bn' ? 'আনব্লক করুন' : 'Unblock User') : (lang === 'bn' ? 'ব্যবহারকারীকে ব্লক করুন' : 'Block User')}

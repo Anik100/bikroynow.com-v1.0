@@ -120,12 +120,13 @@
 
 /* Window Header */
 .windowHeader {
-  padding: 0.9rem 1.4rem;
+  padding: 0.85rem 1.25rem;
   background: #ffffff;
   border-bottom: 1px solid #e2e8f0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.85rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   z-index: 10;
   flex-shrink: 0;
@@ -134,7 +135,10 @@
 .headerLeft {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+  order: 1;
 }
 
 .backBtn {
@@ -149,6 +153,7 @@
   cursor: pointer;
   color: #334155;
   transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .backBtn:hover {
@@ -159,6 +164,97 @@
 .headerPartner {
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.partnerName {
+  font-weight: 800;
+  color: #0f172a;
+  font-size: 1rem;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.partnerStatus {
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.partnerStatusText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerListingWrap {
+  order: 2;
+  flex-shrink: 0;
+}
+
+.headerListingCard {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  background: #f8fafc;
+  padding: 0.35rem 0.65rem;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  transition: background-color 0.15s ease;
+}
+
+.headerListingCard:hover {
+  background: #f1f5f9;
+}
+
+.headerListingImg {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #cbd5e1;
+  flex-shrink: 0;
+}
+
+.headerListingText {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  min-width: 0;
+}
+
+.headerListingTitle {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1e293b;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerListingPrice {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #008b5e;
+  white-space: nowrap;
+}
+
+.headerActions {
+  order: 3;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-shrink: 0;
 }
 
 /* Messages Area */
@@ -437,10 +533,11 @@
   }
 
   .windowHeader {
-    padding: 0.65rem 0.85rem;
+    padding: 0.6rem 0.75rem 0.55rem;
     background: #ffffff;
     border-bottom: 1px solid #e2e8f0;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
@@ -450,6 +547,8 @@
   }
 
   .headerLeft {
+    order: 1;
+    flex: 1;
     gap: 0.5rem;
     min-width: 0;
   }
@@ -463,6 +562,63 @@
 
   .headerPartner {
     min-width: 0;
+    overflow: hidden;
+  }
+
+  .partnerName {
+    font-size: 0.94rem;
+    line-height: 1.3;
+  }
+
+  .partnerStatus {
+    font-size: 0.72rem;
+    line-height: 1.25;
+  }
+
+  .headerActions {
+    order: 2;
+    flex-shrink: 0;
+    gap: 0.4rem;
+  }
+
+  .headerListingWrap {
+    order: 3;
+    flex-basis: 100%;
+    width: 100%;
+  }
+
+  .headerListingCard {
+    width: 100%;
+    padding: 0.35rem 0.6rem;
+    border-radius: 10px;
+    gap: 0.6rem;
+    justify-content: flex-start;
+  }
+
+  .headerListingImg {
+    width: 34px;
+    height: 34px;
+    border-radius: 7px;
+  }
+
+  .headerListingText {
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    text-align: left;
+  }
+
+  .headerListingTitle {
+    max-width: none;
+    flex: 1;
+    font-size: 0.8rem;
+  }
+
+  .headerListingPrice {
+    flex-shrink: 0;
+    font-size: 0.78rem;
   }
 
   .messages {
