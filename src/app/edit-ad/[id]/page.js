@@ -129,6 +129,12 @@ export default function EditAd({ params }) {
     e.preventDefault();
     setError(null);
 
+    if (!formData.condition) {
+      setError(lang === 'bn' ? '⚠️ অনুগ্রহ করে পণ্যের অবস্থা নির্বাচন করুন (ব্যবহৃত নাকি নতুন)।' : '⚠️ Please select the product condition (Used or New).');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     const bdPhoneRegex = /^01[3-9]\d{8}$/;
     if (!bdPhoneRegex.test(formData.contact_phone)) {
       setError(lang === 'bn' ? 'অনুগ্রহ করে একটি সঠিক বাংলাদেশি মোবাইল নম্বর দিন (যেমন: 017XXXXXXXX)।' : 'Please provide a valid Bangladeshi phone number (e.g., 017XXXXXXXX).');

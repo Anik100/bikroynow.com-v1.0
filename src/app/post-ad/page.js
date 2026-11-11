@@ -47,7 +47,7 @@ export default function PostAd() {
     category_id: '',
     price: '',
     location: '',
-    condition: 'Used',
+    condition: '',
     contact_phone: '',
     has_whatsapp: true,
     division: '',
@@ -116,7 +116,7 @@ export default function PostAd() {
       category_id: '',
       price: '',
       location: '',
-      condition: 'Used',
+      condition: '',
       contact_phone: '',
       division: '',
       district: '',
@@ -414,6 +414,17 @@ export default function PostAd() {
       return;
     }
 
+    if (!formData.condition) {
+      setError(lang === 'bn' ? '⚠️ অনুগ্রহ করে পণ্যের অবস্থা নির্বাচন করুন (ব্যবহৃত নাকি নতুন)।' : '⚠️ Please select the product condition (Used or New).');
+      const condEl = document.getElementById('condition-section');
+      if (condEl) {
+        condEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
+    }
+
     const phoneInput = (formData.contact_phone || '').trim();
     const bdPhoneRegex = /^01[3-9]\d{8}$/;
     if (phoneInput && !bdPhoneRegex.test(phoneInput)) {
@@ -457,7 +468,7 @@ export default function PostAd() {
         price: parsedPrice,
         category_id: formData.category_id,
         location,
-        condition: formData.condition || 'Used',
+        condition: formData.condition,
         contact_phone: phoneInput || formData.contact_phone || '01700000000',
         has_whatsapp: formData.has_whatsapp !== false,
         images: imageUrls,
@@ -551,7 +562,7 @@ export default function PostAd() {
               type="button" 
               onClick={() => {
                 setSubmittedSuccess(false);
-                setFormData({ title: '', category_id: '', division: '', district: '', condition: 'Used', price: '', description: '', contact_phone: '' });
+                setFormData({ title: '', category_id: '', division: '', district: '', condition: '', price: '', description: '', contact_phone: '' });
                 setImageUrls([]);
                 setDisplayCategory('');
                 try { localStorage.removeItem(DRAFT_KEY); } catch(e){}
@@ -963,18 +974,40 @@ export default function PostAd() {
           </div>
 
           {/* === CONDITION === */}
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>{t('condition')}</label>
+          <div
+            id="condition-section"
+            className={styles.inputGroup}
+            style={!formData.condition && error && (error.includes('অবস্থা') || error.includes('condition')) ? {
+              border: '1.5px solid #ef4444',
+              padding: '0.75rem',
+              borderRadius: '10px',
+              backgroundColor: '#fef2f2'
+            } : {}}
+          >
+            <label className={styles.label}>
+              {t('condition')} <span style={{ color: '#ef4444', fontWeight: 900 }}>*</span>
+            </label>
             <div className={styles.conditionRow}>
               <button type="button"
                 className={`${styles.conditionBtn} ${formData.condition === 'Used' ? styles.conditionBtnActive : ''}`}
-                onClick={() => setFormData({ ...formData, condition: 'Used' })}
+                onClick={() => {
+                  setFormData({ ...formData, condition: 'Used' });
+                  if (error && (error.includes('অবস্থা') || error.includes('condition'))) setError(null);
+                }}
               >{t('used')}</button>
               <button type="button"
                 className={`${styles.conditionBtn} ${formData.condition === 'New' ? styles.conditionBtnActive : ''}`}
-                onClick={() => setFormData({ ...formData, condition: 'New' })}
+                onClick={() => {
+                  setFormData({ ...formData, condition: 'New' });
+                  if (error && (error.includes('অবস্থা') || error.includes('condition'))) setError(null);
+                }}
               >{t('new')}</button>
             </div>
+            {!formData.condition && error && (error.includes('অবস্থা') || error.includes('condition')) && (
+              <p style={{ fontSize: '0.8rem', color: '#dc2626', marginTop: '0.45rem', fontWeight: 700, marginBottom: 0 }}>
+                {lang === 'bn' ? '⚠️ অনুগ্রহ করে যেকোনো একটি নির্বাচন করুন (ব্যবহৃত অথবা নতুন)' : '⚠️ Please select one (Used or New)'}
+              </p>
+            )}
           </div>
 
           {/* === DESCRIPTION === */}

@@ -63,7 +63,7 @@ const getSellerBadge = (profiles, lang) => {
     }
 
     const shieldSvg = (
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '3px', flexShrink: 0 }}>
+      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '2px', flexShrink: 0 }}>
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
       </svg>
     );
@@ -72,15 +72,17 @@ const getSellerBadge = (profiles, lang) => {
       <span style={{
         display: 'inline-flex',
         alignItems: 'center',
-        fontSize: '0.62rem',
+        fontSize: '0.58rem',
         fontWeight: 800,
-        padding: '0.15rem 0.4rem',
-        borderRadius: '5px',
+        padding: '0.12rem 0.35rem',
+        borderRadius: '4px',
         textTransform: 'uppercase',
-        letterSpacing: '0.3px',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+        letterSpacing: '0.2px',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.06)',
         gap: '0.15rem',
-        lineHeight: 1,
+        lineHeight: 1.1,
+        whiteSpace: 'nowrap',
+        flexShrink: 0,
         ...badgeStyle
       }}>
         {shieldSvg}
@@ -670,12 +672,72 @@ export default function HomeClient({ initialFeaturedAds = [], initialListings = 
                   </div>
                   <div className={styles.adContent} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
                     <h3 className={styles.adTitle}>{ad.title}</h3>
-                    <p className={styles.adLocation}>
-                      {t(ad.location)}
-                    </p>
-                    {getSellerBadge(ad.profiles, lang) && (
-                      <div style={{ display: 'flex', alignItems: 'center', marginTop: '-0.1rem', marginBottom: '0.45rem' }}>
-                        {getSellerBadge(ad.profiles, lang)}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.35rem', marginBottom: '0.35rem' }}>
+                      <p className={styles.adLocation} style={{ margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        {t(ad.location)}
+                      </p>
+                      {ad.condition && (
+                        <span style={{
+                          fontSize: '0.6rem',
+                          fontWeight: 800,
+                          padding: '0.12rem 0.42rem',
+                          borderRadius: '4px',
+                          letterSpacing: '0.2px',
+                          whiteSpace: 'nowrap',
+                          lineHeight: 1.15,
+                          flexShrink: 0,
+                          ...(ad.condition === 'New' ? {
+                            backgroundColor: '#dcfce7',
+                            color: '#15803d',
+                            border: '1px solid #86efac'
+                          } : {
+                            backgroundColor: '#fff7ed',
+                            color: '#c2410c',
+                            border: '1px solid #fdba74'
+                          })
+                        }}>
+                          {ad.condition === 'New'
+                            ? (lang === 'bn' ? 'নতুন' : 'New')
+                            : (lang === 'bn' ? 'ব্যবহৃত' : 'Used')}
+                        </span>
+                      )}
+                    </div>
+                    {/* Compact Seller Badge & Sponsored Ad Row */}
+                    {(getSellerBadge(ad.profiles, lang) || ad.is_featured || (ad.promotion_type && ad.promotion_type !== 'free')) && (
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '0.35rem',
+                        marginTop: '0.15rem',
+                        marginBottom: '0.45rem',
+                        flexWrap: 'nowrap',
+                        overflow: 'hidden'
+                      }}>
+                        {getSellerBadge(ad.profiles, lang) ? (
+                          getSellerBadge(ad.profiles, lang)
+                        ) : <span />}
+
+                        {(ad.is_featured || (ad.promotion_type && ad.promotion_type !== 'free')) && (
+                          <span style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.2rem',
+                            fontSize: '0.58rem',
+                            fontWeight: 700,
+                            color: '#b45309',
+                            backgroundColor: '#fef3c7',
+                            border: '1px solid #fde68a',
+                            padding: '0.12rem 0.35rem',
+                            borderRadius: '4px',
+                            whiteSpace: 'nowrap',
+                            lineHeight: 1.1,
+                            flexShrink: 0,
+                            marginLeft: 'auto'
+                          }}>
+                            ★ {lang === 'bn' ? 'স্পন্সরড Ad' : 'Sponsored Ad'}
+                          </span>
+                        )}
                       </div>
                     )}
                     <div className={styles.adPrice}>{formatPrice(ad.price, lang)}</div>
@@ -684,15 +746,6 @@ export default function HomeClient({ initialFeaturedAds = [], initialListings = 
                         {getRelativeTime(ad.created_at, lang)}
                       </span>
                     </div>
-                    {(ad.is_featured || (ad.promotion_type && ad.promotion_type !== 'free')) && (
-                      <div style={{ marginTop: 'auto', paddingTop: '0.45rem', borderTop: '1px solid rgba(245, 158, 11, 0.2)', textAlign: 'center' }}>
-                        <span style={{ color: '#d97706', fontWeight: 800, fontSize: '0.72rem', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem' }}>
-                          {ad.is_featured 
-                            ? (lang === 'bn' ? '★ স্পন্সরড বিজ্ঞাপন' : '★ Sponsored Ad') 
-                            : `★ ${getPromotionBadgeText(ad.promotion_type, lang)}`}
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </Link>
               ))
