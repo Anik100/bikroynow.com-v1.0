@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { supabase } from '../../lib/supabaseClient';
 import { useLanguage } from '../../context/LanguageContext';
 import { getRelativeTime, formatPrice, getPromotionBadgeText, sortPremiumListings } from '../../lib/utils';
-import { LOCATIONS, CATEGORIES, getCategoryName } from '../../lib/constants';
+import { LOCATIONS, CATEGORIES, getCategoryName, isAdInSelectedLocation, matchesLocationQuery } from '../../lib/constants';
 import { isCategoryMatch } from '../../lib/categoryMatcher';
 import styles from './ads.module.css';
 import { Filter, ChevronDown, List, Grid, Heart } from 'lucide-react';
@@ -294,7 +294,8 @@ function AdsContent() {
       const queryTerm = q.toLowerCase().trim();
       const titleMatch = ad.title && ad.title.toLowerCase().includes(queryTerm);
       const descMatch = ad.description && ad.description.toLowerCase().includes(queryTerm);
-      if (!titleMatch && !descMatch) return false;
+      const locMatch = matchesLocationQuery(ad.location, queryTerm);
+      if (!titleMatch && !descMatch && !locMatch) return false;
     }
 
     // 2. Member & Seller Type Filter
@@ -317,23 +318,9 @@ function AdsContent() {
       if (!isCategoryMatch(ad, selectedCategory)) return false;
     }
 
-    // 4. Location Filter
+    // 4. Location Filter (alias-aware)
     if (selectedLocation && selectedLocation !== 'All of Bangladesh') {
-      const loc = selectedLocation;
-      const isDivision = Object.keys(LOCATIONS).includes(loc);
-      const isAllOfDivision = loc.startsWith('All of ') && loc.endsWith(' Division');
-      if (isDivision || isAllOfDivision) {
-        const divisionName = isDivision ? loc : loc.replace('All of ', '').replace(' Division', '');
-        const districtsInDivision = LOCATIONS[divisionName];
-        if (districtsInDivision) {
-          const locs = [loc, ...districtsInDivision];
-          if (!locs.includes(ad.location)) return false;
-        } else if (ad.location !== loc) {
-          return false;
-        }
-      } else if (ad.location !== loc) {
-        return false;
-      }
+      if (!isAdInSelectedLocation(ad.location, selectedLocation)) return false;
     }
 
     // 5. Price Filter

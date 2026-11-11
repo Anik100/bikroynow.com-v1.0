@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Search, MessageCircle, User, PlusCircle, Globe, MapPin, X, Home as HomeIcon, ChevronRight, ArrowRight, Heart, Crown } from 'lucide-react';
 import { supabase, syncUserProfile } from '../lib/supabaseClient';
 import { useLanguage } from '../context/LanguageContext';
-import { LOCATIONS } from '../lib/constants';
+import { LOCATIONS, matchesLocationQuery } from '../lib/constants';
 import { playMessageNotification, requestNotificationPermission, registerServiceWorker } from '../lib/notificationAudio';
 import styles from './Navbar.module.css';
 
@@ -60,7 +60,7 @@ export default function Navbar() {
             if (ad.status && ad.status !== 'active') return false;
             const matchTitle = (ad.title || '').toLowerCase().includes(query);
             const matchCat = (ad.category_id || '').toLowerCase().includes(query);
-            const matchLoc = (ad.location || '').toLowerCase().includes(query);
+            const matchLoc = matchesLocationQuery(ad.location, query);
             const matchDesc = (ad.description || '').toLowerCase().includes(query);
             return matchTitle || matchCat || matchLoc || matchDesc;
           }).slice(0, 6);
@@ -589,7 +589,7 @@ export default function Navbar() {
                             <div className={styles.searchResultMeta}>
                               <span className={styles.searchResultCategory}>{ad.category_id || 'All'}</span>
                               <span>•</span>
-                              <span>{ad.location || 'Bangladesh'}</span>
+                              <span>{ad.location ? t(ad.location) : 'Bangladesh'}</span>
                             </div>
                           </div>
                         </Link>
@@ -636,8 +636,8 @@ export default function Navbar() {
               {locationSearch ? (
                 // FLAT SEARCH RESULTS
                 Object.entries(LOCATIONS).flatMap(([div, dists]) => {
-                  const isDivMatch = div.toLowerCase().includes(locationSearch.toLowerCase());
-                  const filtered = dists.filter(d => d.toLowerCase().includes(locationSearch.toLowerCase()));
+                  const isDivMatch = matchesLocationQuery(div, locationSearch);
+                  const filtered = dists.filter(d => matchesLocationQuery(d, locationSearch));
                   let res = [];
                   if (isDivMatch || filtered.length > 0) {
                     res.push({name: div, type: 'division'});

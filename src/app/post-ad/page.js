@@ -232,14 +232,17 @@ export default function PostAd() {
     const fetchUserAndQuota = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
-        let activeUser = session?.user;
+        let activeUser = session?.user || null;
         if (!activeUser) {
-          const localUser = localStorage.getItem('bikroynow_demo_user');
-          if (localUser) {
-            activeUser = JSON.parse(localUser);
-          } else {
-            activeUser = { id: 'default-user', email: 'user@bikroynow.com' };
-          }
+          try {
+            const localUser = localStorage.getItem('bikroynow_demo_user');
+            if (localUser) {
+              const parsed = JSON.parse(localUser);
+              if (parsed?.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(parsed.id)) {
+                activeUser = parsed;
+              }
+            }
+          } catch (e) {}
         }
         setUser(activeUser);
 
@@ -255,10 +258,15 @@ export default function PostAd() {
           setUserProfile({ membership_type: 'free' });
         }
       } catch (err) {
-        let fallbackUser = { id: 'default-user', email: 'user@bikroynow.com' };
+        let fallbackUser = null;
         try {
           const localUser = localStorage.getItem('bikroynow_demo_user');
-          if (localUser) fallbackUser = JSON.parse(localUser);
+          if (localUser) {
+            const parsed = JSON.parse(localUser);
+            if (parsed?.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(parsed.id)) {
+              fallbackUser = parsed;
+            }
+          }
         } catch (e) {}
         setUser(fallbackUser);
         setUserProfile({ membership_type: 'free' });
@@ -460,9 +468,20 @@ export default function PostAd() {
         } catch (e) {}
       }
 
+      if (!isValidUUID(adUserId)) {
+        setSubmitting(false);
+        setError(lang === 'bn'
+          ? '⚠️ বিজ্ঞাপন পোস্ট করতে অনুগ্রহ করে আপনার অ্যাকাউন্টে লগইন করুন। আপনার তথ্য ড্রাফট হিসেবে সংরক্ষিত আছে।'
+          : '⚠️ Please login to your account to post an ad. Your form data is saved as a draft.');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        setTimeout(() => router.push('/login'), 1200);
+        return;
+      }
+
       const newAdPayload = {
         id: generateUUID(),
         user_id: adUserId,
+        user_email: (user?.email && user.email !== 'user@bikroynow.com') ? user.email : undefined,
         title: formData.title.trim(),
         description: formData.description || '',
         price: parsedPrice,

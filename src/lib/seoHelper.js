@@ -17,6 +17,9 @@ export async function getAdForSeo(id) {
     if (supabaseUrl && anonKey) {
       const supabase = createClient(supabaseUrl, anonKey, {
         auth: { persistSession: false },
+        global: {
+          fetch: (url, options = {}) => fetch(url, { ...options, cache: 'no-store' })
+        }
       });
 
       const { data, error } = await supabase

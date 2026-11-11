@@ -116,7 +116,7 @@ const renderPackageBadge = (profile, ad, lang) => {
     }
   }
 
-  if (ad?.promotion_type) {
+  if (ad?.promotion_type && ad.promotion_type.toLowerCase() !== 'free') {
     return (
       <span className={`${styles.pkgBadge} ${styles.pkgPromo}`}>
         🚀 {getPromotionBadgeText(ad.promotion_type, lang)}
@@ -132,9 +132,20 @@ const renderPackageBadge = (profile, ad, lang) => {
     );
   }
 
+  if (ad?.is_verified || profile?.is_verified) {
+    return (
+      <span className={`${styles.pkgBadge} ${styles.pkgVerified}`}>
+        🛡️ {lang === 'bn' ? 'ভেরিফাইড সেলার' : 'Verified Seller'}
+      </span>
+    );
+  }
+
   return (
-    <span className={`${styles.pkgBadge} ${styles.pkgVerified}`}>
-      🛡️ {lang === 'bn' ? 'ভেরিফাইড সেলার' : 'Verified Seller'}
+    <span
+      className={styles.pkgBadge}
+      style={{ background: '#f1f5f9', color: '#475569', border: '1px solid #cbd5e1' }}
+    >
+      👤 {lang === 'bn' ? 'সাধারণ বিক্রেতা' : 'Regular Seller'}
     </span>
   );
 };
@@ -1064,13 +1075,23 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                   const rawPhone = ad.contact_phone || '';
                   const cleanPhone = rawPhone.replace(/\|.*/, '').trim();
                   const hasWhatsApp = Boolean(cleanPhone && !rawPhone.includes('|nowa'));
-                  const sellerDisplayName = profile?.full_name || ad.seller_name || (profile?.email ? profile.email.split('@')[0] : null) || t('verifiedSeller');
+                  const isLegacyMismatchedGuest = ad.id === '9b7d9891-eaa4-40a2-8a9c-39f6210c8b7f' && profile?.id === '95695a1d-f082-4072-983f-e7a1857ba734';
+                  const safeProfile = isLegacyMismatchedGuest ? null : profile;
+                  const rawName = safeProfile?.full_name || ad.seller_name;
+                  const cleanName = (rawName && rawName.includes('@')) ? rawName.split('@')[0] : rawName;
+                  const sellerDisplayName = cleanName || (safeProfile?.email ? safeProfile.email.split('@')[0] : null) || (lang === 'bn' ? 'বিক্রেতা' : 'Seller');
                   
+                  const expiresAt = safeProfile?.membership_expires_at ? new Date(safeProfile.membership_expires_at) : null;
+                  const isNotExpired = !expiresAt || new Date() < expiresAt;
+                  const activeMembership = (safeProfile?.membership_type && safeProfile.membership_type.toLowerCase() !== 'free' && isNotExpired)
+                    ? safeProfile.membership_type.toLowerCase()
+                    : null;
+
                   const isBusiness = Boolean(
-                    (profile?.membership_type && profile.membership_type.toLowerCase().includes('business')) ||
-                    (ad.promotion_type && ad.promotion_type.toLowerCase().includes('business'))
+                    (activeMembership && activeMembership.includes('business')) ||
+                    (ad.promotion_type && ad.promotion_type.toLowerCase().includes('business') && isNotExpired)
                   );
-                  const isVerified = Boolean(ad.is_verified || profile?.is_verified || profile?.membership_type || isBusiness);
+                  const isVerified = Boolean(ad.is_verified || safeProfile?.is_verified || activeMembership || isBusiness);
 
                   const formatMemberDate = (dateStr, lang) => {
                     if (!dateStr) return lang === 'bn' ? 'সদস্য: ২০২৬' : 'Member since: 2026';
@@ -1087,12 +1108,12 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                       {/* Top Strip (সবার উপরে): Package Badge + Clean Location */}
                       <div className={styles.sellerCardTopStrip}>
                         <div className={styles.sellerPackageRow}>
-                          {renderPackageBadge(profile, ad, lang)}
+                          {renderPackageBadge(safeProfile, ad, lang)}
                         </div>
                         {ad.location && (
                           <div className={styles.sellerTopLocation}>
                             <span>📍</span>
-                            <span>{ad.location}</span>
+                            <span>{t(ad.location)}</span>
                           </div>
                         )}
                       </div>
@@ -1102,9 +1123,9 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                         {/* 1. Seller Profile Row: Big Avatar + Name (with Verified Badge) + Clean Date */}
                         <div className={styles.sellerProfileRow}>
                           <div className={styles.sellerAvatarImg}>
-                            {profile?.avatar_url ? (
+                            {safeProfile?.avatar_url ? (
                               <img 
-                                src={profile.avatar_url} 
+                                src={safeProfile.avatar_url} 
                                 alt={sellerDisplayName} 
                                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
                               />
@@ -1131,7 +1152,7 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                               )}
                             </div>
                             <span className={styles.sellerSub}>
-                              {formatMemberDate(profile?.created_at, lang)}
+                              {formatMemberDate(safeProfile?.created_at || ad.created_at, lang)}
                             </span>
                           </div>
                         </div>
@@ -1191,7 +1212,7 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                   {formatPrice(ad.price, lang)}
                 </div>
                 <div className={styles.meta}>
-                  <span><MapPin size={16}/> {ad.location}</span>
+                  <span><MapPin size={16}/> {t(ad.location)}</span>
                   <span title={formatFullDate(ad.created_at, lang)}>
                     <Clock size={16}/> {getRelativeTime(ad.created_at, lang)}
                   </span>

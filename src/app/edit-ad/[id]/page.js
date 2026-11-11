@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../../lib/supabaseClient';
 import { uploadToImgBB } from '../../../lib/imgbb';
-import { CATEGORIES, LOCATIONS } from '../../../lib/constants';
+import { CATEGORIES, LOCATIONS, matchesLocationQuery } from '../../../lib/constants';
 import { useLanguage } from '../../../context/LanguageContext';
 import { compressImage } from '../../../lib/utils';
 import styles from '../../post-ad/post-ad.module.css';
@@ -267,9 +267,9 @@ export default function EditAd({ params }) {
             <div className={styles.radioList}>
               {locationSearch ? (
                 Object.entries(LOCATIONS).flatMap(([div, dists]) => {
-                  const filtered = dists.filter(d => d.toLowerCase().includes(locationSearch.toLowerCase()));
+                  const filtered = dists.filter(d => matchesLocationQuery(d, locationSearch));
                   let res = [];
-                  if (div.toLowerCase().includes(locationSearch.toLowerCase())) res.push({name: div, type: 'division'});
+                  if (matchesLocationQuery(div, locationSearch)) res.push({name: div, type: 'division'});
                   filtered.forEach(d => res.push({name: d, type: 'district', parent: div}));
                   return res;
                 }).map((loc, i) => (

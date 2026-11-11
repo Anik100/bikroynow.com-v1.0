@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { supabase } from '../lib/supabaseClient';
 import styles from './page.module.css';
-import { LOCATIONS, CATEGORIES, CATEGORY_TRANSLATIONS, getCategoryName } from '../lib/constants';
+import { LOCATIONS, CATEGORIES, CATEGORY_TRANSLATIONS, getCategoryName, isAdInSelectedLocation } from '../lib/constants';
 import { isCategoryMatch } from '../lib/categoryMatcher';
 import { useLanguage } from '../context/LanguageContext';
 import { getRelativeTime, formatFullDate, formatPrice, getPromotionBadgeText, sortPremiumListings } from '../lib/utils';
@@ -589,23 +589,9 @@ export default function HomeClient({ initialFeaturedAds = [], initialListings = 
                 if (!isCategoryMatch(ad, selectedCategoryFilter)) return false;
               }
 
-              // 3. Location Filter (Division or District)
+              // 3. Location Filter (Division or District, alias-aware)
               if (selectedLocationFilter && selectedLocationFilter !== 'All of Bangladesh') {
-                const loc = selectedLocationFilter;
-                const isDivision = Object.keys(LOCATIONS).includes(loc);
-                const isAllOfDivision = loc.startsWith('All of ') && loc.endsWith(' Division');
-                if (isDivision || isAllOfDivision) {
-                  const divisionName = isDivision ? loc : loc.replace('All of ', '').replace(' Division', '');
-                  const districtsInDivision = LOCATIONS[divisionName];
-                  if (districtsInDivision) {
-                    const locs = [loc, ...districtsInDivision];
-                    if (!locs.includes(ad.location)) return false;
-                  } else if (ad.location !== loc) {
-                    return false;
-                  }
-                } else if (ad.location !== loc) {
-                  return false;
-                }
+                if (!isAdInSelectedLocation(ad.location, selectedLocationFilter)) return false;
               }
 
               // 4. Price Filter

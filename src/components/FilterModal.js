@@ -6,7 +6,7 @@ import {
   Filter, X, ChevronRight, ArrowLeft, Search, Check, 
   RotateCcw, MapPin, Tag, SlidersHorizontal 
 } from 'lucide-react';
-import { LOCATIONS, CATEGORIES, getCategoryName } from '../lib/constants';
+import { LOCATIONS, CATEGORIES, getCategoryName, matchesLocationQuery } from '../lib/constants';
 import styles from './FilterModal.module.css';
 
 const CAT_ICONS = {
@@ -373,8 +373,8 @@ export default function FilterModal({
               {locSearch ? (
                 <div className={styles.listGroup}>
                   {Object.entries(LOCATIONS).flatMap(([div, dists]) => {
-                    const matchDiv = div.toLowerCase().includes(locSearch.toLowerCase());
-                    const matchedDists = dists.filter(d => d.toLowerCase().includes(locSearch.toLowerCase()));
+                    const matchDiv = matchesLocationQuery(div, locSearch);
+                    const matchedDists = dists.filter(d => matchesLocationQuery(d, locSearch));
                     let items = [];
                     if (matchDiv) {
                       items.push({ name: div, parent: null, isDiv: true });

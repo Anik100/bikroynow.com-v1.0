@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabaseClient';
 import styles from './FeaturedSlider.module.css';
 import { Star, ChevronLeft, ChevronRight, MapPin, ArrowRight } from 'lucide-react';
 import { sortFeaturedAds } from '../lib/utils';
+import { normalizeLocationName } from '../lib/constants';
 
 const SLIDE_DURATION = 5000; // 5 seconds
 
@@ -266,7 +267,7 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
           )}
           {listItem?.location && (
             <span className={styles.slideLocation}>
-              <MapPin size={12} color="#38bdf8" style={{ flexShrink: 0 }} /> {listItem.location}
+              <MapPin size={12} color="#38bdf8" style={{ flexShrink: 0 }} /> {normalizeLocationName(listItem.location)}
             </span>
           )}
         </div>

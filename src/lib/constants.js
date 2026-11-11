@@ -1,12 +1,138 @@
 export const LOCATIONS = {
   Dhaka: ['Dhaka City', 'Faridpur', 'Gazipur', 'Gopalganj', 'Kishoreganj', 'Madaripur', 'Manikganj', 'Munshiganj', 'Narayanganj', 'Narsingdi', 'Rajbari', 'Shariatpur', 'Tangail'],
-  Chattogram: ['Chattogram City', 'Bandarban', 'Brahmanbaria', 'Chandpur', 'Chattogram', 'Comilla', 'Cox\'s Bazar', 'Feni', 'Khagrachhari', 'Lakshmipur', 'Noakhali', 'Rangamati'],
-  Rajshahi: ['Rajshahi City', 'Bogra', 'Joypurhat', 'Naogaon', 'Natore', 'Chapainawabganj', 'Pabna', 'Rajshahi', 'Sirajganj'],
-  Khulna: ['Khulna City', 'Bagerhat', 'Chuadanga', 'Jessore', 'Jhenaidah', 'Khulna', 'Kushtia', 'Magura', 'Meherpur', 'Narail', 'Satkhira'],
+  Chattogram: ['Chattogram City', 'Bandarban', 'Brahmanbaria', 'Chandpur', 'Chattogram', 'Cumilla', 'Cox\'s Bazar', 'Feni', 'Khagrachhari', 'Lakshmipur', 'Noakhali', 'Rangamati'],
+  Rajshahi: ['Rajshahi City', 'Bogura', 'Joypurhat', 'Naogaon', 'Natore', 'Chapainawabganj', 'Pabna', 'Rajshahi', 'Sirajganj'],
+  Khulna: ['Khulna City', 'Bagerhat', 'Chuadanga', 'Jashore', 'Jhenaidah', 'Khulna', 'Kushtia', 'Magura', 'Meherpur', 'Narail', 'Satkhira'],
   Barishal: ['Barishal City', 'Barguna', 'Barishal', 'Bhola', 'Jhalokati', 'Patuakhali', 'Pirojpur'],
   Sylhet: ['Sylhet City', 'Habiganj', 'Moulvibazar', 'Sunamganj', 'Sylhet'],
   Rangpur: ['Rangpur City', 'Dinajpur', 'Gaibandha', 'Kurigram', 'Lalmonirhat', 'Nilphamari', 'Panchagarh', 'Rangpur', 'Thakurgaon'],
   Mymensingh: ['Mymensingh City', 'Jamalpur', 'Mymensingh', 'Netrokona', 'Sherpur']
+};
+
+export const LOCATION_ALIASES = {
+  'Dhaka': ['dacca', 'ঢাকা'],
+  'Dhaka City': ['dacca', 'dhaka', 'ঢাকা সিটি', 'ঢাকা'],
+  'Faridpur': ['ফরিদপুর'],
+  'Gazipur': ['গাজীপুর'],
+  'Gopalganj': ['গোপালগঞ্জ'],
+  'Kishoreganj': ['কিশোরগঞ্জ'],
+  'Madaripur': ['মাদারীপুর'],
+  'Manikganj': ['মানিকগঞ্জ'],
+  'Munshiganj': ['মুন্সীগঞ্জ', 'মুন্সিগঞ্জ'],
+  'Narayanganj': ['নারায়ণগঞ্জ', 'নারায়ণগঞ্জ'],
+  'Narsingdi': ['নরসিংদী'],
+  'Rajbari': ['রাজবাড়ী', 'রাজবাড়ী'],
+  'Shariatpur': ['শরীয়তপুর', 'শরীয়তপুর'],
+  'Tangail': ['টাঙ্গাইল', 'টাংগাইল'],
+  'Chattogram': ['chittagong', 'ctg', 'chattagram', 'চট্টগ্রাম', 'চট্রগ্রাম', 'চিটাগং', 'চিটাগাং'],
+  'Chattogram City': ['chittagong city', 'chittagong', 'ctg', 'chattagram', 'চট্টগ্রাম সিটি', 'চট্টগ্রাম', 'চট্রগ্রাম', 'চিটাগং', 'চিটাগাং'],
+  'Bandarban': ['বান্দরবান'],
+  'Brahmanbaria': ['b.baria', 'b baria', 'brahmanbaria', 'ব্রাহ্মণবাড়িয়া', 'ব্রাহ্মণবাড়িয়া'],
+  'Chandpur': ['চাঁদপুর'],
+  'Cumilla': ['comilla', 'কুমিল্লা'],
+  'Cox\'s Bazar': ['coxs bazar', 'coxsbazar', 'কক্সবাজার'],
+  'Feni': ['ফেনী'],
+  'Khagrachhari': ['khagrachari', 'খাগড়াছড়ি', 'খাগড়াছড়ি'],
+  'Lakshmipur': ['laxmipur', 'লক্ষ্মীপুর'],
+  'Noakhali': ['নোয়াখালী', 'নোয়াখালী'],
+  'Rangamati': ['রাঙ্গামাটি', 'রাঙামাটি'],
+  'Rajshahi': ['রাজশাহী'],
+  'Rajshahi City': ['রাজশাহী সিটি', 'রাজশাহী'],
+  'Bogura': ['bogra', 'বগুড়া', 'বগুড়া'],
+  'Joypurhat': ['jaipurhat', 'জয়পুরহাট', 'জয়পুরহাট'],
+  'Naogaon': ['নওগাঁ'],
+  'Natore': ['নাটোর'],
+  'Chapainawabganj': ['chapai nawabganj', 'nawabganj', 'চাঁপাইনবাবগঞ্জ'],
+  'Pabna': ['পাবনা'],
+  'Sirajganj': ['সিরাজগঞ্জ'],
+  'Khulna': ['খুলনা'],
+  'Khulna City': ['খুলনা সিটি', 'খুলনা'],
+  'Bagerhat': ['বাগেরহাট'],
+  'Chuadanga': ['চুয়াডাঙ্গা', 'চুয়াডাঙ্গা'],
+  'Jashore': ['jessore', 'যশোর'],
+  'Jhenaidah': ['jhenaida', 'ঝিনাইদহ'],
+  'Kushtia': ['কুষ্টিয়া', 'কুষ্টিয়া'],
+  'Magura': ['মাগুরা'],
+  'Meherpur': ['মেহেরপুর'],
+  'Narail': ['নড়াইল', 'নড়াইল'],
+  'Satkhira': ['সাতক্ষীরা'],
+  'Barishal': ['barisal', 'বরিশাল'],
+  'Barishal City': ['barisal city', 'barisal', 'বরিশাল সিটি', 'বরিশাল'],
+  'Barguna': ['বরগুনা'],
+  'Bhola': ['ভোলা'],
+  'Jhalokati': ['jhalakathi', 'jhalakati', 'ঝালকাঠি'],
+  'Patuakhali': ['পটুয়াখালী', 'পটুয়াখালী'],
+  'Pirojpur': ['পিরোজপুর'],
+  'Sylhet': ['সিলেট'],
+  'Sylhet City': ['সিলেট সিটি', 'সিলেট'],
+  'Habiganj': ['হবিগঞ্জ'],
+  'Moulvibazar': ['maulvibazar', 'মৌলভীবাজার'],
+  'Sunamganj': ['সুনামগঞ্জ'],
+  'Rangpur': ['রংপুর'],
+  'Rangpur City': ['রংপুর সিটি', 'রংপুর'],
+  'Dinajpur': ['দিনাজপুর'],
+  'Gaibandha': ['গাইবান্ধা'],
+  'Kurigram': ['কুড়িগ্রাম', 'কুড়িগ্রাম'],
+  'Lalmonirhat': ['লালমনিরহাট'],
+  'Nilphamari': ['নীলফামারী'],
+  'Panchagarh': ['পঞ্চগড়', 'পঞ্চগড়'],
+  'Thakurgaon': ['ঠাকুরগাঁও'],
+  'Mymensingh': ['ময়মনসিংহ', 'ময়মনসিংহ'],
+  'Mymensingh City': ['ময়মনসিংহ সিটি', 'ময়মনসিংহ সিটি', 'ময়মনসিংহ', 'ময়মনসিংহ'],
+  'Jamalpur': ['জামালপুর'],
+  'Netrokona': ['netrakona', 'নেত্রকোণা', 'নেত্রকোনা'],
+  'Sherpur': ['শেরপুর']
+};
+
+const CANONICAL_LOCATION_MAP = {
+  'comilla': 'Cumilla',
+  'bogra': 'Bogura',
+  'jessore': 'Jashore',
+  'chittagong': 'Chattogram',
+  'chittagong city': 'Chattogram City',
+  'barisal': 'Barishal',
+  'barisal city': 'Barishal City',
+  'dacca': 'Dhaka',
+  'all of chittagong division': 'All of Chattogram Division',
+  'all of barisal division': 'All of Barishal Division'
+};
+
+export const normalizeLocationName = (loc) => {
+  if (!loc || typeof loc !== 'string') return '';
+  const trimmed = loc.trim();
+  const mapped = CANONICAL_LOCATION_MAP[trimmed.toLowerCase()];
+  return mapped || trimmed;
+};
+
+export const matchesLocationQuery = (locationName, query) => {
+  if (!locationName || !query) return false;
+  const q = query.trim().toLowerCase();
+  if (!q) return true;
+  const canonical = normalizeLocationName(locationName);
+  if (canonical.toLowerCase().includes(q) || locationName.toLowerCase().includes(q)) {
+    return true;
+  }
+  const aliases = LOCATION_ALIASES[canonical] || [];
+  return aliases.some(alias => alias.toLowerCase().includes(q) || q.includes(alias.toLowerCase()));
+};
+
+export const isAdInSelectedLocation = (adLocation, selectedLocation) => {
+  if (!selectedLocation || selectedLocation === 'All of Bangladesh') return true;
+  const normAdLoc = normalizeLocationName(adLocation);
+  const normSelected = normalizeLocationName(selectedLocation);
+  const isDivision = Object.keys(LOCATIONS).includes(normSelected);
+  const isAllOfDivision = normSelected.startsWith('All of ') && normSelected.endsWith(' Division');
+  if (isDivision || isAllOfDivision) {
+    const divisionName = isDivision
+      ? normSelected
+      : normSelected.replace('All of ', '').replace(' Division', '');
+    const districtsInDivision = LOCATIONS[divisionName];
+    if (districtsInDivision) {
+      return normAdLoc === normSelected || normAdLoc === divisionName || districtsInDivision.includes(normAdLoc);
+    }
+    return normAdLoc === normSelected;
+  }
+  return normAdLoc === normSelected;
 };
 
 export const CATEGORIES = {

@@ -106,8 +106,8 @@ export async function buildSitemapData() {
     'Tangail',
     'Gazipur',
     'Narayanganj',
-    'Comilla',
-    'Bogra',
+    'Cumilla',
+    'Bogura',
   ];
 
   const locationRoutes = majorLocations.map((loc) => ({

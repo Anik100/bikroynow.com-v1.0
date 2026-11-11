@@ -1,6 +1,8 @@
 import { getAdForSeo } from '../../../lib/seoHelper';
 import AdDetailsClient from './AdDetailsClient';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdPage({ params }) {
   console.log('>>> AdPage params:', params);
   const id = params?.id;

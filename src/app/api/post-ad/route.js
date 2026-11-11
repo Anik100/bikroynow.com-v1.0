@@ -32,14 +32,16 @@ export async function POST(req) {
       ? createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false } })
       : null;
 
-    let validUserId = body.user_id;
+    let validUserId = isValidUUID(body.user_id) ? body.user_id : null;
     let userProfile = null;
+    const rawUserEmail = typeof body.user_email === 'string' ? body.user_email.trim().toLowerCase() : '';
+    const validUserEmail = (rawUserEmail && rawUserEmail !== 'user@bikroynow.com') ? rawUserEmail : '';
 
-    if (serverSupabase && validUserId) {
+    if (serverSupabase && (validUserId || validUserEmail)) {
       try {
-        const query = isValidUUID(validUserId)
+        const query = validUserId
           ? serverSupabase.from('profiles').select('id, email, membership_type, membership_expires_at').eq('id', validUserId).maybeSingle()
-          : serverSupabase.from('profiles').select('id, email, membership_type, membership_expires_at').limit(1).maybeSingle();
+          : serverSupabase.from('profiles').select('id, email, membership_type, membership_expires_at').eq('email', validUserEmail).maybeSingle();
 
         const profRes = await withTimeout(query, 3500, { data: null });
         if (profRes?.data) {
@@ -49,6 +51,10 @@ export async function POST(req) {
       } catch (e) {
         console.warn('Profile lookup bypassed:', e);
       }
+    }
+
+    if (!isValidUUID(validUserId)) {
+      return NextResponse.json({ error: 'Authentication required. Please login to post an ad.' }, { status: 401 });
     }
 
     const adId = isValidUUID(body.id) ? body.id : crypto.randomUUID();
