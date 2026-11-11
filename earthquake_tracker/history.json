@@ -429,17 +429,11 @@
     "emsc_20261111_0000282",
     "emsc_20261111_0000285",
     "us7000txns",
-    "emsc_20261111_0000292"
+    "emsc_20261111_0000292",
+    "emsc_20261111_0000297",
+    "us7000txpa"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000002",
-      "mag": 4.4,
-      "place": "NEAR N COAST OF PAPUA, INDONESIA",
-      "latitude": -1.97,
-      "longitude": 139.1,
-      "epoch_ms": 1794269481000
-    },
     {
       "id": "emsc_20261110_0000011",
       "mag": 5.4,
@@ -831,6 +825,14 @@
       "latitude": 13.98,
       "longitude": -92.924,
       "epoch_ms": 1794431724000
+    },
+    {
+      "id": "us7000txpa",
+      "mag": 4.9,
+      "place": "110 km E of Georgetown, Saint Helena",
+      "latitude": -7.957,
+      "longitude": -13.4059,
+      "epoch_ms": 1794434622610
     }
   ]
 }
