@@ -539,10 +539,10 @@ function AdsContent() {
                         alt={`${ad.condition === 'New' ? (lang === 'bn' ? 'নতুন' : 'Brand New') : (lang === 'bn' ? 'ব্যবহৃত' : 'Used')} ${ad.title} for sale in ${ad.location || 'Bangladesh'} - BikroyNow`} 
                         loading="lazy"
                         priority={false}
+                        fill
                         sizes="140px"
-                        width={140}
-                        height={105}
                         quality={75}
+                        style={{ objectFit: 'cover' }}
                       />
                     </div>
                     

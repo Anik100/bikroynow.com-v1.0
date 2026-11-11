@@ -22,7 +22,7 @@ export async function getHomeData() {
       // Non-critical, continue
     }
 
-    const supabase = getServerSupabase();
+    const supabase = getServerSupabase({ revalidate: 60 });
 
     if (supabase) {
       try {

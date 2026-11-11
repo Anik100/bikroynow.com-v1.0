@@ -9,7 +9,9 @@
   overflow: hidden;
   background: transparent;
   margin-bottom: 1.5rem;
+  height: 200px;
   min-height: 200px;
+  max-height: 200px;
 }
 
 /* ── Mobile Featured Badge ─────────────────── */
@@ -51,7 +53,9 @@
 .slidesWrapper {
   width: 100%;
   display: block;
+  height: 200px;
   min-height: 200px;
+  max-height: 200px;
 }
 
 .slideShow {
@@ -66,8 +70,9 @@
   transition: opacity 0.25s ease, transform 0.25s ease;
 }
 
-.desktopSecondCard {
-  display: none;
+.desktopSecondCard,
+.slideCard.desktopSecondCard {
+  display: none !important;
 }
 
 /* ── Individual Card Layout (Mobile Default) ── */
@@ -87,8 +92,7 @@
 .slideImageWrapper {
   position: relative;
   width: 100%;
-  height: 100%;
-  aspect-ratio: 16 / 9;
+  height: 200px;
   background: #020617;
   overflow: hidden;
 }
@@ -288,7 +292,9 @@
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
+    height: 175px;
     min-height: 175px;
+    max-height: 175px;
   }
 
   .mobileFeaturedBadge {
@@ -299,10 +305,13 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
+    height: 175px;
     min-height: 175px;
+    max-height: 175px;
   }
 
-  .desktopSecondCard {
+  .desktopSecondCard,
+  .slideCard.desktopSecondCard {
     display: flex !important;
   }
 

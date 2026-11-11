@@ -662,10 +662,10 @@ export default function HomeClient({ initialFeaturedAds = [], initialListings = 
                       className={styles.adImage}
                       loading="lazy"
                       priority={false}
+                      fill
                       sizes="(max-width: 768px) 50vw, 25vw"
-                      width={300}
-                      height={160}
                       quality={75}
+                      style={{ objectFit: 'cover' }}
                     />
                   </div>
                   <div className={styles.adContent} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>

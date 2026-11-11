@@ -202,13 +202,13 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
                 <Image
                   src={listing1.images[0]}
                   alt={listing1?.title ? `${listing1.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
+                  fill
                   priority={isFirstSlide}
                   loading={isFirstSlide ? "eager" : "lazy"}
                   fetchPriority={isFirstSlide ? "high" : "auto"}
                   sizes="(max-width: 768px) 100vw, 450px"
-                  width={600}
-                  height={200}
                   quality={80}
+                  style={{ objectFit: 'cover' }}
                   className={styles.slideImage}
                 />
               </>
@@ -260,13 +260,13 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
                 <Image
                   src={listing2.images[0]}
                   alt={listing2?.title ? `${listing2.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
+                  fill
                   priority={false}
                   loading="lazy"
                   fetchPriority="low"
                   sizes="450px"
-                  width={600}
-                  height={200}
                   quality={75}
+                  style={{ objectFit: 'cover' }}
                   className={styles.slideImage}
                 />
               </>
