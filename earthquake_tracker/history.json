@@ -407,17 +407,11 @@
     "emsc_20261111_0000145",
     "emsc_20261111_0000147",
     "emsc_20261111_0000152",
-    "us7000txis"
+    "us7000txis",
+    "emsc_20261111_0000156",
+    "us7000txir"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000240",
-      "mag": 4.2,
-      "place": "CERAM SEA, INDONESIA",
-      "latitude": -2.9,
-      "longitude": 130.37,
-      "epoch_ms": 1794243163000
-    },
     {
       "id": "emsc_20261109_0000273",
       "mag": 4.1,
@@ -809,6 +803,14 @@
       "latitude": -22.5181,
       "longitude": -69.1837,
       "epoch_ms": 1794397011810
+    },
+    {
+      "id": "us7000txir",
+      "mag": 5.1,
+      "place": "Pulau Pulau Tanimbar, Indonesia",
+      "latitude": -7.9445,
+      "longitude": 130.2513,
+      "epoch_ms": 1794396744685
     }
   ]
 }
