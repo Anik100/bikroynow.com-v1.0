@@ -412,17 +412,10 @@
     "us7000txir",
     "emsc_20261111_0000160",
     "emsc_20261111_0000166",
-    "emsc_20261111_0000167"
+    "emsc_20261111_0000167",
+    "emsc_20261111_0000174"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000280",
-      "mag": 4.3,
-      "place": "PERU-ECUADOR BORDER REGION",
-      "latitude": -3.47,
-      "longitude": -77.26,
-      "epoch_ms": 1794251994000
-    },
     {
       "id": "emsc_20261109_0000285",
       "mag": 4.1,
@@ -814,6 +807,14 @@
       "latitude": -3.077,
       "longitude": 130.474,
       "epoch_ms": 1794399449980
+    },
+    {
+      "id": "emsc_20261111_0000174",
+      "mag": 4.8,
+      "place": "VANUATU",
+      "latitude": -14.474,
+      "longitude": 167.441,
+      "epoch_ms": 1794401104940
     }
   ]
 }
