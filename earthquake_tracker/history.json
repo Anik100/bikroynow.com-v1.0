@@ -405,17 +405,10 @@
     "emsc_20261111_0000130",
     "emsc_20261111_0000144",
     "emsc_20261111_0000145",
-    "emsc_20261111_0000147"
+    "emsc_20261111_0000147",
+    "emsc_20261111_0000152"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000232",
-      "mag": 4.1,
-      "place": "CERAM SEA, INDONESIA",
-      "latitude": -2.94,
-      "longitude": 130.41,
-      "epoch_ms": 1794241564000
-    },
     {
       "id": "emsc_20261109_0000240",
       "mag": 4.2,
@@ -807,6 +800,14 @@
       "latitude": -17.065,
       "longitude": 168.425,
       "epoch_ms": 1794394649960
+    },
+    {
+      "id": "emsc_20261111_0000152",
+      "mag": 5.4,
+      "place": "ANTOFAGASTA, CHILE",
+      "latitude": -22.5181,
+      "longitude": -69.1837,
+      "epoch_ms": 1794397011810
     }
   ]
 }
