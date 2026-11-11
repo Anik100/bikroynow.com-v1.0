@@ -386,17 +386,10 @@
     "us7000txgg",
     "emsc_20261111_0000050",
     "us7000txgi",
-    "emsc_20261111_0000056"
+    "emsc_20261111_0000056",
+    "emsc_20261111_0000060"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tx2g",
-      "mag": 4.6,
-      "place": "54 km S of Klyuchi, Russia",
-      "latitude": 55.8343,
-      "longitude": 160.9753,
-      "epoch_ms": 1794207853845
-    },
     {
       "id": "emsc_20261109_0000129",
       "mag": 4.4,
@@ -788,6 +781,14 @@
       "latitude": 38.7562,
       "longitude": 14.0932,
       "epoch_ms": 1794373927850
+    },
+    {
+      "id": "emsc_20261111_0000060",
+      "mag": 5.3,
+      "place": "KURIL ISLANDS",
+      "latitude": 44.3705,
+      "longitude": 149.5693,
+      "epoch_ms": 1794374788150
     }
   ]
 }
