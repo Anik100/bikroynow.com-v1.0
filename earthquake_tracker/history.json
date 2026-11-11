@@ -381,17 +381,11 @@
     "us7000txfx",
     "ew1794361550",
     "emsc_20261111_0000022",
-    "us7000txfz"
+    "us7000txfz",
+    "emsc_20261111_0000046",
+    "us7000txgg"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tx1p",
-      "mag": 4.8,
-      "place": "26 km SW of Lata, Solomon Islands",
-      "latitude": -10.912,
-      "longitude": 165.6396,
-      "epoch_ms": 1794201416823
-    },
     {
       "id": "emsc_20261109_0000085",
       "mag": 4.1,
@@ -783,6 +777,14 @@
       "latitude": 49.4228,
       "longitude": -126.9611,
       "epoch_ms": 1794361536580
+    },
+    {
+      "id": "us7000txgg",
+      "mag": 4.6,
+      "place": "130 km ENE of Hasaki, Japan",
+      "latitude": 36.1492,
+      "longitude": 142.185,
+      "epoch_ms": 1794369412372
     }
   ]
 }
