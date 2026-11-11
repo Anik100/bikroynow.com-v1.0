@@ -431,17 +431,10 @@
     "us7000txns",
     "emsc_20261111_0000292",
     "emsc_20261111_0000297",
-    "us7000txpa"
+    "us7000txpa",
+    "emsc_20261111_0000303"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000011",
-      "mag": 5.4,
-      "place": "KEP. TANIMBAR REGION, INDONESIA",
-      "latitude": -8.0178,
-      "longitude": 130.3141,
-      "epoch_ms": 1794275607800
-    },
     {
       "id": "emsc_20261110_0000017",
       "mag": 4.9,
@@ -833,6 +826,14 @@
       "latitude": -7.957,
       "longitude": -13.4059,
       "epoch_ms": 1794434622610
+    },
+    {
+      "id": "emsc_20261111_0000303",
+      "mag": 4.5,
+      "place": "XIZANG-NEPAL BORDER REGION",
+      "latitude": 28.44,
+      "longitude": 85.43,
+      "epoch_ms": 1794438054500
     }
   ]
 }
