@@ -15,8 +15,7 @@ export function getServerSupabase() {
       fetch: (url, options = {}) => {
         return fetch(url, {
           ...options,
-          cache: 'no-store',
-          next: { revalidate: 0 }
+          cache: 'no-store'
         });
       }
     }

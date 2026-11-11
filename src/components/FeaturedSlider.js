@@ -8,10 +8,10 @@ import { Star, ChevronLeft, ChevronRight, MapPin, ArrowRight } from 'lucide-reac
 
 const SLIDE_DURATION = 5000; // 5 seconds
 
-export default function FeaturedSlider({ lang = 'en' }) {
-  const [featuredAds, setFeaturedAds] = useState([]);
+export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] }) {
+  const [featuredAds, setFeaturedAds] = useState(initialFeaturedAds || []);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(initialFeaturedAds && initialFeaturedAds.length > 0 ? false : true);
   const [progress, setProgress] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -127,7 +127,17 @@ export default function FeaturedSlider({ lang = 'en' }) {
   const goNext = () => goToSlide((currentIndex + 1) % featuredAds.length);
   const goPrev = () => goToSlide((currentIndex - 1 + featuredAds.length) % featuredAds.length);
 
-  if (loading) return null;
+  if (loading && featuredAds.length === 0) {
+    return (
+      <div className={styles.sliderContainer} aria-hidden="true">
+        <div className={styles.placeholder} style={{ opacity: 0.6 }}>
+          <div className={styles.placeholderContent}>
+            <span className={styles.placeholderLogo}>BikroyNow<span>.com</span></span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Placeholder when no featured ads exist
   if (featuredAds.length === 0) {
@@ -191,6 +201,7 @@ export default function FeaturedSlider({ lang = 'en' }) {
                   src={listing1.images[0]}
                   alt={listing1?.title ? `${listing1.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
                   fetchPriority="high"
+                  loading="eager"
                   decoding="async"
                   width={600}
                   height={200}

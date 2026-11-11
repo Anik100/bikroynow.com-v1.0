@@ -9,6 +9,7 @@
   overflow: hidden;
   background: transparent;
   margin-bottom: 1.5rem;
+  min-height: 200px;
 }
 
 /* ── Mobile Featured Badge ─────────────────── */
@@ -50,6 +51,7 @@
 .slidesWrapper {
   width: 100%;
   display: block;
+  min-height: 200px;
 }
 
 .slideShow {
@@ -286,6 +288,7 @@
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
+    min-height: 175px;
   }
 
   .mobileFeaturedBadge {
@@ -296,6 +299,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
+    min-height: 175px;
   }
 
   .desktopSecondCard {

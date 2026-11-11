@@ -1,16 +1,22 @@
 import './globals.css';
+import dynamic from 'next/dynamic';
 import { Inter } from 'next/font/google';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { LanguageProvider } from '../context/LanguageContext';
 import PageTransition from '../components/PageTransition';
-import AiSupportWidget from '../components/AiSupportWidget';
+
+const AiSupportWidget = dynamic(() => import('../components/AiSupportWidget'), {
+  ssr: false,
+});
 
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
   weight: ['400', '500', '600', '700', '800'],
+  adjustFontFallback: true,
+  fallback: ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
 });
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bikroynow.com';
@@ -165,7 +171,7 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} ${inter.variable}`}>
         <LanguageProvider>
           <Navbar />
           <main style={{ minHeight: 'calc(100vh - 200px)' }}>

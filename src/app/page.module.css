@@ -222,6 +222,15 @@
 .categorySection {
   margin-top: 1.2rem;
   margin-bottom: 0.8rem;
+  min-height: 58px;
+}
+
+@media (max-width: 768px) {
+  .categorySection {
+    min-height: 52px;
+    margin-top: 0.8rem;
+    margin-bottom: 0.6rem;
+  }
 }
 
 .sectionTitleToggle {
@@ -238,6 +247,15 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  min-height: 52px;
+}
+
+@media (max-width: 768px) {
+  .sectionTitleToggle {
+    min-height: 48px;
+    padding: 0.65rem 1rem;
+    border-radius: 12px;
+  }
 }
 
 .sectionTitleToggle:hover {
@@ -345,6 +363,7 @@
   width: 100%;
   margin-top: 1rem;
   margin-bottom: 1.25rem;
+  min-height: 48px;
 }
 
 .filterIconButton {
@@ -484,6 +503,7 @@
     gap: 0.45rem;
     margin-top: 0.75rem;
     margin-bottom: 1rem;
+    min-height: 44px;
   }
   .filterIconButton {
     width: 42px;
@@ -1093,6 +1113,7 @@
 .categorySection {
   margin-top: 1.2rem;
   margin-bottom: 1rem;
+  min-height: 58px;
 }
 
 /* Section Title Toggle Bar */

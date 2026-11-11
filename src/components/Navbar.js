@@ -1,16 +1,18 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Search, MessageCircle, User, PlusCircle, Globe, MapPin, X, Home as HomeIcon, ChevronRight, ArrowRight, Heart, Crown } from 'lucide-react';
 import { supabase, syncUserProfile } from '../lib/supabaseClient';
 import { useLanguage } from '../context/LanguageContext';
 import { LOCATIONS } from '../lib/constants';
-import ProfileMenu from './ProfileMenu';
-import OnboardingModal from './OnboardingModal';
 import { playMessageNotification, requestNotificationPermission, registerServiceWorker } from '../lib/notificationAudio';
 import styles from './Navbar.module.css';
+
+const ProfileMenu = dynamic(() => import('./ProfileMenu'), { ssr: false });
+const OnboardingModal = dynamic(() => import('./OnboardingModal'), { ssr: false });
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
