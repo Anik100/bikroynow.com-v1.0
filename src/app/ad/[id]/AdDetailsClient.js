@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { supabase } from '../../../lib/supabaseClient';
 import styles from './ad-details.module.css';
-import { MapPin, Clock, Phone, User as UserIcon, ShieldCheck, Heart, Share2, ChevronLeft, ChevronRight, Trash2, Star, Edit, Check, X } from 'lucide-react';
+import { MapPin, Clock, Phone, User as UserIcon, ShieldCheck, Heart, Share2, ChevronLeft, ChevronRight, Trash2, Star, Edit, Check, X, MessageCircle } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useLanguage } from '../../../context/LanguageContext';
@@ -80,6 +80,65 @@ const getSellerBadge = (profile, lang) => {
 
 const isValidUUID = (str) => typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 
+
+const renderPackageBadge = (profile, ad, lang) => {
+  const expiresAt = profile?.membership_expires_at ? new Date(profile.membership_expires_at) : null;
+  const isNotExpired = !expiresAt || new Date() < expiresAt;
+  const membershipType = (profile?.membership_type && profile.membership_type !== 'free' && isNotExpired)
+    ? profile.membership_type.toLowerCase()
+    : null;
+
+  if (membershipType) {
+    if (membershipType.includes('business')) {
+      return (
+        <span className={`${styles.pkgBadge} ${styles.pkgBusiness}`}>
+          💎 {lang === 'bn' ? 'বিজনেস মেম্বার' : 'Business Member'}
+        </span>
+      );
+    } else if (membershipType.includes('gold')) {
+      return (
+        <span className={`${styles.pkgBadge} ${styles.pkgGold}`}>
+          ⭐ {lang === 'bn' ? 'গোল্ড মেম্বার' : 'Gold Member'}
+        </span>
+      );
+    } else if (membershipType.includes('silver')) {
+      return (
+        <span className={`${styles.pkgBadge} ${styles.pkgSilver}`}>
+          🥈 {lang === 'bn' ? 'সিলভার মেম্বার' : 'Silver Member'}
+        </span>
+      );
+    } else {
+      return (
+        <span className={`${styles.pkgBadge} ${styles.pkgBusiness}`}>
+          🛡️ {profile.membership_type}
+        </span>
+      );
+    }
+  }
+
+  if (ad?.promotion_type) {
+    return (
+      <span className={`${styles.pkgBadge} ${styles.pkgPromo}`}>
+        🚀 {getPromotionBadgeText(ad.promotion_type, lang)}
+      </span>
+    );
+  }
+
+  if (ad?.is_featured) {
+    return (
+      <span className={`${styles.pkgBadge} ${styles.pkgGold}`}>
+        ⭐ {lang === 'bn' ? 'ফিচার্ড সেলার' : 'Featured Seller'}
+      </span>
+    );
+  }
+
+  return (
+    <span className={`${styles.pkgBadge} ${styles.pkgVerified}`}>
+      🛡️ {lang === 'bn' ? 'ভেরিফাইড সেলার' : 'Verified Seller'}
+    </span>
+  );
+};
+
 export default function AdDetailsClient({ initialAd, adId, params }) {
   const routeParams = useParams();
   const effectiveId = adId || routeParams?.id || params?.id;
@@ -98,6 +157,100 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [currentUser, setCurrentUser] = useState(null);
   const [isMounted, setIsMounted] = useState(false);
+
+  const handleStartChat = async () => {
+    setSendingChat(true);
+    try {
+      let activeUser = currentUser;
+
+      if (!activeUser) {
+        try {
+          const sessionPromise = supabase.auth.getSession();
+          const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ data: { session: null } }), 1200));
+          const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
+          if (session?.user) activeUser = session.user;
+        } catch (e) {}
+      }
+
+      if (!activeUser) {
+        try {
+          const localUser = localStorage.getItem('bikroynow_demo_user');
+          if (localUser) activeUser = JSON.parse(localUser);
+        } catch (e) {}
+      }
+
+      if (!activeUser) {
+        router.push(`/login?redirect=${encodeURIComponent('/ad/' + effectiveId)}`);
+        return;
+      }
+      
+      const isOwnAd = activeUser.id === ad.user_id || 
+        (activeUser.email && profile?.email && activeUser.email.toLowerCase() === profile.email.toLowerCase());
+      if (isOwnAd) {
+        alert(lang === 'bn' ? 'আপনি নিজের বিজ্ঞাপনে চ্যাট করতে পারবেন না।' : 'You cannot chat on your own ad.');
+        return;
+      }
+
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 4000);
+      const chatRes = await fetch('/api/chats', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          listing_id: ad.id,
+          buyer_id: activeUser.id,
+          seller_id: ad.user_id || 'seller-business-1'
+        }),
+        signal: controller.signal
+      }).catch(() => null);
+      clearTimeout(timer);
+
+      if (chatRes && chatRes.ok) {
+        const chatJson = await chatRes.json();
+        if (chatJson.id) {
+          try {
+            const instantChatObj = {
+              id: chatJson.id,
+              listing_id: ad.id,
+              buyer_id: activeUser.id,
+              seller_id: ad.user_id || 'seller-business-1',
+              created_at: new Date().toISOString(),
+              listing: {
+                id: ad.id,
+                title: ad.title,
+                images: ad.images || [],
+                price: ad.price,
+                location: ad.location || ''
+              },
+              seller: profile || {
+                full_name: 'বিক্রেতা (Seller)',
+                avatar_url: null,
+                email: null
+              },
+              buyer: {
+                id: activeUser.id,
+                full_name: activeUser.user_metadata?.full_name || activeUser.email || 'ক্রেতা (Buyer)',
+                avatar_url: activeUser.user_metadata?.avatar_url || null,
+                email: activeUser.email
+              }
+            };
+            localStorage.setItem('bikroynow_chat_meta_' + chatJson.id, JSON.stringify(instantChatObj));
+          } catch (e) {}
+
+          router.push(`/chat/${chatJson.id}`);
+          return;
+        }
+      }
+
+      throw new Error(lang === 'bn' ? 'সার্ভার চ্যাট তৈরি করতে ব্যর্থ হয়েছে।' : 'Failed to create chat session on server.');
+    } catch (err) {
+      console.error('Chat error full:', err);
+      alert((lang === 'bn' ? 'চ্যাট শুরু করতে সমস্যা হয়েছে: ' : 'Error starting chat: ') + (err?.message || 'Network error'));
+    } finally {
+      setSendingChat(false);
+    }
+  };
+
 
   useEffect(() => {
     setIsMounted(true);
@@ -222,6 +375,51 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
     }
     touchStartRef.current = { distance: 0, x: 0, y: 0, startX: undefined, startY: undefined, startTime: 0 };
   };
+
+  // Main Gallery Touch Swipe Gestures for Mobile
+  const galleryTouchRef = useRef({ startX: 0, startY: 0, startTime: 0, hasSwiped: false });
+
+  const handleGalleryTouchStart = (e) => {
+    if (e.touches.length === 1) {
+      galleryTouchRef.current = {
+        startX: e.touches[0].clientX,
+        startY: e.touches[0].clientY,
+        startTime: Date.now(),
+        hasSwiped: false
+      };
+    }
+  };
+
+  const handleGalleryTouchEnd = (e) => {
+    if (!ad?.images || ad.images.length <= 1) return;
+    if (e.changedTouches && e.changedTouches.length === 1) {
+      const touch = e.changedTouches[0];
+      const diffX = touch.clientX - galleryTouchRef.current.startX;
+      const diffY = touch.clientY - galleryTouchRef.current.startY;
+      const elapsed = Date.now() - galleryTouchRef.current.startTime;
+
+      // Swipe detection: horizontal move > vertical move and distance > 35px within 750ms
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 35 && elapsed < 750) {
+        galleryTouchRef.current.hasSwiped = true;
+        if (diffX < 0) {
+          // Swiped left -> next image
+          setActiveImage(prev => (prev < ad.images.length - 1 ? prev + 1 : 0));
+        } else {
+          // Swiped right -> previous image
+          setActiveImage(prev => (prev > 0 ? prev - 1 : ad.images.length - 1));
+        }
+      }
+    }
+  };
+
+  const handleMainImageClick = () => {
+    if (galleryTouchRef.current.hasSwiped) {
+      galleryTouchRef.current.hasSwiped = false;
+      return;
+    }
+    setShowLightbox(true);
+  };
+
 
   const handleAdminApprove = async () => {
     try {
@@ -432,7 +630,7 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
             .catch(() => {});
         }
 
-        if (adData?.user_id && isValidUUID(adData.user_id) && !adData.profiles) {
+        if (adData?.user_id && isValidUUID(adData.user_id) && (!adData.profiles || !adData.profiles.full_name)) {
           supabase
             .from('profiles')
             .select('*')
@@ -784,20 +982,46 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                   color={isFavorite ? "#ef4444" : "#64748b"} 
                 />
               </button>
-              <div className={styles.mainImageWrapper}>
+              <div 
+                className={styles.mainImageWrapper}
+                onTouchStart={handleGalleryTouchStart}
+                onTouchEnd={handleGalleryTouchEnd}
+              >
                 {ad.images && ad.images.length > 0 ? (
                   <img 
                     src={ad.images[activeImage]} 
                     alt={`${ad.condition === 'New' ? (lang === 'bn' ? 'নতুন' : 'Brand New') : (lang === 'bn' ? 'ব্যবহৃত' : 'Used')} ${ad.title} for sale in ${ad.location || 'Bangladesh'} - BikroyNow`} 
                     className={styles.mainImage} 
-                    onClick={() => setShowLightbox(true)}
+                    onClick={handleMainImageClick}
                     title={lang === 'bn' ? 'বড় করে দেখতে ক্লিক করুন' : 'Click to zoom'}
                     width={800}
                     height={500}
                     fetchPriority="high"
+                    draggable={false}
                   />
                 ) : (
                   <div className={styles.noImage}>{t('noImage')}</div>
+                )}
+
+                {/* Mobile / Desktop Slide Counter Badge */}
+                {ad.images && ad.images.length > 1 && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '12px',
+                    right: '12px',
+                    background: 'rgba(15, 23, 42, 0.72)',
+                    color: '#ffffff',
+                    padding: '3px 9px',
+                    borderRadius: '12px',
+                    fontSize: '0.75rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.5px',
+                    backdropFilter: 'blur(4px)',
+                    pointerEvents: 'none',
+                    zIndex: 2
+                  }}>
+                    {activeImage + 1} / {ad.images.length}
+                  </div>
                 )}
                 
                 {ad.images && ad.images.length > 1 && (
@@ -835,13 +1059,130 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
 
             <div className={styles.infoSection}>
               <div className={styles.header}>
-                {(ad.is_featured || ad.is_verified || ad.promotion_type) && (
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: ad.is_featured ? 'linear-gradient(135deg, #10b981, #047857)' : 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', padding: '0.4rem 0.9rem', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 800, marginBottom: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.5px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}>
-                    {ad.is_featured 
-                      ? (lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার প্রমোশন' : '⭐ Premium Slider Promotion') 
-                      : `💎 ${getPromotionBadgeText(ad.promotion_type, lang)}`}
-                  </div>
-                )}
+                                {/* Sleek Integrated Seller Top Box */}
+                {(() => {
+                  const rawPhone = ad.contact_phone || '';
+                  const cleanPhone = rawPhone.replace(/\|.*/, '').trim();
+                  const hasWhatsApp = Boolean(cleanPhone && !rawPhone.includes('|nowa'));
+                  const sellerDisplayName = profile?.full_name || ad.seller_name || (profile?.email ? profile.email.split('@')[0] : null) || t('verifiedSeller');
+                  
+                  const isBusiness = Boolean(
+                    (profile?.membership_type && profile.membership_type.toLowerCase().includes('business')) ||
+                    (ad.promotion_type && ad.promotion_type.toLowerCase().includes('business'))
+                  );
+                  const isVerified = Boolean(ad.is_verified || profile?.is_verified || profile?.membership_type || isBusiness);
+
+                  const formatMemberDate = (dateStr, lang) => {
+                    if (!dateStr) return lang === 'bn' ? 'সদস্য: ২০২৬' : 'Member since: 2026';
+                    const d = new Date(dateStr);
+                    const year = d.getFullYear();
+                    const monthsBn = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+                    const monthsEn = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    const month = lang === 'bn' ? monthsBn[d.getMonth()] : monthsEn[d.getMonth()];
+                    return lang === 'bn' ? `সদস্য: ${month} ${year}` : `Member since: ${month} ${year}`;
+                  };
+
+                  return (
+                    <div className={styles.sellerTopBox}>
+                      {/* Top Strip (সবার উপরে): Package Badge + Clean Location */}
+                      <div className={styles.sellerCardTopStrip}>
+                        <div className={styles.sellerPackageRow}>
+                          {renderPackageBadge(profile, ad, lang)}
+                        </div>
+                        {ad.location && (
+                          <div className={styles.sellerTopLocation}>
+                            <span>📍</span>
+                            <span>{ad.location}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Main Body */}
+                      <div className={styles.sellerCardBody}>
+                        {/* 1. Seller Profile Row: Big Avatar + Name (with Verified Badge) + Clean Date */}
+                        <div className={styles.sellerProfileRow}>
+                          <div className={styles.sellerAvatarImg}>
+                            {profile?.avatar_url ? (
+                              <img 
+                                src={profile.avatar_url} 
+                                alt={sellerDisplayName} 
+                                onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                              />
+                            ) : (
+                              <UserIcon size={28} color="#64748b" />
+                            )}
+                          </div>
+                          <div className={styles.sellerNameCol}>
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+                              <span className={styles.sellerName} title={sellerDisplayName}>
+                                {sellerDisplayName}
+                              </span>
+                              {isVerified && (
+                                <span 
+                                  title={lang === 'bn' ? 'ভেরিফাইড বিক্রেতা' : 'Verified Seller'}
+                                  style={{ display: 'inline-flex', alignItems: 'center', flexShrink: 0 }}
+                                  aria-label="Verified Seller"
+                                >
+                                  <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2" style={{ flexShrink: 0 }}>
+                                    <path d="M10.29 2.308a2.5 2.5 0 0 1 3.42 0l.73.684a2.5 2.5 0 0 0 1.954.724l.998-.073a2.5 2.5 0 0 1 2.628 2.19l.118.995a2.5 2.5 0 0 0 1.258 1.677l.888.46a2.5 2.5 0 0 1 1.134 3.238l-.403.918a2.5 2.5 0 0 0 0 2.098l.403.918a2.5 2.5 0 0 1-1.134 3.238l-.888.46a2.5 2.5 0 0 0-1.258 1.677l-.118.995a2.5 2.5 0 0 1-2.628 2.19l-.998-.073a2.5 2.5 0 0 0-1.954.724l-.73.684a2.5 2.5 0 0 1-3.42 0l-.73-.684a2.5 2.5 0 0 0-1.954-.724l-.998.073a2.5 2.5 0 0 1-2.628-2.19l-.118-.995a2.5 2.5 0 0 0-1.258-1.677l-.888-.46a2.5 2.5 0 0 1-1.134-3.238l.403-.918a2.5 2.5 0 0 0 0-2.098l-.403-.918a2.5 2.5 0 0 1 1.134-3.238l.888-.46a2.5 2.5 0 0 0 1.258-1.677l.118-.995a2.5 2.5 0 0 1 2.628-2.19l.998.073a2.5 2.5 0 0 0 1.954-.724l.73-.684z" />
+                                    <path d="M9 12.5l2 2 4-4" stroke="#ffffff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                                  </svg>
+                                </span>
+                              )}
+                            </div>
+                            <span className={styles.sellerSub}>
+                              {formatMemberDate(profile?.created_at, lang)}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* 2. Action Buttons Row: 1. Chat, 2. Call, 3. WhatsApp */}
+                        <div className={styles.sellerButtonsRow}>
+                          {/* 1. Chat */}
+                          <button 
+                            onClick={handleStartChat}
+                            disabled={sendingChat}
+                            className={styles.btnChat}
+                            title={t('chatWithSeller')}
+                          >
+                            <MessageCircle size={15} color="#0284c7" />
+                            <span>{sendingChat ? '...' : (lang === 'bn' ? 'চ্যাট' : 'Chat')}</span>
+                          </button>
+
+                          {/* 2. Call */}
+                          {cleanPhone && (
+                            <a 
+                              href={`tel:${cleanPhone}`} 
+                              className={styles.btnCall} 
+                              title={cleanPhone || (lang === 'bn' ? 'সরাসরি কল করুন' : 'Call seller')}
+                            >
+                              <Phone size={15} />
+                              <span className={styles.callTextMobile}>{lang === 'bn' ? 'কল করুন' : 'Call'}</span>
+                              <span className={styles.callTextDesktop}>{cleanPhone}</span>
+                            </a>
+                          )}
+
+                          {/* 3. WhatsApp (only if poster enabled WhatsApp) */}
+                          {hasWhatsApp && cleanPhone && (
+                            <a 
+                              href={`https://wa.me/${cleanPhone.replace(/\D/g, '').startsWith('01') ? '88' + cleanPhone.replace(/\D/g, '') : cleanPhone.replace(/\D/g, '')}?text=${encodeURIComponent(lang === 'bn' ? `আসসালামু আলাইকুম, আমি BikroyNow-এ আপনার "${ad.title}" বিজ্ঞাপনটি দেখেছি।` : `Hello, I saw your ad "${ad.title}" on BikroyNow.`)}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={styles.btnWhatsApp}
+                              aria-label="Chat on WhatsApp"
+                              title={lang === 'bn' ? 'হোয়াটসঅ্যাপে মেসেজ পাঠান' : 'Chat on WhatsApp'}
+                            >
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                              </svg>
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 <h1 className={styles.title}>{ad.title}</h1>
                 <div className={styles.price} itemProp="offers" itemScope itemType="https://schema.org/Offer">
                   <meta itemProp="priceCurrency" content="BDT" />
@@ -874,68 +1215,6 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                  <h2 style={{ fontSize: '1.25rem', fontWeight: 800, marginBottom: '0.8rem', color: '#0f172a' }}>{t('description')}</h2>
                  <p>{ad.description}</p>
 
-                 {/* Auto-Enriched Content Box for brief descriptions (< 30 words) */}
-                 {((ad.description || '').trim().split(/\s+/).filter(Boolean).length < 30) && (
-                   <div style={{
-                     marginTop: '1.25rem',
-                     padding: '1.1rem 1.25rem',
-                     background: '#f8fafc',
-                     borderRadius: '14px',
-                     border: '1.5px solid #e2e8f0',
-                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)'
-                   }}>
-                     <h3 style={{ fontSize: '0.98rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                       <span>📋</span>
-                       <span>{lang === 'bn' ? 'পণ্যের মূল বিবরণ ও স্পেসিফিকেশন' : 'Key Specifications & Overview'}</span>
-                     </h3>
-
-                     <div style={{
-                       display: 'grid',
-                       gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-                       gap: '0.6rem',
-                       marginBottom: '1rem',
-                       fontSize: '0.86rem'
-                     }}>
-                       <div style={{ background: '#ffffff', padding: '0.55rem 0.8rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                         <span style={{ color: '#64748b', fontSize: '0.78rem', display: 'block' }}>{lang === 'bn' ? 'পণ্যের নাম' : 'Product Name'}</span>
-                         <strong style={{ color: '#0f172a' }}>{ad.title}</strong>
-                       </div>
-                       <div style={{ background: '#ffffff', padding: '0.55rem 0.8rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                         <span style={{ color: '#64748b', fontSize: '0.78rem', display: 'block' }}>{lang === 'bn' ? 'ক্যাটাগরি' : 'Category'}</span>
-                         <strong style={{ color: '#008b5e' }}>{ad.category_id || (lang === 'bn' ? 'সাধারণ পণ্য' : 'General')}</strong>
-                       </div>
-                       <div style={{ background: '#ffffff', padding: '0.55rem 0.8rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                         <span style={{ color: '#64748b', fontSize: '0.78rem', display: 'block' }}>{lang === 'bn' ? 'কন্ডিশন / অবস্থা' : 'Condition'}</span>
-                         <strong style={{ color: '#0f172a' }}>{ad.condition === 'New' ? (lang === 'bn' ? 'নতুন (Brand New)' : 'New') : (lang === 'bn' ? 'ব্যবহৃত (Used)' : 'Used')}</strong>
-                       </div>
-                       <div style={{ background: '#ffffff', padding: '0.55rem 0.8rem', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                         <span style={{ color: '#64748b', fontSize: '0.78rem', display: 'block' }}>{lang === 'bn' ? 'অবস্থান' : 'Location'}</span>
-                         <strong style={{ color: '#0f172a' }}>{ad.location || ad.district || (lang === 'bn' ? 'বাংলাদেশ' : 'Bangladesh')}</strong>
-                       </div>
-                     </div>
-
-                     {/* 1-Line Buyer Safety Checklist */}
-                     <div style={{
-                       background: '#ecfdf5',
-                       border: '1px solid #a7f3d0',
-                       borderRadius: '10px',
-                       padding: '0.65rem 0.9rem',
-                       display: 'flex',
-                       alignItems: 'center',
-                       gap: '8px',
-                       fontSize: '0.84rem',
-                       color: '#065f46',
-                       fontWeight: 650
-                     }}>
-                       <span style={{ fontSize: '1rem' }}>🛡️</span>
-                       <span>
-                         {lang === 'bn'
-                           ? 'নিরাপত্তা পরামর্শ: পণ্যটি সামনাসামনি দেখে যাচাই করে সরাসরি লেনদেন করুন। অগ্রিম কোনো টাকা পাঠাবেন না।'
-                           : 'Safety Tip: Inspect the item thoroughly in person and pay directly. Never send advance money.'}
-                       </span>
-                     </div>
-                   </div>
-                 )}
                  <div style={{ marginTop: '1.5rem', fontSize: '0.8rem', color: '#475569', fontWeight: 500, borderTop: '1px solid #eee', paddingTop: '1rem' }}>
                    {t('postedOn')} {formatFullDate(ad.created_at, lang)}
                  </div>
@@ -943,30 +1222,7 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
             </div>
           </div>
 
-          {/* Similar Ads Section */}
-          {similarAds.length > 0 && (
-            <div className={styles.similarAdsSection}>
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '1rem', color: '#0f172a' }}>{lang === 'bn' ? 'একই ক্যাটাগরির আরও বিজ্ঞাপন' : 'Similar Ads'}</h2>
-              <div className={styles.similarAdsGrid}>
-                {similarAds.map(similarAd => (
-                  <Link href={`/ad/${similarAd.id}`} key={similarAd.id} className={styles.similarAdCard}>
-                    <img 
-                      src={similarAd.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
-                      alt={`${similarAd.title} - ${similarAd.location || 'Bangladesh'} | BikroyNow`} 
-                      className={styles.similarAdImg}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <div className={styles.similarAdInfo}>
-                      <div className={styles.similarAdTitle}>{similarAd.title}</div>
-                      <div className={styles.similarAdPrice}>{formatPrice(similarAd.price, lang)}</div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+                  </div>
 
         <div className={styles.sidebar}>
           {currentUser && currentUser.email === 'anikh0000@gmail.com' && (
@@ -1075,139 +1331,9 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
             </div>
           )}
 
-          <div className={styles.card}>
-            <h2 style={{ fontSize: '1.05rem', fontWeight: 800, marginBottom: '0.85rem', color: '#0f172a' }}>{lang === 'bn' ? 'বিক্রেতার বিবরণ ও যোগাযোগ' : 'Seller Contact Information'}</h2>
-            <div className={styles.sellerCard}>
-              <div className={styles.sellerHeader}>
-                <div className={styles.avatar}>
-                  {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt={profile.full_name} />
-                  ) : (
-                    <UserIcon size={30} color="#666" />
-                  )}
-                </div>
-                <div>
-                    <h3 className={styles.sellerName} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                      {profile?.full_name || t('verifiedSeller')}
-                      {getSellerBadge(profile, lang)}
-                    </h3>
-                    <p className={styles.memberSince}>{t('memberSince')} {profile?.created_at ? new Date(profile.created_at).getFullYear() : '2024'}</p>
-                </div>
-              </div>
-              
-              <div className={styles.contactActions}>
-                <a href={`tel:${ad.contact_phone}`} className={styles.phoneBtn} style={{ textDecoration: 'none' }}>
-                  <Phone size={20} />
-                  <span>{ad.contact_phone || t('showPhone')}</span>
-                </a>
-                <button 
-                  className={styles.chatBtn}
-                  disabled={sendingChat}
-                  onClick={async () => {
-                    setSendingChat(true);
-                    try {
-                      // 1. Check verified user session
-                      let activeUser = currentUser;
-
-                      if (!activeUser) {
-                        try {
-                          const sessionPromise = supabase.auth.getSession();
-                          const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ data: { session: null } }), 1200));
-                          const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
-                          if (session?.user) activeUser = session.user;
-                        } catch (e) {}
-                      }
-
-                      if (!activeUser) {
-                        try {
-                          const localUser = localStorage.getItem('bikroynow_demo_user');
-                          if (localUser) activeUser = JSON.parse(localUser);
-                        } catch (e) {}
-                      }
-
-                      // If not logged in, smoothly redirect to login with return URL
-                      if (!activeUser) {
-                        router.push(`/login?redirect=${encodeURIComponent('/ad/' + effectiveId)}`);
-                        return;
-                      }
-                      
-                      const isOwnAd = activeUser.id === ad.user_id || 
-                        (activeUser.email && profile?.email && activeUser.email.toLowerCase() === profile.email.toLowerCase());
-                      if (isOwnAd) {
-                        alert(lang === 'bn' ? 'আপনি নিজের বিজ্ঞাপনে চ্যাট করতে পারবেন না।' : 'You cannot chat on your own ad.');
-                        return;
-                      }
-
-                      // Call server-side chats API to create or get chat session with 4s timeout
-                      const controller = new AbortController();
-                      const timer = setTimeout(() => controller.abort(), 4000);
-                      const chatRes = await fetch('/api/chats', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                          listing_id: ad.id,
-                          buyer_id: activeUser.id,
-                          seller_id: ad.user_id || 'seller-business-1'
-                        }),
-                        signal: controller.signal
-                      }).catch(() => null);
-                      clearTimeout(timer);
-
-                      if (chatRes && chatRes.ok) {
-                        const chatJson = await chatRes.json();
-                        if (chatJson.id) {
-                          try {
-                            const instantChatObj = {
-                              id: chatJson.id,
-                              listing_id: ad.id,
-                              buyer_id: activeUser.id,
-                              seller_id: ad.user_id || 'seller-business-1',
-                              created_at: new Date().toISOString(),
-                              listing: {
-                                id: ad.id,
-                                title: ad.title,
-                                images: ad.images || [],
-                                price: ad.price,
-                                location: ad.location || ''
-                              },
-                              seller: profile || {
-                                full_name: 'বিক্রেতা (Seller)',
-                                avatar_url: null,
-                                email: null
-                              },
-                              buyer: {
-                                id: activeUser.id,
-                                full_name: activeUser.user_metadata?.full_name || activeUser.email || 'ক্রেতা (Buyer)',
-                                avatar_url: activeUser.user_metadata?.avatar_url || null,
-                                email: activeUser.email
-                              }
-                            };
-                            localStorage.setItem('bikroynow_chat_meta_' + chatJson.id, JSON.stringify(instantChatObj));
-                          } catch (e) {}
-
-                          router.push(`/chat/${chatJson.id}`);
-                          return;
-                        }
-                      }
-
-                      throw new Error(lang === 'bn' ? 'সার্ভার চ্যাট তৈরি করতে ব্যর্থ হয়েছে।' : 'Failed to create chat session on server.');
-                    } catch (err) {
-                      console.error('Chat error full:', err);
-                      alert((lang === 'bn' ? 'চ্যাট শুরু করতে সমস্যা হয়েছে: ' : 'Error starting chat: ') + (err?.message || 'Network error'));
-                    } finally {
-                      setSendingChat(false);
-                    }
-                  }}
-                >
-                  {sendingChat ? '...' : t('chatWithSeller')}
-                </button>
-              </div>
-            </div>
-          </div>
-
           <div className={`${styles.card} ${styles.safetyCard}`}>
             <div className={styles.safetyHeader}>
-              <ShieldCheck size={20} color="#008b5e" />
+              <ShieldCheck size={20} color="#d97706" />
               <h3>{t('safetyTips')}</h3>
             </div>
             <ul className={styles.safetyList}>
@@ -1218,6 +1344,35 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
           </div>
         </div>
       </div>
+
+      {/* Similar Ads Section (Positioned below seller contact info and main content) */}
+      {similarAds.length > 0 && (
+        <div className="container" style={{ marginTop: "2.5rem" }}>
+          {/* Similar Ads Section */}
+          {similarAds.length > 0 && (
+            <div className={styles.similarAdsSection}>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '1rem', color: '#0f172a' }}>{lang === 'bn' ? 'একই ক্যাটাগরির আরও বিজ্ঞাপন' : 'Similar Ads'}</h2>
+              <div className={styles.similarAdsGrid}>
+                {similarAds.map(similarAd => (
+                  <Link href={`/ad/${similarAd.id}`} key={similarAd.id} className={styles.similarAdCard}>
+                    <img 
+                      src={similarAd.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
+                      alt={`${similarAd.title} - ${similarAd.location || 'Bangladesh'} | BikroyNow`} 
+                      className={styles.similarAdImg}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <div className={styles.similarAdInfo}>
+                      <div className={styles.similarAdTitle}>{similarAd.title}</div>
+                      <div className={styles.similarAdPrice}>{formatPrice(similarAd.price, lang)}</div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Image Preview Modal (Lightbox) */}
       {isMounted && showLightbox && ad.images && ad.images.length > 0 && createPortal(

@@ -514,12 +514,12 @@ function AdsContent() {
                     {/* Left Compact Image */}
                     <div className={styles.imageBox}>
                       {ad.is_featured ? (
-                        <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #10b981, #047857)', color: '#ffffff', fontWeight: 900 }}>
-                          {lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার' : '⭐ Premium Slider'}
+                        <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', fontWeight: 900, boxShadow: '0 2px 6px rgba(245, 158, 11, 0.35)' }}>
+                          {lang === 'bn' ? '★ প্রিমিয়াম স্লাইডার' : '★ Premium Slider'}
                         </div>
                       ) : (ad.promotion_type && ad.promotion_type !== 'free') ? (
-                        <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', fontWeight: 900 }}>
-                          {lang === 'bn' ? '💎 প্রিমিয়াম' : '💎 Premium'}
+                        <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', fontWeight: 900, boxShadow: '0 2px 6px rgba(245, 158, 11, 0.35)' }}>
+                          {lang === 'bn' ? '★ প্রিমিয়াম' : '★ Premium'}
                         </div>
                       ) : null}
                       {/* Heart / Favorite Button */}
@@ -562,11 +562,11 @@ function AdsContent() {
                         </div>
                       </div>
                       {(ad.is_featured || (ad.promotion_type && ad.promotion_type !== 'free')) && (
-                        <div style={{ marginTop: 'auto', paddingTop: '0.6rem', borderTop: '1px dashed #fef08a', textAlign: 'center', alignSelf: 'stretch' }}>
-                          <span style={{ color: ad.is_featured ? '#047857' : '#d97706', fontWeight: 900, fontSize: '0.8rem', letterSpacing: '0.5px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+                        <div style={{ marginTop: 'auto', paddingTop: '0.6rem', borderTop: '1px solid rgba(245, 158, 11, 0.25)', textAlign: 'center', alignSelf: 'stretch' }}>
+                          <span style={{ color: '#d97706', fontWeight: 900, fontSize: '0.8rem', letterSpacing: '0.5px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
                             {ad.is_featured 
-                              ? (lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার প্রমোশন' : '⭐ Premium Slider Promotion')
-                              : `💎 ${getPromotionBadgeText(ad.promotion_type, lang)}`}
+                              ? (lang === 'bn' ? '★ প্রিমিয়াম স্লাইডার প্রমোশন' : '★ Premium Slider Promotion')
+                              : `★ ${getPromotionBadgeText(ad.promotion_type, lang)}`}
                           </span>
                         </div>
                       )}

@@ -170,6 +170,26 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        {/* Instant Pre-paint Style: Guarantees 0ms flicker on slider reload via CSS variable */}
+        <script
+          id="featured-slider-prepaint-script"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var p = localStorage.getItem('bikroynow_slider_page') || sessionStorage.getItem('bikroynow_slider_page');
+                  if (p !== null && p !== undefined) {
+                    var idx = parseInt(p, 10);
+                    if (!isNaN(idx) && idx >= 0) {
+                      document.documentElement.style.setProperty('--slider-page', idx);
+                      document.documentElement.style.setProperty('--slider-transition', 'none');
+                    }
+                  }
+                } catch(e) {}
+              })();
+            `
+          }}
+        />
       </head>
       <body className={`${inter.className} ${inter.variable}`}>
         <LanguageProvider>

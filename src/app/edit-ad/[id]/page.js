@@ -25,6 +25,7 @@ export default function EditAd({ params }) {
     location: '',
     description: '',
     contact_phone: '',
+    has_whatsapp: true,
     images: []
   });
 

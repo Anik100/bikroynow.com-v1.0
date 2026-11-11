@@ -185,3 +185,28 @@ export const getUserId = (user) => {
   }
   return user.id;
 };
+
+/**
+ * Deterministic sorter for Featured Ads.
+ * Guarantees identical order across SSR, Client API, and React state,
+ * preventing slides from swapping positions on reload or rehydration.
+ */
+export const sortFeaturedAds = (ads) => {
+  if (!Array.isArray(ads)) return [];
+  return [...ads].sort((a, b) => {
+    // 1. Primary: sort_order ascending
+    const orderA = a.sort_order !== undefined && a.sort_order !== null ? a.sort_order : 999;
+    const orderB = b.sort_order !== undefined && b.sort_order !== null ? b.sort_order : 999;
+    if (orderA !== orderB) return orderA - orderB;
+
+    // 2. Secondary: created_at descending (newest first)
+    const timeA = new Date(a.created_at || a.listing?.created_at || 0).getTime();
+    const timeB = new Date(b.created_at || b.listing?.created_at || 0).getTime();
+    if (timeA !== timeB) return timeB - timeA;
+
+    // 3. Deterministic fallback: id or listing_id
+    const idA = String(a.id || a.listing_id || a.listing?.id || '');
+    const idB = String(b.id || b.listing_id || b.listing?.id || '');
+    return idA.localeCompare(idB);
+  });
+};

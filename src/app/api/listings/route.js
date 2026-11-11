@@ -31,7 +31,7 @@ export async function GET(req) {
     if (idParam) {
       if (cachedListings) {
         const found = cachedListings.find(l => String(l.id) === String(idParam));
-        if (found) return NextResponse.json({ listing: found });
+        if (found && found.profiles?.full_name) return NextResponse.json({ listing: found });
       }
       const globalFound = getGlobalListings().find(l => String(l.id) === String(idParam));
       if (globalFound) return NextResponse.json({ listing: globalFound });
@@ -111,7 +111,7 @@ export async function GET(req) {
             .limit(100),
           serverSupabase
             .from('profiles')
-            .select('id, email, membership_type, membership_expires_at'),
+            .select('id, full_name, avatar_url, email, phone, membership_type, membership_expires_at, role, created_at'),
           serverSupabase
             .from('admin_settings')
             .select('value')

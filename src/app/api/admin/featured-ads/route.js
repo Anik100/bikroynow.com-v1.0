@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { getGlobalFeaturedAds, saveGlobalFeaturedAds } from '../../../../lib/globalFeaturedAdsStore';
 import { getGlobalListings } from '../../../../lib/globalListingsStore';
 import { cleanupExpiredMembershipsAndBoosts } from '../../../../lib/membershipManagerHelper';
+import { sortFeaturedAds } from '../../../../lib/utils';
 import crypto from 'crypto';
 
 export const dynamic = 'force-dynamic';
@@ -86,9 +87,10 @@ export async function GET() {
         }
         return true;
       })
-      .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+      ;
 
-    return NextResponse.json({ success: true, data: populated });
+    const sortedPopulated = sortFeaturedAds(populated);
+    return NextResponse.json({ success: true, data: sortedPopulated });
   } catch (err) {
     console.error('GET /api/admin/featured-ads error:', err);
     return NextResponse.json({ error: err.message }, { status: 500 });

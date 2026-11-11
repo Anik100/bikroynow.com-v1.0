@@ -90,6 +90,10 @@ export async function POST(req) {
     const initialVerified = (!verificationRequired && hasActiveMembership) ? true : false;
     const initialFeatured = (!verificationRequired && qualifiesForSlider) ? true : false;
 
+    const rawContactPhone = (body.contact_phone || '01700000000').trim();
+    const cleanPhoneOnly = rawContactPhone.replace(/\|.*/, '').trim();
+    const finalContactPhone = body.has_whatsapp === false ? `${cleanPhoneOnly}|nowa` : cleanPhoneOnly;
+
     const newAd = {
       id: adId,
       user_id: validUserId,
@@ -99,7 +103,7 @@ export async function POST(req) {
       category_id: body.category_id,
       location: body.location || 'Dhaka',
       condition: body.condition || 'Used',
-      contact_phone: body.contact_phone || '01700000000',
+      contact_phone: finalContactPhone,
       images: Array.isArray(body.images) && body.images.length > 0 
         ? body.images 
         : ['https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800&auto=format&fit=crop&q=80'],

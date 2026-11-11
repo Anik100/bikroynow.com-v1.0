@@ -56,7 +56,7 @@
 
 .activeView {
   background: white;
-  color: #008b5e;
+  color: #d97706;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
@@ -71,7 +71,7 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  background: #008b5e;
+  background: #f59e0b;
   color: white;
   border: none;
   padding: 0.5rem 1.2rem; /* Compact size! */
@@ -237,7 +237,7 @@
 
 .applyBtn {
   flex: 1;
-  background: #008b5e;
+  background: #f59e0b;
   color: white;
   border: none;
   padding: 0.8rem;
@@ -482,7 +482,7 @@
 .adPrice {
   font-size: 1.08rem;
   font-weight: 800;
-  color: #008b5e;
+  color: #d97706;
 }
 
 .cardFooter {

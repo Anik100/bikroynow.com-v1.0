@@ -2,7 +2,7 @@ import { getServerSupabase } from './serverSupabase';
 import { getGlobalFeaturedAds } from './globalFeaturedAdsStore';
 import { getGlobalListings } from './globalListingsStore';
 import { cleanupExpiredMembershipsAndBoosts } from './membershipManagerHelper';
-import { sortPremiumListings } from './utils';
+import { sortPremiumListings, sortFeaturedAds } from './utils';
 
 /**
  * Server-side data fetcher for the BikroyNow Homepage.
@@ -121,6 +121,7 @@ export async function getHomeData() {
       } catch (e) {}
     }
 
+    featuredAds = sortFeaturedAds(featuredAds);
     listings = sortPremiumListings(listings);
   } catch (error) {
     console.error('getHomeData execution error:', error);

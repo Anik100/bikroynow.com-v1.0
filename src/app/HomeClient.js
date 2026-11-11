@@ -24,9 +24,9 @@ const getSellerBadge = (profiles, lang) => {
   if (profiles.membership_type && profiles.membership_type !== 'free' && isNotExpired) {
     const name = profiles.membership_type.toLowerCase();
     let badgeStyle = {
-      background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+      background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
       color: 'white',
-      border: '1px solid #34d399'
+      border: '1px solid #f59e0b'
     };
     let label = profiles.membership_type;
 
@@ -636,12 +636,12 @@ export default function HomeClient({ initialFeaturedAds = [], initialListings = 
                 <Link href={`/ad/${ad.id}`} key={ad.id} className={styles.adCard}>
                   <div className={styles.adImageWrapper}>
                     {ad.is_featured ? (
-                      <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #10b981, #047857)', color: '#ffffff', fontWeight: 900, boxShadow: '0 4px 12px rgba(16, 185, 129, 0.4)' }}>
-                        {lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার' : '⭐ Premium Slider'}
+                      <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', fontWeight: 850, boxShadow: '0 2px 8px rgba(245, 158, 11, 0.4)' }}>
+                        {lang === 'bn' ? '★ ফিচার্ড' : '★ Featured'}
                       </div>
                     ) : (ad.promotion_type && ad.promotion_type !== 'free') ? (
-                      <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', fontWeight: 900, boxShadow: '0 4px 12px rgba(245, 158, 11, 0.4)' }}>
-                        {lang === 'bn' ? '💎 প্রিমিয়াম' : '💎 Premium'}
+                      <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', fontWeight: 850, boxShadow: '0 2px 8px rgba(245, 158, 11, 0.4)' }}>
+                        {lang === 'bn' ? '★ প্রিমিয়াম' : '★ Premium'}
                       </div>
                     ) : null}
                     {/* Heart / Favorite Button */}
@@ -681,15 +681,15 @@ export default function HomeClient({ initialFeaturedAds = [], initialListings = 
                     <div className={styles.adPrice}>{formatPrice(ad.price, lang)}</div>
                     <div className={styles.adFooter}>
                       <span className={styles.adTime}>
-                        {getRelativeTime(ad.created_at, lang)} • {formatFullDate(ad.created_at, lang)}
+                        {getRelativeTime(ad.created_at, lang)}
                       </span>
                     </div>
                     {(ad.is_featured || (ad.promotion_type && ad.promotion_type !== 'free')) && (
-                      <div style={{ marginTop: 'auto', paddingTop: '0.8rem', borderTop: '1px dashed #fef08a', textAlign: 'center' }}>
-                        <span style={{ color: ad.is_featured ? '#047857' : '#d97706', fontWeight: 900, fontSize: '0.85rem', letterSpacing: '0.5px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+                      <div style={{ marginTop: 'auto', paddingTop: '0.45rem', borderTop: '1px solid rgba(245, 158, 11, 0.2)', textAlign: 'center' }}>
+                        <span style={{ color: '#d97706', fontWeight: 800, fontSize: '0.72rem', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.25rem' }}>
                           {ad.is_featured 
-                            ? (lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার প্রমোশন' : '⭐ Premium Slider Promotion') 
-                            : `💎 ${getPromotionBadgeText(ad.promotion_type, lang)}`}
+                            ? (lang === 'bn' ? '★ স্পন্সরড বিজ্ঞাপন' : '★ Sponsored Ad') 
+                            : `★ ${getPromotionBadgeText(ad.promotion_type, lang)}`}
                         </span>
                       </div>
                     )}

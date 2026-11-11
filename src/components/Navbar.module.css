@@ -193,8 +193,8 @@
 }
 
 .searchRow:focus-within {
-  border-color: #008b5e;
-  box-shadow: 0 2px 12px rgba(0, 139, 94, 0.12);
+  border-color: #f59e0b;
+  box-shadow: 0 2px 12px rgba(245, 158, 11, 0.2);
 }
 
 .locationSelector {
@@ -267,7 +267,7 @@
 }
 
 .searchBtn:hover {
-  background: #008b5e;
+  background: #d97706;
 }
 
 /* Live Search Dropdown */
@@ -341,7 +341,7 @@
 .searchResultPrice {
   font-size: 0.82rem;
   font-weight: 800;
-  color: #008b5e;
+  color: #d97706;
 }
 
 .searchResultMeta {
@@ -375,17 +375,17 @@
   gap: 6px;
   width: 100%;
   padding: 0.75rem;
-  background: #f0fdf4;
-  color: #008b5e;
+  background: #fffbeb;
+  color: #d97706;
   font-size: 0.85rem;
   font-weight: 800;
   text-decoration: none;
-  border-top: 1px solid #dcfce7;
+  border-top: 1px solid #fef3c7;
   transition: background 0.2s ease;
 }
 
 .searchResultAll:hover {
-  background: #dcfce7;
+  background: #fef3c7;
 }
 
 .allAdsWrapper {
@@ -395,7 +395,7 @@
 }
 
 .allAdsBtn {
-  background-color: #008b5e;
+  background-color: #f59e0b;
   color: white;
   padding: 0.5rem 2rem;
   border-radius: 6px;
@@ -493,7 +493,7 @@
 }
 
 .postIconCircle {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
   color: white;
   width: 34px;
   height: 34px;
@@ -501,19 +501,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.4);
   transition: all 0.2s ease;
 }
 
 .bottomNavItem:hover .postIconCircle,
 .activePost .postIconCircle {
   transform: scale(1.1);
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.45);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.6);
 }
 
 .postText {
   margin-top: 1px;
-  color: #10b981 !important;
+  color: #d97706 !important;
   font-weight: 800 !important;
 }
 
