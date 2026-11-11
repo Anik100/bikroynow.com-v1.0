@@ -393,17 +393,10 @@
     "emsc_20261111_0000076",
     "us7000txhi",
     "emsc_20261111_0000077",
-    "emsc_20261111_0000080"
+    "emsc_20261111_0000080",
+    "emsc_20261111_0000082"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000142",
-      "mag": 5.8,
-      "place": "NORTHERN PERU",
-      "latitude": -4.9211,
-      "longitude": -75.0969,
-      "epoch_ms": 1794219837260
-    },
     {
       "id": "emsc_20261109_0000143",
       "mag": 4.1,
@@ -795,6 +788,14 @@
       "latitude": -62.4284,
       "longitude": 155.0206,
       "epoch_ms": 1794378105383
+    },
+    {
+      "id": "emsc_20261111_0000082",
+      "mag": 4.6,
+      "place": "OFFSHORE VALPARAISO, CHILE",
+      "latitude": -33.25,
+      "longitude": -72.22,
+      "epoch_ms": 1794380249000
     }
   ]
 }
