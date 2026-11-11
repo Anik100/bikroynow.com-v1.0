@@ -378,17 +378,10 @@
     "emsc_20261111_0000007",
     "emsc_20261111_0000013",
     "us7000txfx",
-    "ew1794361550"
+    "ew1794361550",
+    "emsc_20261111_0000022"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000077",
-      "mag": 4.6,
-      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
-      "latitude": 36.4941,
-      "longitude": 141.4485,
-      "epoch_ms": 1794200513640
-    },
     {
       "id": "us7000tx1p",
       "mag": 4.8,
@@ -780,6 +773,14 @@
       "latitude": 49.099,
       "longitude": -127.7868,
       "epoch_ms": 1794361526000
+    },
+    {
+      "id": "emsc_20261111_0000022",
+      "mag": 4.7,
+      "place": "VANCOUVER ISLAND, CANADA REGION",
+      "latitude": 49.4228,
+      "longitude": -126.9611,
+      "epoch_ms": 1794361536580
     }
   ]
 }
