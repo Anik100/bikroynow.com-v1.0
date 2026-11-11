@@ -374,17 +374,10 @@
     "us7000txea",
     "emsc_20261110_0000319",
     "emsc_20261110_0000329",
-    "emsc_20261110_0000332"
+    "emsc_20261110_0000332",
+    "emsc_20261111_0000007"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000065",
-      "mag": 4.4,
-      "place": "MAYOTTE REGION",
-      "latitude": -12.69,
-      "longitude": 45.51,
-      "epoch_ms": 1794198945200
-    },
     {
       "id": "emsc_20261109_0000071",
       "mag": 5.7,
@@ -776,6 +769,14 @@
       "latitude": 16.775,
       "longitude": -100.164,
       "epoch_ms": 1794352371000
+    },
+    {
+      "id": "emsc_20261111_0000007",
+      "mag": 4.4,
+      "place": "NEAR COAST OF ECUADOR",
+      "latitude": -2.79,
+      "longitude": -81.12,
+      "epoch_ms": 1794358448400
     }
   ]
 }
