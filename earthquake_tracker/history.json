@@ -389,17 +389,10 @@
     "emsc_20261111_0000056",
     "emsc_20261111_0000060",
     "us7000txgv",
-    "emsc_20261111_0000067"
+    "emsc_20261111_0000067",
+    "emsc_20261111_0000076"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000136",
-      "mag": 5.4,
-      "place": "SERAM, INDONESIA",
-      "latitude": -3.1569,
-      "longitude": 130.3689,
-      "epoch_ms": 1794217711990
-    },
     {
       "id": "emsc_20261109_0000139",
       "mag": 4.8,
@@ -791,6 +784,14 @@
       "latitude": 14.302,
       "longitude": -93.868,
       "epoch_ms": 1794375456000
+    },
+    {
+      "id": "emsc_20261111_0000076",
+      "mag": 4.3,
+      "place": "CARIBBEAN SEA",
+      "latitude": 13.8953,
+      "longitude": -82.3621,
+      "epoch_ms": 1794378235000
     }
   ]
 }
