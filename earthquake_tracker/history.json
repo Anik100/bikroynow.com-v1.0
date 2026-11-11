@@ -396,17 +396,11 @@
     "emsc_20261111_0000080",
     "emsc_20261111_0000082",
     "emsc_20261111_0000086",
-    "emsc_20261111_0000096"
+    "emsc_20261111_0000096",
+    "emsc_20261111_0000108",
+    "us7000txi0"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tx3c",
-      "mag": 4.7,
-      "place": "271 km N of Tobelo, Indonesia",
-      "latitude": 4.1741,
-      "longitude": 127.7802,
-      "epoch_ms": 1794223507473
-    },
     {
       "id": "emsc_20261109_0000161",
       "mag": 4.0,
@@ -798,6 +792,14 @@
       "latitude": 16.022,
       "longitude": -98.392,
       "epoch_ms": 1794384326000
+    },
+    {
+      "id": "us7000txi0",
+      "mag": 4.7,
+      "place": "152 km WSW of Merizo Village, Guam",
+      "latitude": 12.8418,
+      "longitude": 143.3322,
+      "epoch_ms": 1794386235449
     }
   ]
 }
