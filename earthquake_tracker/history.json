@@ -434,17 +434,10 @@
     "emsc_20261111_0000297",
     "us7000txpa",
     "emsc_20261111_0000303",
-    "us7000txpk"
+    "us7000txpk",
+    "emsc_20261111_0000310"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000040",
-      "mag": 5.5,
-      "place": "SANTA CRUZ ISLANDS",
-      "latitude": -10.9433,
-      "longitude": 165.4888,
-      "epoch_ms": 1794281871500
-    },
     {
       "id": "emsc_20261110_0000047",
       "mag": 4.2,
@@ -836,6 +829,14 @@
       "latitude": 27.8692,
       "longitude": 87.8857,
       "epoch_ms": 1794438022433
+    },
+    {
+      "id": "emsc_20261111_0000310",
+      "mag": 4.0,
+      "place": "KEPULAUAN TALAUD, INDONESIA",
+      "latitude": 3.75,
+      "longitude": 127.96,
+      "epoch_ms": 1794439518000
     }
   ]
 }
