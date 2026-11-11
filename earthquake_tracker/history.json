@@ -390,17 +390,10 @@
     "emsc_20261111_0000060",
     "us7000txgv",
     "emsc_20261111_0000067",
-    "emsc_20261111_0000076"
+    "emsc_20261111_0000076",
+    "us7000txhi"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000139",
-      "mag": 4.8,
-      "place": "CERAM SEA, INDONESIA",
-      "latitude": -2.9775,
-      "longitude": 130.5842,
-      "epoch_ms": 1794218018135
-    },
     {
       "id": "emsc_20261109_0000142",
       "mag": 5.8,
@@ -792,6 +785,14 @@
       "latitude": 13.8953,
       "longitude": -82.3621,
       "epoch_ms": 1794378235000
+    },
+    {
+      "id": "us7000txhi",
+      "mag": 5.1,
+      "place": "Balleny Islands region",
+      "latitude": -62.4284,
+      "longitude": 155.0206,
+      "epoch_ms": 1794378105383
     }
   ]
 }
