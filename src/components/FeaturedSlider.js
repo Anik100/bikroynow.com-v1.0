@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { supabase } from '../lib/supabaseClient';
 import styles from './FeaturedSlider.module.css';
 import { Star, ChevronLeft, ChevronRight, MapPin, ArrowRight } from 'lucide-react';
@@ -162,6 +163,7 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
 
   const currentAd1 = featuredAds[currentIndex];
   const listing1 = currentAd1?.listing;
+  const isFirstSlide = currentIndex === 0;
 
   // Second ad for desktop split view (if 2 or more exist)
   const secondIndex = (currentIndex + 1) % featuredAds.length;
@@ -197,14 +199,16 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
                   className={styles.blurredBg} 
                   style={{ backgroundImage: `url(${listing1.images[0]})` }} 
                 />
-                <img
+                <Image
                   src={listing1.images[0]}
                   alt={listing1?.title ? `${listing1.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
-                  fetchPriority="high"
-                  loading="eager"
-                  decoding="async"
+                  priority={isFirstSlide}
+                  loading={isFirstSlide ? "eager" : "lazy"}
+                  fetchPriority={isFirstSlide ? "high" : "auto"}
+                  sizes="(max-width: 768px) 100vw, 450px"
                   width={600}
                   height={200}
+                  quality={80}
                   className={styles.slideImage}
                 />
               </>
@@ -253,12 +257,16 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
                   className={styles.blurredBg} 
                   style={{ backgroundImage: `url(${listing2.images[0]})` }} 
                 />
-                <img
+                <Image
                   src={listing2.images[0]}
                   alt={listing2?.title ? `${listing2.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
-                  decoding="async"
+                  priority={false}
+                  loading="lazy"
+                  fetchPriority="low"
+                  sizes="450px"
                   width={600}
                   height={200}
+                  quality={75}
                   className={styles.slideImage}
                 />
               </>

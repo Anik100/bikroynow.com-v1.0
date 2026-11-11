@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { supabase } from '../../lib/supabaseClient';
 import { useLanguage } from '../../context/LanguageContext';
 import { getRelativeTime, formatPrice, getPromotionBadgeText, sortPremiumListings } from '../../lib/utils';
@@ -533,13 +534,15 @@ function AdsContent() {
                           color={favorites.includes(ad.id) ? "#ef4444" : "#64748b"} 
                         />
                       </button>
-                      <img 
-                        src={ad.images[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
+                      <Image 
+                        src={ad.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
                         alt={`${ad.condition === 'New' ? (lang === 'bn' ? 'নতুন' : 'Brand New') : (lang === 'bn' ? 'ব্যবহৃত' : 'Used')} ${ad.title} for sale in ${ad.location || 'Bangladesh'} - BikroyNow`} 
                         loading="lazy"
-                        decoding="async"
+                        priority={false}
+                        sizes="140px"
                         width={140}
                         height={105}
+                        quality={75}
                       />
                     </div>
                     

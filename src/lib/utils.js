@@ -59,29 +59,34 @@ export const formatPrice = (price, lang = 'en') => {
 };
 
 export const compressImage = (file, maxWidth = 1280, maxHeight = 1280, quality = 0.8) => {
-  return new Promise((resolve, reject) => {
-    // If it's not an image (e.g. video), or very small, just return it
-    if (!file.type.startsWith('image/') || file.size < 200 * 1024) {
+  return new Promise((resolve) => {
+    // If running in non-browser environment or not a valid image file, return original
+    if (typeof window === 'undefined' || !file || !file.type || !file.type.startsWith('image/')) {
       resolve(file);
       return;
     }
     
+    // If already compressed JPEG under 100KB, no need to re-encode
+    if (file.type === 'image/jpeg' && file.size < 100 * 1024) {
+      resolve(file);
+      return;
+    }
+
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = (event) => {
-      const img = new Image();
+      const img = new window.Image();
       img.src = event.target.result;
       img.onload = () => {
         let width = img.width;
         let height = img.height;
 
-        if (width > height) {
-          if (width > maxWidth) {
+        // Proportional resizing to fit within 1280x1280 box
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
             height = Math.round((height * maxWidth) / width);
             width = maxWidth;
-          }
-        } else {
-          if (height > maxHeight) {
+          } else {
             width = Math.round((width * maxHeight) / height);
             height = maxHeight;
           }
@@ -91,12 +96,14 @@ export const compressImage = (file, maxWidth = 1280, maxHeight = 1280, quality =
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(img, 0, 0, width, height);
 
         canvas.toBlob(
           (blob) => {
-            if (blob) {
-              // Create a new File object with the compressed blob
+            if (blob && (blob.size < file.size || width < img.width || height < img.height)) {
+              // Create a new File object with the compressed blob (~100-150KB)
               const compressedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
                 type: 'image/jpeg',
                 lastModified: Date.now(),
@@ -110,9 +117,9 @@ export const compressImage = (file, maxWidth = 1280, maxHeight = 1280, quality =
           quality
         );
       };
-      img.onerror = (error) => resolve(file); // fallback on error
+      img.onerror = () => resolve(file); // fallback on error
     };
-    reader.onerror = (error) => resolve(file); // fallback on error
+    reader.onerror = () => resolve(file); // fallback on error
   });
 };
 

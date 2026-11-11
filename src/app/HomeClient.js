@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
+import Image from 'next/image';
 import { supabase } from '../lib/supabaseClient';
 import styles from './page.module.css';
 import { LOCATIONS, CATEGORIES, CATEGORY_TRANSLATIONS, getCategoryName } from '../lib/constants';
@@ -655,14 +656,16 @@ export default function HomeClient({ initialFeaturedAds = [], initialListings = 
                         color={favorites.includes(ad.id) ? "#ef4444" : "#64748b"} 
                       />
                     </button>
-                    <img 
-                      src={ad.images[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
+                    <Image 
+                      src={ad.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
                       alt={`${ad.condition === 'New' ? (lang === 'bn' ? 'নতুন' : 'Brand New') : (lang === 'bn' ? 'ব্যবহৃত' : 'Used')} ${ad.title} for sale in ${ad.location || 'Bangladesh'} - BikroyNow`} 
                       className={styles.adImage}
                       loading="lazy"
-                      decoding="async"
+                      priority={false}
+                      sizes="(max-width: 768px) 50vw, 25vw"
                       width={300}
                       height={160}
+                      quality={75}
                     />
                   </div>
                   <div className={styles.adContent} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>

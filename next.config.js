@@ -9,11 +9,18 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '**',
+        hostname: 'i.ibb.co',
+        pathname: '/**',
       },
       {
         protocol: 'https',
-        hostname: 'i.ibb.co',
+        hostname: 'ibb.co',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.ibb.co',
+        pathname: '/**',
       },
       {
         protocol: 'https',
@@ -30,6 +37,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**',
       },
     ],
   },
