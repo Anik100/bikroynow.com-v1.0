@@ -399,17 +399,10 @@
     "emsc_20261111_0000096",
     "emsc_20261111_0000108",
     "us7000txi0",
-    "us7000txi2"
+    "us7000txi2",
+    "emsc_20261111_0000122"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000161",
-      "mag": 4.0,
-      "place": "OFF COAST OF LOS LAGOS, CHILE",
-      "latitude": -41.72,
-      "longitude": -76.17,
-      "epoch_ms": 1794224734000
-    },
     {
       "id": "emsc_20261109_0000171",
       "mag": 4.6,
@@ -801,6 +794,14 @@
       "latitude": 12.8418,
       "longitude": 143.3322,
       "epoch_ms": 1794386235449
+    },
+    {
+      "id": "emsc_20261111_0000122",
+      "mag": 4.3,
+      "place": "OFF W COAST OF NORTHERN SUMATRA",
+      "latitude": 2.77,
+      "longitude": 93.22,
+      "epoch_ms": 1794390268000
     }
   ]
 }
