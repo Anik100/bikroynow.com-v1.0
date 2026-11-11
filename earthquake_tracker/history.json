@@ -426,17 +426,10 @@
     "us7000txmq",
     "emsc_20261111_0000275",
     "us7000txmx",
-    "emsc_20261111_0000282"
+    "emsc_20261111_0000282",
+    "emsc_20261111_0000285"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000341",
-      "mag": 5.0,
-      "place": "SOUTH OF FIJI ISLANDS",
-      "latitude": -24.4824,
-      "longitude": -177.2803,
-      "epoch_ms": 1794267921429
-    },
     {
       "id": "emsc_20261110_0000002",
       "mag": 4.4,
@@ -828,6 +821,14 @@
       "latitude": -19.65,
       "longitude": -69.3,
       "epoch_ms": 1794429903000
+    },
+    {
+      "id": "emsc_20261111_0000285",
+      "mag": 4.3,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 13.98,
+      "longitude": -92.924,
+      "epoch_ms": 1794431724000
     }
   ]
 }
