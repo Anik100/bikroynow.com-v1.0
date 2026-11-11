@@ -413,17 +413,10 @@
     "emsc_20261111_0000160",
     "emsc_20261111_0000166",
     "emsc_20261111_0000167",
-    "emsc_20261111_0000174"
+    "emsc_20261111_0000174",
+    "emsc_20261111_0000177"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000285",
-      "mag": 4.1,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 14.89,
-      "longitude": -94.066,
-      "epoch_ms": 1794252032000
-    },
     {
       "id": "emsc_20261109_0000296",
       "mag": 4.0,
@@ -815,6 +808,14 @@
       "latitude": -14.474,
       "longitude": 167.441,
       "epoch_ms": 1794401104940
+    },
+    {
+      "id": "emsc_20261111_0000177",
+      "mag": 4.1,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.88,
+      "longitude": 121.79,
+      "epoch_ms": 1794403566000
     }
   ]
 }
