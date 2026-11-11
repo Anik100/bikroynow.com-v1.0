@@ -425,17 +425,10 @@
     "emsc_20261111_0000268",
     "us7000txmq",
     "emsc_20261111_0000275",
-    "us7000txmx"
+    "us7000txmx",
+    "emsc_20261111_0000282"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000340",
-      "mag": 4.2,
-      "place": "NEPAL-INDIA BORDER REGION",
-      "latitude": 26.9864,
-      "longitude": 86.5341,
-      "epoch_ms": 1794268437000
-    },
     {
       "id": "emsc_20261109_0000341",
       "mag": 5.0,
@@ -827,6 +820,14 @@
       "latitude": -23.5023,
       "longitude": -179.8474,
       "epoch_ms": 1794426621669
+    },
+    {
+      "id": "emsc_20261111_0000282",
+      "mag": 4.3,
+      "place": "TARAPACA, CHILE",
+      "latitude": -19.65,
+      "longitude": -69.3,
+      "epoch_ms": 1794429903000
     }
   ]
 }
