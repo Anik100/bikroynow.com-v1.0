@@ -420,17 +420,10 @@
     "emsc_20261111_0000183",
     "emsc_20261111_0000250",
     "emsc_20261111_0000252",
-    "us7000txm8"
+    "us7000txm8",
+    "emsc_20261111_0000258"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000305",
-      "mag": 4.1,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.36,
-      "longitude": 123.86,
-      "epoch_ms": 1794258394000
-    },
     {
       "id": "emsc_20261109_0000322",
       "mag": 4.7,
@@ -822,6 +815,14 @@
       "latitude": 7.3877,
       "longitude": -80.1172,
       "epoch_ms": 1794418600000
+    },
+    {
+      "id": "emsc_20261111_0000258",
+      "mag": 4.0,
+      "place": "ATACAMA, CHILE",
+      "latitude": -28.58,
+      "longitude": -70.5,
+      "epoch_ms": 1794422516000
     }
   ]
 }
