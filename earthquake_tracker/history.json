@@ -423,17 +423,11 @@
     "us7000txm8",
     "emsc_20261111_0000258",
     "emsc_20261111_0000268",
-    "us7000txmq"
+    "us7000txmq",
+    "emsc_20261111_0000275",
+    "us7000txmx"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000339",
-      "mag": 4.0,
-      "place": "SOUTHWEST OF SUMATRA, INDONESIA",
-      "latitude": -5.18,
-      "longitude": 101.82,
-      "epoch_ms": 1794268034000
-    },
     {
       "id": "emsc_20261109_0000340",
       "mag": 4.2,
@@ -825,6 +819,14 @@
       "latitude": -41.5745,
       "longitude": -73.7103,
       "epoch_ms": 1794424879310
+    },
+    {
+      "id": "us7000txmx",
+      "mag": 4.5,
+      "place": "south of the Fiji Islands",
+      "latitude": -23.5023,
+      "longitude": -179.8474,
+      "epoch_ms": 1794426621669
     }
   ]
 }
