@@ -30,22 +30,22 @@ const getSellerBadge = (profiles, lang) => {
     if (name.includes('silver')) {
       badgeStyle = {
         background: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)',
-        color: '#334155',
-        border: '1px solid #cbd5e1'
+        color: '#0f172a',
+        border: '1px solid #94a3b8'
       };
       label = lang === 'bn' ? 'সিলভার মেম্বার' : 'Silver Member';
     } else if (name.includes('gold')) {
       badgeStyle = {
         background: 'linear-gradient(135deg, #fef08a 0%, #ca8a04 100%)',
-        color: '#713f12',
-        border: '1px solid #fde047'
+        color: '#451a03',
+        border: '1px solid #ca8a04'
       };
       label = lang === 'bn' ? 'গোল্ড মেম্বার' : 'Gold Member';
     } else if (name.includes('business')) {
       badgeStyle = {
-        background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-        color: 'white',
-        border: '1px solid #60a5fa'
+        background: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)',
+        color: '#ffffff',
+        border: '1px solid #3b82f6'
       };
       label = lang === 'bn' ? 'বিজনেস মেম্বার' : 'Business Member';
     } else {
@@ -358,12 +358,23 @@ export default function Home() {
 
   return (
     <div className={styles.homeContainer}>
+      {/* Top Accessible Heading for strict WCAG sequential hierarchy */}
+      <h1 className="sr-only">
+        {lang === 'bn' 
+          ? 'BikroyNow – বাংলাদেশের বিশ্বস্ত লোকাল কেনাবেচার অনলাইন মার্কেটপ্লেস' 
+          : 'BikroyNow – Bangladesh’s Trusted Local Buy & Sell Classifieds Marketplace'}
+      </h1>
+
       {/* === CATEGORY SECTION WITH AUTO-COLLAPSE ON SELECTION === */}
       <div className={`container ${styles.categorySection}`}>
         {/* Toggle Title Bar */}
         <div 
           className={styles.sectionTitleToggle} 
           onClick={() => setIsCategoriesExpanded(!isCategoriesExpanded)}
+          role="button"
+          tabIndex={0}
+          aria-expanded={isCategoriesExpanded}
+          aria-label={isCategoriesExpanded ? (lang === 'bn' ? 'ক্যাটাগরি বন্ধ করুন' : 'Collapse categories') : (lang === 'bn' ? 'ক্যাটাগরি খুলুন' : 'Expand categories')}
         >
           <div className={styles.titleLeft}>
             <span className={styles.accentBar}></span>
@@ -632,6 +643,7 @@ export default function Home() {
                     <button 
                       className={`${styles.favoriteBtn} ${favorites.includes(ad.id) ? styles.active : ''}`}
                       onClick={(e) => toggleFavorite(e, ad.id)}
+                      aria-label={favorites.includes(ad.id) ? (lang === 'bn' ? 'প্রিয় তালিকা থেকে বাদ দিন' : 'Remove from favorites') : (lang === 'bn' ? 'প্রিয় তালিকায় যোগ করুন' : 'Save to favorites')}
                     >
                       <Heart 
                         size={18} 
@@ -645,6 +657,8 @@ export default function Home() {
                       className={styles.adImage}
                       loading="lazy"
                       decoding="async"
+                      width={300}
+                      height={160}
                     />
                   </div>
                   <div className={styles.adContent} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
@@ -686,11 +700,11 @@ export default function Home() {
       <section className={styles.seoGuideSection}>
         <div className="container">
           <div className={styles.seoGuideCard}>
-            <h1 className={styles.seoGuideHeading}>
+            <h2 className={styles.seoGuideHeading}>
               {lang === 'bn'
                 ? 'BikroyNow – বাংলাদেশের বিশ্বস্ত লোকাল কেনাবেচার প্ল্যাটফর্ম'
                 : 'BikroyNow – Bangladesh’s Trusted Local Buy & Sell Marketplace'}
-            </h1>
+            </h2>
             <p>
               {lang === 'bn'
                 ? 'BikroyNow.com বাংলাদেশে নির্ভরযোগ্য ও আধুনিক অনলাইন ক্লাসিফাইড মার্কেটপ্লেস। এখানে আপনি আপনার ব্যবহৃত মোবাইল ফোন, কম্পিউটার ও ল্যাপটপ, হোম অ্যাপ্লায়েন্স, ইলেকট্রনিক্স গেজেট, ব্যবহৃত মোটরসাইকেল, গাড়ি, ফ্ল্যাট ও জমি কেনাবেচা করতে পারেন খুব সহজেই কোনো মধ্যস্বত্বভোগী ছাড়া।'

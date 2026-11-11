@@ -384,6 +384,7 @@
 .imageBox {
   width: 130px;
   height: 98px;
+  aspect-ratio: 4 / 3;
   flex-shrink: 0;
   border-radius: 6px;
   overflow: hidden;
@@ -469,7 +470,7 @@
 
 .adMeta {
   font-size: 0.78rem;
-  color: #718096;
+  color: #475569;
 }
 
 .priceTime {
@@ -486,7 +487,8 @@
 
 .cardFooter {
   font-size: 0.74rem;
-  color: #a0aec0;
+  color: #475569;
+  font-weight: 500;
 }
 
 @media (max-width: 480px) {

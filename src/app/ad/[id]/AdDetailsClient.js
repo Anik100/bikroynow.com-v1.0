@@ -27,22 +27,22 @@ const getSellerBadge = (profile, lang) => {
     if (name.includes('silver')) {
       badgeStyle = {
         background: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)',
-        color: '#334155',
-        border: '1px solid #cbd5e1'
+        color: '#0f172a',
+        border: '1px solid #94a3b8'
       };
       label = lang === 'bn' ? 'সিলভার মেম্বার' : 'Silver Member';
     } else if (name.includes('gold')) {
       badgeStyle = {
         background: 'linear-gradient(135deg, #fef08a 0%, #ca8a04 100%)',
-        color: '#713f12',
-        border: '1px solid #fde047'
+        color: '#451a03',
+        border: '1px solid #ca8a04'
       };
       label = lang === 'bn' ? 'গোল্ড মেম্বার' : 'Gold Member';
     } else if (name.includes('business')) {
       badgeStyle = {
-        background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-        color: 'white',
-        border: '1px solid #60a5fa'
+        background: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)',
+        color: '#ffffff',
+        border: '1px solid #3b82f6'
       };
       label = lang === 'bn' ? 'বিজনেস মেম্বার' : 'Business Member';
     } else {
@@ -776,6 +776,7 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                 className={`${styles.favoriteBtn} ${isFavorite ? styles.active : ''}`}
                 onClick={toggleFavorite}
                 title={isFavorite ? (lang === 'bn' ? 'প্রিয় তালিকা থেকে বাদ দিন' : 'Remove from Favorites') : (lang === 'bn' ? 'প্রিয় তালিকায় যোগ করুন' : 'Add to Favorites')}
+                aria-label={isFavorite ? (lang === 'bn' ? 'প্রিয় তালিকা থেকে বাদ দিন' : 'Remove from favorites') : (lang === 'bn' ? 'প্রিয় তালিকায় যোগ করুন' : 'Save to favorites')}
               >
                 <Heart 
                   size={22} 
@@ -791,6 +792,9 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                     className={styles.mainImage} 
                     onClick={() => setShowLightbox(true)}
                     title={lang === 'bn' ? 'বড় করে দেখতে ক্লিক করুন' : 'Click to zoom'}
+                    width={800}
+                    height={500}
+                    fetchPriority="high"
                   />
                 ) : (
                   <div className={styles.noImage}>{t('noImage')}</div>
@@ -801,12 +805,14 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                     <button 
                       className={styles.navBtn + ' ' + styles.prev}
                       onClick={() => setActiveImage(prev => prev > 0 ? prev - 1 : ad.images.length - 1)}
+                      aria-label={lang === 'bn' ? 'পূর্ববর্তী ছবি' : 'Previous photo'}
                     >
                       <ChevronLeft />
                     </button>
                     <button 
                       className={styles.navBtn + ' ' + styles.next}
                       onClick={() => setActiveImage(prev => prev < ad.images.length - 1 ? prev + 1 : 0)}
+                      aria-label={lang === 'bn' ? 'পরবর্তী ছবি' : 'Next photo'}
                     >
                       <ChevronRight />
                     </button>
@@ -878,10 +884,10 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                      border: '1.5px solid #e2e8f0',
                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)'
                    }}>
-                     <h2 style={{ fontSize: '0.98rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                     <h3 style={{ fontSize: '0.98rem', fontWeight: 800, color: '#0f172a', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
                        <span>📋</span>
                        <span>{lang === 'bn' ? 'পণ্যের মূল বিবরণ ও স্পেসিফিকেশন' : 'Key Specifications & Overview'}</span>
-                     </h2>
+                     </h3>
 
                      <div style={{
                        display: 'grid',
@@ -930,7 +936,7 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                      </div>
                    </div>
                  )}
-                 <div style={{ marginTop: '1.5rem', fontSize: '0.8rem', color: '#888', borderTop: '1px solid #eee', paddingTop: '1rem' }}>
+                 <div style={{ marginTop: '1.5rem', fontSize: '0.8rem', color: '#475569', fontWeight: 500, borderTop: '1px solid #eee', paddingTop: '1rem' }}>
                    {t('postedOn')} {formatFullDate(ad.created_at, lang)}
                  </div>
                </div>

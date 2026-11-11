@@ -467,6 +467,7 @@ export default function Navbar() {
                 }
               }}
               className={styles.desktopNavLink}
+              aria-label={user ? (lang === 'bn' ? 'ব্যবহারকারী প্রোফাইল' : 'User Profile') : (lang === 'bn' ? 'লগইন' : 'Login')}
               title={user ? (lang === 'bn' ? 'প্রোফাইল' : 'Profile') : (lang === 'bn' ? 'লগইন করুন' : 'Login')}
             >
               <User size={18} />
@@ -483,6 +484,7 @@ export default function Navbar() {
               href="/chat"
               className={`${styles.desktopNavLink} ${pathname.startsWith('/chat') ? styles.activeDesktopNav : ''}`}
               title={lang === 'bn' ? 'মেসেজ' : 'Messages'}
+              aria-label={lang === 'bn' ? 'মেসেজ ও চ্যাট' : 'Messages and Chat'}
             >
               <MessageCircle size={18} />
               <span>{lang === 'bn' ? 'মেসেজ' : 'Messages'}</span>
@@ -498,6 +500,7 @@ export default function Navbar() {
               href="/favorites"
               className={`${styles.desktopNavLink} ${pathname === '/favorites' ? styles.activeDesktopNav : ''}`}
               title={lang === 'bn' ? 'ফেভারিটস' : 'Favorites'}
+              aria-label={lang === 'bn' ? 'প্রিয় বিজ্ঞাপনসমূহ' : 'Favorite Ads'}
             >
               <Heart size={18} />
               <span>{lang === 'bn' ? 'ফেভারিটস' : 'Favorites'}</span>
@@ -508,6 +511,7 @@ export default function Navbar() {
               href="/membership"
               className={`${styles.desktopNavLink} ${styles.membershipNavLink} ${pathname === '/membership' ? styles.activeDesktopNav : ''}`}
               title={lang === 'bn' ? 'মেম্বারশিপ' : 'Membership'}
+              aria-label={lang === 'bn' ? 'মেম্বারশিপ প্যাকেজ' : 'Membership Plans'}
             >
               <Crown size={18} />
               <span>{lang === 'bn' ? 'মেম্বারশিপ' : 'Membership'}</span>
@@ -546,7 +550,7 @@ export default function Navbar() {
                     if (searchResults.length > 0) setShowSearchDropdown(true);
                   }}
                 />
-                <button type="submit" className={styles.searchBtn}>
+                <button type="submit" className={styles.searchBtn} aria-label={t('searchBtn') || 'Search'}>
                   {t('searchBtn') || 'Search'}
                 </button>
               </div>
@@ -751,11 +755,11 @@ export default function Navbar() {
       {/* Bottom Navigation for Mobile */}
       {!(pathname.startsWith('/chat/') || pathname === '/chat') && (
         <nav className={styles.bottomNav}>
-        <Link href="/" className={`${styles.bottomNavItem} ${pathname === '/' ? styles.activeHome : ''}`}>
+        <Link href="/" className={`${styles.bottomNavItem} ${pathname === '/' ? styles.activeHome : ''}`} aria-label={t('home') || 'Home'}>
           <HomeIcon size={22} className={styles.iconHome} />
           <span>{t('home')}</span>
         </Link>
-        <Link href="/chat" className={`${styles.bottomNavItem} ${pathname.startsWith('/chat') ? styles.activeChat : ''}`}>
+        <Link href="/chat" className={`${styles.bottomNavItem} ${pathname.startsWith('/chat') ? styles.activeChat : ''}`} aria-label={t('messages') || 'Messages'}>
           <div className={styles.iconWrapper} style={{ position: 'relative', display: 'inline-flex' }}>
             <MessageCircle size={22} className={styles.iconChat} />
             {unreadCount > 0 && (
@@ -783,13 +787,13 @@ export default function Navbar() {
           </div>
           <span>{t('messages')}</span>
         </Link>
-        <Link href="/post-ad" className={`${styles.bottomNavItem} ${styles.postItem} ${pathname === '/post-ad' ? styles.activePost : ''}`}>
+        <Link href="/post-ad" className={`${styles.bottomNavItem} ${styles.postItem} ${pathname === '/post-ad' ? styles.activePost : ''}`} aria-label={t('post') || 'Post Ad'}>
           <div className={styles.postIconCircle}>
             <PlusCircle size={22} />
           </div>
           <span className={styles.postText}>{t('post')}</span>
         </Link>
-         <button className={`${styles.bottomNavItem} ${showProfileMenu ? styles.activeProfile : ''}`} onClick={() => setShowProfileMenu(true)}>
+         <button className={`${styles.bottomNavItem} ${showProfileMenu ? styles.activeProfile : ''}`} onClick={() => setShowProfileMenu(true)} aria-label={t('profile') || 'Profile'}>
           <div className={styles.iconWrapper}>
             <User size={22} className={styles.iconProfile} />
             {unreadSupportCount > 0 && (

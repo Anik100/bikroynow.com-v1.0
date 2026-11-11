@@ -189,7 +189,11 @@ export default function FeaturedSlider({ lang = 'en' }) {
                 />
                 <img
                   src={listing1.images[0]}
-                  alt={listing1?.title ? `${listing1.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'} loading="lazy" decoding="async"
+                  alt={listing1?.title ? `${listing1.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
+                  fetchPriority="high"
+                  decoding="async"
+                  width={600}
+                  height={200}
                   className={styles.slideImage}
                 />
               </>
@@ -240,7 +244,10 @@ export default function FeaturedSlider({ lang = 'en' }) {
                 />
                 <img
                   src={listing2.images[0]}
-                  alt={listing2?.title ? `${listing2.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'} loading="lazy" decoding="async"
+                  alt={listing2?.title ? `${listing2.title} - স্পন্সরড বিজ্ঞাপন | BikroyNow` : 'BikroyNow Featured Ad'}
+                  decoding="async"
+                  width={600}
+                  height={200}
                   className={styles.slideImage}
                 />
               </>
@@ -288,10 +295,18 @@ export default function FeaturedSlider({ lang = 'en' }) {
       {/* Navigation Buttons */}
       {featuredAds.length > 1 && (
         <>
-          <button className={`${styles.navBtn} ${styles.navLeft}`} onClick={goPrev} aria-label="Previous">
+          <button 
+            className={`${styles.navBtn} ${styles.navLeft}`} 
+            onClick={goPrev} 
+            aria-label={lang === 'bn' ? 'পূর্ববর্তী স্লাইড' : 'Previous slide'}
+          >
             <ChevronLeft size={20} />
           </button>
-          <button className={`${styles.navBtn} ${styles.navRight}`} onClick={goNext} aria-label="Next">
+          <button 
+            className={`${styles.navBtn} ${styles.navRight}`} 
+            onClick={goNext} 
+            aria-label={lang === 'bn' ? 'পরবর্তী স্লাইড' : 'Next slide'}
+          >
             <ChevronRight size={20} />
           </button>
 
@@ -302,7 +317,7 @@ export default function FeaturedSlider({ lang = 'en' }) {
                 key={i}
                 className={`${styles.dot} ${i === currentIndex ? styles.dotActive : ''}`}
                 onClick={() => goToSlide(i)}
-                aria-label={`Slide ${i + 1}`}
+                aria-label={lang === 'bn' ? `স্লাইড ${i + 1}` : `Slide ${i + 1}`}
               />
             ))}
           </div>

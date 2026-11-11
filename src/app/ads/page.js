@@ -29,22 +29,22 @@ const getSellerBadge = (profiles, lang) => {
     if (name.includes('silver')) {
       badgeStyle = {
         background: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)',
-        color: '#334155',
-        border: '1px solid #cbd5e1'
+        color: '#0f172a',
+        border: '1px solid #94a3b8'
       };
       label = lang === 'bn' ? 'সিলভার মেম্বার' : 'Silver Member';
     } else if (name.includes('gold')) {
       badgeStyle = {
         background: 'linear-gradient(135deg, #fef08a 0%, #ca8a04 100%)',
-        color: '#713f12',
-        border: '1px solid #fde047'
+        color: '#451a03',
+        border: '1px solid #ca8a04'
       };
       label = lang === 'bn' ? 'গোল্ড মেম্বার' : 'Gold Member';
     } else if (name.includes('business')) {
       badgeStyle = {
-        background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
-        color: 'white',
-        border: '1px solid #60a5fa'
+        background: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)',
+        color: '#ffffff',
+        border: '1px solid #3b82f6'
       };
       label = lang === 'bn' ? 'বিজনেস মেম্বার' : 'Business Member';
     } else {
@@ -525,6 +525,7 @@ function AdsContent() {
                       <button 
                         className={`${styles.favoriteBtn} ${favorites.includes(ad.id) ? styles.active : ''}`}
                         onClick={(e) => toggleFavorite(e, ad.id)}
+                        aria-label={favorites.includes(ad.id) ? (lang === 'bn' ? 'প্রিয় তালিকা থেকে বাদ দিন' : 'Remove from favorites') : (lang === 'bn' ? 'প্রিয় তালিকায় যোগ করুন' : 'Save to favorites')}
                       >
                         <Heart 
                           size={15} 
@@ -537,6 +538,8 @@ function AdsContent() {
                         alt={`${ad.condition === 'New' ? (lang === 'bn' ? 'নতুন' : 'Brand New') : (lang === 'bn' ? 'ব্যবহৃত' : 'Used')} ${ad.title} for sale in ${ad.location || 'Bangladesh'} - BikroyNow`} 
                         loading="lazy"
                         decoding="async"
+                        width={140}
+                        height={105}
                       />
                     </div>
                     

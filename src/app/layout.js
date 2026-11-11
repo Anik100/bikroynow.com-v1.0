@@ -1,9 +1,17 @@
 import './globals.css';
+import { Inter } from 'next/font/google';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import { LanguageProvider } from '../context/LanguageContext';
 import PageTransition from '../components/PageTransition';
 import AiSupportWidget from '../components/AiSupportWidget';
+
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+  weight: ['400', '500', '600', '700', '800'],
+});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.bikroynow.com';
 
@@ -140,7 +148,7 @@ const jsonLd = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="bn" className={inter.variable}>
       <head>
         <meta name="google-site-verification" content="fhC9HvJp-lIaXm3VnKC1W_EtPwoGY6dHeXWSTgYiAm0" />
         <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
@@ -157,7 +165,7 @@ export default function RootLayout({ children }) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body>
+      <body className={inter.className}>
         <LanguageProvider>
           <Navbar />
           <main style={{ minHeight: 'calc(100vh - 200px)' }}>
