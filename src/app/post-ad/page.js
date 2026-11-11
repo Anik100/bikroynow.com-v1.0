@@ -36,6 +36,7 @@ const BN_CAT_NAMES = {
 
 export default function PostAd() {
   const [user, setUser] = useState(null);
+  const [authChecking, setAuthChecking] = useState(true);
   const { t, lang } = useLanguage();
   const router = useRouter();
   const [error, setError] = useState(null);
@@ -229,6 +230,7 @@ export default function PostAd() {
 
   useEffect(() => {
     setMounted(true);
+    let isMounted = true;
     const fetchUserAndQuota = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -244,35 +246,50 @@ export default function PostAd() {
             }
           } catch (e) {}
         }
-        setUser(activeUser);
+        if (isMounted) setUser(activeUser);
 
         if (session?.user) {
           const { data: profile } = await supabase
             .from('profiles')
-            .select('membership_type, membership_expires_at')
+            .select('membership_type, membership_expires_at, phone')
             .eq('id', session.user.id)
             .maybeSingle();
 
-          setUserProfile(profile || { membership_type: 'free' });
-        } else {
+          if (isMounted) {
+            setUserProfile(profile || { membership_type: 'free' });
+            if (profile?.phone) {
+              setFormData(prev => prev.contact_phone ? prev : { ...prev, contact_phone: profile.phone });
+            }
+          }
+        } else if (isMounted) {
           setUserProfile({ membership_type: 'free' });
         }
       } catch (err) {
-        let fallbackUser = null;
-        try {
-          const localUser = localStorage.getItem('bikroynow_demo_user');
-          if (localUser) {
-            const parsed = JSON.parse(localUser);
-            if (parsed?.id && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(parsed.id)) {
-              fallbackUser = parsed;
-            }
-          }
-        } catch (e) {}
-        setUser(fallbackUser);
-        setUserProfile({ membership_type: 'free' });
+        if (isMounted) {
+          setUser(null);
+          setUserProfile({ membership_type: 'free' });
+        }
+      } finally {
+        if (isMounted) setAuthChecking(false);
       }
     };
     fetchUserAndQuota();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!isMounted) return;
+      if (session?.user) {
+        setUser(session.user);
+        setAuthChecking(false);
+      } else {
+        setUser(null);
+        setAuthChecking(false);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      if (authListener?.subscription) authListener.subscription.unsubscribe();
+    };
   }, [router]);
 
   // Drag-to-reorder state
@@ -595,6 +612,62 @@ export default function PostAd() {
             >
               {lang === 'bn' ? 'আরেকটি বিজ্ঞাপন দিন' : 'Post Another Ad'}
             </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (authChecking) {
+    return (
+      <div className={styles.postContainer}>
+        <div className={styles.postCard} style={{ textAlign: 'center', padding: '4rem 1.5rem' }}>
+          <div style={{ fontSize: '1.05rem', fontWeight: 700, color: '#64748b' }}>
+            {t('loading')}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(user.id || ''))) {
+    return (
+      <div className={styles.postContainer}>
+        <div className={styles.postCard} style={{ textAlign: 'center', padding: '3rem 1.5rem', maxWidth: '520px', margin: '1rem auto' }}>
+          <div style={{
+            width: '68px', height: '68px', borderRadius: '50%',
+            background: '#fff7ed', color: '#ea580c',
+            border: '2px solid #fed7aa',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 1.25rem', fontSize: '1.9rem'
+          }}>
+            🔒
+          </div>
+          <h1 style={{ fontSize: '1.45rem', fontWeight: 900, color: '#0f172a', marginBottom: '0.65rem' }}>
+            {lang === 'bn' ? 'বিজ্ঞাপন পোস্ট করতে লগইন করুন' : 'Account Required to Post an Ad'}
+          </h1>
+          <p style={{ fontSize: '0.94rem', color: '#475569', lineHeight: 1.55, marginBottom: '1.75rem' }}>
+            {lang === 'bn'
+              ? 'নিরাপদ কেনাবেচা নিশ্চিত করতে অ্যাকাউন্ট ছাড়া কোনো বিজ্ঞাপন পোস্ট করা যাবে না। মাত্র ১ ক্লিকে Google অ্যাকাউন্ট দিয়ে প্রবেশ করুন।'
+              : 'To keep our marketplace safe and trusted, you must sign in with an account before posting an ad.'}
+          </p>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', alignItems: 'center' }}>
+            <Link
+              href="/login?redirect=/post-ad"
+              className={styles.submitBtn}
+              style={{
+                width: '100%', maxWidth: '320px', textDecoration: 'none',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'
+              }}
+            >
+              <span>{lang === 'bn' ? 'Google দিয়ে লগইন / অ্যাকাউন্ট করুন' : 'Sign In / Create Account'}</span>
+            </Link>
+            <Link
+              href="/"
+              style={{ fontSize: '0.88rem', fontWeight: 700, color: '#64748b', textDecoration: 'none', marginTop: '0.25rem' }}
+            >
+              {lang === 'bn' ? '← হোম পেজে ফিরে যান' : '← Back to Homepage'}
+            </Link>
           </div>
         </div>
       </div>
