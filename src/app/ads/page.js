@@ -6,20 +6,11 @@ import Link from 'next/link';
 import { supabase } from '../../lib/supabaseClient';
 import { useLanguage } from '../../context/LanguageContext';
 import { getRelativeTime, formatPrice, getPromotionBadgeText, sortPremiumListings } from '../../lib/utils';
-import { LOCATIONS, CATEGORIES } from '../../lib/constants';
+import { LOCATIONS, CATEGORIES, getCategoryName } from '../../lib/constants';
 import { isCategoryMatch } from '../../lib/categoryMatcher';
 import styles from './ads.module.css';
-import { Filter, ChevronDown, X, List, Grid, Heart, Search } from 'lucide-react';
-
-const CAT_ICONS = {
-  Electronics: '⚡',
-  'Mobile Phones': '📱',
-  Computers: '💻',
-  Vehicles: '🚗',
-  Property: '🏠',
-  Jobs: '💼',
-  'অন্যান্য': '📦',
-};
+import { Filter, ChevronDown, List, Grid, Heart } from 'lucide-react';
+import FilterModal from '../../components/FilterModal';
 
 const getSellerBadge = (profiles, lang) => {
   if (!profiles) return null;
@@ -104,35 +95,16 @@ function AdsContent() {
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  // Filters
+  // Filter States
   const [minPrice, setMinPrice] = useState(searchParams.get('minPrice') || '');
   const [maxPrice, setMaxPrice] = useState(searchParams.get('maxPrice') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || '');
   const [selectedLocation, setSelectedLocation] = useState(searchParams.get('location') || '');
-  const [onlyVerified, setOnlyVerified] = useState(searchParams.get('verified') === 'true');
-  const [memberFilter, setMemberFilter] = useState('all'); // 'all', 'featured_premium', 'business', 'premium_sellers', 'verified'
+  const [memberFilter, setMemberFilter] = useState(searchParams.get('type') || 'all');
+  const [sortBy, setSortBy] = useState(searchParams.get('sort') || 'newest');
   
   // Interaction States
   const [showFilters, setShowFilters] = useState(false);
-  const [showLocationModal, setShowLocationModal] = useState(false);
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
-  const [filterCatSearch, setFilterCatSearch] = useState('');
-  const [filterCustomInput, setFilterCustomInput] = useState('');
-  const [showFilterOther, setShowFilterOther] = useState(false);
-  
-  const [locationSearch, setLocationSearch] = useState('');
-  const [selectedDivision, setSelectedDivision] = useState(null);
-  const [locationType, setLocationType] = useState('division'); // 'division' or 'district'
-
-  useEffect(() => {
-    if (!showLocationModal) {
-      setSelectedDivision(null);
-      setLocationType('division');
-      setLocationSearch('');
-    }
-  }, [showLocationModal]);
-
-  const [selectedMainCategory, setSelectedMainCategory] = useState(null);
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'grid'
 
   // Favorites state
@@ -204,25 +176,21 @@ function AdsContent() {
     }
 
     if (isFav) {
-      // Remove favorite
       const { error } = await supabase
         .from('favorites')
         .delete()
         .eq('user_id', user.id)
         .eq('listing_id', adId);
       if (error) {
-        // Revert on error
         setFavorites(prev => [...prev, adId]);
         console.error('Error removing favorite:', error);
       }
     } else {
-      // Add favorite
       const { error } = await supabase
         .from('favorites')
         .insert({ user_id: user.id, listing_id: adId });
       if (error) {
-        // Revert on error
-        setFavorites(prev => prev.filter(id => id !== adId));
+        setFavorites(prev => [...prev, adId]);
         console.error('Error adding favorite:', error);
       }
     }
@@ -238,7 +206,8 @@ function AdsContent() {
     setMaxPrice(searchParams.get('maxPrice') || '');
     setSelectedCategory(searchParams.get('category') || '');
     setSelectedLocation(searchParams.get('location') || '');
-    setOnlyVerified(searchParams.get('verified') === 'true');
+    setMemberFilter(searchParams.get('type') || 'all');
+    setSortBy(searchParams.get('sort') || 'newest');
     fetchFilteredAds();
   }, [searchParams]);
 
@@ -253,66 +222,8 @@ function AdsContent() {
         try {
           deletedIds = new Set(JSON.parse(localStorage.getItem('bikroynow_deleted_ad_ids') || '[]').map(String));
         } catch (e) {}
-        // Strictly filter to active approved ads only and exclude deleted
         allItems = allItems.filter(ad => (ad.status === 'active' || ad.status === 'approved') && !deletedIds.has(String(ad.id)));
-
-        // Apply filters locally in Javascript to bypass RLS restrictions completely for all accounts
-        const cat = searchParams.get('category');
-        const loc = searchParams.get('location');
-        const minP = searchParams.get('minPrice');
-        const maxP = searchParams.get('maxPrice');
-        const q = searchParams.get('q') || searchParams.get('search');
-        const verifiedOnly = searchParams.get('verified') === 'true';
-
-        let filtered = allItems;
-
-        // 1. Category Filter
-        if (cat) {
-          filtered = filtered.filter(item => isCategoryMatch(item, cat));
-        }
-
-        // 2. Location Filter
-        if (loc && loc !== 'All of Bangladesh') {
-          const isDivision = Object.keys(LOCATIONS).includes(loc);
-          const isAllOfDivision = loc.startsWith('All of ') && loc.endsWith(' Division');
-          
-          if (isDivision || isAllOfDivision) {
-            const divisionName = isDivision ? loc : loc.replace('All of ', '').replace(' Division', '');
-            const districtsInDivision = LOCATIONS[divisionName];
-            if (districtsInDivision) {
-              const locs = [loc, ...districtsInDivision];
-              filtered = filtered.filter(item => locs.includes(item.location));
-            } else {
-              filtered = filtered.filter(item => item.location === loc);
-            }
-          } else {
-            filtered = filtered.filter(item => item.location === loc);
-          }
-        }
-
-        // 3. Price Filter
-        if (minP) {
-          filtered = filtered.filter(item => item.price >= parseFloat(minP));
-        }
-        if (maxP) {
-          filtered = filtered.filter(item => item.price <= parseFloat(maxP));
-        }
-
-        // 4. Verified Only Filter
-        if (verifiedOnly) {
-          filtered = filtered.filter(item => item.is_verified);
-        }
-
-        // 5. Search query Filter
-        if (q) {
-          const queryTerm = q.toLowerCase().trim();
-          filtered = filtered.filter(item => 
-            (item.title && item.title.toLowerCase().includes(queryTerm)) ||
-            (item.description && item.description.toLowerCase().includes(queryTerm))
-          );
-        }
-
-        setListings(sortPremiumListings(filtered));
+        setListings(allItems);
       }
     } catch (err) {
       console.error('Error fetching filtered ads:', err);
@@ -321,15 +232,25 @@ function AdsContent() {
     }
   };
 
-  const applyFilters = () => {
+  const applyFilters = (applied) => {
     const params = new URLSearchParams();
-    if (minPrice) params.set('minPrice', minPrice);
-    if (maxPrice) params.set('maxPrice', maxPrice);
-    if (selectedCategory) params.set('category', selectedCategory);
-    if (selectedLocation) params.set('location', selectedLocation);
-    if (onlyVerified) params.set('verified', 'true');
+    if (applied.minPrice) params.set('minPrice', applied.minPrice);
+    if (applied.maxPrice) params.set('maxPrice', applied.maxPrice);
+    if (applied.category) params.set('category', applied.category);
+    if (applied.location) params.set('location', applied.location);
+    if (applied.memberFilter && applied.memberFilter !== 'all') params.set('type', applied.memberFilter);
+    if (applied.sortBy && applied.sortBy !== 'newest') params.set('sort', applied.sortBy);
+    
+    const q = searchParams.get('q') || searchParams.get('search');
+    if (q) params.set('q', q);
+
     router.push(`/ads?${params.toString()}`);
-    setShowFilters(false); // Modal goes back up upon applying
+    setMinPrice(applied.minPrice || '');
+    setMaxPrice(applied.maxPrice || '');
+    setSelectedCategory(applied.category || '');
+    setSelectedLocation(applied.location || '');
+    setMemberFilter(applied.memberFilter || 'all');
+    setSortBy(applied.sortBy || 'newest');
   };
 
   const resetFilters = () => {
@@ -337,33 +258,178 @@ function AdsContent() {
     setMaxPrice('');
     setSelectedCategory('');
     setSelectedLocation('');
-    setOnlyVerified(false);
+    setMemberFilter('all');
+    setSortBy('newest');
     router.push('/ads');
-    setShowFilters(false); // Modal goes back up upon resetting
   };
+
+  const handleTabSwitch = (type) => {
+    setMemberFilter(type);
+    const params = new URLSearchParams(searchParams.toString());
+    if (type === 'all') {
+      params.delete('type');
+    } else {
+      params.set('type', type);
+    }
+    router.push(`/ads?${params.toString()}`);
+  };
+
+  const hasActiveFilters = Boolean(
+    (memberFilter && memberFilter !== 'all') ||
+    selectedCategory ||
+    selectedLocation ||
+    minPrice ||
+    maxPrice ||
+    (sortBy && sortBy !== 'newest')
+  );
+
+  // Filter listings
+  const filteredListings = listings.filter((ad) => {
+    // 1. Search query
+    const q = searchParams.get('q') || searchParams.get('search');
+    if (q) {
+      const queryTerm = q.toLowerCase().trim();
+      const titleMatch = ad.title && ad.title.toLowerCase().includes(queryTerm);
+      const descMatch = ad.description && ad.description.toLowerCase().includes(queryTerm);
+      if (!titleMatch && !descMatch) return false;
+    }
+
+    // 2. Member & Seller Type Filter
+    if (memberFilter === 'free') {
+      const isPaidUser = ad.profiles?.membership_type && ad.profiles.membership_type.toLowerCase() !== 'free';
+      const isPromoted = ad.is_featured || ad.promotion_type || ad.is_verified;
+      if (isPaidUser || isPromoted) return false;
+    } else if (memberFilter === 'business') {
+      if (!ad.profiles?.membership_type?.toLowerCase().includes('business')) return false;
+    } else if (memberFilter === 'premium_sellers') {
+      const type = ad.profiles?.membership_type?.toLowerCase() || '';
+      if (!type.includes('gold') && !type.includes('silver')) return false;
+    } else if (memberFilter === 'verified') {
+      const isVerified = ad.is_verified || (ad.profiles?.membership_type && ad.profiles.membership_type.toLowerCase() !== 'free');
+      if (!isVerified) return false;
+    }
+
+    // 3. Category Filter
+    if (selectedCategory) {
+      if (!isCategoryMatch(ad, selectedCategory)) return false;
+    }
+
+    // 4. Location Filter
+    if (selectedLocation && selectedLocation !== 'All of Bangladesh') {
+      const loc = selectedLocation;
+      const isDivision = Object.keys(LOCATIONS).includes(loc);
+      const isAllOfDivision = loc.startsWith('All of ') && loc.endsWith(' Division');
+      if (isDivision || isAllOfDivision) {
+        const divisionName = isDivision ? loc : loc.replace('All of ', '').replace(' Division', '');
+        const districtsInDivision = LOCATIONS[divisionName];
+        if (districtsInDivision) {
+          const locs = [loc, ...districtsInDivision];
+          if (!locs.includes(ad.location)) return false;
+        } else if (ad.location !== loc) {
+          return false;
+        }
+      } else if (ad.location !== loc) {
+        return false;
+      }
+    }
+
+    // 5. Price Filter
+    if (minPrice && parseFloat(ad.price) < parseFloat(minPrice)) return false;
+    if (maxPrice && parseFloat(ad.price) > parseFloat(maxPrice)) return false;
+
+    return true;
+  });
+
+  // Sort filtered listings
+  const sortedListings = [...filteredListings].sort((a, b) => {
+    if (sortBy === 'price_asc') {
+      return (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0);
+    }
+    if (sortBy === 'price_desc') {
+      return (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0);
+    }
+    // Default 'newest'
+    if (memberFilter === 'all') {
+      const isAPremium = Boolean(a.is_featured || a.promotion_type || a.is_verified || (a.profiles?.membership_type && a.profiles.membership_type.toLowerCase() !== 'free'));
+      const isBPremium = Boolean(b.is_featured || b.promotion_type || b.is_verified || (b.profiles?.membership_type && b.profiles.membership_type.toLowerCase() !== 'free'));
+      if (isAPremium && !isBPremium) return -1;
+      if (!isAPremium && isBPremium) return 1;
+    }
+    return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+  });
 
   return (
     <div className={styles.adsWrapper}>
       <div className="container">
         <div className={styles.adsLayoutFullWidth}>
-          {/* Top Filter Button Bar (Premium compact centering) */}
+          {/* Top Action Bar: Filter Icon (Left) | All Ads (Center) | Regular Ads (Right) + View Toggle */}
           <div className={styles.topFilterBar}>
             <div className={styles.filterBarWrapper}>
-              <button 
-                className={styles.premiumFilterBtn}
-                onClick={() => setShowFilters(!showFilters)}
-              >
-                <Filter size={15} />
-                <span>{t('filterAds')}</span>
-                <ChevronDown 
-                  size={14} 
-                  style={{ 
-                    transform: showFilters ? 'rotate(180deg)' : 'rotate(0deg)', 
-                    transition: 'transform 0.2s ease' 
-                  }} 
-                />
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, flexWrap: 'wrap' }}>
+                {/* 1. Left: Compact Filter Icon Button */}
+                <button 
+                  type="button"
+                  className={`${styles.premiumFilterBtn} ${hasActiveFilters ? styles.activeFilterHighlight : ''}`}
+                  onClick={() => setShowFilters(true)}
+                  title={lang === 'bn' ? 'ফিল্টার করুন' : 'Filter Ads'}
+                  style={{ position: 'relative' }}
+                >
+                  <Filter size={16} />
+                  <span>{t('filterAds')}</span>
+                  {hasActiveFilters && (
+                    <span style={{
+                      width: '8px',
+                      height: '8px',
+                      background: '#10b981',
+                      borderRadius: '50%',
+                      border: '1.5px solid #ffffff',
+                      display: 'inline-block'
+                    }} />
+                  )}
+                </button>
 
+                {/* 2. Center: All Ads Button */}
+                <button
+                  type="button"
+                  onClick={() => handleTabSwitch('all')}
+                  style={{
+                    padding: '0.45rem 1rem',
+                    borderRadius: '8px',
+                    border: memberFilter === 'all' ? '1.5px solid #008b5e' : '1.5px solid #cbd5e1',
+                    background: memberFilter === 'all' ? '#008b5e' : '#ffffff',
+                    color: memberFilter === 'all' ? '#ffffff' : '#475569',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  {lang === 'bn' ? 'সকল বিজ্ঞাপন' : 'All Ads'}
+                </button>
+
+                {/* 3. Right: Regular Ads Button */}
+                <button
+                  type="button"
+                  onClick={() => handleTabSwitch('free')}
+                  style={{
+                    padding: '0.45rem 1rem',
+                    borderRadius: '8px',
+                    border: memberFilter === 'free' ? '1.5px solid #008b5e' : '1.5px solid #cbd5e1',
+                    background: memberFilter === 'free' ? '#008b5e' : '#ffffff',
+                    color: memberFilter === 'free' ? '#ffffff' : '#475569',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  {lang === 'bn' ? 'সাধারণ বিজ্ঞাপন' : 'Regular Ads'}
+                </button>
+              </div>
+
+              {/* View Toggle (List vs Grid) */}
               <div className={styles.viewToggleGroup}>
                 <button 
                   className={`${styles.viewToggleBtn} ${viewMode === 'list' ? styles.activeView : ''}`}
@@ -383,14 +449,39 @@ function AdsContent() {
             </div>
 
             {/* Active Filter Badges */}
-            {(selectedCategory || selectedLocation || minPrice || maxPrice || onlyVerified) && (
+            {hasActiveFilters && (
               <div className={styles.activeFiltersRow}>
-                {selectedCategory && <span className={styles.filterBadge}>🏷️ {t(selectedCategory)}</span>}
-                {selectedLocation && <span className={styles.filterBadge}>📍 {t(selectedLocation)}</span>}
-                {onlyVerified && <span className={styles.filterBadge}>⭐ {lang === 'bn' ? 'ভেরিফাইড' : 'Verified'}</span>}
+                {memberFilter !== 'all' && (
+                  <span className={styles.filterBadge}>
+                    {memberFilter === 'free' ? (lang === 'bn' ? '👤 সাধারণ বিজ্ঞাপন' : 'Regular Ads') :
+                     memberFilter === 'business' ? (lang === 'bn' ? '💼 বিজনেস মেম্বার' : 'Business Members') :
+                     memberFilter === 'premium_sellers' ? (lang === 'bn' ? '🥇 গোল্ড/সিলভার মেম্বার' : 'Gold/Silver Members') :
+                     memberFilter === 'verified' ? (lang === 'bn' ? '🛡️ ভেরিফাইড বিক্রেতা' : 'Verified Sellers') : memberFilter}
+                    <button type="button" onClick={() => handleTabSwitch('all')} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', marginLeft: '4px' }}>✕</button>
+                  </span>
+                )}
+                {selectedCategory && (
+                  <span className={styles.filterBadge}>
+                    🏷️ {getCategoryName(selectedCategory, lang)}
+                    <button type="button" onClick={() => applyFilters({ memberFilter, category: '', location: selectedLocation, minPrice, maxPrice, sortBy })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', marginLeft: '4px' }}>✕</button>
+                  </span>
+                )}
+                {selectedLocation && (
+                  <span className={styles.filterBadge}>
+                    📍 {selectedLocation}
+                    <button type="button" onClick={() => applyFilters({ memberFilter, category: selectedCategory, location: '', minPrice, maxPrice, sortBy })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', marginLeft: '4px' }}>✕</button>
+                  </span>
+                )}
                 {(minPrice || maxPrice) && (
                   <span className={styles.filterBadge}>
-                    💰 {minPrice ? `≥ ${minPrice}` : ''} {maxPrice ? `≤ ${maxPrice}` : ''} Tk
+                    💰 {minPrice ? `≥ ৳${minPrice}` : ''} {maxPrice ? `≤ ৳${maxPrice}` : ''}
+                    <button type="button" onClick={() => applyFilters({ memberFilter, category: selectedCategory, location: selectedLocation, minPrice: '', maxPrice: '', sortBy })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', marginLeft: '4px' }}>✕</button>
+                  </span>
+                )}
+                {sortBy && sortBy !== 'newest' && (
+                  <span className={styles.filterBadge}>
+                    ↕️ {sortBy === 'price_asc' ? (lang === 'bn' ? 'দাম: কম থেকে বেশি' : 'Price: Low to High') : (lang === 'bn' ? 'দাম: বেশি থেকে কম' : 'Price: High to Low')}
+                    <button type="button" onClick={() => applyFilters({ memberFilter, category: selectedCategory, location: selectedLocation, minPrice, maxPrice, sortBy: 'newest' })} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', marginLeft: '4px' }}>✕</button>
                   </span>
                 )}
                 <button className={styles.badgeResetBtn} onClick={resetFilters}>
@@ -400,675 +491,107 @@ function AdsContent() {
             )}
           </div>
 
-          {/* Floating Filter Options Overlay Panel (Overlay on top of ads grid) */}
-          {showFilters && (
-            <div className={styles.floatingFilterOverlay} onClick={() => setShowFilters(false)}>
-              <div className={styles.floatingFilterCard} onClick={e => e.stopPropagation()}>
-                <div className={styles.floatingFilterHeader}>
-                  <h4>{t('filterAds')}</h4>
-                  <X size={18} style={{ cursor: 'pointer' }} onClick={() => setShowFilters(false)} />
-                </div>
-                
-                <div className={styles.floatingFilterBody}>
-                  {/* Category Filter Group */}
-                  <div className={styles.filterGroup}>
-                    <label>{t('category')}</label>
-                    <div className={styles.filterSelector} onClick={() => setShowCategoryModal(true)}>
-                      <span>{selectedCategory ? t(selectedCategory) : (lang === 'bn' ? 'সব ক্যাটাগরি' : 'All Categories')}</span>
-                      <ChevronDown size={16} />
-                    </div>
-                  </div>
-
-                  {/* Location Filter Group */}
-                  <div className={styles.filterGroup}>
-                    <label>{t('location')}</label>
-                    <div className={styles.filterSelector} onClick={() => setShowLocationModal(true)}>
-                      <span>{selectedLocation ? t(selectedLocation) : t('allLocations')}</span>
-                      <ChevronDown size={16} />
-                    </div>
-                  </div>
-
-                  {/* Price Filter Group */}
-                  <div className={styles.filterGroup}>
-                    <label>{t('price')} (Tk)</label>
-                    <div className={styles.priceInputs}>
-                      <input 
-                        type="number" placeholder={t('min')} 
-                        value={minPrice} onChange={(e) => setMinPrice(e.target.value)} 
-                      />
-                      <input 
-                        type="number" placeholder={t('max')} 
-                        value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} 
-                      />
-                    </div>
-                  </div>
-
-                  {/* Verified Filter Group */}
-                  <div className={styles.filterGroup} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.75rem', borderTop: '1px solid #f1f5f9', paddingTop: '0.75rem' }}>
-                    <label style={{ margin: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#1e293b', fontSize: '0.82rem', fontWeight: 700 }} htmlFor="verified-toggle">
-                      ⭐ {lang === 'bn' ? 'শুধুমাত্র ভেরিফাইড বিজ্ঞাপন' : 'Verified Ads Only'}
-                    </label>
-                    <input 
-                      type="checkbox" 
-                      id="verified-toggle"
-                      checked={onlyVerified} 
-                      onChange={(e) => setOnlyVerified(e.target.checked)} 
-                      style={{ 
-                        width: '18px', 
-                        height: '18px', 
-                        accentColor: '#008b5e', 
-                        cursor: 'pointer' 
-                      }} 
-                    />
-                  </div>
-                </div>
-
-                <div className={styles.filterActions}>
-                  <button className={styles.applyBtn} onClick={applyFilters}>{t('apply')}</button>
-                  <button className={styles.resetBtn} onClick={resetFilters}>{t('reset')}</button>
-                </div>
-              </div>
-            </div>
-          )}
-
           {/* Full Width Compact Ad List (Bikroy.com Horizontal Stack) */}
-          {(() => {
-            const filteredListings = listings.filter(ad => {
-              if (memberFilter === 'featured_premium') {
-                return ad.is_featured || ad.promotion_type || ad.is_verified;
-              }
-              if (memberFilter === 'business') {
-                return ad.profiles?.membership_type?.toLowerCase().includes('business');
-              }
-              if (memberFilter === 'premium_sellers') {
-                const type = ad.profiles?.membership_type?.toLowerCase() || '';
-                return type.includes('gold') || type.includes('silver');
-              }
-              if (memberFilter === 'verified') {
-                return ad.is_verified || (ad.profiles?.membership_type && ad.profiles.membership_type.toLowerCase() !== 'free');
-              }
-              if (memberFilter === 'free') {
-                const isPaidUser = ad.profiles?.membership_type && ad.profiles.membership_type.toLowerCase() !== 'free';
-                const isPromoted = ad.is_featured || ad.promotion_type || ad.is_verified;
-                return !isPaidUser && !isPromoted;
-              }
-              return true;
-            });
+          <main className={styles.adsMainFull}>
+            <div className={styles.pageHeader}>
+              <h1 className={styles.pageTitle}>
+                {selectedCategory 
+                  ? getCategoryName(selectedCategory, lang) 
+                  : memberFilter === 'free' 
+                  ? (lang === 'bn' ? 'সাধারণ বিজ্ঞাপন' : 'Regular User Ads')
+                  : t('allAds').replace(' →', '')}
+                <span className={styles.resultsCount}>({sortedListings.length} {t('results')})</span>
+              </h1>
+            </div>
 
-            return (
-              <main className={styles.adsMainFull}>
-                <div className={styles.pageHeader}>
-                  <h1 className={styles.pageTitle}>
-                    {selectedCategory ? t(selectedCategory) : t('allAds').replace(' →', '')}
-                    <span className={styles.resultsCount}>({filteredListings.length} {t('results')})</span>
-                  </h1>
-                </div>
-
-                {/* Quick Member & Promotion Filter Chips Bar */}
-                <div style={{
-                  display: 'flex',
-                  gap: '0.45rem',
-                  overflowX: 'auto',
-                  paddingBottom: '0.75rem',
-                  marginBottom: '1rem',
-                  scrollbarWidth: 'none',
-                  WebkitOverflowScrolling: 'touch'
-                }}>
-                  <button
-                    onClick={() => setMemberFilter('all')}
-                    style={{
-                      padding: '0.45rem 0.95rem',
-                      borderRadius: '20px',
-                      border: memberFilter === 'all' ? '2px solid #008b5e' : '1px solid #cbd5e1',
-                      background: memberFilter === 'all' ? '#e6f4ef' : '#ffffff',
-                      color: memberFilter === 'all' ? '#008b5e' : '#475569',
-                      fontSize: '0.8rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      boxShadow: memberFilter === 'all' ? '0 2px 8px rgba(0, 139, 94, 0.15)' : 'none',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    🌐 {lang === 'bn' ? 'সকল বিজ্ঞাপন' : 'All Ads'}
-                  </button>
-
-                  <button
-                    onClick={() => setMemberFilter('free')}
-                    style={{
-                      padding: '0.45rem 0.95rem',
-                      borderRadius: '20px',
-                      border: memberFilter === 'free' ? '2px solid #64748b' : '1px solid #cbd5e1',
-                      background: memberFilter === 'free' ? '#f1f5f9' : '#ffffff',
-                      color: memberFilter === 'free' ? '#0f172a' : '#475569',
-                      fontSize: '0.8rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      boxShadow: memberFilter === 'free' ? '0 2px 8px rgba(100, 116, 139, 0.15)' : 'none',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    🆓 {lang === 'bn' ? 'ফ্রি সাধারণ পোস্ট' : 'Free Regular Ads'}
-                  </button>
-
-                  <button
-                    onClick={() => setMemberFilter('featured_premium')}
-                    style={{
-                      padding: '0.45rem 0.95rem',
-                      borderRadius: '20px',
-                      border: memberFilter === 'featured_premium' ? '2px solid #d97706' : '1px solid #cbd5e1',
-                      background: memberFilter === 'featured_premium' ? '#fffdf5' : '#ffffff',
-                      color: memberFilter === 'featured_premium' ? '#b45309' : '#475569',
-                      fontSize: '0.8rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      boxShadow: memberFilter === 'featured_premium' ? '0 2px 8px rgba(217, 119, 6, 0.15)' : 'none',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    ⭐ {lang === 'bn' ? 'প্রিমিয়াম অ্যাড' : 'Premium Ads'}
-                  </button>
-
-                  <button
-                    onClick={() => setMemberFilter('business')}
-                    style={{
-                      padding: '0.45rem 0.95rem',
-                      borderRadius: '20px',
-                      border: memberFilter === 'business' ? '2px solid #2563eb' : '1px solid #cbd5e1',
-                      background: memberFilter === 'business' ? '#eff6ff' : '#ffffff',
-                      color: memberFilter === 'business' ? '#1d4ed8' : '#475569',
-                      fontSize: '0.8rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      boxShadow: memberFilter === 'business' ? '0 2px 8px rgba(37, 99, 235, 0.15)' : 'none',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    💼 {lang === 'bn' ? 'বিক্রয়নাউ বিজনেস মেম্বার' : 'Business Members'}
-                  </button>
-
-                  <button
-                    onClick={() => setMemberFilter('premium_sellers')}
-                    style={{
-                      padding: '0.45rem 0.95rem',
-                      borderRadius: '20px',
-                      border: memberFilter === 'premium_sellers' ? '2px solid #ca8a04' : '1px solid #cbd5e1',
-                      background: memberFilter === 'premium_sellers' ? '#fefce8' : '#ffffff',
-                      color: memberFilter === 'premium_sellers' ? '#854d0e' : '#475569',
-                      fontSize: '0.8rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      boxShadow: memberFilter === 'premium_sellers' ? '0 2px 8px rgba(202, 138, 4, 0.15)' : 'none',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    🥇 {lang === 'bn' ? 'গোল্ড/সিলভার মেম্বারশিপ' : 'Gold/Silver Members'}
-                  </button>
-
-                  <button
-                    onClick={() => setMemberFilter('verified')}
-                    style={{
-                      padding: '0.45rem 0.95rem',
-                      borderRadius: '20px',
-                      border: memberFilter === 'verified' ? '2px solid #059669' : '1px solid #cbd5e1',
-                      background: memberFilter === 'verified' ? '#ecfdf5' : '#ffffff',
-                      color: memberFilter === 'verified' ? '#047857' : '#475569',
-                      fontSize: '0.8rem',
-                      fontWeight: 800,
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                      boxShadow: memberFilter === 'verified' ? '0 2px 8px rgba(5, 150, 105, 0.15)' : 'none',
-                      transition: 'all 0.2s'
-                    }}
-                  >
-                    🛡️ {lang === 'bn' ? 'ভেরিফাইড বিক্রেতা' : 'Verified Sellers'}
-                  </button>
-                </div>
-
-                <div className={viewMode === 'list' ? styles.adListFull : styles.adGridFull}>
-                  {loading ? (
-                    <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '2rem'}}>{t('loading')}</div>
-                  ) : filteredListings.length > 0 ? (
-                    filteredListings.map((ad) => (
-                      <Link href={`/ad/${ad.id}`} key={ad.id} className={viewMode === 'list' ? styles.adCard : styles.adCardGrid}>
-                        {/* Left Compact Image */}
-                        <div className={styles.imageBox}>
-                          {ad.is_featured ? (
-                            <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #10b981, #047857)', color: '#ffffff', fontWeight: 900 }}>
-                              {lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার' : '⭐ Premium Slider'}
-                            </div>
-                          ) : (ad.promotion_type && ad.promotion_type !== 'free') ? (
-                            <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', fontWeight: 900 }}>
-                              {lang === 'bn' ? '💎 প্রিমিয়াম' : '💎 Premium'}
-                            </div>
-                          ) : null}
-                          {/* Heart / Favorite Button */}
-                          <button 
-                            className={`${styles.favoriteBtn} ${favorites.includes(ad.id) ? styles.active : ''}`}
-                            onClick={(e) => toggleFavorite(e, ad.id)}
-                          >
-                            <Heart 
-                              size={15} 
-                              fill={favorites.includes(ad.id) ? "#ef4444" : "none"} 
-                              color={favorites.includes(ad.id) ? "#ef4444" : "#64748b"} 
-                            />
-                          </button>
-                          <img 
-                            src={ad.images[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
-                            alt={`${ad.condition === 'New' ? (lang === 'bn' ? 'নতুন' : 'Brand New') : (lang === 'bn' ? 'ব্যবহৃত' : 'Used')} ${ad.title} for sale in ${ad.location || 'Bangladesh'} - BikroyNow`} 
-                            loading="lazy"
-                            decoding="async"
-                          />
+            <div className={viewMode === 'list' ? styles.adListFull : styles.adGridFull}>
+              {loading ? (
+                <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '2rem'}}>{t('loading')}</div>
+              ) : sortedListings.length > 0 ? (
+                sortedListings.map((ad) => (
+                  <Link href={`/ad/${ad.id}`} key={ad.id} className={viewMode === 'list' ? styles.adCard : styles.adCardGrid}>
+                    {/* Left Compact Image */}
+                    <div className={styles.imageBox}>
+                      {ad.is_featured ? (
+                        <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #10b981, #047857)', color: '#ffffff', fontWeight: 900 }}>
+                          {lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার' : '⭐ Premium Slider'}
                         </div>
-                        
-                        {/* Right Compact Information Wrapper */}
-                        <div className={styles.adInfo} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                          <div className={styles.titleMeta}>
-                            <h3 className={styles.adTitle}>{ad.title}</h3>
-                            <p className={styles.adMeta}>
-                              {t(ad.location)}
-                              {getSellerBadge(ad.profiles, lang)}
-                            </p>
-                          </div>
-                          <div className={styles.priceTime}>
-                            <div className={styles.adPrice}>{formatPrice(ad.price, lang)}</div>
-                            <div className={styles.cardFooter}>
-                              {getRelativeTime(ad.created_at, lang)}
-                            </div>
-                          </div>
-                          {(ad.is_featured || (ad.promotion_type && ad.promotion_type !== 'free')) && (
-                            <div style={{ marginTop: 'auto', paddingTop: '0.6rem', borderTop: '1px dashed #fef08a', textAlign: 'center', alignSelf: 'stretch' }}>
-                              <span style={{ color: ad.is_featured ? '#047857' : '#d97706', fontWeight: 900, fontSize: '0.8rem', letterSpacing: '0.5px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
-                                {ad.is_featured 
-                                  ? (lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার প্রমোশন' : '⭐ Premium Slider Promotion')
-                                  : `💎 ${getPromotionBadgeText(ad.promotion_type, lang)}`}
-                              </span>
-                            </div>
-                          )}
+                      ) : (ad.promotion_type && ad.promotion_type !== 'free') ? (
+                        <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', fontWeight: 900 }}>
+                          {lang === 'bn' ? '💎 প্রিমিয়াম' : '💎 Premium'}
                         </div>
-                      </Link>
-                    ))
-                  ) : (
-                    <div className={styles.noAds}>{t('noAds')}</div>
-                  )}
-                </div>
-              </main>
-            );
-          })()}
+                      ) : null}
+                      {/* Heart / Favorite Button */}
+                      <button 
+                        className={`${styles.favoriteBtn} ${favorites.includes(ad.id) ? styles.active : ''}`}
+                        onClick={(e) => toggleFavorite(e, ad.id)}
+                      >
+                        <Heart 
+                          size={15} 
+                          fill={favorites.includes(ad.id) ? "#ef4444" : "none"} 
+                          color={favorites.includes(ad.id) ? "#ef4444" : "#64748b"} 
+                        />
+                      </button>
+                      <img 
+                        src={ad.images[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
+                        alt={`${ad.condition === 'New' ? (lang === 'bn' ? 'নতুন' : 'Brand New') : (lang === 'bn' ? 'ব্যবহৃত' : 'Used')} ${ad.title} for sale in ${ad.location || 'Bangladesh'} - BikroyNow`} 
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    
+                    {/* Right Compact Information Wrapper */}
+                    <div className={styles.adInfo} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                      <div className={styles.titleMeta}>
+                        <h3 className={styles.adTitle}>{ad.title}</h3>
+                        <p className={styles.adMeta}>
+                          {t(ad.location)}
+                          {getSellerBadge(ad.profiles, lang)}
+                        </p>
+                      </div>
+                      <div className={styles.priceTime}>
+                        <div className={styles.adPrice}>{formatPrice(ad.price, lang)}</div>
+                        <div className={styles.cardFooter}>
+                          {getRelativeTime(ad.created_at, lang)}
+                        </div>
+                      </div>
+                      {(ad.is_featured || (ad.promotion_type && ad.promotion_type !== 'free')) && (
+                        <div style={{ marginTop: 'auto', paddingTop: '0.6rem', borderTop: '1px dashed #fef08a', textAlign: 'center', alignSelf: 'stretch' }}>
+                          <span style={{ color: ad.is_featured ? '#047857' : '#d97706', fontWeight: 900, fontSize: '0.8rem', letterSpacing: '0.5px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+                            {ad.is_featured 
+                              ? (lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার প্রমোশন' : '⭐ Premium Slider Promotion')
+                              : `💎 ${getPromotionBadgeText(ad.promotion_type, lang)}`}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <div className={styles.noAds}>{t('noAds')}</div>
+              )}
+            </div>
+          </main>
         </div>
       </div>
 
-      {/* Reusable Location Modal for Filters */}
-      {showLocationModal && (
-        <div className={styles.darkModalOverlay} onClick={() => setShowLocationModal(false)}>
-          <div className={styles.darkModal} onClick={e => e.stopPropagation()}>
-            <div className={styles.darkModalHeader}>
-              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <h3>{t('selectLocation')}</h3>
-                <X style={{cursor: 'pointer'}} onClick={() => setShowLocationModal(false)} />
-              </div>
-              <input 
-                type="text" placeholder={t('searchLoc')} 
-                className={styles.darkModalSearch}
-                value={locationSearch} onChange={e => setLocationSearch(e.target.value)}
-              />
-            </div>
-            <div className={styles.radioList}>
-              {locationSearch ? (
-                // FLAT SEARCH RESULTS
-                Object.entries(LOCATIONS).flatMap(([div, dists]) => {
-                  const isDivMatch = div.toLowerCase().includes(locationSearch.toLowerCase());
-                  const filtered = dists.filter(d => d.toLowerCase().includes(locationSearch.toLowerCase()));
-                  let res = [];
-                  if (isDivMatch || filtered.length > 0) {
-                    res.push({name: div, type: 'division'});
-                    res.push({name: `All of ${div} Division`, type: 'district', parent: div});
-                    filtered.forEach(d => res.push({name: d, type: 'district', parent: div}));
-                  }
-                  return res;
-                }).slice(0, 50).map((loc, i) => (
-                  <label key={i} className={styles.radioItem}>
-                    <div className={styles.locInfo}>
-                      <span className={styles.locName}>
-                        {t(loc.name)} {loc.type === 'division' ? (lang === 'bn' ? 'বিভাগ' : 'Division') : ''}
-                      </span>
-                      {loc.parent && <span className={styles.locParent}>{t(loc.parent)}</span>}
-                    </div>
-                    <input type="radio" name="floc" onChange={() => { setSelectedLocation(loc.name); setShowLocationModal(false); setLocationSearch(''); }} checked={selectedLocation === loc.name} />
-                    <span className={styles.radioCircle}></span>
-                  </label>
-                ))
-              ) : (
-                // HIERARCHICAL ACCORDION/TAB VIEW
-                <>
-                  {/* Always show "All of Bangladesh" at the top */}
-                  <label className={styles.radioItem}>
-                    <span>{t('allLocations')}</span>
-                    <input type="radio" name="floc" onChange={() => { setSelectedLocation(''); setShowLocationModal(false); }} checked={!selectedLocation || selectedLocation === 'All of Bangladesh'} />
-                    <span className={styles.radioCircle}></span>
-                  </label>
-
-                  {locationType === 'division' ? (
-                    // DIVISION LIST VIEW
-                    Object.keys(LOCATIONS).map(div => (
-                      <label key={div} className={styles.radioItem}>
-                        <div className={styles.locInfo}>
-                          <span className={styles.locName}>
-                            {t(div)} {lang === 'bn' ? 'বিভাগ' : 'Division'}
-                          </span>
-                        </div>
-                        <input 
-                          type="radio" 
-                          name="floc" 
-                          onChange={() => {
-                            setSelectedDivision(div);
-                            setLocationType('district');
-                          }}
-                          checked={selectedLocation === div || (selectedLocation.startsWith('All of ') && selectedLocation.includes(div))}
-                        />
-                        <span className={styles.radioCircle}></span>
-                      </label>
-                    ))
-                  ) : (
-                    // DISTRICT LIST VIEW FOR SELECTED DIVISION
-                    <>
-                      <div style={{ padding: '0.6rem 1rem', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <button 
-                          type="button"
-                          onClick={() => {
-                            setLocationType('division');
-                            setSelectedDivision(null);
-                          }}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            color: '#008b5e',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.4rem',
-                            fontSize: '0.9rem',
-                            padding: 0
-                          }}
-                        >
-                          ← {lang === 'bn' ? 'বিভাগসমূহে ফিরে যান' : 'Back to Divisions'}
-                        </button>
-                        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#64748b' }}>
-                          {t(selectedDivision)}
-                        </span>
-                      </div>
-
-                      {[`All of ${selectedDivision} Division`, ...LOCATIONS[selectedDivision]].map(dist => (
-                        <label key={dist} className={styles.radioItem}>
-                          <div className={styles.locInfo}>
-                            <span className={styles.locName}>{t(dist)}</span>
-                          </div>
-                          <input 
-                            type="radio" 
-                            name="floc" 
-                            onChange={() => {
-                              setSelectedLocation(dist);
-                              setShowLocationModal(false);
-                            }}
-                            checked={selectedLocation === dist}
-                          />
-                          <span className={styles.radioCircle}></span>
-                        </label>
-                      ))}
-                    </>
-                  )}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Reusable Category Modal for Filters */}
-      {showCategoryModal && (
-        <div className={styles.darkModalOverlay} onClick={() => { setShowCategoryModal(false); setSelectedMainCategory(null); }}>
-          <div className={styles.darkModal} onClick={e => e.stopPropagation()}>
-            <div className={styles.darkModalHeader}>
-              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <h3>
-                  {selectedMainCategory
-                    ? (lang === 'bn' ? 'উপ-ক্যাটাগরি' : 'Select Subcategory')
-                    : (lang === 'bn' ? 'ক্যাটাগরি নির্বাচন করুন' : 'Select Category')}
-                </h3>
-                <X style={{cursor: 'pointer'}} onClick={() => { setShowCategoryModal(false); setSelectedMainCategory(null); }} />
-              </div>
-            </div>
-            <div className={styles.radioList}>
-              {!selectedMainCategory ? (
-                <>
-                  <label className={styles.radioItem}>
-                    <span>{lang === 'bn' ? 'সব ক্যাটাগরি' : 'All Categories'}</span>
-                    <input 
-                      type="radio" 
-                      name="fcat" 
-                      checked={!selectedCategory}
-                      onChange={() => { setSelectedCategory(''); setShowCategoryModal(false); }} 
-                    />
-                    <span className={styles.radioCircle}></span>
-                  </label>
-
-                  {Object.keys(CATEGORIES).map(main => (
-                    <label 
-                      key={main} 
-                      className={styles.radioItem}
-                      onClick={() => setSelectedMainCategory(main)}
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span>{CAT_ICONS[main] || '📦'}</span>
-                        <span>{t(main)}</span>
-                      </div>
-                      <span style={{ color: '#9ca3af', marginLeft: 'auto' }}>›</span>
-                    </label>
-                  ))}
-                </>
-              ) : (
-                <>
-                  <button
-                    type="button"
-                    className={styles.backBtn}
-                    onClick={() => {
-                      setSelectedMainCategory(null);
-                      setFilterCatSearch('');
-                      setShowFilterOther(false);
-                    }}
-                  >
-                    ← {lang === 'bn' ? 'ফিরে যান' : 'Back'}
-                  </button>
-
-                  <label className={styles.radioItem}>
-                    <span style={{ fontWeight: 'bold' }}>
-                      {lang === 'bn' ? `সব ${t(selectedMainCategory)}-এ` : `All in ${t(selectedMainCategory)}`}
-                    </span>
-                    <input 
-                      type="radio" 
-                      name="fcat" 
-                      checked={selectedCategory === selectedMainCategory}
-                      onChange={() => { 
-                        setSelectedCategory(selectedMainCategory); 
-                        setShowCategoryModal(false); 
-                        setSelectedMainCategory(null);
-                        setFilterCatSearch('');
-                        setShowFilterOther(false);
-                      }} 
-                    />
-                    <span className={styles.radioCircle}></span>
-                  </label>
-
-                  {/* Category Filter Search Bar */}
-                  <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    background: '#f8fafc',
-                    border: '1.5px solid #cbd5e1',
-                    borderRadius: '10px',
-                    padding: '0.45rem 0.75rem',
-                    margin: '0.5rem 0',
-                    gap: '0.4rem'
-                  }}>
-                    <Search size={16} color="#64748b" />
-                    <input 
-                      type="text" 
-                      placeholder={lang === 'bn' ? `${t(selectedMainCategory)}-এ খুঁজুন...` : `Search in ${t(selectedMainCategory)}...`}
-                      value={filterCatSearch}
-                      onChange={(e) => setFilterCatSearch(e.target.value)}
-                      style={{
-                        border: 'none',
-                        outline: 'none',
-                        background: 'transparent',
-                        width: '100%',
-                        fontSize: '0.86rem',
-                        fontFamily: 'inherit'
-                      }}
-                    />
-                    {filterCatSearch && (
-                      <button 
-                        type="button" 
-                        onClick={() => setFilterCatSearch('')}
-                        style={{
-                          background: 'none',
-                          border: 'none',
-                          color: '#64748b',
-                          cursor: 'pointer',
-                          fontSize: '14px',
-                          padding: '0 4px'
-                        }}
-                      >
-                        ×
-                      </button>
-                    )}
-                  </div>
-
-                  {CATEGORIES[selectedMainCategory] && Object.entries(CATEGORIES[selectedMainCategory])
-                    .filter(([sub, items]) => {
-                      if (!filterCatSearch.trim()) return true;
-                      const q = filterCatSearch.toLowerCase().trim();
-                      const matchSub = sub.toLowerCase().includes(q) || (t(sub) && t(sub).toLowerCase().includes(q));
-                      const matchItem = items.some(item => item.toLowerCase().includes(q) || (t(item) && t(item).toLowerCase().includes(q)));
-                      return matchSub || matchItem;
-                    })
-                    .map(([sub, items]) => {
-                      const q = filterCatSearch.toLowerCase().trim();
-                      const filteredItems = q 
-                        ? items.filter(item => item.toLowerCase().includes(q) || (t(item) && t(item).toLowerCase().includes(q)) || sub.toLowerCase().includes(q) || (t(sub) && t(sub).toLowerCase().includes(q)))
-                        : items;
-
-                      return (
-                        <div key={sub} style={{ padding: '0.2rem 0' }}>
-                          <div className={styles.subCatHeader}>
-                            {t(sub)}
-                            {q && (
-                              <span style={{ fontSize: '0.75rem', color: '#008b5e', fontWeight: 700, marginLeft: '6px' }}>
-                                ({filteredItems.length})
-                              </span>
-                            )}
-                          </div>
-                          {filteredItems.map(item => (
-                            <label key={item} className={styles.radioItem}>
-                              <span style={{ paddingLeft: '0.5rem' }}>{t(item)}</span>
-                              <input 
-                                type="radio" 
-                                name="fcat" 
-                                checked={selectedCategory === item}
-                                onChange={() => { 
-                                  setSelectedCategory(item); 
-                                  setShowCategoryModal(false); 
-                                  setSelectedMainCategory(null);
-                                  setFilterCatSearch('');
-                                  setShowFilterOther(false);
-                                }} 
-                              />
-                              <span className={styles.radioCircle}></span>
-                            </label>
-                          ))}
-                        </div>
-                      );
-                    })}
-
-                  {/* Other / Custom item filter card */}
-                  <div style={{
-                    margin: '0.65rem 0',
-                    padding: '0.75rem',
-                    border: '1.5px dashed #008b5e',
-                    borderRadius: '10px',
-                    background: '#f0fdf4'
-                  }}>
-                    <div 
-                      onClick={() => setShowFilterOther(!showFilterOther)}
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                        fontWeight: 800,
-                        fontSize: '0.88rem',
-                        color: '#008b5e'
-                      }}
-                    >
-                      <span>🏷️ {lang === 'bn' ? 'অন্যান্য (কাস্টম ফিল্টার)' : 'Other (Custom Filter)'}</span>
-                      <span style={{ fontSize: '0.78rem' }}>{showFilterOther ? '▲' : '▼'}</span>
-                    </div>
-
-                    {showFilterOther && (
-                      <div style={{ marginTop: '0.65rem', display: 'flex', gap: '0.4rem' }}>
-                        <input 
-                          type="text" 
-                          placeholder={lang === 'bn' ? 'নির্দিষ্ট পণ্য লিখে ফিল্টার করুন...' : 'Type specific item...'}
-                          value={filterCustomInput}
-                          onChange={(e) => setFilterCustomInput(e.target.value)}
-                          style={{
-                            flex: 1,
-                            padding: '0.45rem 0.65rem',
-                            border: '1.5px solid #cbd5e1',
-                            borderRadius: '8px',
-                            fontSize: '0.84rem'
-                          }}
-                        />
-                        <button 
-                          type="button" 
-                          onClick={() => {
-                            const val = filterCustomInput.trim();
-                            if (val) {
-                              setSelectedCategory(val);
-                              setShowCategoryModal(false);
-                              setSelectedMainCategory(null);
-                              setFilterCustomInput('');
-                              setShowFilterOther(false);
-                              setFilterCatSearch('');
-                            }
-                          }}
-                          style={{
-                            background: '#008b5e',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '8px',
-                            padding: '0.45rem 0.85rem',
-                            fontWeight: 700,
-                            fontSize: '0.82rem',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          {lang === 'bn' ? 'প্রয়োগ' : 'Apply'}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Shared Consolidated Filter Drawer / Modal */}
+      <FilterModal 
+        isOpen={showFilters}
+        onClose={() => setShowFilters(false)}
+        filters={{
+          memberFilter,
+          category: selectedCategory,
+          location: selectedLocation,
+          minPrice,
+          maxPrice,
+          sortBy
+        }}
+        onApply={applyFilters}
+        onReset={resetFilters}
+        lang={lang}
+        totalCount={sortedListings.length}
+      />
     </div>
   );
 }

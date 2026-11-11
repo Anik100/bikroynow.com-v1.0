@@ -335,51 +335,166 @@
   transition-delay: 0.05s;
 }
 
-/* Centered All Ads Button Styles */
-.allAdsCenterWrapper {
+/* ─────────────────────────────────────────────────────────────
+   HOMEPAGE ACTION BAR & DYNAMIC FILTER BAR
+   ───────────────────────────────────────────────────────────── */
+.homepageActionBar {
   display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-  margin-bottom: 2rem;
+  align-items: center;
+  gap: 0.65rem;
   width: 100%;
+  margin-top: 1rem;
+  margin-bottom: 1.25rem;
 }
 
-.allAdsCenterBtn {
-  background-color: #008b5e;
-  color: white;
-  padding: 0.7rem 2.5rem;
-  border-radius: 30px;
+.filterIconButton {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #334155;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.filterIconButton:hover {
+  background: #f8fafc;
+  border-color: #008b5e;
+  color: #008b5e;
+  transform: translateY(-1px);
+}
+
+.filterIconButton.filterIconActive {
+  border-color: #008b5e;
+  background: #f0fdf9;
+  color: #008b5e;
+  box-shadow: 0 2px 8px rgba(0, 139, 94, 0.15);
+}
+
+.activeFilterBadgeDot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 10px;
+  height: 10px;
+  background: #008b5e;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.actionBarTabBtn {
+  flex: 1;
+  height: 44px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 12px;
+  color: #475569;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.actionBarTabBtn:hover {
+  background: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.actionBarTabBtn.actionBarTabActive {
+  background: #008b5e;
+  border-color: #008b5e;
+  color: #ffffff;
   font-weight: 800;
-  font-size: 1.05rem;
-  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 139, 94, 0.25);
+}
+
+.activeFiltersRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  margin-bottom: 1.15rem;
+}
+
+.activeFilterPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+  padding: 0.3rem 0.65rem;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.pillRemoveBtn {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 2px;
+  font-size: 11px;
+  font-weight: 800;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 139, 94, 0.25);
-  text-decoration: none;
-  letter-spacing: 0.5px;
+  transition: color 0.15s ease;
 }
 
-.allAdsCenterBtn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 139, 94, 0.4);
-  background-color: #05b078;
+.pillRemoveBtn:hover {
+  color: #ef4444;
 }
 
-.allAdsCenterBtn:active {
-  transform: translateY(0);
+.clearAllFiltersBtn {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.clearAllFiltersBtn:hover {
+  background: #fca5a5;
 }
 
 @media (max-width: 480px) {
-  .allAdsCenterWrapper {
-    margin-top: 0.8rem;
-    margin-bottom: 1.5rem;
+  .homepageActionBar {
+    gap: 0.45rem;
+    margin-top: 0.75rem;
+    margin-bottom: 1rem;
   }
-  .allAdsCenterBtn {
-    padding: 0.55rem 1.8rem;
-    font-size: 0.9rem;
-    border-radius: 20px;
-    box-shadow: 0 3px 8px rgba(0, 139, 94, 0.2);
+  .filterIconButton {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    border-radius: 10px;
+  }
+  .actionBarTabBtn {
+    height: 42px;
+    font-size: 0.88rem;
+    border-radius: 10px;
   }
 }
 

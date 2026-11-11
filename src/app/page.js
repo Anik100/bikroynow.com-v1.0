@@ -5,12 +5,13 @@ import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { supabase } from '../lib/supabaseClient';
 import styles from './page.module.css';
-import { CATEGORIES, CATEGORY_TRANSLATIONS, getCategoryName } from '../lib/constants';
+import { LOCATIONS, CATEGORIES, CATEGORY_TRANSLATIONS, getCategoryName } from '../lib/constants';
 import { isCategoryMatch } from '../lib/categoryMatcher';
 import { useLanguage } from '../context/LanguageContext';
 import { getRelativeTime, formatFullDate, formatPrice, getPromotionBadgeText, sortPremiumListings } from '../lib/utils';
-import { Heart, Smartphone, Laptop, Zap, Car, Home as HouseIcon, Briefcase, Box, ChevronDown, Search } from 'lucide-react';
+import { Heart, Smartphone, Laptop, Zap, Car, Home as HouseIcon, Briefcase, Box, ChevronDown, Search, Filter } from 'lucide-react';
 import FeaturedSlider from '../components/FeaturedSlider';
+import FilterModal from '../components/FilterModal';
 
 const getSellerBadge = (profiles, lang) => {
   if (!profiles) return null;
@@ -94,6 +95,15 @@ export default function Home() {
   const [activeSub, setActiveSub] = useState(null);
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState(null);
   const [activeCategoryModal, setActiveCategoryModal] = useState(null);
+
+  // Redesigned Filter & Browsing states
+  const [memberFilter, setMemberFilter] = useState('all'); // 'all', 'free', 'verified', 'business', 'premium_sellers'
+  const [selectedLocationFilter, setSelectedLocationFilter] = useState('');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+  const [sortBy, setSortBy] = useState('newest'); // 'newest', 'price_asc', 'price_desc'
+  const [showFilterModal, setShowFilterModal] = useState(false);
+
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
@@ -101,6 +111,33 @@ export default function Home() {
   const [subCatSearchQuery, setSubCatSearchQuery] = useState('');
   const [customItemInput, setCustomItemInput] = useState('');
   const [showOtherInput, setShowOtherInput] = useState(false);
+
+  const handleFilterApply = (applied) => {
+    setMemberFilter(applied.memberFilter || 'all');
+    setSelectedCategoryFilter(applied.category || null);
+    setSelectedLocationFilter(applied.location || '');
+    setMinPrice(applied.minPrice || '');
+    setMaxPrice(applied.maxPrice || '');
+    setSortBy(applied.sortBy || 'newest');
+  };
+
+  const handleFilterReset = () => {
+    setMemberFilter('all');
+    setSelectedCategoryFilter(null);
+    setSelectedLocationFilter('');
+    setMinPrice('');
+    setMaxPrice('');
+    setSortBy('newest');
+  };
+
+  const hasActiveFilters = Boolean(
+    (memberFilter && memberFilter !== 'all') ||
+    selectedCategoryFilter ||
+    selectedLocationFilter ||
+    minPrice ||
+    maxPrice ||
+    (sortBy && sortBy !== 'newest')
+  );
 
   useEffect(() => {
     setMounted(true);
@@ -404,41 +441,100 @@ export default function Home() {
         {/* ── Featured Business Ads Slider (Prominently at the top) ── */}
         <FeaturedSlider lang={lang} />
 
-        {/* All Ads Center Button (Placed below Featured Slider) */}
-        <div className={styles.allAdsCenterWrapper} style={{ marginTop: '0.75rem', marginBottom: '1.5rem' }}>
-          <Link href="/ads" className={styles.allAdsCenterBtn}>
-            {t('allAds')}
-          </Link>
+        {/* ── Homepage Action Bar (Below Featured Slider) ── */}
+        <div className={styles.homepageActionBar}>
+          {/* 1. Left: Compact Filter Icon Button */}
+          <button 
+            type="button" 
+            className={`${styles.filterIconButton} ${hasActiveFilters ? styles.filterIconActive : ''}`}
+            onClick={() => setShowFilterModal(true)}
+            title={lang === 'bn' ? 'ফিল্টার করুন' : 'Filter Ads'}
+            aria-label="Filter Ads"
+          >
+            <Filter size={19} />
+            {hasActiveFilters && <span className={styles.activeFilterBadgeDot} />}
+          </button>
+
+          {/* 2. Center: All Ads Tab/Button */}
+          <button 
+            type="button" 
+            className={`${styles.actionBarTabBtn} ${memberFilter === 'all' ? styles.actionBarTabActive : ''}`}
+            onClick={() => setMemberFilter('all')}
+          >
+            {lang === 'bn' ? 'সকল বিজ্ঞাপন' : 'All Ads'}
+          </button>
+
+          {/* 3. Right: Regular Ads Tab/Button */}
+          <button 
+            type="button" 
+            className={`${styles.actionBarTabBtn} ${memberFilter === 'free' ? styles.actionBarTabActive : ''}`}
+            onClick={() => setMemberFilter('free')}
+          >
+            {lang === 'bn' ? 'সাধারণ বিজ্ঞাপন' : 'Regular Ads'}
+          </button>
         </div>
 
-        {/* Header with Active Category Filter Badge */}
+        {/* Active Filter Pills Row */}
+        {hasActiveFilters && (
+          <div className={styles.activeFiltersRow}>
+            {memberFilter !== 'all' && (
+              <span className={styles.activeFilterPill}>
+                {memberFilter === 'free' ? (lang === 'bn' ? '👤 সাধারণ বিজ্ঞাপন' : 'Regular Ads') :
+                 memberFilter === 'business' ? (lang === 'bn' ? '💼 বিজনেস মেম্বার' : 'Business Members') :
+                 memberFilter === 'premium_sellers' ? (lang === 'bn' ? '🥇 গোল্ড/সিলভার মেম্বার' : 'Gold/Silver Members') :
+                 memberFilter === 'verified' ? (lang === 'bn' ? '🛡️ ভেরিফাইড বিক্রেতা' : 'Verified Sellers') : memberFilter}
+                <button type="button" className={styles.pillRemoveBtn} onClick={() => setMemberFilter('all')}>✕</button>
+              </span>
+            )}
+            {selectedCategoryFilter && (
+              <span className={styles.activeFilterPill}>
+                🏷️ {getCategoryName(selectedCategoryFilter, lang)}
+                <button type="button" className={styles.pillRemoveBtn} onClick={() => setSelectedCategoryFilter(null)}>✕</button>
+              </span>
+            )}
+            {selectedLocationFilter && (
+              <span className={styles.activeFilterPill}>
+                📍 {selectedLocationFilter}
+                <button type="button" className={styles.pillRemoveBtn} onClick={() => setSelectedLocationFilter('')}>✕</button>
+              </span>
+            )}
+            {(minPrice || maxPrice) && (
+              <span className={styles.activeFilterPill}>
+                💰 {minPrice ? `≥ ৳${minPrice}` : ''} {maxPrice ? `≤ ৳${maxPrice}` : ''}
+                <button type="button" className={styles.pillRemoveBtn} onClick={() => { setMinPrice(''); setMaxPrice(''); }}>✕</button>
+              </span>
+            )}
+            {sortBy && sortBy !== 'newest' && (
+              <span className={styles.activeFilterPill}>
+                ↕️ {sortBy === 'price_asc' ? (lang === 'bn' ? 'দাম: কম থেকে বেশি' : 'Price: Low to High') : (lang === 'bn' ? 'দাম: বেশি থেকে কম' : 'Price: High to Low')}
+                <button type="button" className={styles.pillRemoveBtn} onClick={() => setSortBy('newest')}>✕</button>
+              </span>
+            )}
+            <button 
+              type="button" 
+              className={styles.clearAllFiltersBtn}
+              onClick={handleFilterReset}
+            >
+              {lang === 'bn' ? 'সব মুছুন ✕' : 'Clear All ✕'}
+            </button>
+          </div>
+        )}
+
+        {/* Header with Title and Result Count */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
           <h2 className={styles.sectionTitle} style={{ margin: 0 }}>
             {selectedCategoryFilter 
               ? `${lang === 'bn' ? 'ক্যাটাগরি ভিত্তিক পোস্ট:' : 'Filtered Ads:'} ${getCategoryName(selectedCategoryFilter, lang)}`
+              : memberFilter === 'free'
+              ? (lang === 'bn' ? 'সাধারণ বিজ্ঞাপন' : 'Regular User Ads')
+              : memberFilter === 'business'
+              ? (lang === 'bn' ? 'বিজনেস মেম্বার বিজ্ঞাপন' : 'Business Member Ads')
+              : memberFilter === 'premium_sellers'
+              ? (lang === 'bn' ? 'গোল্ড ও সিলভার মেম্বার বিজ্ঞাপন' : 'Gold/Silver Member Ads')
+              : memberFilter === 'verified'
+              ? (lang === 'bn' ? 'ভেরিফাইড বিক্রেতার বিজ্ঞাপন' : 'Verified Seller Ads')
               : t('freshRecommendations')}
           </h2>
-          {selectedCategoryFilter && (
-            <button
-              onClick={() => setSelectedCategoryFilter(null)}
-              style={{
-                background: '#fee2e2',
-                color: '#b91c1c',
-                border: '1px solid #fca5a5',
-                padding: '0.35rem 0.75rem',
-                borderRadius: '20px',
-                fontSize: '0.78rem',
-                fontWeight: 800,
-                cursor: 'pointer',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.3rem',
-                boxShadow: '0 2px 5px rgba(220, 38, 38, 0.1)'
-              }}
-            >
-              ✕ {lang === 'bn' ? 'সব পোস্ট দেখুন (ফিল্টার তুলুন)' : 'Show All Ads (Clear Filter)'}
-            </button>
-          )}
         </div>
 
         <div className={styles.adGrid}>
@@ -455,12 +551,72 @@ export default function Home() {
             ))
           ) : (() => {
             const displayedListings = listings.filter((ad) => {
-              if (!selectedCategoryFilter) return true;
-              return isCategoryMatch(ad, selectedCategoryFilter);
+              // 1. Seller & Ad Type (memberFilter)
+              if (memberFilter === 'free') {
+                const isPaidUser = ad.profiles?.membership_type && ad.profiles.membership_type.toLowerCase() !== 'free';
+                const isPromoted = ad.is_featured || ad.promotion_type || ad.is_verified;
+                if (isPaidUser || isPromoted) return false;
+              } else if (memberFilter === 'business') {
+                if (!ad.profiles?.membership_type?.toLowerCase().includes('business')) return false;
+              } else if (memberFilter === 'premium_sellers') {
+                const type = ad.profiles?.membership_type?.toLowerCase() || '';
+                if (!type.includes('gold') && !type.includes('silver')) return false;
+              } else if (memberFilter === 'verified') {
+                const isVerified = ad.is_verified || (ad.profiles?.membership_type && ad.profiles.membership_type.toLowerCase() !== 'free');
+                if (!isVerified) return false;
+              }
+
+              // 2. Category Filter
+              if (selectedCategoryFilter) {
+                if (!isCategoryMatch(ad, selectedCategoryFilter)) return false;
+              }
+
+              // 3. Location Filter (Division or District)
+              if (selectedLocationFilter && selectedLocationFilter !== 'All of Bangladesh') {
+                const loc = selectedLocationFilter;
+                const isDivision = Object.keys(LOCATIONS).includes(loc);
+                const isAllOfDivision = loc.startsWith('All of ') && loc.endsWith(' Division');
+                if (isDivision || isAllOfDivision) {
+                  const divisionName = isDivision ? loc : loc.replace('All of ', '').replace(' Division', '');
+                  const districtsInDivision = LOCATIONS[divisionName];
+                  if (districtsInDivision) {
+                    const locs = [loc, ...districtsInDivision];
+                    if (!locs.includes(ad.location)) return false;
+                  } else if (ad.location !== loc) {
+                    return false;
+                  }
+                } else if (ad.location !== loc) {
+                  return false;
+                }
+              }
+
+              // 4. Price Filter
+              if (minPrice && parseFloat(ad.price) < parseFloat(minPrice)) return false;
+              if (maxPrice && parseFloat(ad.price) > parseFloat(maxPrice)) return false;
+
+              return true;
             });
 
-            return displayedListings.length > 0 ? (
-              displayedListings.map((ad) => (
+            // Sort filtered listings
+            const sortedListings = [...displayedListings].sort((a, b) => {
+              if (sortBy === 'price_asc') {
+                return (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0);
+              }
+              if (sortBy === 'price_desc') {
+                return (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0);
+              }
+              // Default 'newest'
+              if (memberFilter === 'all') {
+                const isAPremium = Boolean(a.is_featured || a.promotion_type || a.is_verified || (a.profiles?.membership_type && a.profiles.membership_type.toLowerCase() !== 'free'));
+                const isBPremium = Boolean(b.is_featured || b.promotion_type || b.is_verified || (b.profiles?.membership_type && b.profiles.membership_type.toLowerCase() !== 'free'));
+                if (isAPremium && !isBPremium) return -1;
+                if (!isAPremium && isBPremium) return 1;
+              }
+              return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+            });
+
+            return sortedListings.length > 0 ? (
+              sortedListings.map((ad) => (
                 <Link href={`/ad/${ad.id}`} key={ad.id} className={styles.adCard}>
                   <div className={styles.adImageWrapper}>
                     {ad.is_featured ? (
@@ -668,6 +824,23 @@ export default function Home() {
         </div>,
         document.body
       )}
+
+      {/* Reusable Consolidated Filter Drawer / Modal */}
+      <FilterModal 
+        isOpen={showFilterModal}
+        onClose={() => setShowFilterModal(false)}
+        filters={{
+          memberFilter,
+          category: selectedCategoryFilter,
+          location: selectedLocationFilter,
+          minPrice,
+          maxPrice,
+          sortBy
+        }}
+        onApply={handleFilterApply}
+        onReset={handleFilterReset}
+        lang={lang}
+      />
 
     </div>
   );
