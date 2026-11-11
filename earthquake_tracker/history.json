@@ -388,17 +388,10 @@
     "us7000txgi",
     "emsc_20261111_0000056",
     "emsc_20261111_0000060",
-    "us7000txgv"
+    "us7000txgv",
+    "emsc_20261111_0000067"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000129",
-      "mag": 4.4,
-      "place": "CARIBBEAN SEA",
-      "latitude": 14.0539,
-      "longitude": -82.4664,
-      "epoch_ms": 1794215179000
-    },
     {
       "id": "emsc_20261109_0000136",
       "mag": 5.4,
@@ -790,6 +783,14 @@
       "latitude": 44.3705,
       "longitude": 149.5693,
       "epoch_ms": 1794374788150
+    },
+    {
+      "id": "emsc_20261111_0000067",
+      "mag": 4.0,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.302,
+      "longitude": -93.868,
+      "epoch_ms": 1794375456000
     }
   ]
 }
