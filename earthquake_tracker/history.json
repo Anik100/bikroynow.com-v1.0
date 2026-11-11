@@ -410,25 +410,11 @@
     "us7000txis",
     "emsc_20261111_0000156",
     "us7000txir",
-    "emsc_20261111_0000160"
+    "emsc_20261111_0000160",
+    "emsc_20261111_0000166",
+    "emsc_20261111_0000167"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tx6j",
-      "mag": 4.6,
-      "place": "206 km E of Kirakira, Solomon Islands",
-      "latitude": -10.5301,
-      "longitude": 163.8048,
-      "epoch_ms": 1794250305515
-    },
-    {
-      "id": "emsc_20261109_0000279",
-      "mag": 4.6,
-      "place": "SOUTH OF FIJI ISLANDS",
-      "latitude": -23.675,
-      "longitude": -179.9613,
-      "epoch_ms": 1794251387863
-    },
     {
       "id": "emsc_20261109_0000280",
       "mag": 4.3,
@@ -812,6 +798,22 @@
       "latitude": -2.91,
       "longitude": 130.51,
       "epoch_ms": 1794399014000
+    },
+    {
+      "id": "emsc_20261111_0000166",
+      "mag": 4.0,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.114,
+      "longitude": -93.113,
+      "epoch_ms": 1794400457000
+    },
+    {
+      "id": "emsc_20261111_0000167",
+      "mag": 4.7,
+      "place": "SERAM, INDONESIA",
+      "latitude": -3.077,
+      "longitude": 130.474,
+      "epoch_ms": 1794399449980
     }
   ]
 }
