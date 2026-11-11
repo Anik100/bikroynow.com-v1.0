@@ -421,17 +421,10 @@
     "emsc_20261111_0000250",
     "emsc_20261111_0000252",
     "us7000txm8",
-    "emsc_20261111_0000258"
+    "emsc_20261111_0000258",
+    "emsc_20261111_0000268"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000322",
-      "mag": 4.7,
-      "place": "NEAR ISLANDS, ALEUTIAN ISLANDS",
-      "latitude": 52.7289,
-      "longitude": 171.6154,
-      "epoch_ms": 1794261787165
-    },
     {
       "id": "emsc_20261109_0000339",
       "mag": 4.0,
@@ -823,6 +816,14 @@
       "latitude": -28.58,
       "longitude": -70.5,
       "epoch_ms": 1794422516000
+    },
+    {
+      "id": "emsc_20261111_0000268",
+      "mag": 5.1,
+      "place": "LOS LAGOS, CHILE",
+      "latitude": -41.5745,
+      "longitude": -73.7103,
+      "epoch_ms": 1794424879310
     }
   ]
 }
