@@ -264,7 +264,7 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
                   priority={false}
                   loading="lazy"
                   fetchPriority="low"
-                  sizes="450px"
+                  sizes="(max-width: 768px) 100vw, 450px"
                   quality={75}
                   style={{ objectFit: 'cover' }}
                   className={styles.slideImage}
