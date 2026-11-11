@@ -383,17 +383,10 @@
     "emsc_20261111_0000022",
     "us7000txfz",
     "emsc_20261111_0000046",
-    "us7000txgg"
+    "us7000txgg",
+    "emsc_20261111_0000050"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261109_0000085",
-      "mag": 4.1,
-      "place": "OFF E. COAST OF N. ISLAND, N.Z.",
-      "latitude": -36.6344,
-      "longitude": 177.7378,
-      "epoch_ms": 1794203418344
-    },
     {
       "id": "emsc_20261109_0000090",
       "mag": 4.0,
@@ -785,6 +778,14 @@
       "latitude": 36.1492,
       "longitude": 142.185,
       "epoch_ms": 1794369412372
+    },
+    {
+      "id": "emsc_20261111_0000050",
+      "mag": 4.3,
+      "place": "FOX ISLANDS, ALEUTIAN ISLANDS",
+      "latitude": 52.5525,
+      "longitude": -169.6878,
+      "epoch_ms": 1794370859883
     }
   ]
 }
