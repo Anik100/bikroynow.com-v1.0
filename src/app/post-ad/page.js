@@ -23,6 +23,7 @@ const CAT_CONFIG = {
 };
 
 const DRAFT_KEY = 'bikroynow_post_ad_draft';
+const DRAFT_MAX_AGE_MS = 10 * 60 * 1000; // ১০ মিনিট পর ড্রাফট মেয়াদোত্তীর্ণ হবে
 
 const BN_CAT_NAMES = {
   Electronics: 'ইলেকট্রনিক্স',
@@ -143,7 +144,16 @@ export default function PostAd() {
       const savedDraft = localStorage.getItem(DRAFT_KEY);
       if (savedDraft) {
         const draft = JSON.parse(savedDraft);
-        if (draft && typeof draft === 'object') {
+        const now = Date.now();
+        const savedTime = draft?.savedAt ? Number(draft.savedAt) : 0;
+        const isExpired = !savedTime || (now - savedTime) > DRAFT_MAX_AGE_MS;
+
+        // ১০ মিনিটের বেশি পুরনো হলে ড্রাফট স্বয়ংক্রিয়ভাবে মুছে যাবে
+        if (isExpired) {
+          try {
+            localStorage.removeItem(DRAFT_KEY);
+          } catch (e) {}
+        } else if (draft && typeof draft === 'object') {
           if (draft.formData) {
             setFormData(prev => ({ ...prev, ...draft.formData }));
           }
