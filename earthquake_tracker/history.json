@@ -456,17 +456,10 @@
     "emsc_20261112_0000092",
     "us7000txrk",
     "emsc_20261112_0000095",
-    "us7000txrm"
+    "us7000txrm",
+    "emsc_20261112_0000102"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000281",
-      "mag": 4.2,
-      "place": "OFF COAST OF OAXACA, MEXICO",
-      "latitude": 15.214,
-      "longitude": -94.626,
-      "epoch_ms": 1794337200000
-    },
     {
       "id": "emsc_20261110_0000284",
       "mag": 4.1,
@@ -858,6 +851,14 @@
       "latitude": 50.2206,
       "longitude": -130.0656,
       "epoch_ms": 1794472000140
+    },
+    {
+      "id": "emsc_20261112_0000102",
+      "mag": 4.3,
+      "place": "MADHYA PRADESH, INDIA",
+      "latitude": 22.6912,
+      "longitude": 78.2028,
+      "epoch_ms": 1794474251000
     }
   ]
 }
