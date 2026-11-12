@@ -469,17 +469,10 @@
     "emsc_20261112_0000217",
     "emsc_20261112_0000221",
     "emsc_20261112_0000230",
-    "emsc_20261112_0000233"
+    "emsc_20261112_0000233",
+    "emsc_20261112_0000243"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000022",
-      "mag": 4.7,
-      "place": "VANCOUVER ISLAND, CANADA REGION",
-      "latitude": 49.4228,
-      "longitude": -126.9611,
-      "epoch_ms": 1794361536580
-    },
     {
       "id": "us7000txgg",
       "mag": 4.6,
@@ -871,6 +864,14 @@
       "latitude": 14.081,
       "longitude": -93.157,
       "epoch_ms": 1794497683000
+    },
+    {
+      "id": "emsc_20261112_0000243",
+      "mag": 4.4,
+      "place": "WESTERN XIZANG-INDIA BORDER REG.",
+      "latitude": 30.16,
+      "longitude": 80.05,
+      "epoch_ms": 1794509819300
     }
   ]
 }
