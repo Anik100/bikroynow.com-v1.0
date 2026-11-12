@@ -437,17 +437,10 @@
     "us7000txpk",
     "emsc_20261111_0000310",
     "emsc_20261112_0000003",
-    "us7000txpv"
+    "us7000txpv",
+    "emsc_20261112_0000010"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000165",
-      "mag": 4.0,
-      "place": "MYANMAR",
-      "latitude": 21.829,
-      "longitude": 96.282,
-      "epoch_ms": 1794312268000
-    },
     {
       "id": "emsc_20261110_0000169",
       "mag": 4.1,
@@ -839,6 +832,14 @@
       "latitude": 53.637,
       "longitude": -164.8071,
       "epoch_ms": 1794441646340
+    },
+    {
+      "id": "emsc_20261112_0000010",
+      "mag": 4.8,
+      "place": "KURIL ISLANDS",
+      "latitude": 50.4399,
+      "longitude": 156.6137,
+      "epoch_ms": 1794446324576
     }
   ]
 }
