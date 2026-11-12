@@ -435,17 +435,11 @@
     "us7000txpa",
     "emsc_20261111_0000303",
     "us7000txpk",
-    "emsc_20261111_0000310"
+    "emsc_20261111_0000310",
+    "emsc_20261112_0000003",
+    "us7000txpv"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000047",
-      "mag": 4.2,
-      "place": "KEPULAUAN BABAR, INDONESIA",
-      "latitude": -7.13,
-      "longitude": 129.67,
-      "epoch_ms": 1794283522000
-    },
     {
       "id": "emsc_20261110_0000165",
       "mag": 4.0,
@@ -837,6 +831,14 @@
       "latitude": 3.75,
       "longitude": 127.96,
       "epoch_ms": 1794439518000
+    },
+    {
+      "id": "us7000txpv",
+      "mag": 4.4,
+      "place": "84 km SE of Akutan, Alaska",
+      "latitude": 53.637,
+      "longitude": -164.8071,
+      "epoch_ms": 1794441646340
     }
   ]
 }
