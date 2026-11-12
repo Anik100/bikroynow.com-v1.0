@@ -1186,7 +1186,7 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
                           {/* 3. WhatsApp (only if poster enabled WhatsApp) */}
                           {hasWhatsApp && cleanPhone && (
                             <a 
-                              href={`https://wa.me/${cleanPhone.replace(/\D/g, '').startsWith('01') ? '88' + cleanPhone.replace(/\D/g, '') : cleanPhone.replace(/\D/g, '')}?text=${encodeURIComponent(lang === 'bn' ? `আসসালামু আলাইকুম, আমি BikroyNow-এ আপনার "${ad.title}" বিজ্ঞাপনটি দেখেছি।` : `Hello, I saw your ad "${ad.title}" on BikroyNow.`)}`}
+                              href={`https://wa.me/${cleanPhone.replace(/\D/g, '').startsWith('01') ? '88' + cleanPhone.replace(/\D/g, '') : cleanPhone.replace(/\D/g, '')}?text=${encodeURIComponent((() => { const adUrl = typeof window !== 'undefined' ? `${window.location.origin}/ad/${ad.id}` : `https://www.bikroynow.com/ad/${ad.id}`; return lang === 'bn' ? `আসসালামু আলাইকুম, আমি BikroyNow-এ আপনার "${ad.title}" বিজ্ঞাপনটি দেখেছি।\n${adUrl}` : `Hello, I saw your ad "${ad.title}" on BikroyNow.\n${adUrl}`; })())}`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className={styles.btnWhatsApp}
