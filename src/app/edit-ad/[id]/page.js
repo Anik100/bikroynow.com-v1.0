@@ -2,13 +2,42 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { createPortal } from 'react-dom';
 import { supabase } from '../../../lib/supabaseClient';
 import { uploadToImgBB } from '../../../lib/imgbb';
-import { CATEGORIES, LOCATIONS, matchesLocationQuery } from '../../../lib/constants';
+import { CATEGORIES, LOCATIONS, matchesLocationQuery, getCategoryName } from '../../../lib/constants';
 import { useLanguage } from '../../../context/LanguageContext';
 import { compressImage } from '../../../lib/utils';
 import styles from '../../post-ad/post-ad.module.css';
-import { Camera, X, MapPin, ChevronRight, Loader2 } from 'lucide-react';
+import { Smartphone, Laptop, Zap, Car, Home as HouseIcon, Briefcase, Box, Loader2 } from 'lucide-react';
+
+const ADMIN_EMAILS = [
+  'anikh0000@gmail.com',
+  'anikh00000@gmail.com',
+  'anikh00@gmail.com',
+  'aunik008@gmail.com',
+  'aunik003@gmail.com'
+];
+
+const CAT_CONFIG = {
+  'Mobile Phones': { icon: Smartphone, color: '#2563eb', bg: '#f0f7ff' },
+  Computers: { icon: Laptop, color: '#059669', bg: '#ecfdf5' },
+  Electronics: { icon: Zap, color: '#d97706', bg: '#fffbeb' },
+  Vehicles: { icon: Car, color: '#dc2626', bg: '#fef2f2' },
+  Property: { icon: HouseIcon, color: '#7c3aed', bg: '#f5f3ff' },
+  Jobs: { icon: Briefcase, color: '#db2777', bg: '#fdf2f8' },
+  'অন্যান্য': { icon: Box, color: '#475569', bg: '#f8fafc' },
+};
+
+function getCategoryDisplay(categoryId, lang) {
+  if (!categoryId) return '';
+  for (const [mainCat, subs] of Object.entries(CATEGORIES)) {
+    if (subs && Object.prototype.hasOwnProperty.call(subs, categoryId)) {
+      return `${getCategoryName(mainCat, lang)} › ${getCategoryName(categoryId, lang)}`;
+    }
+  }
+  return getCategoryName(categoryId, lang);
+}
 
 export default function EditAd({ params }) {
   const { t, lang } = useLanguage();
@@ -33,6 +62,13 @@ export default function EditAd({ params }) {
   const [locationSearch, setLocationSearch] = useState('');
   const [locationType, setLocationType] = useState('division');
   const [selectedDivision, setSelectedDivision] = useState(null);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [selectedMainCategory, setSelectedMainCategory] = useState(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const fetchAd = async () => {
@@ -63,14 +99,7 @@ export default function EditAd({ params }) {
         return;
       }
 
-      const adminEmails = [
-        'anikh0000@gmail.com',
-        'anikh00000@gmail.com',
-        'anikh00@gmail.com',
-        'aunik008@gmail.com',
-        'aunik003@gmail.com'
-      ];
-      const isAdmin = adminEmails.includes((activeSession.user.email || '').toLowerCase().trim());
+      const isAdmin = ADMIN_EMAILS.includes((activeSession.user.email || '').toLowerCase().trim());
 
       // ২. Owner check — যদি এই ad আপনার না হয় এবং আপনি অ্যাডমিন না হন
       if (data.user_id !== activeSession.user.id && !isAdmin) {
@@ -80,13 +109,14 @@ export default function EditAd({ params }) {
       }
 
       setFormData({
-        title: data.title,
-        category_id: data.category_id,
-        condition: data.condition,
-        price: data.price,
-        location: data.location,
-        description: data.description,
-        contact_phone: data.contact_phone,
+        title: data.title || '',
+        category_id: data.category_id || '',
+        condition: data.condition || 'Used',
+        price: data.price ?? '',
+        location: data.location || '',
+        description: data.description || '',
+        contact_phone: data.contact_phone || '',
+        has_whatsapp: data.has_whatsapp !== false,
         images: data.images || []
       });
       setLoading(false);
@@ -129,6 +159,12 @@ export default function EditAd({ params }) {
     e.preventDefault();
     setError(null);
 
+    if (!formData.category_id) {
+      setError(lang === 'bn' ? 'অনুগ্রহ করে একটি ক্যাটাগরি নির্বাচন করুন।' : 'Please select a category.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     if (!formData.condition) {
       setError(lang === 'bn' ? '⚠️ অনুগ্রহ করে পণ্যের অবস্থা নির্বাচন করুন (ব্যবহৃত নাকি নতুন)।' : '⚠️ Please select the product condition (Used or New).');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -147,7 +183,7 @@ export default function EditAd({ params }) {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) { router.push('/login'); return; }
 
-    const isAdmin = session.user.email === 'anikh0000@gmail.com';
+    const isAdmin = ADMIN_EMAILS.includes((session.user.email || '').toLowerCase().trim());
 
     let query = supabase
       .from('listings')
@@ -182,6 +218,21 @@ export default function EditAd({ params }) {
     <div className={styles.postContainer}>
       <div className={styles.postCard}>
         <h1 className={styles.pageTitle}>{lang === 'bn' ? 'বিজ্ঞাপন এডিট করুন' : 'Edit Your Ad'}</h1>
+
+        {error && (
+          <div style={{
+            backgroundColor: '#fef2f2',
+            border: '1px solid #fecaca',
+            color: '#dc2626',
+            padding: '0.75rem 1rem',
+            borderRadius: '8px',
+            marginBottom: '1rem',
+            fontSize: '0.9rem',
+            fontWeight: 600
+          }}>
+            {error}
+          </div>
+        )}
         
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.inputGroup}>
@@ -203,6 +254,37 @@ export default function EditAd({ params }) {
                   </label>
                 </div>
               )}
+            </div>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>{t('selectCategory')} *</label>
+            <div className={styles.categorySelectBtn} onClick={() => setShowCategoryModal(true)}>
+              {formData.category_id
+                ? <span className={styles.selectedCatText}>{getCategoryDisplay(formData.category_id, lang)}</span>
+                : <span className={styles.placeholderText}>{t('selectCategory')}</span>
+              }
+              <span style={{ color: '#9ca3af' }}>▼</span>
+            </div>
+          </div>
+
+          <div className={styles.inputGroup}>
+            <label className={styles.label}>{t('condition')} <span style={{ color: '#ef4444', fontWeight: 900 }}>*</span></label>
+            <div className={styles.conditionRow}>
+              <button
+                type="button"
+                className={`${styles.conditionBtn} ${formData.condition === 'Used' ? styles.conditionBtnActive : ''}`}
+                onClick={() => setFormData({ ...formData, condition: 'Used' })}
+              >
+                {t('used')}
+              </button>
+              <button
+                type="button"
+                className={`${styles.conditionBtn} ${formData.condition === 'New' ? styles.conditionBtnActive : ''}`}
+                onClick={() => setFormData({ ...formData, condition: 'New' })}
+              >
+                {t('new')}
+              </button>
             </div>
           </div>
 
@@ -244,6 +326,29 @@ export default function EditAd({ params }) {
               type="text" required className={styles.premiumInput} value={formData.contact_phone}
               onChange={e => setFormData({...formData, contact_phone: e.target.value})}
             />
+            <label style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              marginTop: '0.6rem',
+              cursor: 'pointer',
+              fontSize: '0.86rem',
+              color: '#334155',
+              fontWeight: 650,
+              background: '#f8fafc',
+              padding: '0.45rem 0.8rem',
+              borderRadius: '8px',
+              border: '1px solid #e2e8f0',
+              userSelect: 'none'
+            }}>
+              <input
+                type="checkbox"
+                checked={formData.has_whatsapp !== false}
+                onChange={e => setFormData({ ...formData, has_whatsapp: e.target.checked })}
+                style={{ width: '18px', height: '18px', accentColor: '#25D366', cursor: 'pointer' }}
+              />
+              <span>{lang === 'bn' ? 'এই নম্বরে WhatsApp আছে' : 'This number is on WhatsApp'}</span>
+            </label>
           </div>
 
           <button type="submit" className={styles.submitBtn} disabled={updating}>
@@ -301,6 +406,99 @@ export default function EditAd({ params }) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Category Modal */}
+      {showCategoryModal && mounted && createPortal(
+        <div
+          className={styles.modalOverlay}
+          onClick={() => { if (!selectedMainCategory) setShowCategoryModal(false); }}
+          onTouchMove={e => e.stopPropagation()}
+        >
+          <div className={styles.categoryModal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <h3>
+                {selectedMainCategory
+                  ? getCategoryName(selectedMainCategory, lang)
+                  : (lang === 'bn' ? 'ক্যাটাগরি নির্বাচন করুন' : 'Select Category')}
+              </h3>
+              <button
+                type="button"
+                className={styles.modalCloseBtn}
+                onClick={() => {
+                  setShowCategoryModal(false);
+                  setSelectedMainCategory(null);
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            <div className={styles.modalBody}>
+              {!selectedMainCategory ? (
+                <div className={styles.stepList}>
+                  <p className={styles.stepNotice}>
+                    {lang === 'bn' ? '১. একটি ক্যাটাগরি নির্বাচন করুন:' : '1. Select Category:'}
+                  </p>
+                  {Object.keys(CATEGORIES).map(main => {
+                    const config = CAT_CONFIG[main] || CAT_CONFIG['অন্যান্য'];
+                    const Icon = config.icon;
+                    return (
+                      <div
+                        key={main}
+                        className={styles.stepItem}
+                        onClick={() => setSelectedMainCategory(main)}
+                      >
+                        <div className={styles.stepIcon} style={{ background: config.bg, color: config.color }}>
+                          <Icon size={18} />
+                        </div>
+                        <span className={styles.stepText}>{getCategoryName(main, lang)}</span>
+                        <span className={styles.stepArrow}>›</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className={styles.stepList}>
+                  <div className={styles.stepHeader}>
+                    <button
+                      type="button"
+                      className={styles.backButton}
+                      onClick={() => setSelectedMainCategory(null)}
+                    >
+                      ← {lang === 'bn' ? 'পূর্ববর্তী' : 'Back'}
+                    </button>
+                    <span className={styles.activeCategoryTitle}>
+                      {getCategoryName(selectedMainCategory, lang)}
+                    </span>
+                  </div>
+
+                  <p className={styles.stepNotice}>
+                    {lang === 'bn' ? '২. সাব-ক্যাটাগরি নির্বাচন করুন:' : '2. Select Subcategory:'}
+                  </p>
+
+                  <div className={styles.subListGrid}>
+                    {Object.keys(CATEGORIES[selectedMainCategory]).map(subKey => (
+                      <div
+                        key={subKey}
+                        className={styles.stepSubItem}
+                        onClick={() => {
+                          setFormData(prev => ({ ...prev, category_id: subKey }));
+                          setShowCategoryModal(false);
+                          setSelectedMainCategory(null);
+                        }}
+                      >
+                        <span>{getCategoryName(subKey, lang)}</span>
+                        <span className={styles.stepArrow}>›</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>,
+        document.body
       )}
     </div>
   );
