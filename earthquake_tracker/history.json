@@ -440,17 +440,10 @@
     "us7000txpv",
     "emsc_20261112_0000010",
     "us7000txqa",
-    "emsc_20261111_0000329"
+    "emsc_20261111_0000329",
+    "emsc_20261112_0000043"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000169",
-      "mag": 4.1,
-      "place": "CENTRAL PERU",
-      "latitude": -9.9,
-      "longitude": -76.38,
-      "epoch_ms": 1794313425000
-    },
     {
       "id": "emsc_20261110_0000213",
       "mag": 5.6,
@@ -842,6 +835,14 @@
       "latitude": 50.4399,
       "longitude": 156.6137,
       "epoch_ms": 1794446324576
+    },
+    {
+      "id": "emsc_20261112_0000043",
+      "mag": 5.4,
+      "place": "SOUTH SANDWICH ISLANDS REGION",
+      "latitude": -59.0326,
+      "longitude": -26.0288,
+      "epoch_ms": 1794455156644
     }
   ]
 }
