@@ -459,17 +459,10 @@
     "us7000txrm",
     "emsc_20261112_0000102",
     "emsc_20261112_0000130",
-    "emsc_20261112_0000133"
+    "emsc_20261112_0000133",
+    "emsc_20261112_0000171"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000329",
-      "mag": 4.4,
-      "place": "NORTHERN SUMATRA, INDONESIA",
-      "latitude": 4.19,
-      "longitude": 97.49,
-      "epoch_ms": 1794351922000
-    },
     {
       "id": "emsc_20261110_0000332",
       "mag": 4.0,
@@ -861,6 +854,14 @@
       "latitude": -8.148,
       "longitude": 120.879,
       "epoch_ms": 1794482190670
+    },
+    {
+      "id": "emsc_20261112_0000171",
+      "mag": 4.1,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 5.39,
+      "longitude": 125.67,
+      "epoch_ms": 1794493432000
     }
   ]
 }
