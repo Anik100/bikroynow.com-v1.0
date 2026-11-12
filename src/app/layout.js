@@ -240,7 +240,7 @@ export default function RootLayout({ children }) {
         {gaId && (
           <>
             <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+              src={gaId.startsWith('GTM-') ? `https://www.googletagmanager.com/gtm.js?id=${gaId}` : `https://www.googletagmanager.com/gtag/js?id=${gaId}`}
               strategy="afterInteractive"
             />
             <Script id="google-analytics" strategy="afterInteractive">
