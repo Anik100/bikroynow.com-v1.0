@@ -476,17 +476,10 @@
     "us7000txvw",
     "emsc_20261112_0000267",
     "emsc_20261112_0000268",
-    "emsc_20261112_0000270"
+    "emsc_20261112_0000270",
+    "emsc_20261112_0000276"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000060",
-      "mag": 5.3,
-      "place": "KURIL ISLANDS",
-      "latitude": 44.3705,
-      "longitude": 149.5693,
-      "epoch_ms": 1794374788150
-    },
     {
       "id": "emsc_20261111_0000067",
       "mag": 4.0,
@@ -878,6 +871,14 @@
       "latitude": 13.2423,
       "longitude": -82.6344,
       "epoch_ms": 1794518183000
+    },
+    {
+      "id": "emsc_20261112_0000276",
+      "mag": 4.0,
+      "place": "ICELAND",
+      "latitude": 64.668,
+      "longitude": -17.477,
+      "epoch_ms": 1794520419000
     }
   ]
 }
