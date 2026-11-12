@@ -449,17 +449,10 @@
     "us7000txqx",
     "emsc_20261111_0000317",
     "emsc_20261112_0000062",
-    "emsc_20261112_0000064"
+    "emsc_20261112_0000064",
+    "emsc_20261112_0000075"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000232",
-      "mag": 5.2,
-      "place": "KEPULAUAN OBI, INDONESIA",
-      "latitude": -1.009,
-      "longitude": 128.504,
-      "epoch_ms": 1794325897840
-    },
     {
       "id": "emsc_20261110_0000258",
       "mag": 5.1,
@@ -851,6 +844,14 @@
       "latitude": 27.885,
       "longitude": 87.7937,
       "epoch_ms": 1794463459000
+    },
+    {
+      "id": "emsc_20261112_0000075",
+      "mag": 4.0,
+      "place": "MINDORO, PHILIPPINES",
+      "latitude": 13.78,
+      "longitude": 120.43,
+      "epoch_ms": 1794466359000
     }
   ]
 }
