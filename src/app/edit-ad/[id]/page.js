@@ -54,7 +54,6 @@ export default function EditAd({ params }) {
     location: '',
     description: '',
     contact_phone: '',
-    has_whatsapp: true,
     images: []
   });
 
@@ -116,7 +115,6 @@ export default function EditAd({ params }) {
         location: data.location || '',
         description: data.description || '',
         contact_phone: data.contact_phone || '',
-        has_whatsapp: data.has_whatsapp !== false,
         images: data.images || []
       });
       setLoading(false);
@@ -188,8 +186,14 @@ export default function EditAd({ params }) {
     let query = supabase
       .from('listings')
       .update({
-        ...formData,
-        price: parseFloat(formData.price)
+        title: formData.title,
+        category_id: formData.category_id,
+        condition: formData.condition,
+        price: parseFloat(formData.price),
+        location: formData.location,
+        description: formData.description,
+        contact_phone: formData.contact_phone,
+        images: formData.images
       })
       .eq('id', params.id);
 
@@ -326,29 +330,6 @@ export default function EditAd({ params }) {
               type="text" required className={styles.premiumInput} value={formData.contact_phone}
               onChange={e => setFormData({...formData, contact_phone: e.target.value})}
             />
-            <label style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              marginTop: '0.6rem',
-              cursor: 'pointer',
-              fontSize: '0.86rem',
-              color: '#334155',
-              fontWeight: 650,
-              background: '#f8fafc',
-              padding: '0.45rem 0.8rem',
-              borderRadius: '8px',
-              border: '1px solid #e2e8f0',
-              userSelect: 'none'
-            }}>
-              <input
-                type="checkbox"
-                checked={formData.has_whatsapp !== false}
-                onChange={e => setFormData({ ...formData, has_whatsapp: e.target.checked })}
-                style={{ width: '18px', height: '18px', accentColor: '#25D366', cursor: 'pointer' }}
-              />
-              <span>{lang === 'bn' ? 'এই নম্বরে WhatsApp আছে' : 'This number is on WhatsApp'}</span>
-            </label>
           </div>
 
           <button type="submit" className={styles.submitBtn} disabled={updating}>
