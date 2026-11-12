@@ -454,17 +454,10 @@
     "emsc_20261112_0000076",
     "emsc_20261112_0000089",
     "emsc_20261112_0000092",
-    "us7000txrk"
+    "us7000txrk",
+    "emsc_20261112_0000095"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000269",
-      "mag": 4.2,
-      "place": "OFF COAST OF OAXACA, MEXICO",
-      "latitude": 15.214,
-      "longitude": -94.608,
-      "epoch_ms": 1794334051000
-    },
     {
       "id": "emsc_20261110_0000281",
       "mag": 4.2,
@@ -856,6 +849,14 @@
       "latitude": 44.4539,
       "longitude": -129.6205,
       "epoch_ms": 1794471448440
+    },
+    {
+      "id": "emsc_20261112_0000095",
+      "mag": 4.1,
+      "place": "VANCOUVER ISLAND, CANADA REGION",
+      "latitude": 50.2206,
+      "longitude": -130.0656,
+      "epoch_ms": 1794472000140
     }
   ]
 }
