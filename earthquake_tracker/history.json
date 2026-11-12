@@ -451,17 +451,10 @@
     "emsc_20261112_0000062",
     "emsc_20261112_0000064",
     "emsc_20261112_0000075",
-    "emsc_20261112_0000076"
+    "emsc_20261112_0000076",
+    "emsc_20261112_0000089"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000258",
-      "mag": 5.1,
-      "place": "EASTERN NEW GUINEA REG., P.N.G.",
-      "latitude": -8.7133,
-      "longitude": 147.9477,
-      "epoch_ms": 1794332211050
-    },
     {
       "id": "emsc_20261110_0000259",
       "mag": 5.3,
@@ -853,6 +846,14 @@
       "latitude": 13.78,
       "longitude": 120.43,
       "epoch_ms": 1794466359000
+    },
+    {
+      "id": "emsc_20261112_0000089",
+      "mag": 4.3,
+      "place": "MAYOTTE REGION",
+      "latitude": -12.856,
+      "longitude": 45.652,
+      "epoch_ms": 1794471209929
     }
   ]
 }
