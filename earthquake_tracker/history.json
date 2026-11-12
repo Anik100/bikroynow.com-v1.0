@@ -452,17 +452,11 @@
     "emsc_20261112_0000064",
     "emsc_20261112_0000075",
     "emsc_20261112_0000076",
-    "emsc_20261112_0000089"
+    "emsc_20261112_0000089",
+    "emsc_20261112_0000092",
+    "us7000txrk"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000259",
-      "mag": 5.3,
-      "place": "MID-INDIAN RIDGE",
-      "latitude": -20.8245,
-      "longitude": 68.4996,
-      "epoch_ms": 1794332190490
-    },
     {
       "id": "emsc_20261110_0000269",
       "mag": 4.2,
@@ -854,6 +848,14 @@
       "latitude": -12.856,
       "longitude": 45.652,
       "epoch_ms": 1794471209929
+    },
+    {
+      "id": "us7000txrk",
+      "mag": 4.5,
+      "place": "off the coast of Oregon",
+      "latitude": 44.4539,
+      "longitude": -129.6205,
+      "epoch_ms": 1794471448440
     }
   ]
 }
