@@ -462,17 +462,10 @@
     "emsc_20261112_0000133",
     "emsc_20261112_0000171",
     "emsc_20261112_0000173",
-    "emsc_20261112_0000179"
+    "emsc_20261112_0000179",
+    "emsc_20261112_0000185"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000013",
-      "mag": 4.2,
-      "place": "NEAR EAST COAST OF KAMCHATKA",
-      "latitude": 53.2952,
-      "longitude": 159.2964,
-      "epoch_ms": 1794358881525
-    },
     {
       "id": "ew1794361550",
       "mag": 4.1,
@@ -864,6 +857,14 @@
       "latitude": -9.18,
       "longitude": 113.2,
       "epoch_ms": 1794494916000
+    },
+    {
+      "id": "emsc_20261112_0000185",
+      "mag": 4.4,
+      "place": "MOLUCCA SEA",
+      "latitude": 1.14,
+      "longitude": 126.18,
+      "epoch_ms": 1794495514000
     }
   ]
 }
