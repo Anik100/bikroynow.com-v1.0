@@ -457,17 +457,10 @@
     "us7000txrk",
     "emsc_20261112_0000095",
     "us7000txrm",
-    "emsc_20261112_0000102"
+    "emsc_20261112_0000102",
+    "emsc_20261112_0000130"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000284",
-      "mag": 4.1,
-      "place": "MINDANAO, PHILIPPINES",
-      "latitude": 9.75,
-      "longitude": 126.51,
-      "epoch_ms": 1794338620000
-    },
     {
       "id": "emsc_20261110_0000290",
       "mag": 5.2,
@@ -859,6 +852,14 @@
       "latitude": 22.6912,
       "longitude": 78.2028,
       "epoch_ms": 1794474251000
+    },
+    {
+      "id": "emsc_20261112_0000130",
+      "mag": 4.0,
+      "place": "OFFSHORE GUERRERO, MEXICO",
+      "latitude": 16.274,
+      "longitude": -98.724,
+      "epoch_ms": 1794481042000
     }
   ]
 }
