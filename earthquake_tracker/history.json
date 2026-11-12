@@ -464,17 +464,10 @@
     "emsc_20261112_0000171",
     "emsc_20261112_0000173",
     "emsc_20261112_0000179",
-    "emsc_20261112_0000185"
+    "emsc_20261112_0000185",
+    "emsc_20261112_0000202"
   ],
   "recent_posted_events": [
-    {
-      "id": "ew1794361550",
-      "mag": 4.1,
-      "place": "137 km W of Tofino, Canada",
-      "latitude": 49.099,
-      "longitude": -127.7868,
-      "epoch_ms": 1794361526000
-    },
     {
       "id": "emsc_20261111_0000022",
       "mag": 4.7,
@@ -866,6 +859,14 @@
       "latitude": 1.14,
       "longitude": 126.18,
       "epoch_ms": 1794495514000
+    },
+    {
+      "id": "emsc_20261112_0000202",
+      "mag": 4.2,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.081,
+      "longitude": -93.157,
+      "epoch_ms": 1794497683000
     }
   ]
 }
