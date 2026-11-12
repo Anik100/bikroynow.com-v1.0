@@ -470,17 +470,10 @@
     "emsc_20261112_0000221",
     "emsc_20261112_0000230",
     "emsc_20261112_0000233",
-    "emsc_20261112_0000243"
+    "emsc_20261112_0000243",
+    "emsc_20261112_0000260"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000txgg",
-      "mag": 4.6,
-      "place": "130 km ENE of Hasaki, Japan",
-      "latitude": 36.1492,
-      "longitude": 142.185,
-      "epoch_ms": 1794369412372
-    },
     {
       "id": "emsc_20261111_0000050",
       "mag": 4.3,
@@ -872,6 +865,14 @@
       "latitude": 30.16,
       "longitude": 80.05,
       "epoch_ms": 1794509819300
+    },
+    {
+      "id": "emsc_20261112_0000260",
+      "mag": 4.9,
+      "place": "SICHUAN-YUNNAN-GUIZHOU RG, CHINA",
+      "latitude": 27.2497,
+      "longitude": 104.1735,
+      "epoch_ms": 1794513798430
     }
   ]
 }
