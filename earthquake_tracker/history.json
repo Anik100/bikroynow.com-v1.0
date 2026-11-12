@@ -448,17 +448,10 @@
     "emsc_20261112_0000049",
     "us7000txqx",
     "emsc_20261111_0000317",
-    "emsc_20261112_0000062"
+    "emsc_20261112_0000062",
+    "emsc_20261112_0000064"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261110_0000227",
-      "mag": 4.8,
-      "place": "OFFSHORE GUATEMALA",
-      "latitude": 13.6155,
-      "longitude": -90.819,
-      "epoch_ms": 1794324238586
-    },
     {
       "id": "emsc_20261110_0000232",
       "mag": 5.2,
@@ -850,6 +843,14 @@
       "latitude": 40.3593,
       "longitude": 143.6115,
       "epoch_ms": 1794456452379
+    },
+    {
+      "id": "emsc_20261112_0000064",
+      "mag": 4.0,
+      "place": "NEPAL",
+      "latitude": 27.885,
+      "longitude": 87.7937,
+      "epoch_ms": 1794463459000
     }
   ]
 }
