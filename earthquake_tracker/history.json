@@ -475,17 +475,10 @@
     "emsc_20261112_0000157",
     "us7000txvw",
     "emsc_20261112_0000267",
-    "emsc_20261112_0000268"
+    "emsc_20261112_0000268",
+    "emsc_20261112_0000270"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000056",
-      "mag": 4.6,
-      "place": "SICILY, ITALY",
-      "latitude": 38.7562,
-      "longitude": 14.0932,
-      "epoch_ms": 1794373927850
-    },
     {
       "id": "emsc_20261111_0000060",
       "mag": 5.3,
@@ -877,6 +870,14 @@
       "latitude": 8.2407,
       "longitude": -82.296,
       "epoch_ms": 1794517733000
+    },
+    {
+      "id": "emsc_20261112_0000270",
+      "mag": 4.1,
+      "place": "CARIBBEAN SEA",
+      "latitude": 13.2423,
+      "longitude": -82.6344,
+      "epoch_ms": 1794518183000
     }
   ]
 }
