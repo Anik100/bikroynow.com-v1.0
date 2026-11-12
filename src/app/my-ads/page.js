@@ -236,12 +236,17 @@ export default function MyAds() {
         )}
 
         <div className={styles.pageHeader}>
-          <div>
-            <h2 className={styles.pageTitle}>{t('myAds')}</h2>
-            <p style={{fontSize: '0.85rem', color: '#64748b', marginTop: '4px'}}>{t('loggedInAs')} <strong>{user?.email}</strong></p>
+          <div style={{ minWidth: 0 }}>
+            <h2 className={styles.pageTitle}>
+              <span>{t('myAds')}</span>
+              <span className={styles.countBadge}>{listings.length}</span>
+            </h2>
+            <p style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {t('loggedInAs')} <strong>{user?.email}</strong>
+            </p>
           </div>
-          <Link href="/post-ad" className="btn-primary" style={{padding: '0.6rem 1.2rem', borderRadius: '10px', fontSize: '0.9rem', gap: '0.4rem'}}>
-            <PlusCircle size={18} />
+          <Link href="/post-ad" className={styles.postBtn}>
+            <PlusCircle size={17} />
             <span>{t('postAd')}</span>
           </Link>
         </div>
@@ -249,9 +254,29 @@ export default function MyAds() {
         <div className={styles.adGrid}>
           {listings.length > 0 ? (
             listings.map((ad) => (
-              <div key={ad.id} className={styles.adCard} style={{ position: 'relative', zIndex: 1 }}>
+              <div key={ad.id} className={styles.adCard}>
                 <Link href={`/ad/${ad.id}`}>
                   <div className={styles.imageBox}>
+                    <div className={styles.statusOverlay}>
+                      {ad.status === 'pending' ? (
+                        <span className={`${styles.statusBadge} ${styles.statusPending}`}>
+                          {lang === 'bn' ? 'পেন্ডিং' : 'Pending'}
+                        </span>
+                      ) : (
+                        <span className={`${styles.statusBadge} ${styles.statusActive}`}>
+                          {lang === 'bn' ? 'অ্যাক্টিভ' : 'Active'}
+                        </span>
+                      )}
+                      {ad.is_featured ? (
+                        <span className={styles.statusBadge} style={{ background: 'linear-gradient(135deg, #10b981, #047857)', color: 'white' }}>
+                          {lang === 'bn' ? '⭐ স্লাইডার' : '⭐ Featured'}
+                        </span>
+                      ) : (ad.promotion_type && ad.promotion_type !== 'free') ? (
+                        <span className={styles.statusBadge} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white' }}>
+                          {lang === 'bn' ? '💎 প্রিমিয়াম' : '💎 Boosted'}
+                        </span>
+                      ) : null}
+                    </div>
                     <img 
                       src={ad.images?.[0] || 'https://via.placeholder.com/300x200?text=No+Image'} 
                       alt={ad.title} 
@@ -259,46 +284,31 @@ export default function MyAds() {
                   </div>
                 </Link>
                 <div className={styles.adInfo}>
-                  <Link href={`/ad/${ad.id}`}>
-                    <h3 className={styles.adTitle}>{ad.title}</h3>
-                  </Link>
-                  <div className={styles.adPrice}>{formatPrice(ad.price, lang)}</div>
-                  
-                  <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center', marginBottom: '0.5rem' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#888' }}>{getRelativeTime(ad.created_at, lang)}</div>
-                    {ad.status === 'pending' ? (
-                      <span style={{ background: '#fef3c7', color: '#d97706', padding: '0.1rem 0.5rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>
-                        {lang === 'bn' ? 'পেন্ডিং' : 'Pending'}
-                      </span>
-                    ) : (
-                      <span style={{ background: '#dcfce7', color: '#166534', padding: '0.1rem 0.5rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 600 }}>
-                        {lang === 'bn' ? 'অ্যাক্টিভ' : 'Active'}
-                      </span>
-                    )}
-                    {ad.is_featured ? (
-                      <span style={{ background: 'linear-gradient(135deg, #10b981, #047857)', color: 'white', padding: '0.15rem 0.6rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 800 }}>
-                        {lang === 'bn' ? '⭐ প্রিমিয়াম স্লাইডার' : '⭐ Premium Slider'}
-                      </span>
-                    ) : (ad.promotion_type && ad.promotion_type !== 'free') ? (
-                      <span style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: 'white', padding: '0.15rem 0.6rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 800 }}>
-                        {lang === 'bn' ? `💎 প্রিমিয়াম (${ad.promotion_type || 'বুস্টেড'})` : `💎 Premium (${ad.promotion_type || 'Boosted'})`}
-                      </span>
-                    ) : null}
+                  <div>
+                    <Link href={`/ad/${ad.id}`}>
+                      <h3 className={styles.adTitle}>{ad.title}</h3>
+                    </Link>
+                    <div className={styles.adPrice}>{formatPrice(ad.price, lang)}</div>
                   </div>
-                  <div className={styles.actions} style={{ position: 'relative', zIndex: 50 }}>
+                  
+                  <div className={styles.metaRow}>
+                    <span className={styles.adTime}>{getRelativeTime(ad.created_at, lang)}</span>
+                  </div>
+
+                  <div className={styles.actions}>
                     <Link href={`/edit-ad/${ad.id}`} className={styles.editBtn}>
-                      <Edit size={16} /> {t('edit')}
+                      <Edit size={14} /> {t('edit')}
                     </Link>
                     <button
+                      type="button"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                         confirmDelete(ad);
                       }}
                       className={styles.deleteBtn}
-                      style={{ cursor: 'pointer', border: 'none', background: 'none', padding: 0 }}
                     >
-                      <Trash2 size={16} /> {t('delete')}
+                      <Trash2 size={14} /> {t('delete')}
                     </button>
                   </div>
                 </div>
