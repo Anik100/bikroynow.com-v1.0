@@ -517,17 +517,10 @@
     "emsc_20261113_0000128",
     "us7000txzd",
     "emsc_20261113_0000133",
-    "us7000ty0g"
+    "us7000ty0g",
+    "emsc_20261113_0000139"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000285",
-      "mag": 4.3,
-      "place": "OFFSHORE CHIAPAS, MEXICO",
-      "latitude": 13.98,
-      "longitude": -92.924,
-      "epoch_ms": 1794431724000
-    },
     {
       "id": "us7000txpa",
       "mag": 4.9,
@@ -919,6 +912,14 @@
       "latitude": 7.36,
       "longitude": 126.93,
       "epoch_ms": 1794571971000
+    },
+    {
+      "id": "emsc_20261113_0000139",
+      "mag": 4.7,
+      "place": "CENTRAL PERU",
+      "latitude": -10.451,
+      "longitude": -74.665,
+      "epoch_ms": 1794573469630
     }
   ]
 }
