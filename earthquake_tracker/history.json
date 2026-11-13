@@ -482,17 +482,10 @@
     "emsc_20261112_0000282",
     "us7000txwp",
     "emsc_20261112_0000295",
-    "emsc_20261112_0000301"
+    "emsc_20261112_0000301",
+    "emsc_20261113_0000002"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000txhi",
-      "mag": 5.1,
-      "place": "Balleny Islands region",
-      "latitude": -62.4284,
-      "longitude": 155.0206,
-      "epoch_ms": 1794378105383
-    },
     {
       "id": "emsc_20261111_0000082",
       "mag": 4.6,
@@ -884,6 +877,14 @@
       "latitude": -1.3651,
       "longitude": 149.9634,
       "epoch_ms": 1794521048450
+    },
+    {
+      "id": "emsc_20261113_0000002",
+      "mag": 5.1,
+      "place": "CRETE, GREECE",
+      "latitude": 34.6967,
+      "longitude": 24.8798,
+      "epoch_ms": 1794528304104
     }
   ]
 }
