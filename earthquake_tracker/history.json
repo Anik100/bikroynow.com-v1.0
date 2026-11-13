@@ -515,17 +515,10 @@
     "emsc_20261113_0000122",
     "emsc_20261113_0000124",
     "emsc_20261113_0000128",
-    "us7000txzd"
+    "us7000txzd",
+    "emsc_20261113_0000133"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000282",
-      "mag": 4.3,
-      "place": "TARAPACA, CHILE",
-      "latitude": -19.65,
-      "longitude": -69.3,
-      "epoch_ms": 1794429903000
-    },
     {
       "id": "emsc_20261111_0000285",
       "mag": 4.3,
@@ -917,6 +910,14 @@
       "latitude": -21.359,
       "longitude": -175.224,
       "epoch_ms": 1794568686200
+    },
+    {
+      "id": "emsc_20261113_0000133",
+      "mag": 4.8,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 7.36,
+      "longitude": 126.93,
+      "epoch_ms": 1794571971000
     }
   ]
 }
