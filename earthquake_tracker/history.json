@@ -543,17 +543,11 @@
     "us7000ty4w",
     "emsc_20261113_0000298",
     "emsc_20261113_0000304",
-    "emsc_20261113_0000305"
+    "emsc_20261113_0000305",
+    "aka2026wnlsfa",
+    "emsc_20261113_0000306"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000089",
-      "mag": 4.3,
-      "place": "MAYOTTE REGION",
-      "latitude": -12.856,
-      "longitude": 45.652,
-      "epoch_ms": 1794471209929
-    },
     {
       "id": "us7000txrk",
       "mag": 4.5,
@@ -945,6 +939,14 @@
       "latitude": -35.5303,
       "longitude": 179.8098,
       "epoch_ms": 1794607883143
+    },
+    {
+      "id": "emsc_20261113_0000306",
+      "mag": 4.2,
+      "place": "KODIAK ISLAND REGION, ALASKA",
+      "latitude": 58.415,
+      "longitude": -151.057,
+      "epoch_ms": 1794612377583
     }
   ]
 }
