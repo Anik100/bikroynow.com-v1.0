@@ -497,17 +497,10 @@
     "emsc_20261113_0000036",
     "emsc_20261113_0000040",
     "emsc_20261113_0000051",
-    "us7000txy5"
+    "us7000txy5",
+    "emsc_20261113_0000062"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000txir",
-      "mag": 5.1,
-      "place": "Pulau Pulau Tanimbar, Indonesia",
-      "latitude": -7.9445,
-      "longitude": 130.2513,
-      "epoch_ms": 1794396744685
-    },
     {
       "id": "emsc_20261111_0000160",
       "mag": 4.0,
@@ -899,6 +892,14 @@
       "latitude": -8.262,
       "longitude": 116.7507,
       "epoch_ms": 1794545373549
+    },
+    {
+      "id": "emsc_20261113_0000062",
+      "mag": 4.4,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.19,
+      "longitude": 121.0,
+      "epoch_ms": 1794549841000
     }
   ]
 }
