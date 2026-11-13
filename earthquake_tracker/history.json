@@ -533,17 +533,10 @@
     "emsc_20261113_0000249",
     "us7000ty3g",
     "us7000ty3q",
-    "emsc_20261113_0000254"
+    "emsc_20261113_0000254",
+    "emsc_20261113_0000258"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000txqx",
-      "mag": 4.8,
-      "place": "155 km E of Noda, Japan",
-      "latitude": 40.3593,
-      "longitude": 143.6115,
-      "epoch_ms": 1794456452379
-    },
     {
       "id": "emsc_20261112_0000064",
       "mag": 4.0,
@@ -935,6 +928,14 @@
       "latitude": -58.962,
       "longitude": -25.7253,
       "epoch_ms": 1794596647703
+    },
+    {
+      "id": "emsc_20261113_0000258",
+      "mag": 4.2,
+      "place": "KEPULAUAN TALAUD, INDONESIA",
+      "latitude": 3.85,
+      "longitude": 127.99,
+      "epoch_ms": 1794598905000
     }
   ]
 }
