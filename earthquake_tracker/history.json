@@ -529,17 +529,10 @@
     "us7000ty16",
     "emsc_20261113_0000213",
     "us7000ty1a",
-    "emsc_20261113_0000243"
+    "emsc_20261113_0000243",
+    "emsc_20261113_0000249"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000010",
-      "mag": 4.8,
-      "place": "KURIL ISLANDS",
-      "latitude": 50.4399,
-      "longitude": 156.6137,
-      "epoch_ms": 1794446324576
-    },
     {
       "id": "emsc_20261112_0000043",
       "mag": 5.4,
@@ -931,6 +924,14 @@
       "latitude": -14.9277,
       "longitude": -75.7765,
       "epoch_ms": 1794588184950
+    },
+    {
+      "id": "emsc_20261113_0000249",
+      "mag": 4.9,
+      "place": "SOUTH OF FIJI ISLANDS",
+      "latitude": -23.1808,
+      "longitude": 178.9205,
+      "epoch_ms": 1794596140754
     }
   ]
 }
