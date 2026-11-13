@@ -499,17 +499,10 @@
     "emsc_20261113_0000051",
     "us7000txy5",
     "emsc_20261113_0000062",
-    "emsc_20261112_0000316"
+    "emsc_20261112_0000316",
+    "emsc_20261113_0000079"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000160",
-      "mag": 4.0,
-      "place": "CERAM SEA, INDONESIA",
-      "latitude": -2.91,
-      "longitude": 130.51,
-      "epoch_ms": 1794399014000
-    },
     {
       "id": "emsc_20261111_0000166",
       "mag": 4.0,
@@ -901,6 +894,14 @@
       "latitude": -8.19,
       "longitude": 121.0,
       "epoch_ms": 1794549841000
+    },
+    {
+      "id": "emsc_20261113_0000079",
+      "mag": 4.3,
+      "place": "SOUTHERN SUMATRA, INDONESIA",
+      "latitude": -5.55,
+      "longitude": 102.24,
+      "epoch_ms": 1794555099000
     }
   ]
 }
