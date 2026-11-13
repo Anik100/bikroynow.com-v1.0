@@ -525,17 +525,11 @@
     "emsc_20261113_0000198",
     "emsc_20261113_0000206",
     "us7000ty14",
-    "emsc_20261113_0000212"
+    "emsc_20261113_0000212",
+    "us7000ty16",
+    "emsc_20261113_0000213"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000txpv",
-      "mag": 4.4,
-      "place": "84 km SE of Akutan, Alaska",
-      "latitude": 53.637,
-      "longitude": -164.8071,
-      "epoch_ms": 1794441646340
-    },
     {
       "id": "emsc_20261112_0000010",
       "mag": 4.8,
@@ -927,6 +921,14 @@
       "latitude": 18.5041,
       "longitude": -68.9343,
       "epoch_ms": 1794587757000
+    },
+    {
+      "id": "emsc_20261113_0000213",
+      "mag": 5.7,
+      "place": "NEAR COAST OF CENTRAL PERU",
+      "latitude": -14.9277,
+      "longitude": -75.7765,
+      "epoch_ms": 1794588184950
     }
   ]
 }
