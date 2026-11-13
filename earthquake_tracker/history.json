@@ -509,17 +509,10 @@
     "emsc_20261112_0000317",
     "emsc_20261113_0000110",
     "emsc_20261113_0000118",
-    "us7000txz3"
+    "us7000txz3",
+    "emsc_20261113_0000120"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000250",
-      "mag": 5.2,
-      "place": "BOUGAINVILLE REGION, P.N.G.",
-      "latitude": -6.247,
-      "longitude": 154.655,
-      "epoch_ms": 1794418698150
-    },
     {
       "id": "emsc_20261111_0000252",
       "mag": 4.6,
@@ -911,6 +904,14 @@
       "latitude": -22.3729,
       "longitude": 173.4492,
       "epoch_ms": 1794563745053
+    },
+    {
+      "id": "emsc_20261113_0000120",
+      "mag": 4.1,
+      "place": "HINDU KUSH REGION, AFGHANISTAN",
+      "latitude": 36.134,
+      "longitude": 68.252,
+      "epoch_ms": 1794565040050
     }
   ]
 }
