@@ -522,17 +522,10 @@
     "emsc_20261113_0000172",
     "us7000ty0s",
     "emsc_20261113_0000182",
-    "emsc_20261113_0000198"
+    "emsc_20261113_0000198",
+    "emsc_20261113_0000206"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000txpk",
-      "mag": 4.6,
-      "place": "73 km NNW of Gyalshing, India",
-      "latitude": 27.8692,
-      "longitude": 87.8857,
-      "epoch_ms": 1794438022433
-    },
     {
       "id": "emsc_20261111_0000310",
       "mag": 4.0,
@@ -924,6 +917,14 @@
       "latitude": 12.515,
       "longitude": -87.073,
       "epoch_ms": 1794581720000
+    },
+    {
+      "id": "emsc_20261113_0000206",
+      "mag": 5.2,
+      "place": "NORTHERN XINJIANG, CHINA",
+      "latitude": 42.2425,
+      "longitude": 83.7514,
+      "epoch_ms": 1794586673230
     }
   ]
 }
