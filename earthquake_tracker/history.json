@@ -512,17 +512,10 @@
     "us7000txz3",
     "emsc_20261113_0000120",
     "emsc_20261113_0000121",
-    "emsc_20261113_0000122"
+    "emsc_20261113_0000122",
+    "emsc_20261113_0000124"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000268",
-      "mag": 5.1,
-      "place": "LOS LAGOS, CHILE",
-      "latitude": -41.5745,
-      "longitude": -73.7103,
-      "epoch_ms": 1794424879310
-    },
     {
       "id": "us7000txmx",
       "mag": 4.5,
@@ -914,6 +907,14 @@
       "latitude": 14.0161,
       "longitude": -82.5709,
       "epoch_ms": 1794566953000
+    },
+    {
+      "id": "emsc_20261113_0000124",
+      "mag": 4.7,
+      "place": "NORTHERN PERU",
+      "latitude": -4.51,
+      "longitude": -75.298,
+      "epoch_ms": 1794567313430
     }
   ]
 }
