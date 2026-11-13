@@ -513,17 +513,10 @@
     "emsc_20261113_0000120",
     "emsc_20261113_0000121",
     "emsc_20261113_0000122",
-    "emsc_20261113_0000124"
+    "emsc_20261113_0000124",
+    "emsc_20261113_0000128"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000txmx",
-      "mag": 4.5,
-      "place": "south of the Fiji Islands",
-      "latitude": -23.5023,
-      "longitude": -179.8474,
-      "epoch_ms": 1794426621669
-    },
     {
       "id": "emsc_20261111_0000282",
       "mag": 4.3,
@@ -915,6 +908,14 @@
       "latitude": -4.51,
       "longitude": -75.298,
       "epoch_ms": 1794567313430
+    },
+    {
+      "id": "emsc_20261113_0000128",
+      "mag": 5.1,
+      "place": "TONGA",
+      "latitude": -21.359,
+      "longitude": -175.224,
+      "epoch_ms": 1794568686200
     }
   ]
 }
