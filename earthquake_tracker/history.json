@@ -538,17 +538,10 @@
     "emsc_20261113_0000268",
     "us7000ty3x",
     "emsc_20261113_0000269",
-    "us7000ty43"
+    "us7000ty43",
+    "emsc_20261113_0000291"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000075",
-      "mag": 4.0,
-      "place": "MINDORO, PHILIPPINES",
-      "latitude": 13.78,
-      "longitude": 120.43,
-      "epoch_ms": 1794466359000
-    },
     {
       "id": "emsc_20261112_0000089",
       "mag": 4.3,
@@ -940,6 +933,14 @@
       "latitude": -1.7056,
       "longitude": 149.7461,
       "epoch_ms": 1794599368030
+    },
+    {
+      "id": "emsc_20261113_0000291",
+      "mag": 4.1,
+      "place": "OFF E. COAST OF N. ISLAND, N.Z.",
+      "latitude": -35.5303,
+      "longitude": 179.8098,
+      "epoch_ms": 1794607883143
     }
   ]
 }
