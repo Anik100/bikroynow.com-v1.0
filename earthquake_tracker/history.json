@@ -506,17 +506,10 @@
     "us7000txyq",
     "emsc_20261113_0000087",
     "us7000txyr",
-    "emsc_20261112_0000317"
+    "emsc_20261112_0000317",
+    "emsc_20261113_0000110"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000174",
-      "mag": 4.8,
-      "place": "VANUATU",
-      "latitude": -14.474,
-      "longitude": 167.441,
-      "epoch_ms": 1794401104940
-    },
     {
       "id": "emsc_20261111_0000177",
       "mag": 4.1,
@@ -908,6 +901,14 @@
       "latitude": 7.6121,
       "longitude": -81.5049,
       "epoch_ms": 1794558387000
+    },
+    {
+      "id": "emsc_20261113_0000110",
+      "mag": 4.7,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 8.0,
+      "longitude": 126.91,
+      "epoch_ms": 1794562851000
     }
   ]
 }
