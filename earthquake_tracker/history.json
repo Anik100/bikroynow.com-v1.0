@@ -500,17 +500,10 @@
     "us7000txy5",
     "emsc_20261113_0000062",
     "emsc_20261112_0000316",
-    "emsc_20261113_0000079"
+    "emsc_20261113_0000079",
+    "emsc_20261113_0000085"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000166",
-      "mag": 4.0,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 14.114,
-      "longitude": -93.113,
-      "epoch_ms": 1794400457000
-    },
     {
       "id": "emsc_20261111_0000167",
       "mag": 4.7,
@@ -902,6 +895,14 @@
       "latitude": -5.55,
       "longitude": 102.24,
       "epoch_ms": 1794555099000
+    },
+    {
+      "id": "emsc_20261113_0000085",
+      "mag": 4.0,
+      "place": "NORTHERN ALGERIA",
+      "latitude": 36.3379,
+      "longitude": 2.752,
+      "epoch_ms": 1794555035350
     }
   ]
 }
