@@ -545,17 +545,10 @@
     "emsc_20261113_0000304",
     "emsc_20261113_0000305",
     "aka2026wnlsfa",
-    "emsc_20261113_0000306"
+    "emsc_20261113_0000306",
+    "emsc_20261113_0000312"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000txrk",
-      "mag": 4.5,
-      "place": "off the coast of Oregon",
-      "latitude": 44.4539,
-      "longitude": -129.6205,
-      "epoch_ms": 1794471448440
-    },
     {
       "id": "emsc_20261112_0000095",
       "mag": 4.1,
@@ -947,6 +940,14 @@
       "latitude": 58.415,
       "longitude": -151.057,
       "epoch_ms": 1794612377583
+    },
+    {
+      "id": "emsc_20261113_0000312",
+      "mag": 5.3,
+      "place": "NEW IRELAND REGION, P.N.G.",
+      "latitude": -1.8635,
+      "longitude": 149.7264,
+      "epoch_ms": 1794612645180
     }
   ]
 }
