@@ -524,17 +524,10 @@
     "emsc_20261113_0000182",
     "emsc_20261113_0000198",
     "emsc_20261113_0000206",
-    "us7000ty14"
+    "us7000ty14",
+    "emsc_20261113_0000212"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000310",
-      "mag": 4.0,
-      "place": "KEPULAUAN TALAUD, INDONESIA",
-      "latitude": 3.75,
-      "longitude": 127.96,
-      "epoch_ms": 1794439518000
-    },
     {
       "id": "us7000txpv",
       "mag": 4.4,
@@ -926,6 +919,14 @@
       "latitude": 42.2425,
       "longitude": 83.7514,
       "epoch_ms": 1794586673230
+    },
+    {
+      "id": "emsc_20261113_0000212",
+      "mag": 5.2,
+      "place": "DOMINICAN REPUBLIC",
+      "latitude": 18.5041,
+      "longitude": -68.9343,
+      "epoch_ms": 1794587757000
     }
   ]
 }
