@@ -534,17 +534,10 @@
     "us7000ty3g",
     "us7000ty3q",
     "emsc_20261113_0000254",
-    "emsc_20261113_0000258"
+    "emsc_20261113_0000258",
+    "emsc_20261113_0000268"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000064",
-      "mag": 4.0,
-      "place": "NEPAL",
-      "latitude": 27.885,
-      "longitude": 87.7937,
-      "epoch_ms": 1794463459000
-    },
     {
       "id": "emsc_20261112_0000075",
       "mag": 4.0,
@@ -936,6 +929,14 @@
       "latitude": 3.85,
       "longitude": 127.99,
       "epoch_ms": 1794598905000
+    },
+    {
+      "id": "emsc_20261113_0000268",
+      "mag": 4.8,
+      "place": "NEW IRELAND REGION, P.N.G.",
+      "latitude": -1.7056,
+      "longitude": 149.7461,
+      "epoch_ms": 1794599368030
     }
   ]
 }
