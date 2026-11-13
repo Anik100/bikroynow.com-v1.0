@@ -484,17 +484,10 @@
     "emsc_20261112_0000295",
     "emsc_20261112_0000301",
     "emsc_20261113_0000002",
-    "us7000txx9"
+    "us7000txx9",
+    "emsc_20261113_0000013"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000082",
-      "mag": 4.6,
-      "place": "OFFSHORE VALPARAISO, CHILE",
-      "latitude": -33.25,
-      "longitude": -72.22,
-      "epoch_ms": 1794380249000
-    },
     {
       "id": "emsc_20261111_0000096",
       "mag": 4.4,
@@ -886,6 +879,14 @@
       "latitude": 34.6967,
       "longitude": 24.8798,
       "epoch_ms": 1794528304104
+    },
+    {
+      "id": "emsc_20261113_0000013",
+      "mag": 5.0,
+      "place": "DEMOCRATIC REPUBLIC OF THE CONGO",
+      "latitude": -6.9392,
+      "longitude": 22.68,
+      "epoch_ms": 1794532366186
     }
   ]
 }
