@@ -490,17 +490,10 @@
     "emsc_20261113_0000014",
     "emsc_20261112_0000315",
     "emsc_20261113_0000020",
-    "emsc_20261113_0000032"
+    "emsc_20261113_0000032",
+    "emsc_20261113_0000033"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000130",
-      "mag": 4.3,
-      "place": "PANAMA",
-      "latitude": 7.539,
-      "longitude": -81.4241,
-      "epoch_ms": 1794392405000
-    },
     {
       "id": "emsc_20261111_0000145",
       "mag": 4.3,
@@ -892,6 +885,14 @@
       "latitude": -17.88,
       "longitude": -178.105,
       "epoch_ms": 1794536783970
+    },
+    {
+      "id": "emsc_20261113_0000033",
+      "mag": 4.9,
+      "place": "PAGAN REG., N. MARIANA ISLANDS",
+      "latitude": 18.8925,
+      "longitude": 145.6025,
+      "epoch_ms": 1794538503370
     }
   ]
 }
