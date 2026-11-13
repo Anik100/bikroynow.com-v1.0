@@ -520,17 +520,10 @@
     "us7000ty0g",
     "emsc_20261113_0000139",
     "emsc_20261113_0000172",
-    "us7000ty0s"
+    "us7000ty0s",
+    "emsc_20261113_0000182"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000303",
-      "mag": 4.5,
-      "place": "XIZANG-NEPAL BORDER REGION",
-      "latitude": 28.44,
-      "longitude": 85.43,
-      "epoch_ms": 1794438054500
-    },
     {
       "id": "us7000txpk",
       "mag": 4.6,
@@ -922,6 +915,14 @@
       "latitude": -36.3984,
       "longitude": -98.0482,
       "epoch_ms": 1794579168640
+    },
+    {
+      "id": "emsc_20261113_0000182",
+      "mag": 4.4,
+      "place": "NEAR COAST OF NICARAGUA",
+      "latitude": 12.515,
+      "longitude": -87.073,
+      "epoch_ms": 1794581720000
     }
   ]
 }
