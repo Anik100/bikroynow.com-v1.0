@@ -531,17 +531,10 @@
     "us7000ty1a",
     "emsc_20261113_0000243",
     "emsc_20261113_0000249",
-    "us7000ty3g"
+    "us7000ty3g",
+    "us7000ty3q"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000043",
-      "mag": 5.4,
-      "place": "SOUTH SANDWICH ISLANDS REGION",
-      "latitude": -59.0326,
-      "longitude": -26.0288,
-      "epoch_ms": 1794455156644
-    },
     {
       "id": "us7000txqx",
       "mag": 4.8,
@@ -933,6 +926,14 @@
       "latitude": -23.1808,
       "longitude": 178.9205,
       "epoch_ms": 1794596140754
+    },
+    {
+      "id": "us7000ty3q",
+      "mag": 5.1,
+      "place": "South Sandwich Islands region",
+      "latitude": -58.962,
+      "longitude": -25.7253,
+      "epoch_ms": 1794596647703
     }
   ]
 }
