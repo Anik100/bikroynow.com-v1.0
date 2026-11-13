@@ -494,17 +494,10 @@
     "emsc_20261113_0000033",
     "us7000txxy",
     "emsc_20261113_0000034",
-    "emsc_20261113_0000036"
+    "emsc_20261113_0000036",
+    "emsc_20261113_0000040"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000147",
-      "mag": 4.7,
-      "place": "VANUATU",
-      "latitude": -17.065,
-      "longitude": 168.425,
-      "epoch_ms": 1794394649960
-    },
     {
       "id": "emsc_20261111_0000152",
       "mag": 5.4,
@@ -896,6 +889,14 @@
       "latitude": -24.01,
       "longitude": -67.48,
       "epoch_ms": 1794539475000
+    },
+    {
+      "id": "emsc_20261113_0000040",
+      "mag": 4.1,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 13.976,
+      "longitude": -93.194,
+      "epoch_ms": 1794540469000
     }
   ]
 }
