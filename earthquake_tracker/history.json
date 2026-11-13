@@ -518,17 +518,10 @@
     "us7000txzd",
     "emsc_20261113_0000133",
     "us7000ty0g",
-    "emsc_20261113_0000139"
+    "emsc_20261113_0000139",
+    "emsc_20261113_0000172"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000txpa",
-      "mag": 4.9,
-      "place": "110 km E of Georgetown, Saint Helena",
-      "latitude": -7.957,
-      "longitude": -13.4059,
-      "epoch_ms": 1794434622610
-    },
     {
       "id": "emsc_20261111_0000303",
       "mag": 4.5,
@@ -920,6 +913,14 @@
       "latitude": -10.451,
       "longitude": -74.665,
       "epoch_ms": 1794573469630
+    },
+    {
+      "id": "emsc_20261113_0000172",
+      "mag": 5.2,
+      "place": "SOUTHEAST OF EASTER ISLAND",
+      "latitude": -36.3984,
+      "longitude": -98.0482,
+      "epoch_ms": 1794579168640
     }
   ]
 }
