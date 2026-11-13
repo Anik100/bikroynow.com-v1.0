@@ -495,17 +495,11 @@
     "us7000txxy",
     "emsc_20261113_0000034",
     "emsc_20261113_0000036",
-    "emsc_20261113_0000040"
+    "emsc_20261113_0000040",
+    "emsc_20261113_0000051",
+    "us7000txy5"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261111_0000152",
-      "mag": 5.4,
-      "place": "ANTOFAGASTA, CHILE",
-      "latitude": -22.5181,
-      "longitude": -69.1837,
-      "epoch_ms": 1794397011810
-    },
     {
       "id": "us7000txir",
       "mag": 5.1,
@@ -897,6 +891,14 @@
       "latitude": 13.976,
       "longitude": -93.194,
       "epoch_ms": 1794540469000
+    },
+    {
+      "id": "us7000txy5",
+      "mag": 4.7,
+      "place": "27 km NNE of Labuan Lombok, Indonesia",
+      "latitude": -8.262,
+      "longitude": 116.7507,
+      "epoch_ms": 1794545373549
     }
   ]
 }
