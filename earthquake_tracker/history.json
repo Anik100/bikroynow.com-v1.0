@@ -549,17 +549,10 @@
     "emsc_20261113_0000312",
     "us7000ty56",
     "emsc_20261113_0000315",
-    "emsc_20261114_0000004"
+    "emsc_20261114_0000004",
+    "emsc_20261114_0000010"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000130",
-      "mag": 4.0,
-      "place": "OFFSHORE GUERRERO, MEXICO",
-      "latitude": 16.274,
-      "longitude": -98.724,
-      "epoch_ms": 1794481042000
-    },
     {
       "id": "emsc_20261112_0000133",
       "mag": 4.7,
@@ -951,6 +944,14 @@
       "latitude": 16.957,
       "longitude": -100.454,
       "epoch_ms": 1794614550000
+    },
+    {
+      "id": "emsc_20261114_0000010",
+      "mag": 4.0,
+      "place": "WESTERN TURKEY",
+      "latitude": 40.4393,
+      "longitude": 28.8547,
+      "epoch_ms": 1794617039000
     }
   ]
 }
