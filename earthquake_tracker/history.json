@@ -558,17 +558,10 @@
     "us7000ty6e",
     "emsc_20261113_0000336",
     "emsc_20261114_0000048",
-    "us7000ty6n"
+    "us7000ty6n",
+    "emsc_20261114_0000049"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000179",
-      "mag": 4.1,
-      "place": "SOUTH OF JAVA, INDONESIA",
-      "latitude": -9.18,
-      "longitude": 113.2,
-      "epoch_ms": 1794494916000
-    },
     {
       "id": "emsc_20261112_0000185",
       "mag": 4.4,
@@ -960,6 +953,14 @@
       "latitude": 3.2943,
       "longitude": 92.7477,
       "epoch_ms": 1794625172640
+    },
+    {
+      "id": "emsc_20261114_0000049",
+      "mag": 4.1,
+      "place": "JUJUY, ARGENTINA",
+      "latitude": -23.82,
+      "longitude": -66.77,
+      "epoch_ms": 1794626307000
     }
   ]
 }
