@@ -565,17 +565,11 @@
     "emsc_20261114_0000070",
     "us7000ty73",
     "us7000ty72",
-    "emsc_20261114_0000084"
+    "emsc_20261114_0000084",
+    "emsc_20261114_0000086",
+    "us7000ty7b"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000268",
-      "mag": 4.0,
-      "place": "PANAMA-COSTA RICA BORDER REGION",
-      "latitude": 8.2407,
-      "longitude": -82.296,
-      "epoch_ms": 1794517733000
-    },
     {
       "id": "emsc_20261112_0000270",
       "mag": 4.1,
@@ -967,6 +961,14 @@
       "latitude": 43.0,
       "longitude": 146.3,
       "epoch_ms": 1794638370000
+    },
+    {
+      "id": "us7000ty7b",
+      "mag": 4.8,
+      "place": "West Chile Rise",
+      "latitude": -36.4613,
+      "longitude": -97.9575,
+      "epoch_ms": 1794637999009
     }
   ]
 }
