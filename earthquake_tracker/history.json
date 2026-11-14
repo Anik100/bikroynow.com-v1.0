@@ -578,17 +578,10 @@
     "emsc_20261114_0000115",
     "emsc_20261114_0000116",
     "emsc_20261114_0000119",
-    "us7000ty84"
+    "us7000ty84",
+    "emsc_20261114_0000137"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000014",
-      "mag": 4.0,
-      "place": "OFFSHORE ATACAMA, CHILE",
-      "latitude": -29.0,
-      "longitude": -71.65,
-      "epoch_ms": 1794533201000
-    },
     {
       "id": "emsc_20261113_0000020",
       "mag": 4.0,
@@ -980,6 +973,14 @@
       "latitude": 30.14,
       "longitude": -42.5402,
       "epoch_ms": 1794648374860
+    },
+    {
+      "id": "emsc_20261114_0000137",
+      "mag": 4.3,
+      "place": "PANAMA",
+      "latitude": 7.6965,
+      "longitude": -81.0174,
+      "epoch_ms": 1794655272000
     }
   ]
 }
