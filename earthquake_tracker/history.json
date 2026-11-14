@@ -553,17 +553,10 @@
     "emsc_20261114_0000010",
     "emsc_20261113_0000326",
     "emsc_20261114_0000020",
-    "emsc_20261113_0000327"
+    "emsc_20261113_0000327",
+    "emsc_20261114_0000037"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000171",
-      "mag": 4.1,
-      "place": "MINDANAO, PHILIPPINES",
-      "latitude": 5.39,
-      "longitude": 125.67,
-      "epoch_ms": 1794493432000
-    },
     {
       "id": "emsc_20261112_0000173",
       "mag": 4.0,
@@ -955,6 +948,14 @@
       "latitude": 7.44,
       "longitude": 126.79,
       "epoch_ms": 1794619613000
+    },
+    {
+      "id": "emsc_20261114_0000037",
+      "mag": 4.5,
+      "place": "FIJI REGION",
+      "latitude": -19.5803,
+      "longitude": -177.739,
+      "epoch_ms": 1794622867393
     }
   ]
 }
