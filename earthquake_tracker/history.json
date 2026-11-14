@@ -587,17 +587,10 @@
     "emsc_20261114_0000180",
     "emsc_20261114_0000183",
     "emsc_20261114_0000195",
-    "us7000ty9l"
+    "us7000ty9l",
+    "emsc_20261114_0000197"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000034",
-      "mag": 4.2,
-      "place": "ANTOFAGASTA, CHILE",
-      "latitude": -24.01,
-      "longitude": -67.48,
-      "epoch_ms": 1794539475000
-    },
     {
       "id": "emsc_20261113_0000040",
       "mag": 4.1,
@@ -989,6 +982,14 @@
       "latitude": 8.406,
       "longitude": 126.2174,
       "epoch_ms": 1794672261572
+    },
+    {
+      "id": "emsc_20261114_0000197",
+      "mag": 4.2,
+      "place": "JUJUY, ARGENTINA",
+      "latitude": -23.96,
+      "longitude": -66.92,
+      "epoch_ms": 1794674182000
     }
   ]
 }
