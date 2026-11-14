@@ -571,17 +571,11 @@
     "emsc_20261114_0000088",
     "us7000ty7d",
     "emsc_20261114_0000096",
-    "us7000ty7h"
+    "us7000ty7h",
+    "emsc_20261114_0000100",
+    "us7000ty7m"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000279",
-      "mag": 4.1,
-      "place": "OFF COAST OF CENTRAL AMERICA",
-      "latitude": 5.5999,
-      "longitude": -83.729,
-      "epoch_ms": 1794520665000
-    },
     {
       "id": "emsc_20261112_0000282",
       "mag": 6.0,
@@ -973,6 +967,14 @@
       "latitude": -15.0887,
       "longitude": -173.446,
       "epoch_ms": 1794639742573
+    },
+    {
+      "id": "us7000ty7m",
+      "mag": 4.1,
+      "place": "southeast of Shikoku, Japan",
+      "latitude": 30.0796,
+      "longitude": 136.9461,
+      "epoch_ms": 1794641099364
     }
   ]
 }
