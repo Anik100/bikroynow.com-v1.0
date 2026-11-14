@@ -574,17 +574,10 @@
     "us7000ty7h",
     "emsc_20261114_0000100",
     "us7000ty7m",
-    "emsc_20261114_0000110"
+    "emsc_20261114_0000110",
+    "emsc_20261114_0000115"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000002",
-      "mag": 5.1,
-      "place": "CRETE, GREECE",
-      "latitude": 34.6967,
-      "longitude": 24.8798,
-      "epoch_ms": 1794528304104
-    },
     {
       "id": "emsc_20261113_0000013",
       "mag": 5.0,
@@ -976,6 +969,14 @@
       "latitude": -15.04,
       "longitude": -76.12,
       "epoch_ms": 1794644514000
+    },
+    {
+      "id": "emsc_20261114_0000115",
+      "mag": 4.0,
+      "place": "MEGHALAYA, INDIA REGION",
+      "latitude": 25.75,
+      "longitude": 91.272,
+      "epoch_ms": 1794647585000
     }
   ]
 }
