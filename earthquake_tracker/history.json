@@ -561,17 +561,10 @@
     "us7000ty6n",
     "emsc_20261114_0000049",
     "us7000ty6p",
-    "emsc_20261114_0000061"
+    "emsc_20261114_0000061",
+    "emsc_20261114_0000070"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000243",
-      "mag": 4.4,
-      "place": "WESTERN XIZANG-INDIA BORDER REG.",
-      "latitude": 30.16,
-      "longitude": 80.05,
-      "epoch_ms": 1794509819300
-    },
     {
       "id": "emsc_20261112_0000260",
       "mag": 4.9,
@@ -963,6 +956,14 @@
       "latitude": 15.294,
       "longitude": -97.73,
       "epoch_ms": 1794629459000
+    },
+    {
+      "id": "emsc_20261114_0000070",
+      "mag": 4.5,
+      "place": "WESTERN INDIAN-ANTARCTIC RIDGE",
+      "latitude": -50.3735,
+      "longitude": 139.6657,
+      "epoch_ms": 1794632340633
     }
   ]
 }
