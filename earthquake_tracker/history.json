@@ -559,17 +559,10 @@
     "emsc_20261113_0000336",
     "emsc_20261114_0000048",
     "us7000ty6n",
-    "emsc_20261114_0000049"
+    "emsc_20261114_0000049",
+    "us7000ty6p"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000185",
-      "mag": 4.4,
-      "place": "MOLUCCA SEA",
-      "latitude": 1.14,
-      "longitude": 126.18,
-      "epoch_ms": 1794495514000
-    },
     {
       "id": "emsc_20261112_0000202",
       "mag": 4.2,
@@ -961,6 +954,14 @@
       "latitude": -23.82,
       "longitude": -66.77,
       "epoch_ms": 1794626307000
+    },
+    {
+      "id": "us7000ty6p",
+      "mag": 4.7,
+      "place": "54 km NW of San Antonio de los Cobres, Argentina",
+      "latitude": -23.9436,
+      "longitude": -66.7642,
+      "epoch_ms": 1794626306652
     }
   ]
 }
