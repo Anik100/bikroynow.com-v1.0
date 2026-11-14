@@ -547,17 +547,10 @@
     "aka2026wnlsfa",
     "emsc_20261113_0000306",
     "emsc_20261113_0000312",
-    "us7000ty56"
+    "us7000ty56",
+    "emsc_20261113_0000315"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000095",
-      "mag": 4.1,
-      "place": "VANCOUVER ISLAND, CANADA REGION",
-      "latitude": 50.2206,
-      "longitude": -130.0656,
-      "epoch_ms": 1794472000140
-    },
     {
       "id": "emsc_20261112_0000102",
       "mag": 4.3,
@@ -949,6 +942,14 @@
       "latitude": -1.8635,
       "longitude": 149.7264,
       "epoch_ms": 1794612645180
+    },
+    {
+      "id": "emsc_20261113_0000315",
+      "mag": 4.2,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 7.8,
+      "longitude": 126.6,
+      "epoch_ms": 1794614310000
     }
   ]
 }
