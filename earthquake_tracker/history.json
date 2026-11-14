@@ -585,17 +585,11 @@
     "emsc_20261114_0000158",
     "emsc_20261114_0000160",
     "emsc_20261114_0000180",
-    "emsc_20261114_0000183"
+    "emsc_20261114_0000183",
+    "emsc_20261114_0000195",
+    "us7000ty9l"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000033",
-      "mag": 4.9,
-      "place": "PAGAN REG., N. MARIANA ISLANDS",
-      "latitude": 18.8925,
-      "longitude": 145.6025,
-      "epoch_ms": 1794538503370
-    },
     {
       "id": "emsc_20261113_0000034",
       "mag": 4.2,
@@ -987,6 +981,14 @@
       "latitude": 14.554,
       "longitude": -92.84,
       "epoch_ms": 1794668747000
+    },
+    {
+      "id": "us7000ty9l",
+      "mag": 4.9,
+      "place": "7 km SE of Tagbina, Philippines",
+      "latitude": 8.406,
+      "longitude": 126.2174,
+      "epoch_ms": 1794672261572
     }
   ]
 }
