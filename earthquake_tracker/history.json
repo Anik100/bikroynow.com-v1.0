@@ -576,17 +576,10 @@
     "us7000ty7m",
     "emsc_20261114_0000110",
     "emsc_20261114_0000115",
-    "emsc_20261114_0000116"
+    "emsc_20261114_0000116",
+    "emsc_20261114_0000119"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000013",
-      "mag": 5.0,
-      "place": "DEMOCRATIC REPUBLIC OF THE CONGO",
-      "latitude": -6.9392,
-      "longitude": 22.68,
-      "epoch_ms": 1794532366186
-    },
     {
       "id": "emsc_20261113_0000014",
       "mag": 4.0,
@@ -978,6 +971,14 @@
       "latitude": 25.75,
       "longitude": 91.272,
       "epoch_ms": 1794647585000
+    },
+    {
+      "id": "emsc_20261114_0000119",
+      "mag": 5.2,
+      "place": "NORTHERN MID-ATLANTIC RIDGE",
+      "latitude": 30.14,
+      "longitude": -42.5402,
+      "epoch_ms": 1794648374860
     }
   ]
 }
