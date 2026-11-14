@@ -548,17 +548,10 @@
     "emsc_20261113_0000306",
     "emsc_20261113_0000312",
     "us7000ty56",
-    "emsc_20261113_0000315"
+    "emsc_20261113_0000315",
+    "emsc_20261114_0000004"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000102",
-      "mag": 4.3,
-      "place": "MADHYA PRADESH, INDIA",
-      "latitude": 22.6912,
-      "longitude": 78.2028,
-      "epoch_ms": 1794474251000
-    },
     {
       "id": "emsc_20261112_0000130",
       "mag": 4.0,
@@ -950,6 +943,14 @@
       "latitude": 7.8,
       "longitude": 126.6,
       "epoch_ms": 1794614310000
+    },
+    {
+      "id": "emsc_20261114_0000004",
+      "mag": 4.0,
+      "place": "OFFSHORE GUERRERO, MEXICO",
+      "latitude": 16.957,
+      "longitude": -100.454,
+      "epoch_ms": 1794614550000
     }
   ]
 }
