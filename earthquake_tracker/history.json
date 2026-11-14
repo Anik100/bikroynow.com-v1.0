@@ -584,17 +584,10 @@
     "emsc_20261114_0000150",
     "emsc_20261114_0000158",
     "emsc_20261114_0000160",
-    "emsc_20261114_0000180"
+    "emsc_20261114_0000180",
+    "emsc_20261114_0000183"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000032",
-      "mag": 4.6,
-      "place": "FIJI REGION",
-      "latitude": -17.88,
-      "longitude": -178.105,
-      "epoch_ms": 1794536783970
-    },
     {
       "id": "emsc_20261113_0000033",
       "mag": 4.9,
@@ -986,6 +979,14 @@
       "latitude": 11.211,
       "longitude": -85.656,
       "epoch_ms": 1794662929000
+    },
+    {
+      "id": "emsc_20261114_0000183",
+      "mag": 4.0,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 14.554,
+      "longitude": -92.84,
+      "epoch_ms": 1794668747000
     }
   ]
 }
