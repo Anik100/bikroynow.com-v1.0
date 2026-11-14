@@ -590,17 +590,10 @@
     "us7000ty9l",
     "emsc_20261114_0000197",
     "emsc_20261114_0000206",
-    "emsc_20261114_0000210"
+    "emsc_20261114_0000210",
+    "emsc_20261114_0000213"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000062",
-      "mag": 4.4,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.19,
-      "longitude": 121.0,
-      "epoch_ms": 1794549841000
-    },
     {
       "id": "emsc_20261113_0000079",
       "mag": 4.3,
@@ -992,6 +985,14 @@
       "latitude": -39.9709,
       "longitude": 176.2955,
       "epoch_ms": 1794678690143
+    },
+    {
+      "id": "emsc_20261114_0000213",
+      "mag": 4.6,
+      "place": "SALTA, ARGENTINA",
+      "latitude": -22.34,
+      "longitude": -63.75,
+      "epoch_ms": 1794679443000
     }
   ]
 }
