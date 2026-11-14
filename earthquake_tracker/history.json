@@ -581,17 +581,10 @@
     "us7000ty84",
     "emsc_20261114_0000137",
     "us7000ty8u",
-    "emsc_20261114_0000150"
+    "emsc_20261114_0000150",
+    "emsc_20261114_0000158"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000020",
-      "mag": 4.0,
-      "place": "KYUSHU, JAPAN",
-      "latitude": 32.5,
-      "longitude": 130.6,
-      "epoch_ms": 1794534750000
-    },
     {
       "id": "emsc_20261113_0000032",
       "mag": 4.6,
@@ -983,6 +976,14 @@
       "latitude": 7.6965,
       "longitude": -81.0174,
       "epoch_ms": 1794655272000
+    },
+    {
+      "id": "emsc_20261114_0000158",
+      "mag": 4.0,
+      "place": "NICARAGUA",
+      "latitude": 11.211,
+      "longitude": -85.656,
+      "epoch_ms": 1794662929000
     }
   ]
 }
