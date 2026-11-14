@@ -564,17 +564,10 @@
     "emsc_20261114_0000061",
     "emsc_20261114_0000070",
     "us7000ty73",
-    "us7000ty72"
+    "us7000ty72",
+    "emsc_20261114_0000084"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000260",
-      "mag": 4.9,
-      "place": "SICHUAN-YUNNAN-GUIZHOU RG, CHINA",
-      "latitude": 27.2497,
-      "longitude": 104.1735,
-      "epoch_ms": 1794513798430
-    },
     {
       "id": "emsc_20261112_0000268",
       "mag": 4.0,
@@ -966,6 +959,14 @@
       "latitude": -50.3735,
       "longitude": 139.6657,
       "epoch_ms": 1794632340633
+    },
+    {
+      "id": "emsc_20261114_0000084",
+      "mag": 4.2,
+      "place": "KURIL ISLANDS",
+      "latitude": 43.0,
+      "longitude": 146.3,
+      "epoch_ms": 1794638370000
     }
   ]
 }
