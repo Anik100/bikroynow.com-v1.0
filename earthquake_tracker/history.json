@@ -551,17 +551,10 @@
     "emsc_20261113_0000315",
     "emsc_20261114_0000004",
     "emsc_20261114_0000010",
-    "emsc_20261113_0000326"
+    "emsc_20261113_0000326",
+    "emsc_20261114_0000020"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261112_0000133",
-      "mag": 4.7,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.148,
-      "longitude": 120.879,
-      "epoch_ms": 1794482190670
-    },
     {
       "id": "emsc_20261112_0000171",
       "mag": 4.1,
@@ -953,6 +946,14 @@
       "latitude": 40.4393,
       "longitude": 28.8547,
       "epoch_ms": 1794617039000
+    },
+    {
+      "id": "emsc_20261114_0000020",
+      "mag": 4.1,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 7.44,
+      "longitude": 126.79,
+      "epoch_ms": 1794619613000
     }
   ]
 }
