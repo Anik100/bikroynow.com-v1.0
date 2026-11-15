@@ -604,17 +604,10 @@
     "aka2026wppbfb",
     "emsc_20261115_0000037",
     "us7000tybx",
-    "emsc_20261115_0000042"
+    "emsc_20261115_0000042",
+    "us7000tyc0"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000122",
-      "mag": 4.2,
-      "place": "CARIBBEAN SEA",
-      "latitude": 14.0161,
-      "longitude": -82.5709,
-      "epoch_ms": 1794566953000
-    },
     {
       "id": "emsc_20261113_0000124",
       "mag": 4.7,
@@ -1006,6 +999,14 @@
       "latitude": -23.48,
       "longitude": -67.95,
       "epoch_ms": 1794717507000
+    },
+    {
+      "id": "us7000tyc0",
+      "mag": 4.4,
+      "place": "115 km NW of San Antonio de los Cobres, Argentina",
+      "latitude": -23.446,
+      "longitude": -67.0737,
+      "epoch_ms": 1794716627869
     }
   ]
 }
