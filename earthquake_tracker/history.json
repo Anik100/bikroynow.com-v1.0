@@ -646,17 +646,10 @@
     "us7000tyg6",
     "emsc_20261115_0000257",
     "emsc_20261115_0000259",
-    "us7000tyga"
+    "us7000tyga",
+    "emsc_20261115_0000272"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000049",
-      "mag": 4.1,
-      "place": "JUJUY, ARGENTINA",
-      "latitude": -23.82,
-      "longitude": -66.77,
-      "epoch_ms": 1794626307000
-    },
     {
       "id": "us7000ty6p",
       "mag": 4.7,
@@ -1048,6 +1041,14 @@
       "latitude": 36.5163,
       "longitude": 70.7922,
       "epoch_ms": 1794778642074
+    },
+    {
+      "id": "emsc_20261115_0000272",
+      "mag": 4.8,
+      "place": "OFF EAST COAST OF KAMCHATKA",
+      "latitude": 52.4403,
+      "longitude": 160.4859,
+      "epoch_ms": 1794782302638
     }
   ]
 }
