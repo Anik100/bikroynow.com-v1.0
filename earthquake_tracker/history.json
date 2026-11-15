@@ -616,17 +616,10 @@
     "emsc_20261115_0000070",
     "us7000tyd3",
     "emsc_20261115_0000079",
-    "us7000tyde"
+    "us7000tyde",
+    "emsc_20261115_0000086"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000182",
-      "mag": 4.4,
-      "place": "NEAR COAST OF NICARAGUA",
-      "latitude": 12.515,
-      "longitude": -87.073,
-      "epoch_ms": 1794581720000
-    },
     {
       "id": "emsc_20261113_0000206",
       "mag": 5.2,
@@ -1018,6 +1011,14 @@
       "latitude": -23.9733,
       "longitude": 179.8113,
       "epoch_ms": 1794732606639
+    },
+    {
+      "id": "emsc_20261115_0000086",
+      "mag": 4.2,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.21,
+      "longitude": 120.51,
+      "epoch_ms": 1794734697000
     }
   ]
 }
