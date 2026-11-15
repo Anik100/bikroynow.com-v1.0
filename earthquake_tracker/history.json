@@ -618,17 +618,10 @@
     "emsc_20261115_0000079",
     "us7000tyde",
     "emsc_20261115_0000086",
-    "us7000tydm"
+    "us7000tydm",
+    "emsc_20261115_0000102"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000206",
-      "mag": 5.2,
-      "place": "NORTHERN XINJIANG, CHINA",
-      "latitude": 42.2425,
-      "longitude": 83.7514,
-      "epoch_ms": 1794586673230
-    },
     {
       "id": "emsc_20261113_0000212",
       "mag": 5.2,
@@ -1020,6 +1013,14 @@
       "latitude": -8.21,
       "longitude": 120.51,
       "epoch_ms": 1794734697000
+    },
+    {
+      "id": "emsc_20261115_0000102",
+      "mag": 4.0,
+      "place": "OFFSHORE VALPARAISO, CHILE",
+      "latitude": -33.04,
+      "longitude": -72.1,
+      "epoch_ms": 1794738552000
     }
   ]
 }
