@@ -648,17 +648,10 @@
     "emsc_20261115_0000259",
     "us7000tyga",
     "emsc_20261115_0000272",
-    "us7000tygk"
+    "us7000tygk",
+    "emsc_20261115_0000276"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000ty6p",
-      "mag": 4.7,
-      "place": "54 km NW of San Antonio de los Cobres, Argentina",
-      "latitude": -23.9436,
-      "longitude": -66.7642,
-      "epoch_ms": 1794626306652
-    },
     {
       "id": "emsc_20261114_0000061",
       "mag": 4.1,
@@ -1050,6 +1043,14 @@
       "latitude": 52.4403,
       "longitude": 160.4859,
       "epoch_ms": 1794782302638
+    },
+    {
+      "id": "emsc_20261115_0000276",
+      "mag": 4.2,
+      "place": "JUJUY, ARGENTINA",
+      "latitude": -22.57,
+      "longitude": -66.83,
+      "epoch_ms": 1794783864000
     }
   ]
 }
