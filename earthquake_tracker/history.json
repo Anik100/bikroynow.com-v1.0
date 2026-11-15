@@ -609,17 +609,10 @@
     "us7000tyc3",
     "emsc_20261115_0000048",
     "aka2026wptmlc",
-    "emsc_20261115_0000050"
+    "emsc_20261115_0000050",
+    "emsc_20261115_0000051"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000133",
-      "mag": 4.8,
-      "place": "MINDANAO, PHILIPPINES",
-      "latitude": 7.36,
-      "longitude": 126.93,
-      "epoch_ms": 1794571971000
-    },
     {
       "id": "emsc_20261113_0000139",
       "mag": 4.7,
@@ -1011,6 +1004,14 @@
       "latitude": -35.9019,
       "longitude": 178.1371,
       "epoch_ms": 1794719877154
+    },
+    {
+      "id": "emsc_20261115_0000051",
+      "mag": 5.5,
+      "place": "FIJI REGION",
+      "latitude": -19.434,
+      "longitude": -177.7598,
+      "epoch_ms": 1794719701600
     }
   ]
 }
