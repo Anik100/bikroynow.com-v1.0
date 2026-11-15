@@ -644,17 +644,10 @@
     "us7000tyg0",
     "emsc_20261115_0000249",
     "us7000tyg6",
-    "emsc_20261115_0000257"
+    "emsc_20261115_0000257",
+    "emsc_20261115_0000259"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000037",
-      "mag": 4.5,
-      "place": "FIJI REGION",
-      "latitude": -19.5803,
-      "longitude": -177.739,
-      "epoch_ms": 1794622867393
-    },
     {
       "id": "emsc_20261114_0000048",
       "mag": 5.4,
@@ -1046,6 +1039,14 @@
       "latitude": 36.5124,
       "longitude": 70.902,
       "epoch_ms": 1794778641790
+    },
+    {
+      "id": "emsc_20261115_0000259",
+      "mag": 4.4,
+      "place": "NEPAL-INDIA BORDER REGION",
+      "latitude": 29.04,
+      "longitude": 80.94,
+      "epoch_ms": 1794778781600
     }
   ]
 }
