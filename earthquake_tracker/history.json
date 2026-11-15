@@ -641,17 +641,10 @@
     "emsc_20261115_0000236",
     "emsc_20261115_0000237",
     "emsc_20261115_0000239",
-    "us7000tyg0"
+    "us7000tyg0",
+    "emsc_20261115_0000249"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000010",
-      "mag": 4.0,
-      "place": "WESTERN TURKEY",
-      "latitude": 40.4393,
-      "longitude": 28.8547,
-      "epoch_ms": 1794617039000
-    },
     {
       "id": "emsc_20261114_0000020",
       "mag": 4.1,
@@ -1043,6 +1036,14 @@
       "latitude": 4.96,
       "longitude": 126.33,
       "epoch_ms": 1794771517000
+    },
+    {
+      "id": "emsc_20261115_0000249",
+      "mag": 5.1,
+      "place": "BANDA SEA",
+      "latitude": -5.999,
+      "longitude": 128.722,
+      "epoch_ms": 1794775918630
     }
   ]
 }
