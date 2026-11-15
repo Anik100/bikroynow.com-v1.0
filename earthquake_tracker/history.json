@@ -645,17 +645,10 @@
     "emsc_20261115_0000249",
     "us7000tyg6",
     "emsc_20261115_0000257",
-    "emsc_20261115_0000259"
+    "emsc_20261115_0000259",
+    "us7000tyga"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000048",
-      "mag": 5.4,
-      "place": "OFF W COAST OF NORTHERN SUMATRA",
-      "latitude": 3.2943,
-      "longitude": 92.7477,
-      "epoch_ms": 1794625172640
-    },
     {
       "id": "emsc_20261114_0000049",
       "mag": 4.1,
@@ -1047,6 +1040,14 @@
       "latitude": 29.04,
       "longitude": 80.94,
       "epoch_ms": 1794778781600
+    },
+    {
+      "id": "us7000tyga",
+      "mag": 4.9,
+      "place": "38 km S of Jurm, Afghanistan",
+      "latitude": 36.5163,
+      "longitude": 70.7922,
+      "epoch_ms": 1794778642074
     }
   ]
 }
