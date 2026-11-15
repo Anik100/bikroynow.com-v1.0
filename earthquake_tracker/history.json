@@ -637,17 +637,10 @@
     "emsc_20261115_0000204",
     "us7000tyfh",
     "emsc_20261115_0000221",
-    "emsc_20261115_0000233"
+    "emsc_20261115_0000233",
+    "emsc_20261115_0000236"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000004",
-      "mag": 4.0,
-      "place": "OFFSHORE GUERRERO, MEXICO",
-      "latitude": 16.957,
-      "longitude": -100.454,
-      "epoch_ms": 1794614550000
-    },
     {
       "id": "emsc_20261114_0000010",
       "mag": 4.0,
@@ -1039,6 +1032,14 @@
       "latitude": 15.178,
       "longitude": -93.436,
       "epoch_ms": 1794769429000
+    },
+    {
+      "id": "emsc_20261115_0000236",
+      "mag": 4.2,
+      "place": "KEPULAUAN TALAUD, INDONESIA",
+      "latitude": 4.96,
+      "longitude": 126.33,
+      "epoch_ms": 1794771517000
     }
   ]
 }
