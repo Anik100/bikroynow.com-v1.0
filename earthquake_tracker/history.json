@@ -619,17 +619,10 @@
     "us7000tyde",
     "emsc_20261115_0000086",
     "us7000tydm",
-    "emsc_20261115_0000102"
+    "emsc_20261115_0000102",
+    "emsc_20261115_0000119"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000212",
-      "mag": 5.2,
-      "place": "DOMINICAN REPUBLIC",
-      "latitude": 18.5041,
-      "longitude": -68.9343,
-      "epoch_ms": 1794587757000
-    },
     {
       "id": "emsc_20261113_0000213",
       "mag": 5.7,
@@ -1021,6 +1014,14 @@
       "latitude": -33.04,
       "longitude": -72.1,
       "epoch_ms": 1794738552000
+    },
+    {
+      "id": "emsc_20261115_0000119",
+      "mag": 4.4,
+      "place": "TARAPACA, CHILE",
+      "latitude": -20.5481,
+      "longitude": -70.075,
+      "epoch_ms": 1794741837520
     }
   ]
 }
