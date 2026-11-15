@@ -606,17 +606,11 @@
     "us7000tybx",
     "emsc_20261115_0000042",
     "us7000tyc0",
-    "us7000tyc3"
+    "us7000tyc3",
+    "emsc_20261115_0000048",
+    "aka2026wptmlc"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000124",
-      "mag": 4.7,
-      "place": "NORTHERN PERU",
-      "latitude": -4.51,
-      "longitude": -75.298,
-      "epoch_ms": 1794567313430
-    },
     {
       "id": "emsc_20261113_0000128",
       "mag": 5.1,
@@ -1008,6 +1002,14 @@
       "latitude": -23.446,
       "longitude": -67.0737,
       "epoch_ms": 1794716627869
+    },
+    {
+      "id": "aka2026wptmlc",
+      "mag": 4.0,
+      "place": "9 km E of Chenega, Alaska",
+      "latitude": 60.055,
+      "longitude": -147.837,
+      "epoch_ms": 1794719740313
     }
   ]
 }
