@@ -628,17 +628,10 @@
     "us7000tyek",
     "emsc_20261115_0000154",
     "emsc_20261115_0000158",
-    "emsc_20261115_0000160"
+    "emsc_20261115_0000160",
+    "emsc_20261115_0000169"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000ty3q",
-      "mag": 5.1,
-      "place": "South Sandwich Islands region",
-      "latitude": -58.962,
-      "longitude": -25.7253,
-      "epoch_ms": 1794596647703
-    },
     {
       "id": "emsc_20261113_0000258",
       "mag": 4.2,
@@ -1030,6 +1023,14 @@
       "latitude": 9.7437,
       "longitude": 126.3612,
       "epoch_ms": 1794750100830
+    },
+    {
+      "id": "emsc_20261115_0000169",
+      "mag": 4.7,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 9.79,
+      "longitude": 126.5,
+      "epoch_ms": 1794752274000
     }
   ]
 }
