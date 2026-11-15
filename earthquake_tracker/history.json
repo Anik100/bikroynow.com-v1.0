@@ -601,17 +601,11 @@
     "emsc_20261115_0000024",
     "emsc_20261115_0000025",
     "emsc_20261115_0000029",
-    "aka2026wppbfb"
+    "aka2026wppbfb",
+    "emsc_20261115_0000037",
+    "us7000tybx"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000120",
-      "mag": 4.1,
-      "place": "HINDU KUSH REGION, AFGHANISTAN",
-      "latitude": 36.134,
-      "longitude": 68.252,
-      "epoch_ms": 1794565040050
-    },
     {
       "id": "emsc_20261113_0000121",
       "mag": 4.6,
@@ -1003,6 +997,14 @@
       "latitude": 50.912,
       "longitude": 179.464,
       "epoch_ms": 1794711764124
+    },
+    {
+      "id": "us7000tybx",
+      "mag": 4.8,
+      "place": "19 km NW of Albard\u00f3n, Argentina",
+      "latitude": -31.3221,
+      "longitude": -68.6822,
+      "epoch_ms": 1794715199682
     }
   ]
 }
