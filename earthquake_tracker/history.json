@@ -599,17 +599,10 @@
     "us7000tyay",
     "emsc_20261115_0000020",
     "emsc_20261115_0000024",
-    "emsc_20261115_0000025"
+    "emsc_20261115_0000025",
+    "emsc_20261115_0000029"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000txz3",
-      "mag": 4.9,
-      "place": "southeast of the Loyalty Islands",
-      "latitude": -22.3729,
-      "longitude": 173.4492,
-      "epoch_ms": 1794563745053
-    },
     {
       "id": "emsc_20261113_0000120",
       "mag": 4.1,
@@ -1001,6 +994,14 @@
       "latitude": 8.4458,
       "longitude": -83.0006,
       "epoch_ms": 1794711701000
+    },
+    {
+      "id": "emsc_20261115_0000029",
+      "mag": 4.3,
+      "place": "RAT ISLANDS, ALEUTIAN ISLANDS",
+      "latitude": 50.912,
+      "longitude": 179.464,
+      "epoch_ms": 1794711764124
     }
   ]
 }
