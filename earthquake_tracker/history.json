@@ -596,17 +596,10 @@
     "us7000ty9x",
     "emsc_20261114_0000239",
     "emsc_20261114_0000260",
-    "us7000tyay"
+    "us7000tyay",
+    "emsc_20261115_0000020"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000085",
-      "mag": 4.0,
-      "place": "NORTHERN ALGERIA",
-      "latitude": 36.3379,
-      "longitude": 2.752,
-      "epoch_ms": 1794555035350
-    },
     {
       "id": "emsc_20261113_0000093",
       "mag": 4.3,
@@ -998,6 +991,14 @@
       "latitude": -8.18,
       "longitude": 120.49,
       "epoch_ms": 1794691461000
+    },
+    {
+      "id": "emsc_20261115_0000020",
+      "mag": 4.0,
+      "place": "SOUTH OF PANAMA",
+      "latitude": 7.4261,
+      "longitude": -82.2089,
+      "epoch_ms": 1794709672000
     }
   ]
 }
