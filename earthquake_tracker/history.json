@@ -608,17 +608,10 @@
     "us7000tyc0",
     "us7000tyc3",
     "emsc_20261115_0000048",
-    "aka2026wptmlc"
+    "aka2026wptmlc",
+    "emsc_20261115_0000050"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000128",
-      "mag": 5.1,
-      "place": "TONGA",
-      "latitude": -21.359,
-      "longitude": -175.224,
-      "epoch_ms": 1794568686200
-    },
     {
       "id": "emsc_20261113_0000133",
       "mag": 4.8,
@@ -1010,6 +1003,14 @@
       "latitude": 60.055,
       "longitude": -147.837,
       "epoch_ms": 1794719740313
+    },
+    {
+      "id": "emsc_20261115_0000050",
+      "mag": 4.0,
+      "place": "OFF E. COAST OF N. ISLAND, N.Z.",
+      "latitude": -35.9019,
+      "longitude": 178.1371,
+      "epoch_ms": 1794719877154
     }
   ]
 }
