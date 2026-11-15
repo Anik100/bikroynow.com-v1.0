@@ -635,17 +635,10 @@
     "us7000tyf4",
     "emsc_20261115_0000195",
     "emsc_20261115_0000204",
-    "us7000tyfh"
+    "us7000tyfh",
+    "emsc_20261115_0000221"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000312",
-      "mag": 5.3,
-      "place": "NEW IRELAND REGION, P.N.G.",
-      "latitude": -1.8635,
-      "longitude": 149.7264,
-      "epoch_ms": 1794612645180
-    },
     {
       "id": "emsc_20261113_0000315",
       "mag": 4.2,
@@ -1037,6 +1030,14 @@
       "latitude": 36.1469,
       "longitude": 70.798,
       "epoch_ms": 1794764919660
+    },
+    {
+      "id": "emsc_20261115_0000221",
+      "mag": 4.0,
+      "place": "SOUTHERN PERU",
+      "latitude": -17.52,
+      "longitude": -69.84,
+      "epoch_ms": 1794768741000
     }
   ]
 }
