@@ -630,17 +630,10 @@
     "emsc_20261115_0000158",
     "emsc_20261115_0000160",
     "emsc_20261115_0000169",
-    "emsc_20261115_0000182"
+    "emsc_20261115_0000182",
+    "emsc_20261115_0000184"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000268",
-      "mag": 4.8,
-      "place": "NEW IRELAND REGION, P.N.G.",
-      "latitude": -1.7056,
-      "longitude": 149.7461,
-      "epoch_ms": 1794599368030
-    },
     {
       "id": "emsc_20261113_0000291",
       "mag": 4.1,
@@ -1032,6 +1025,14 @@
       "latitude": 16.331,
       "longitude": -93.054,
       "epoch_ms": 1794755802000
+    },
+    {
+      "id": "emsc_20261115_0000184",
+      "mag": 5.5,
+      "place": "MINAHASA, SULAWESI, INDONESIA",
+      "latitude": 1.7147,
+      "longitude": 122.2369,
+      "epoch_ms": 1794757275070
     }
   ]
 }
