@@ -598,17 +598,10 @@
     "emsc_20261114_0000260",
     "us7000tyay",
     "emsc_20261115_0000020",
-    "emsc_20261115_0000024"
+    "emsc_20261115_0000024",
+    "emsc_20261115_0000025"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261113_0000110",
-      "mag": 4.7,
-      "place": "MINDANAO, PHILIPPINES",
-      "latitude": 8.0,
-      "longitude": 126.91,
-      "epoch_ms": 1794562851000
-    },
     {
       "id": "us7000txz3",
       "mag": 4.9,
@@ -1000,6 +993,14 @@
       "latitude": -9.16,
       "longitude": -79.56,
       "epoch_ms": 1794711217000
+    },
+    {
+      "id": "emsc_20261115_0000025",
+      "mag": 4.2,
+      "place": "COSTA RICA",
+      "latitude": 8.4458,
+      "longitude": -83.0006,
+      "epoch_ms": 1794711701000
     }
   ]
 }
