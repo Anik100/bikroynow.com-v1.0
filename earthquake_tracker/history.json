@@ -676,17 +676,10 @@
     "emsc_20261116_0000225",
     "us7000tykh",
     "emsc_20261116_0000239",
-    "emsc_20261116_0000246"
+    "emsc_20261116_0000246",
+    "emsc_20261116_0000250"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000239",
-      "mag": 4.1,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.18,
-      "longitude": 120.49,
-      "epoch_ms": 1794691461000
-    },
     {
       "id": "emsc_20261115_0000020",
       "mag": 4.0,
@@ -1078,6 +1071,14 @@
       "latitude": 0.62,
       "longitude": 122.19,
       "epoch_ms": 1794851679000
+    },
+    {
+      "id": "emsc_20261116_0000250",
+      "mag": 4.0,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 14.513,
+      "longitude": -93.305,
+      "epoch_ms": 1794851725000
     }
   ]
 }
