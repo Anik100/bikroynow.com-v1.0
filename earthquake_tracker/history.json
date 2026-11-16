@@ -668,17 +668,10 @@
     "emsc_20261116_0000091",
     "emsc_20261116_0000137",
     "emsc_20261116_0000167",
-    "emsc_20261116_0000171"
+    "emsc_20261116_0000171",
+    "emsc_20261116_0000175"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000ty9l",
-      "mag": 4.9,
-      "place": "7 km SE of Tagbina, Philippines",
-      "latitude": 8.406,
-      "longitude": 126.2174,
-      "epoch_ms": 1794672261572
-    },
     {
       "id": "emsc_20261114_0000197",
       "mag": 4.2,
@@ -1070,6 +1063,14 @@
       "latitude": 49.817,
       "longitude": 156.137,
       "epoch_ms": 1794835518640
+    },
+    {
+      "id": "emsc_20261116_0000175",
+      "mag": 4.7,
+      "place": "GULF OF ADEN",
+      "latitude": 13.2807,
+      "longitude": 50.6862,
+      "epoch_ms": 1794835834270
     }
   ]
 }
