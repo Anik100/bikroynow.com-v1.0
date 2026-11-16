@@ -686,17 +686,11 @@
     "emsc_20261116_0000294",
     "us7000tymu",
     "emsc_20261116_0000297",
-    "emsc_20261116_0000301"
+    "emsc_20261116_0000301",
+    "emsc_20261116_0000308",
+    "us7000tyns"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261115_0000042",
-      "mag": 4.2,
-      "place": "ANTOFAGASTA, CHILE",
-      "latitude": -23.48,
-      "longitude": -67.95,
-      "epoch_ms": 1794717507000
-    },
     {
       "id": "us7000tyc0",
       "mag": 4.4,
@@ -1088,6 +1082,14 @@
       "latitude": 7.4483,
       "longitude": -81.2908,
       "epoch_ms": 1794865470000
+    },
+    {
+      "id": "us7000tyns",
+      "mag": 4.6,
+      "place": "146 km SSE of Isangel, Vanuatu",
+      "latitude": -20.7669,
+      "longitude": 169.818,
+      "epoch_ms": 1794866158945
     }
   ]
 }
