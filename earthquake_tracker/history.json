@@ -660,17 +660,10 @@
     "emsc_20261115_0000031",
     "emsc_20261115_0000040",
     "emsc_20261116_0000093",
-    "us7000tyie"
+    "us7000tyie",
+    "emsc_20261116_0000097"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000110",
-      "mag": 4.6,
-      "place": "OFF COAST OF CENTRAL PERU",
-      "latitude": -15.04,
-      "longitude": -76.12,
-      "epoch_ms": 1794644514000
-    },
     {
       "id": "emsc_20261114_0000115",
       "mag": 4.0,
@@ -1062,6 +1055,14 @@
       "latitude": -13.7122,
       "longitude": -68.4972,
       "epoch_ms": 1794811654200
+    },
+    {
+      "id": "emsc_20261116_0000097",
+      "mag": 4.3,
+      "place": "KEPULAUAN SANGIHE, INDONESIA",
+      "latitude": 4.87,
+      "longitude": 125.13,
+      "epoch_ms": 1794813255000
     }
   ]
 }
