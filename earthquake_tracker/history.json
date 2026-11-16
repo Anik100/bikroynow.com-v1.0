@@ -685,17 +685,10 @@
     "emsc_20261116_0000292",
     "emsc_20261116_0000294",
     "us7000tymu",
-    "emsc_20261116_0000297"
+    "emsc_20261116_0000297",
+    "emsc_20261116_0000301"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tybx",
-      "mag": 4.8,
-      "place": "19 km NW of Albard\u00f3n, Argentina",
-      "latitude": -31.3221,
-      "longitude": -68.6822,
-      "epoch_ms": 1794715199682
-    },
     {
       "id": "emsc_20261115_0000042",
       "mag": 4.2,
@@ -1087,6 +1080,14 @@
       "latitude": -6.0288,
       "longitude": 131.4461,
       "epoch_ms": 1794863477168
+    },
+    {
+      "id": "emsc_20261116_0000301",
+      "mag": 4.0,
+      "place": "PANAMA",
+      "latitude": 7.4483,
+      "longitude": -81.2908,
+      "epoch_ms": 1794865470000
     }
   ]
 }
