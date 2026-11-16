@@ -653,17 +653,10 @@
     "us7000tygl",
     "emsc_20261115_0000284",
     "emsc_20261115_0000285",
-    "emsc_20261116_0000007"
+    "emsc_20261116_0000007",
+    "emsc_20261116_0000015"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000ty7b",
-      "mag": 4.8,
-      "place": "West Chile Rise",
-      "latitude": -36.4613,
-      "longitude": -97.9575,
-      "epoch_ms": 1794637999009
-    },
     {
       "id": "emsc_20261114_0000088",
       "mag": 5.6,
@@ -1055,6 +1048,14 @@
       "latitude": -6.56,
       "longitude": 103.96,
       "epoch_ms": 1794789818000
+    },
+    {
+      "id": "emsc_20261116_0000015",
+      "mag": 4.1,
+      "place": "OAXACA, MEXICO",
+      "latitude": 16.228,
+      "longitude": -98.093,
+      "epoch_ms": 1794791342000
     }
   ]
 }
