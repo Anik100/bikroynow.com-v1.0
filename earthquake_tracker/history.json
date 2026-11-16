@@ -677,17 +677,10 @@
     "us7000tykh",
     "emsc_20261116_0000239",
     "emsc_20261116_0000246",
-    "emsc_20261116_0000250"
+    "emsc_20261116_0000250",
+    "emsc_20261116_0000260"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261115_0000020",
-      "mag": 4.0,
-      "place": "SOUTH OF PANAMA",
-      "latitude": 7.4261,
-      "longitude": -82.2089,
-      "epoch_ms": 1794709672000
-    },
     {
       "id": "emsc_20261115_0000024",
       "mag": 4.2,
@@ -1079,6 +1072,14 @@
       "latitude": 14.513,
       "longitude": -93.305,
       "epoch_ms": 1794851725000
+    },
+    {
+      "id": "emsc_20261116_0000260",
+      "mag": 4.2,
+      "place": "HINDU KUSH REGION, AFGHANISTAN",
+      "latitude": 36.472,
+      "longitude": 70.741,
+      "epoch_ms": 1794852145800
     }
   ]
 }
