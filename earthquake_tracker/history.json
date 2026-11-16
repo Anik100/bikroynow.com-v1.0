@@ -652,17 +652,10 @@
     "emsc_20261115_0000276",
     "us7000tygl",
     "emsc_20261115_0000284",
-    "emsc_20261115_0000285"
+    "emsc_20261115_0000285",
+    "emsc_20261116_0000007"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000084",
-      "mag": 4.2,
-      "place": "KURIL ISLANDS",
-      "latitude": 43.0,
-      "longitude": 146.3,
-      "epoch_ms": 1794638370000
-    },
     {
       "id": "us7000ty7b",
       "mag": 4.8,
@@ -1054,6 +1047,14 @@
       "latitude": -6.74,
       "longitude": 127.5,
       "epoch_ms": 1794786852000
+    },
+    {
+      "id": "emsc_20261116_0000007",
+      "mag": 4.0,
+      "place": "SOUTHWEST OF SUMATRA, INDONESIA",
+      "latitude": -6.56,
+      "longitude": 103.96,
+      "epoch_ms": 1794789818000
     }
   ]
 }
