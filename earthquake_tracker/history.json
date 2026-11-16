@@ -678,17 +678,10 @@
     "emsc_20261116_0000239",
     "emsc_20261116_0000246",
     "emsc_20261116_0000250",
-    "emsc_20261116_0000260"
+    "emsc_20261116_0000260",
+    "emsc_20261116_0000285"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261115_0000024",
-      "mag": 4.2,
-      "place": "OFF COAST OF NORTHERN PERU",
-      "latitude": -9.16,
-      "longitude": -79.56,
-      "epoch_ms": 1794711217000
-    },
     {
       "id": "emsc_20261115_0000025",
       "mag": 4.2,
@@ -1080,6 +1073,14 @@
       "latitude": 36.472,
       "longitude": 70.741,
       "epoch_ms": 1794852145800
+    },
+    {
+      "id": "emsc_20261116_0000285",
+      "mag": 4.0,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.859,
+      "longitude": -93.952,
+      "epoch_ms": 1794857912000
     }
   ]
 }
