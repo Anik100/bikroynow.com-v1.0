@@ -671,17 +671,10 @@
     "emsc_20261116_0000171",
     "emsc_20261116_0000175",
     "emsc_20261116_0000187",
-    "emsc_20261116_0000209"
+    "emsc_20261116_0000209",
+    "emsc_20261116_0000217"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000206",
-      "mag": 4.6,
-      "place": "MINDANAO, PHILIPPINES",
-      "latitude": 5.6952,
-      "longitude": 126.7057,
-      "epoch_ms": 1794675400840
-    },
     {
       "id": "emsc_20261114_0000210",
       "mag": 4.2,
@@ -1073,6 +1066,14 @@
       "latitude": 1.72,
       "longitude": 126.61,
       "epoch_ms": 1794838193000
+    },
+    {
+      "id": "emsc_20261116_0000217",
+      "mag": 4.1,
+      "place": "OFF COAST OF CHIAPAS, MEXICO",
+      "latitude": 14.133,
+      "longitude": -93.166,
+      "epoch_ms": 1794844087000
     }
   ]
 }
