@@ -683,17 +683,10 @@
     "emsc_20261116_0000286",
     "emsc_20261116_0000289",
     "emsc_20261116_0000292",
-    "emsc_20261116_0000294"
+    "emsc_20261116_0000294",
+    "us7000tymu"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261115_0000029",
-      "mag": 4.3,
-      "place": "RAT ISLANDS, ALEUTIAN ISLANDS",
-      "latitude": 50.912,
-      "longitude": 179.464,
-      "epoch_ms": 1794711764124
-    },
     {
       "id": "us7000tybx",
       "mag": 4.8,
@@ -1085,6 +1078,14 @@
       "latitude": -33.05,
       "longitude": -72.22,
       "epoch_ms": 1794858717000
+    },
+    {
+      "id": "us7000tymu",
+      "mag": 6.6,
+      "place": "151 km WSW of Tual, Indonesia",
+      "latitude": -6.0288,
+      "longitude": 131.4461,
+      "epoch_ms": 1794863477168
     }
   ]
 }
