@@ -688,17 +688,10 @@
     "emsc_20261116_0000297",
     "emsc_20261116_0000301",
     "emsc_20261116_0000308",
-    "us7000tyns"
+    "us7000tyns",
+    "emsc_20261116_0000314"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tyc0",
-      "mag": 4.4,
-      "place": "115 km NW of San Antonio de los Cobres, Argentina",
-      "latitude": -23.446,
-      "longitude": -67.0737,
-      "epoch_ms": 1794716627869
-    },
     {
       "id": "aka2026wptmlc",
       "mag": 4.0,
@@ -1090,6 +1083,14 @@
       "latitude": -20.7669,
       "longitude": 169.818,
       "epoch_ms": 1794866158945
+    },
+    {
+      "id": "emsc_20261116_0000314",
+      "mag": 4.3,
+      "place": "OFF COAST OF CENTRAL PERU",
+      "latitude": -15.04,
+      "longitude": -76.04,
+      "epoch_ms": 1794867940000
     }
   ]
 }
