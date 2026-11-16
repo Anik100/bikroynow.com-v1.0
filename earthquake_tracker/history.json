@@ -658,17 +658,10 @@
     "emsc_20261116_0000058",
     "us7000tyhr",
     "emsc_20261115_0000031",
-    "emsc_20261115_0000040"
+    "emsc_20261115_0000040",
+    "emsc_20261116_0000093"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000ty7m",
-      "mag": 4.1,
-      "place": "southeast of Shikoku, Japan",
-      "latitude": 30.0796,
-      "longitude": 136.9461,
-      "epoch_ms": 1794641099364
-    },
     {
       "id": "emsc_20261114_0000110",
       "mag": 4.6,
@@ -1060,6 +1053,14 @@
       "latitude": 37.1847,
       "longitude": 136.9792,
       "epoch_ms": 1794803051517
+    },
+    {
+      "id": "emsc_20261116_0000093",
+      "mag": 4.4,
+      "place": "LA PAZ, BOLIVIA",
+      "latitude": -13.7122,
+      "longitude": -68.4972,
+      "epoch_ms": 1794811654200
     }
   ]
 }
