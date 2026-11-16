@@ -672,17 +672,10 @@
     "emsc_20261116_0000175",
     "emsc_20261116_0000187",
     "emsc_20261116_0000209",
-    "emsc_20261116_0000217"
+    "emsc_20261116_0000217",
+    "emsc_20261116_0000225"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000210",
-      "mag": 4.2,
-      "place": "NORTH ISLAND OF NEW ZEALAND",
-      "latitude": -39.9709,
-      "longitude": 176.2955,
-      "epoch_ms": 1794678690143
-    },
     {
       "id": "emsc_20261114_0000213",
       "mag": 4.6,
@@ -1074,6 +1067,14 @@
       "latitude": 14.133,
       "longitude": -93.166,
       "epoch_ms": 1794844087000
+    },
+    {
+      "id": "emsc_20261116_0000225",
+      "mag": 5.4,
+      "place": "OFF COAST OF CENTRAL PERU",
+      "latitude": -15.0306,
+      "longitude": -76.0259,
+      "epoch_ms": 1794845805265
     }
   ]
 }
