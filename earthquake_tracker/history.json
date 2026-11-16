@@ -655,17 +655,10 @@
     "emsc_20261115_0000285",
     "emsc_20261116_0000007",
     "emsc_20261116_0000015",
-    "emsc_20261116_0000058"
+    "emsc_20261116_0000058",
+    "us7000tyhr"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000096",
-      "mag": 4.6,
-      "place": "TONGA",
-      "latitude": -15.0887,
-      "longitude": -173.446,
-      "epoch_ms": 1794639742573
-    },
     {
       "id": "us7000ty7m",
       "mag": 4.1,
@@ -1057,6 +1050,14 @@
       "latitude": 38.1346,
       "longitude": 137.1425,
       "epoch_ms": 1794803054050
+    },
+    {
+      "id": "us7000tyhr",
+      "mag": 5.4,
+      "place": "8 km SE of Anamizu, Japan",
+      "latitude": 37.1847,
+      "longitude": 136.9792,
+      "epoch_ms": 1794803051517
     }
   ]
 }
