@@ -666,17 +666,10 @@
     "emsc_20261116_0000109",
     "emsc_20261116_0000119",
     "emsc_20261116_0000091",
-    "emsc_20261116_0000137"
+    "emsc_20261116_0000137",
+    "emsc_20261116_0000167"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000158",
-      "mag": 4.0,
-      "place": "NICARAGUA",
-      "latitude": 11.211,
-      "longitude": -85.656,
-      "epoch_ms": 1794662929000
-    },
     {
       "id": "emsc_20261114_0000183",
       "mag": 4.0,
@@ -1068,6 +1061,14 @@
       "latitude": -9.93,
       "longitude": -77.46,
       "epoch_ms": 1794827221000
+    },
+    {
+      "id": "emsc_20261116_0000167",
+      "mag": 4.0,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 14.557,
+      "longitude": -92.561,
+      "epoch_ms": 1794835312000
     }
   ]
 }
