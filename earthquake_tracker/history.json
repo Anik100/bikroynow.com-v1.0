@@ -651,17 +651,10 @@
     "us7000tygk",
     "emsc_20261115_0000276",
     "us7000tygl",
-    "emsc_20261115_0000284"
+    "emsc_20261115_0000284",
+    "emsc_20261115_0000285"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000070",
-      "mag": 4.5,
-      "place": "WESTERN INDIAN-ANTARCTIC RIDGE",
-      "latitude": -50.3735,
-      "longitude": 139.6657,
-      "epoch_ms": 1794632340633
-    },
     {
       "id": "emsc_20261114_0000084",
       "mag": 4.2,
@@ -1053,6 +1046,14 @@
       "latitude": 23.02,
       "longitude": 120.14,
       "epoch_ms": 1794786427000
+    },
+    {
+      "id": "emsc_20261115_0000285",
+      "mag": 4.1,
+      "place": "BANDA SEA",
+      "latitude": -6.74,
+      "longitude": 127.5,
+      "epoch_ms": 1794786852000
     }
   ]
 }
