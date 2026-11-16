@@ -669,17 +669,10 @@
     "emsc_20261116_0000137",
     "emsc_20261116_0000167",
     "emsc_20261116_0000171",
-    "emsc_20261116_0000175"
+    "emsc_20261116_0000175",
+    "emsc_20261116_0000187"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000197",
-      "mag": 4.2,
-      "place": "JUJUY, ARGENTINA",
-      "latitude": -23.96,
-      "longitude": -66.92,
-      "epoch_ms": 1794674182000
-    },
     {
       "id": "emsc_20261114_0000206",
       "mag": 4.6,
@@ -1071,6 +1064,14 @@
       "latitude": 13.2807,
       "longitude": 50.6862,
       "epoch_ms": 1794835834270
+    },
+    {
+      "id": "emsc_20261116_0000187",
+      "mag": 4.0,
+      "place": "MOLUCCA SEA",
+      "latitude": 1.72,
+      "longitude": 126.61,
+      "epoch_ms": 1794838193000
     }
   ]
 }
