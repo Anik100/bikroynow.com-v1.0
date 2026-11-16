@@ -654,17 +654,10 @@
     "emsc_20261115_0000284",
     "emsc_20261115_0000285",
     "emsc_20261116_0000007",
-    "emsc_20261116_0000015"
+    "emsc_20261116_0000015",
+    "emsc_20261116_0000058"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000088",
-      "mag": 5.6,
-      "place": "STATE OF YAP, MICRONESIA",
-      "latitude": 9.726,
-      "longitude": 147.291,
-      "epoch_ms": 1794639147340
-    },
     {
       "id": "emsc_20261114_0000096",
       "mag": 4.6,
@@ -1056,6 +1049,14 @@
       "latitude": 16.228,
       "longitude": -98.093,
       "epoch_ms": 1794791342000
+    },
+    {
+      "id": "emsc_20261116_0000058",
+      "mag": 5.2,
+      "place": "EASTERN SEA OF JAPAN",
+      "latitude": 38.1346,
+      "longitude": 137.1425,
+      "epoch_ms": 1794803054050
     }
   ]
 }
