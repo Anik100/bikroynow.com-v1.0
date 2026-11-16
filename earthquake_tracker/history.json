@@ -679,17 +679,10 @@
     "emsc_20261116_0000246",
     "emsc_20261116_0000250",
     "emsc_20261116_0000260",
-    "emsc_20261116_0000285"
+    "emsc_20261116_0000285",
+    "emsc_20261116_0000286"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261115_0000025",
-      "mag": 4.2,
-      "place": "COSTA RICA",
-      "latitude": 8.4458,
-      "longitude": -83.0006,
-      "epoch_ms": 1794711701000
-    },
     {
       "id": "emsc_20261115_0000029",
       "mag": 4.3,
@@ -1081,6 +1074,14 @@
       "latitude": 14.859,
       "longitude": -93.952,
       "epoch_ms": 1794857912000
+    },
+    {
+      "id": "emsc_20261116_0000286",
+      "mag": 4.3,
+      "place": "OFFSHORE VALPARAISO, CHILE",
+      "latitude": -33.05,
+      "longitude": -72.22,
+      "epoch_ms": 1794858717000
     }
   ]
 }
