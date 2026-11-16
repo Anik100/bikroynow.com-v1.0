@@ -663,17 +663,10 @@
     "us7000tyie",
     "emsc_20261116_0000097",
     "us7000tyil",
-    "emsc_20261116_0000109"
+    "emsc_20261116_0000109",
+    "emsc_20261116_0000119"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261114_0000119",
-      "mag": 5.2,
-      "place": "NORTHERN MID-ATLANTIC RIDGE",
-      "latitude": 30.14,
-      "longitude": -42.5402,
-      "epoch_ms": 1794648374860
-    },
     {
       "id": "emsc_20261114_0000137",
       "mag": 4.3,
@@ -1065,6 +1058,14 @@
       "latitude": 15.809,
       "longitude": -95.082,
       "epoch_ms": 1794816928000
+    },
+    {
+      "id": "emsc_20261116_0000119",
+      "mag": 4.0,
+      "place": "OFF W. COAST OF N. ISLAND, N.Z.",
+      "latitude": -39.6363,
+      "longitude": 173.4057,
+      "epoch_ms": 1794821340177
     }
   ]
 }
