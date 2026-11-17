@@ -194,7 +194,6 @@
     "122122312095450344_1104614535671543"
   ],
   "posted_ids": [
-    "emsc_20261108_0000031",
     "emsc_20261108_0000028",
     "emsc_20261107_0000292",
     "emsc_20261107_0000291",
@@ -693,17 +692,10 @@
     "emsc_20261117_0000016",
     "aka2026wtewol",
     "emsc_20261116_0000339",
-    "emsc_20261117_0000023"
+    "emsc_20261117_0000023",
+    "us7000tyq5"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261115_0000079",
-      "mag": 4.4,
-      "place": "SOUTH OF FIJI ISLANDS",
-      "latitude": -23.9733,
-      "longitude": 179.8113,
-      "epoch_ms": 1794732606639
-    },
     {
       "id": "emsc_20261115_0000086",
       "mag": 4.2,
@@ -1095,6 +1087,14 @@
       "latitude": 9.73,
       "longitude": 126.41,
       "epoch_ms": 1794880860000
+    },
+    {
+      "id": "us7000tyq5",
+      "mag": 5.0,
+      "place": "137 km SSE of Kirakira, Solomon Islands",
+      "latitude": -11.5293,
+      "longitude": 162.5497,
+      "epoch_ms": 1794880817654
     }
   ]
 }
