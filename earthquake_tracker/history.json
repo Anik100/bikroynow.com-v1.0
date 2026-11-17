@@ -221,7 +221,6 @@
     "122120210835450344_2321966438563564"
   ],
   "posted_ids": [
-    "us7000twx1",
     "emsc_20261108_0000134",
     "emsc_20261108_0000137",
     "us7000twxf",
@@ -720,17 +719,10 @@
     "us7000tytu",
     "emsc_20261117_0000289",
     "emsc_20261117_0000297",
-    "emsc_20261117_0000298"
+    "emsc_20261117_0000298",
+    "emsc_20261117_0000300"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tyhr",
-      "mag": 5.4,
-      "place": "8 km SE of Anamizu, Japan",
-      "latitude": 37.1847,
-      "longitude": 136.9792,
-      "epoch_ms": 1794803051517
-    },
     {
       "id": "emsc_20261116_0000093",
       "mag": 4.4,
@@ -1122,6 +1114,14 @@
       "latitude": 7.6918,
       "longitude": -80.601,
       "epoch_ms": 1794943466000
+    },
+    {
+      "id": "emsc_20261117_0000300",
+      "mag": 4.4,
+      "place": "LUZON, PHILIPPINES",
+      "latitude": 15.51,
+      "longitude": 119.55,
+      "epoch_ms": 1794946352000
     }
   ]
 }
