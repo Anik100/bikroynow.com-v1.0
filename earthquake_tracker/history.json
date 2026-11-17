@@ -691,17 +691,10 @@
     "us7000tyns",
     "emsc_20261116_0000314",
     "emsc_20261116_0000315",
-    "emsc_20261116_0000319"
+    "emsc_20261116_0000319",
+    "emsc_20261116_0000332"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261115_0000050",
-      "mag": 4.0,
-      "place": "OFF E. COAST OF N. ISLAND, N.Z.",
-      "latitude": -35.9019,
-      "longitude": 178.1371,
-      "epoch_ms": 1794719877154
-    },
     {
       "id": "emsc_20261115_0000051",
       "mag": 5.5,
@@ -1093,6 +1086,14 @@
       "latitude": 7.462,
       "longitude": -80.4149,
       "epoch_ms": 1794870105000
+    },
+    {
+      "id": "emsc_20261116_0000332",
+      "mag": 4.0,
+      "place": "GUERRERO, MEXICO",
+      "latitude": 16.62,
+      "longitude": -98.906,
+      "epoch_ms": 1794873393000
     }
   ]
 }
