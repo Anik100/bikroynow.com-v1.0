@@ -197,7 +197,6 @@
     "122122312095450344_1099678702841359"
   ],
   "posted_ids": [
-    "emsc_20261107_0000187",
     "emsc_20261107_0000186",
     "emsc_20261107_0000184",
     "emsc_20261107_0000177",
@@ -696,17 +695,10 @@
     "emsc_20261117_0000130",
     "us7000tyrv",
     "emsc_20261117_0000134",
-    "us7000tyrw"
+    "us7000tyrw",
+    "emsc_20261117_0000139"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261115_0000195",
-      "mag": 4.1,
-      "place": "VERACRUZ, MEXICO",
-      "latitude": 17.21,
-      "longitude": -94.023,
-      "epoch_ms": 1794761829000
-    },
     {
       "id": "emsc_20261115_0000204",
       "mag": 5.1,
@@ -1098,6 +1090,14 @@
       "latitude": 40.573,
       "longitude": 143.751,
       "epoch_ms": 1794911577000
+    },
+    {
+      "id": "emsc_20261117_0000139",
+      "mag": 4.3,
+      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
+      "latitude": -7.61,
+      "longitude": 128.14,
+      "epoch_ms": 1794914129000
     }
   ]
 }
