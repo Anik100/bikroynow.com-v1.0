@@ -226,7 +226,6 @@
     "122120210835450344_2321966438563564"
   ],
   "posted_ids": [
-    "emsc_20261109_0000063",
     "emsc_20261109_0000065",
     "emsc_20261109_0000071",
     "us7000tx1f",
@@ -725,17 +724,10 @@
     "us7000tyxz",
     "emsc_20261118_0000098",
     "us7000tyy2",
-    "emsc_20261118_0000102"
+    "emsc_20261118_0000102",
+    "emsc_20261118_0000104"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261116_0000314",
-      "mag": 4.3,
-      "place": "OFF COAST OF CENTRAL PERU",
-      "latitude": -15.04,
-      "longitude": -76.04,
-      "epoch_ms": 1794867940000
-    },
     {
       "id": "emsc_20261116_0000319",
       "mag": 4.0,
@@ -1127,6 +1119,14 @@
       "latitude": -8.2,
       "longitude": 120.52,
       "epoch_ms": 1794980973000
+    },
+    {
+      "id": "emsc_20261118_0000104",
+      "mag": 5.9,
+      "place": "NEAR COAST OF CENTRAL PERU",
+      "latitude": -14.9987,
+      "longitude": -75.5859,
+      "epoch_ms": 1794982065810
     }
   ]
 }
