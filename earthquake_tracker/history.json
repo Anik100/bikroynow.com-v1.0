@@ -226,7 +226,6 @@
     "122120210835450344_2321966438563564"
   ],
   "posted_ids": [
-    "us7000tx1f",
     "emsc_20261109_0000075",
     "emsc_20261109_0000077",
     "us7000tx1i",
@@ -725,17 +724,10 @@
     "emsc_20261118_0000102",
     "emsc_20261118_0000104",
     "us7000tyy8",
-    "emsc_20261118_0000111"
+    "emsc_20261118_0000111",
+    "emsc_20261118_0000123"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261116_0000332",
-      "mag": 4.0,
-      "place": "GUERRERO, MEXICO",
-      "latitude": 16.62,
-      "longitude": -98.906,
-      "epoch_ms": 1794873393000
-    },
     {
       "id": "aka2026wtewol",
       "mag": 4.0,
@@ -1127,6 +1119,14 @@
       "latitude": -30.226,
       "longitude": -71.0969,
       "epoch_ms": 1794984351220
+    },
+    {
+      "id": "emsc_20261118_0000123",
+      "mag": 4.0,
+      "place": "OFF COAST OF CENTRAL PERU",
+      "latitude": -15.22,
+      "longitude": -76.03,
+      "epoch_ms": 1794986678000
     }
   ]
 }
