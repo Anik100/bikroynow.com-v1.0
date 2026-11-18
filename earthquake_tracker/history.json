@@ -250,8 +250,6 @@
     "122124694317450344_1165173542861473"
   ],
   "posted_ids": [
-    "emsc_20261109_0000136",
-    "us7000tx32",
     "emsc_20261109_0000139",
     "us7000tx34",
     "emsc_20261109_0000142",
@@ -749,25 +747,11 @@
     "emsc_20261118_0000178",
     "us7000tyza",
     "emsc_20261118_0000181",
-    "emsc_20261118_0000187"
+    "emsc_20261118_0000187",
+    "emsc_20261118_0000245",
+    "emsc_20261118_0000247"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tyqi",
-      "mag": 4.9,
-      "place": "26 km E of Port-Olry, Vanuatu",
-      "latitude": -15.005,
-      "longitude": 167.3139,
-      "epoch_ms": 1794887552360
-    },
-    {
-      "id": "emsc_20261117_0000075",
-      "mag": 4.1,
-      "place": "VISAYAN SEA, PHILIPPINES",
-      "latitude": 11.45,
-      "longitude": 123.75,
-      "epoch_ms": 1794894957000
-    },
     {
       "id": "emsc_20261117_0000128",
       "mag": 4.2,
@@ -1151,6 +1135,22 @@
       "latitude": 7.6362,
       "longitude": -81.0371,
       "epoch_ms": 1795002719000
+    },
+    {
+      "id": "emsc_20261118_0000245",
+      "mag": 4.1,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.19,
+      "longitude": 120.58,
+      "epoch_ms": 1795018261000
+    },
+    {
+      "id": "emsc_20261118_0000247",
+      "mag": 5.3,
+      "place": "GUAM REGION",
+      "latitude": 12.0918,
+      "longitude": 143.9927,
+      "epoch_ms": 1795018011220
     }
   ]
 }
