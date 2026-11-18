@@ -223,9 +223,6 @@
     "122113199085450344_1105560932374822"
   ],
   "posted_ids": [
-    "emsc_20261108_0000222",
-    "emsc_20261108_0000228",
-    "emsc_20261108_0000232",
     "emsc_20261108_0000233",
     "us7000twyw",
     "emsc_20261108_0000239",
@@ -722,25 +719,12 @@
     "us7000tywi",
     "emsc_20261118_0000038",
     "us7000tywm",
-    "pr2026322000"
+    "pr2026322000",
+    "emsc_20261118_0000046",
+    "emsc_20261118_0000048",
+    "us7000tywx"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261116_0000137",
-      "mag": 4.2,
-      "place": "CENTRAL PERU",
-      "latitude": -9.93,
-      "longitude": -77.46,
-      "epoch_ms": 1794827221000
-    },
-    {
-      "id": "emsc_20261116_0000167",
-      "mag": 4.0,
-      "place": "OFFSHORE CHIAPAS, MEXICO",
-      "latitude": 14.557,
-      "longitude": -92.561,
-      "epoch_ms": 1794835312000
-    },
     {
       "id": "emsc_20261116_0000171",
       "mag": 4.8,
@@ -1124,6 +1108,22 @@
       "latitude": 17.7532,
       "longitude": -68.5496,
       "epoch_ms": 1794969977296
+    },
+    {
+      "id": "emsc_20261118_0000048",
+      "mag": 5.9,
+      "place": "EASTERN NEW GUINEA REG., P.N.G.",
+      "latitude": -5.786,
+      "longitude": 146.5288,
+      "epoch_ms": 1794973359970
+    },
+    {
+      "id": "us7000tywx",
+      "mag": 4.8,
+      "place": "134 km ENE of Nabire, Indonesia",
+      "latitude": -2.9907,
+      "longitude": 136.6576,
+      "epoch_ms": 1794972238023
     }
   ]
 }
