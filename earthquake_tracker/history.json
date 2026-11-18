@@ -225,12 +225,6 @@
     "122122808487450344_1565416952010176"
   ],
   "posted_ids": [
-    "emsc_20261108_0000294",
-    "emsc_20261109_0000027",
-    "us7000tx0p",
-    "emsc_20261108_0000295",
-    "emsc_20261109_0000039",
-    "us7000tx0x",
     "emsc_20261109_0000046",
     "us7000tx0v",
     "emsc_20261109_0000048",
@@ -724,33 +718,15 @@
     "us7000tyxc",
     "emsc_20261118_0000066",
     "us7000tyxi",
-    "emsc_20261118_0000073"
+    "emsc_20261118_0000073",
+    "emsc_20261118_0000078",
+    "emsc_20261118_0000076",
+    "emsc_20261118_0000081",
+    "emsc_20261118_0000077",
+    "us7000tyxl",
+    "emsc_20261118_0000079"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261116_0000250",
-      "mag": 4.0,
-      "place": "OFFSHORE CHIAPAS, MEXICO",
-      "latitude": 14.513,
-      "longitude": -93.305,
-      "epoch_ms": 1794851725000
-    },
-    {
-      "id": "emsc_20261116_0000260",
-      "mag": 4.2,
-      "place": "HINDU KUSH REGION, AFGHANISTAN",
-      "latitude": 36.472,
-      "longitude": 70.741,
-      "epoch_ms": 1794852145800
-    },
-    {
-      "id": "emsc_20261116_0000285",
-      "mag": 4.0,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 14.859,
-      "longitude": -93.952,
-      "epoch_ms": 1794857912000
-    },
     {
       "id": "emsc_20261116_0000286",
       "mag": 4.3,
@@ -1126,6 +1102,30 @@
       "latitude": -8.17,
       "longitude": 120.58,
       "epoch_ms": 1794977556000
+    },
+    {
+      "id": "emsc_20261118_0000077",
+      "mag": 4.1,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.21,
+      "longitude": 120.55,
+      "epoch_ms": 1794978083000
+    },
+    {
+      "id": "us7000tyxl",
+      "mag": 4.1,
+      "place": "95 km SSE of Tmourghout, Morocco",
+      "latitude": 33.1868,
+      "longitude": -3.4696,
+      "epoch_ms": 1794977351633
+    },
+    {
+      "id": "emsc_20261118_0000079",
+      "mag": 4.1,
+      "place": "UTTARANCHAL, INDIA",
+      "latitude": 30.38,
+      "longitude": 79.581,
+      "epoch_ms": 1794977471000
     }
   ]
 }
