@@ -225,7 +225,6 @@
     "122122808487450344_1565416952010176"
   ],
   "posted_ids": [
-    "us7000twz2",
     "emsc_20261109_0000014",
     "us7000tx0f",
     "emsc_20261108_0000293",
@@ -724,17 +723,10 @@
     "us7000tyx2",
     "emsc_20261118_0000050",
     "emsc_20261118_0000057",
-    "emsc_20261118_0000061"
+    "emsc_20261118_0000061",
+    "emsc_20261118_0000062"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261116_0000217",
-      "mag": 4.1,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 14.133,
-      "longitude": -93.166,
-      "epoch_ms": 1794844087000
-    },
     {
       "id": "emsc_20261116_0000225",
       "mag": 5.4,
@@ -1126,6 +1118,14 @@
       "latitude": 25.104,
       "longitude": 95.128,
       "epoch_ms": 1794975240000
+    },
+    {
+      "id": "emsc_20261118_0000062",
+      "mag": 5.2,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.151,
+      "longitude": 120.6489,
+      "epoch_ms": 1794975695658
     }
   ]
 }
