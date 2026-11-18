@@ -226,7 +226,6 @@
     "122120210835450344_2321966438563564"
   ],
   "posted_ids": [
-    "emsc_20261109_0000075",
     "emsc_20261109_0000077",
     "us7000tx1i",
     "emsc_20261109_0000081",
@@ -725,17 +724,10 @@
     "emsc_20261118_0000104",
     "us7000tyy8",
     "emsc_20261118_0000111",
-    "emsc_20261118_0000123"
+    "emsc_20261118_0000123",
+    "emsc_20261118_0000128"
   ],
   "recent_posted_events": [
-    {
-      "id": "aka2026wtewol",
-      "mag": 4.0,
-      "place": "50 km SSE of Denali National Park, Alaska",
-      "latitude": 63.098,
-      "longitude": -151.515,
-      "epoch_ms": 1794880566581
-    },
     {
       "id": "emsc_20261117_0000023",
       "mag": 4.4,
@@ -1127,6 +1119,14 @@
       "latitude": -15.22,
       "longitude": -76.03,
       "epoch_ms": 1794986678000
+    },
+    {
+      "id": "emsc_20261118_0000128",
+      "mag": 4.1,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.16,
+      "longitude": 120.57,
+      "epoch_ms": 1794988903000
     }
   ]
 }
