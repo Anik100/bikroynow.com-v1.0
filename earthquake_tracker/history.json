@@ -223,8 +223,6 @@
     "122113199085450344_1105560932374822"
   ],
   "posted_ids": [
-    "emsc_20261108_0000199",
-    "emsc_20261108_0000202",
     "emsc_20261108_0000220",
     "emsc_20261108_0000222",
     "emsc_20261108_0000228",
@@ -722,17 +720,11 @@
     "emsc_20261118_0000021",
     "emsc_20261118_0000028",
     "pt26322050",
-    "us7000tywi"
+    "us7000tywi",
+    "emsc_20261118_0000038",
+    "us7000tywm"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261116_0000119",
-      "mag": 4.0,
-      "place": "OFF W. COAST OF N. ISLAND, N.Z.",
-      "latitude": -39.6363,
-      "longitude": 173.4057,
-      "epoch_ms": 1794821340177
-    },
     {
       "id": "emsc_20261116_0000137",
       "mag": 4.2,
@@ -1124,6 +1116,14 @@
       "latitude": 12.1723,
       "longitude": 144.0024,
       "epoch_ms": 1794968580470
+    },
+    {
+      "id": "us7000tywm",
+      "mag": 4.4,
+      "place": "69 km S of Boca de Yuma, Dominican Republic",
+      "latitude": 17.7532,
+      "longitude": -68.5496,
+      "epoch_ms": 1794969977296
     }
   ]
 }
