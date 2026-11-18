@@ -251,7 +251,6 @@
     "122117756493450344_1313609780796712"
   ],
   "posted_ids": [
-    "emsc_20261109_0000157",
     "us7000tx3c",
     "emsc_20261109_0000161",
     "emsc_20261109_0000167",
@@ -750,17 +749,10 @@
     "us7000tz1n",
     "emsc_20261118_0000274",
     "emsc_20261118_0000276",
-    "emsc_20261118_0000294"
+    "emsc_20261118_0000294",
+    "emsc_20261118_0000297"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261117_0000139",
-      "mag": 4.3,
-      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
-      "latitude": -7.61,
-      "longitude": 128.14,
-      "epoch_ms": 1794914129000
-    },
     {
       "id": "emsc_20261117_0000163",
       "mag": 4.5,
@@ -1152,6 +1144,14 @@
       "latitude": 17.992,
       "longitude": -99.955,
       "epoch_ms": 1795022717000
+    },
+    {
+      "id": "emsc_20261118_0000297",
+      "mag": 4.1,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.23,
+      "longitude": 120.55,
+      "epoch_ms": 1795025639000
     }
   ]
 }
