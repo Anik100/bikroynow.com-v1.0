@@ -252,9 +252,6 @@
     "122117057115450344_1392165716281272"
   ],
   "posted_ids": [
-    "us7000tx3n",
-    "emsc_20261108_0000320",
-    "emsc_20261109_0000211",
     "emsc_20261109_0000217",
     "us7000tx47",
     "us7000tx48",
@@ -751,25 +748,12 @@
     "emsc_20261118_0000300",
     "us7000tz32",
     "emsc_20261118_0000309",
-    "us7000tz33"
+    "us7000tz33",
+    "emsc_20261118_0000319",
+    "emsc_20261118_0000321",
+    "us7000tz37"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261117_0000200",
-      "mag": 5.2,
-      "place": "SOUTH OF KERMADEC ISLANDS",
-      "latitude": -32.335,
-      "longitude": -179.888,
-      "epoch_ms": 1794925231400
-    },
-    {
-      "id": "us7000tysq",
-      "mag": 5.2,
-      "place": "south of the Kermadec Islands",
-      "latitude": -32.3057,
-      "longitude": 179.8423,
-      "epoch_ms": 1794925236814
-    },
     {
       "id": "emsc_20261117_0000213",
       "mag": 4.0,
@@ -1153,6 +1137,22 @@
       "latitude": -21.39,
       "longitude": -68.42,
       "epoch_ms": 1795027613000
+    },
+    {
+      "id": "emsc_20261118_0000321",
+      "mag": 4.1,
+      "place": "NEPAL",
+      "latitude": 27.4259,
+      "longitude": 85.429,
+      "epoch_ms": 1795029561000
+    },
+    {
+      "id": "us7000tz37",
+      "mag": 6.1,
+      "place": "Pacific-Antarctic Ridge",
+      "latitude": -57.7514,
+      "longitude": -146.746,
+      "epoch_ms": 1795029263713
     }
   ]
 }
