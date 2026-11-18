@@ -226,7 +226,6 @@
     "122120210835450344_2321966438563564"
   ],
   "posted_ids": [
-    "emsc_20261109_0000050",
     "emsc_20261107_0000322",
     "emsc_20261109_0000062",
     "emsc_20261109_0000063",
@@ -725,17 +724,10 @@
     "emsc_20261118_0000085",
     "emsc_20261118_0000089",
     "emsc_20261118_0000091",
-    "us7000tyxz"
+    "us7000tyxz",
+    "emsc_20261118_0000098"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tyns",
-      "mag": 4.6,
-      "place": "146 km SSE of Isangel, Vanuatu",
-      "latitude": -20.7669,
-      "longitude": 169.818,
-      "epoch_ms": 1794866158945
-    },
     {
       "id": "emsc_20261116_0000314",
       "mag": 4.3,
@@ -1127,6 +1119,14 @@
       "latitude": 0.4346,
       "longitude": -103.0838,
       "epoch_ms": 1794979543280
+    },
+    {
+      "id": "emsc_20261118_0000098",
+      "mag": 4.0,
+      "place": "FLORES REGION, INDONESIA",
+      "latitude": -8.2,
+      "longitude": 120.52,
+      "epoch_ms": 1794980973000
     }
   ]
 }
