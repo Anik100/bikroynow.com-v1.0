@@ -253,7 +253,6 @@
     "122124682473450344_1768799584202940"
   ],
   "posted_ids": [
-    "us7000tx6m",
     "emsc_20261109_0000291",
     "emsc_20261109_0000296",
     "emsc_20261109_0000303",
@@ -752,17 +751,10 @@
     "emsc_20261119_0000010",
     "us6000ubxa",
     "emsc_20261119_0000017",
-    "us6000ubxg"
+    "us6000ubxg",
+    "emsc_20261119_0000046"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261117_0000245",
-      "mag": 4.7,
-      "place": "NEW IRELAND REGION, P.N.G.",
-      "latitude": -1.6777,
-      "longitude": 149.9132,
-      "epoch_ms": 1794933362420
-    },
     {
       "id": "emsc_20261117_0000264",
       "mag": 4.1,
@@ -1154,6 +1146,14 @@
       "latitude": -5.5431,
       "longitude": 35.0812,
       "epoch_ms": 1795054283115
+    },
+    {
+      "id": "emsc_20261119_0000046",
+      "mag": 4.0,
+      "place": "OFF COAST OF CENTRAL PERU",
+      "latitude": -15.25,
+      "longitude": -76.03,
+      "epoch_ms": 1795064617000
     }
   ]
 }
