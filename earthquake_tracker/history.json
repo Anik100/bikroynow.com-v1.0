@@ -253,7 +253,6 @@
     "122124682473450344_1768799584202940"
   ],
   "posted_ids": [
-    "emsc_20261110_0000071",
     "emsc_20261109_0000357",
     "emsc_20261110_0000165",
     "emsc_20261110_0000169",
@@ -752,17 +751,10 @@
     "emsc_20261119_0000246",
     "emsc_20261119_0000253",
     "emsc_20261119_0000260",
-    "us6000uc2q"
+    "us6000uc2q",
+    "us6000uc2t"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261118_0000066",
-      "mag": 5.9,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.4286,
-      "longitude": 120.6177,
-      "epoch_ms": 1794976896360
-    },
     {
       "id": "emsc_20261118_0000073",
       "mag": 4.0,
@@ -1154,6 +1146,14 @@
       "latitude": -55.0354,
       "longitude": -33.5376,
       "epoch_ms": 1795118871140
+    },
+    {
+      "id": "us6000uc2t",
+      "mag": 5.0,
+      "place": "central East Pacific Rise",
+      "latitude": -9.1894,
+      "longitude": -109.9127,
+      "epoch_ms": 1795118829754
     }
   ]
 }
