@@ -253,8 +253,6 @@
     "122124682473450344_1768799584202940"
   ],
   "posted_ids": [
-    "us7000tx7h",
-    "emsc_20261109_0000339",
     "emsc_20261109_0000340",
     "emsc_20261109_0000341",
     "us7000tx7v",
@@ -752,17 +750,11 @@
     "us6000uby4",
     "emsc_20261118_0000390",
     "emsc_20261119_0000060",
-    "emsc_20261118_0000391"
+    "emsc_20261118_0000391",
+    "emsc_20261119_0000095",
+    "us6000ubys"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tytu",
-      "mag": 4.3,
-      "place": "1 km NW of Macaracas, Panama",
-      "latitude": 7.7396,
-      "longitude": -80.565,
-      "epoch_ms": 1794938552376
-    },
     {
       "id": "emsc_20261117_0000289",
       "mag": 4.0,
@@ -1154,6 +1146,14 @@
       "latitude": 1.75,
       "longitude": 122.89,
       "epoch_ms": 1795068712000
+    },
+    {
+      "id": "us6000ubys",
+      "mag": 4.2,
+      "place": "58 km NNE of Charlotte Amalie, U.S. Virgin Islands",
+      "latitude": 18.8605,
+      "longitude": -64.8223,
+      "epoch_ms": 1795079193042
     }
   ]
 }
