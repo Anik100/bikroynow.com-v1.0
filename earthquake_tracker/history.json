@@ -253,8 +253,6 @@
     "122124682473450344_1768799584202940"
   ],
   "posted_ids": [
-    "emsc_20261110_0000087",
-    "emsc_20261110_0000093",
     "emsc_20261110_0000079",
     "emsc_20261110_0000074",
     "emsc_20261110_0000069",
@@ -752,25 +750,11 @@
     "emsc_20261118_0000398",
     "emsc_20261119_0000226",
     "emsc_20261119_0000232",
-    "us6000uc1x"
+    "us6000uc1x",
+    "emsc_20261119_0000243",
+    "emsc_20261119_0000246"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261118_0000050",
-      "mag": 4.3,
-      "place": "OFFSHORE OAXACA, MEXICO",
-      "latitude": 15.686,
-      "longitude": -95.09,
-      "epoch_ms": 1794973256000
-    },
-    {
-      "id": "emsc_20261118_0000057",
-      "mag": 4.3,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.16,
-      "longitude": 120.53,
-      "epoch_ms": 1794975114000
-    },
     {
       "id": "emsc_20261118_0000061",
       "mag": 4.2,
@@ -1154,6 +1138,22 @@
       "latitude": -31.8226,
       "longitude": -71.9887,
       "epoch_ms": 1795111788000
+    },
+    {
+      "id": "emsc_20261119_0000243",
+      "mag": 4.8,
+      "place": "EASTERN SICHUAN, CHINA",
+      "latitude": 27.8,
+      "longitude": 102.03,
+      "epoch_ms": 1795113678000
+    },
+    {
+      "id": "emsc_20261119_0000246",
+      "mag": 4.7,
+      "place": "PANAMA",
+      "latitude": 7.583,
+      "longitude": -80.6647,
+      "epoch_ms": 1795114349000
     }
   ]
 }
