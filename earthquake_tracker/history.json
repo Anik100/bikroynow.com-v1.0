@@ -253,7 +253,6 @@
     "122124682473450344_1768799584202940"
   ],
   "posted_ids": [
-    "us7000tx8s",
     "emsc_20261110_0000047",
     "emsc_20261110_0000067",
     "emsc_20261110_0000146",
@@ -752,17 +751,10 @@
     "us6000ubz1",
     "us6000ubz0",
     "emsc_20261119_0000169",
-    "us6000ubzm"
+    "us6000ubzm",
+    "emsc_20261119_0000171"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261118_0000028",
-      "mag": 5.6,
-      "place": "GUAM REGION",
-      "latitude": 12.1723,
-      "longitude": 144.0024,
-      "epoch_ms": 1794968580470
-    },
     {
       "id": "us7000tywm",
       "mag": 4.4,
@@ -1154,6 +1146,14 @@
       "latitude": 51.6797,
       "longitude": -174.66,
       "epoch_ms": 1795093522466
+    },
+    {
+      "id": "emsc_20261119_0000171",
+      "mag": 4.7,
+      "place": "SOUTH SANDWICH ISLANDS REGION",
+      "latitude": -55.493,
+      "longitude": -28.079,
+      "epoch_ms": 1795093470180
     }
   ]
 }
