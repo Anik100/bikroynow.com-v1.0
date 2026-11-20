@@ -253,8 +253,6 @@
     "122124682473450344_1768799584202940"
   ],
   "posted_ids": [
-    "emsc_20261110_0000290",
-    "us7000txea",
     "emsc_20261110_0000319",
     "emsc_20261110_0000329",
     "emsc_20261110_0000332",
@@ -752,25 +750,11 @@
     "emsc_20261120_0000131",
     "emsc_20261120_0000133",
     "us6000uc82",
-    "us6000uc81"
+    "us6000uc81",
+    "emsc_20261120_0000149",
+    "emsc_20261120_0000146"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261118_0000128",
-      "mag": 4.1,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.16,
-      "longitude": 120.57,
-      "epoch_ms": 1794988903000
-    },
-    {
-      "id": "emsc_20261118_0000151",
-      "mag": 4.1,
-      "place": "VERACRUZ, MEXICO",
-      "latitude": 17.399,
-      "longitude": -94.541,
-      "epoch_ms": 1794993763000
-    },
     {
       "id": "emsc_20261118_0000155",
       "mag": 5.0,
@@ -1154,6 +1138,22 @@
       "latitude": 9.7263,
       "longitude": 57.8146,
       "epoch_ms": 1795164175630
+    },
+    {
+      "id": "emsc_20261120_0000149",
+      "mag": 4.1,
+      "place": "SOUTHERN GREECE",
+      "latitude": 36.4947,
+      "longitude": 22.2186,
+      "epoch_ms": 1795169774976
+    },
+    {
+      "id": "emsc_20261120_0000146",
+      "mag": 4.5,
+      "place": "PANAMA",
+      "latitude": 7.4787,
+      "longitude": -80.52,
+      "epoch_ms": 1795169077000
     }
   ]
 }
