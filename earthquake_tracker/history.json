@@ -253,7 +253,6 @@
     "122124682473450344_1768799584202940"
   ],
   "posted_ids": [
-    "emsc_20261110_0000319",
     "emsc_20261110_0000329",
     "emsc_20261110_0000332",
     "emsc_20261111_0000007",
@@ -752,17 +751,10 @@
     "us6000uc82",
     "us6000uc81",
     "emsc_20261120_0000149",
-    "emsc_20261120_0000146"
+    "emsc_20261120_0000146",
+    "us6000uc8g"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261118_0000155",
-      "mag": 5.0,
-      "place": "EASTERN SEA OF JAPAN",
-      "latitude": 38.7284,
-      "longitude": 137.9116,
-      "epoch_ms": 1794994621010
-    },
     {
       "id": "emsc_20261118_0000173",
       "mag": 4.0,
@@ -1154,6 +1146,14 @@
       "latitude": 7.4787,
       "longitude": -80.52,
       "epoch_ms": 1795169077000
+    },
+    {
+      "id": "us6000uc8g",
+      "mag": 5.0,
+      "place": "southeast of the Loyalty Islands",
+      "latitude": -24.7463,
+      "longitude": 171.4327,
+      "epoch_ms": 1795170601069
     }
   ]
 }
