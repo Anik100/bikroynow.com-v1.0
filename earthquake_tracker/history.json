@@ -253,7 +253,6 @@
     "122124682473450344_1768799584202940"
   ],
   "posted_ids": [
-    "us7000txfz",
     "emsc_20261111_0000046",
     "us7000txgg",
     "emsc_20261111_0000050",
@@ -752,17 +751,10 @@
     "us6000uc8p",
     "emsc_20261120_0000169",
     "ci41364111",
-    "emsc_20261120_0000181"
+    "emsc_20261120_0000181",
+    "emsc_20261120_0000192"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261118_0000245",
-      "mag": 4.1,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.19,
-      "longitude": 120.58,
-      "epoch_ms": 1795018261000
-    },
     {
       "id": "emsc_20261118_0000247",
       "mag": 5.3,
@@ -1154,6 +1146,14 @@
       "latitude": 8.6371,
       "longitude": -77.7767,
       "epoch_ms": 1795174947000
+    },
+    {
+      "id": "emsc_20261120_0000192",
+      "mag": 4.2,
+      "place": "CHHATTISGARH-ORISSA BORD., INDIA",
+      "latitude": 21.8284,
+      "longitude": 83.6699,
+      "epoch_ms": 1795177442000
     }
   ]
 }
