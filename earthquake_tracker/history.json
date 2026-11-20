@@ -253,8 +253,6 @@
     "122124682473450344_1768799584202940"
   ],
   "posted_ids": [
-    "emsc_20261110_0000332",
-    "emsc_20261111_0000007",
     "emsc_20261111_0000013",
     "us7000txfx",
     "ew1794361550",
@@ -752,17 +750,11 @@
     "emsc_20261120_0000149",
     "emsc_20261120_0000146",
     "us6000uc8g",
-    "emsc_20261120_0000159"
+    "emsc_20261120_0000159",
+    "emsc_20261120_0000166",
+    "us6000uc8k"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261118_0000173",
-      "mag": 4.0,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.12,
-      "longitude": 120.56,
-      "epoch_ms": 1794999773000
-    },
     {
       "id": "emsc_20261118_0000178",
       "mag": 4.9,
@@ -1154,6 +1146,14 @@
       "latitude": -24.7463,
       "longitude": 171.4327,
       "epoch_ms": 1795170601069
+    },
+    {
+      "id": "us6000uc8k",
+      "mag": 4.7,
+      "place": "southeast of the Loyalty Islands",
+      "latitude": -24.6606,
+      "longitude": 171.1906,
+      "epoch_ms": 1795171724362
     }
   ]
 }
