@@ -253,8 +253,6 @@
     "122124682473450344_1768799584202940"
   ],
   "posted_ids": [
-    "us7000txbi",
-    "us7000txbj",
     "emsc_20261110_0000242",
     "emsc_20261110_0000258",
     "emsc_20261110_0000259",
@@ -752,17 +750,11 @@
     "emsc_20261120_0000039",
     "emsc_20261120_0000042",
     "us6000uc5s",
-    "emsc_20261120_0000051"
+    "emsc_20261120_0000051",
+    "emsc_20261120_0000070",
+    "us6000uc6c"
   ],
   "recent_posted_events": [
-    {
-      "id": "us7000tyxz",
-      "mag": 5.2,
-      "place": "Galapagos Triple Junction region",
-      "latitude": 0.4346,
-      "longitude": -103.0838,
-      "epoch_ms": 1794979543280
-    },
     {
       "id": "emsc_20261118_0000098",
       "mag": 4.0,
@@ -1154,6 +1146,14 @@
       "latitude": 49.3097,
       "longitude": 100.0612,
       "epoch_ms": 1795146160510
+    },
+    {
+      "id": "us6000uc6c",
+      "mag": 4.9,
+      "place": "54 km W of Madang, Papua New Guinea",
+      "latitude": -5.219,
+      "longitude": 145.2974,
+      "epoch_ms": 1795151865106
     }
   ]
 }
