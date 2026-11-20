@@ -253,7 +253,6 @@
     "122124682473450344_1768799584202940"
   ],
   "posted_ids": [
-    "us7000txgv",
     "emsc_20261111_0000067",
     "emsc_20261111_0000076",
     "us7000txhi",
@@ -752,17 +751,10 @@
     "emsc_20261120_0000202",
     "us6000uc96",
     "emsc_20261120_0000226",
-    "us6000uc9c"
+    "us6000uc9c",
+    "emsc_20261120_0000245"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261118_0000297",
-      "mag": 4.1,
-      "place": "FLORES REGION, INDONESIA",
-      "latitude": -8.23,
-      "longitude": 120.55,
-      "epoch_ms": 1795025639000
-    },
     {
       "id": "emsc_20261118_0000309",
       "mag": 4.4,
@@ -1154,6 +1146,14 @@
       "latitude": -31.78,
       "longitude": -72.12,
       "epoch_ms": 1795184176000
+    },
+    {
+      "id": "emsc_20261120_0000245",
+      "mag": 4.0,
+      "place": "NEAR COAST OF CENTRAL PERU",
+      "latitude": -11.68,
+      "longitude": -77.64,
+      "epoch_ms": 1795190580000
     }
   ]
 }
