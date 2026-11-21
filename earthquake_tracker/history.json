@@ -258,7 +258,6 @@
     "122124694317450344_2056878748310523"
   ],
   "posted_ids": [
-    "emsc_20261112_0000062",
     "emsc_20261112_0000064",
     "emsc_20261112_0000075",
     "emsc_20261112_0000076",
@@ -757,17 +756,10 @@
     "emsc_20261121_0000167",
     "aka2026xblysq",
     "emsc_20261121_0000178",
-    "emsc_20261121_0000195"
+    "emsc_20261121_0000195",
+    "pt26325053"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000uc6c",
-      "mag": 4.9,
-      "place": "54 km W of Madang, Papua New Guinea",
-      "latitude": -5.219,
-      "longitude": 145.2974,
-      "epoch_ms": 1795151865106
-    },
     {
       "id": "emsc_20261120_0000074",
       "mag": 4.0,
@@ -1159,6 +1151,14 @@
       "latitude": 7.4195,
       "longitude": -81.4613,
       "epoch_ms": 1795272114000
+    },
+    {
+      "id": "pt26325053",
+      "mag": 4.8,
+      "place": "7 km W of Salvale\u00f3n de Hig\u00fcey, Dominican Republic",
+      "latitude": 18.608,
+      "longitude": -68.78,
+      "epoch_ms": 1795273212000
     }
   ]
 }
