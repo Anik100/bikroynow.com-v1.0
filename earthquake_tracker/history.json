@@ -257,7 +257,6 @@
     "122123693277450344_1452731302907798"
   ],
   "posted_ids": [
-    "us7000txpk",
     "emsc_20261111_0000310",
     "emsc_20261112_0000003",
     "us7000txpv",
@@ -756,17 +755,10 @@
     "emsc_20261121_0000112",
     "emsc_20261121_0000119",
     "emsc_20261121_0000124",
-    "emsc_20261121_0000128"
+    "emsc_20261121_0000128",
+    "us6000ucij"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000uc2t",
-      "mag": 5.0,
-      "place": "central East Pacific Rise",
-      "latitude": -9.1894,
-      "longitude": -109.9127,
-      "epoch_ms": 1795118829754
-    },
     {
       "id": "emsc_20261119_0000280",
       "mag": 4.0,
@@ -1158,6 +1150,14 @@
       "latitude": 8.99,
       "longitude": 126.33,
       "epoch_ms": 1795252234000
+    },
+    {
+      "id": "us6000ucij",
+      "mag": 6.8,
+      "place": "103 km NE of Lospalos, Timor Leste",
+      "latitude": -7.7563,
+      "longitude": 127.5428,
+      "epoch_ms": 1795254130314
     }
   ]
 }
