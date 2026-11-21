@@ -259,7 +259,6 @@
     "122118755439450344_1707378940763651"
   ],
   "posted_ids": [
-    "emsc_20261112_0000173",
     "emsc_20261112_0000179",
     "emsc_20261112_0000185",
     "emsc_20261112_0000202",
@@ -758,17 +757,10 @@
     "emsc_20261121_0000242",
     "emsc_20261121_0000244",
     "us6000ucni",
-    "emsc_20261121_0000255"
+    "emsc_20261121_0000255",
+    "emsc_20261121_0000257"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000uc8g",
-      "mag": 5.0,
-      "place": "southeast of the Loyalty Islands",
-      "latitude": -24.7463,
-      "longitude": 171.4327,
-      "epoch_ms": 1795170601069
-    },
     {
       "id": "us6000uc8k",
       "mag": 4.7,
@@ -1160,6 +1152,14 @@
       "latitude": -23.1123,
       "longitude": -66.6405,
       "epoch_ms": 1795287783850
+    },
+    {
+      "id": "emsc_20261121_0000257",
+      "mag": 4.1,
+      "place": "SOUTHERN SUMATRA, INDONESIA",
+      "latitude": -1.27,
+      "longitude": 100.21,
+      "epoch_ms": 1795290739000
     }
   ]
 }
