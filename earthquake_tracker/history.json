@@ -256,7 +256,6 @@
     "122121805197450344_1830383448311293"
   ],
   "posted_ids": [
-    "emsc_20261111_0000145",
     "emsc_20261111_0000147",
     "emsc_20261111_0000152",
     "us7000txis",
@@ -755,17 +754,10 @@
     "us6000ucf0",
     "emsc_20261120_0000320",
     "emsc_20261120_0000323",
-    "us6000ucfa"
+    "us6000ucfa",
+    "pt26325050"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000ubxa",
-      "mag": 4.9,
-      "place": "45 km NNW of Kintinku, Tanzania",
-      "latitude": -5.4839,
-      "longitude": 35.1398,
-      "epoch_ms": 1795051773221
-    },
     {
       "id": "us6000ubxg",
       "mag": 4.9,
@@ -1157,6 +1149,14 @@
       "latitude": -31.7122,
       "longitude": -72.3842,
       "epoch_ms": 1795217853534
+    },
+    {
+      "id": "pt26325050",
+      "mag": 6.9,
+      "place": "22 km WNW of Ondores, Peru",
+      "latitude": -10.98,
+      "longitude": -76.319,
+      "epoch_ms": 1795219757000
     }
   ]
 }
