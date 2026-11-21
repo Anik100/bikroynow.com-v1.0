@@ -256,7 +256,6 @@
     "122121805197450344_1830383448311293"
   ],
   "posted_ids": [
-    "emsc_20261111_0000292",
     "emsc_20261111_0000297",
     "us7000txpa",
     "emsc_20261111_0000303",
@@ -755,17 +754,10 @@
     "us6000uchv",
     "emsc_20261121_0000107",
     "us6000uci2",
-    "emsc_20261120_0000336"
+    "emsc_20261120_0000336",
+    "emsc_20261121_0000112"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261119_0000243",
-      "mag": 4.8,
-      "place": "EASTERN SICHUAN, CHINA",
-      "latitude": 27.8,
-      "longitude": 102.03,
-      "epoch_ms": 1795113678000
-    },
     {
       "id": "emsc_20261119_0000246",
       "mag": 4.7,
@@ -1157,6 +1149,14 @@
       "latitude": -17.1789,
       "longitude": 168.0998,
       "epoch_ms": 1795245644218
+    },
+    {
+      "id": "emsc_20261121_0000112",
+      "mag": 4.4,
+      "place": "SOUTH ISLAND OF NEW ZEALAND",
+      "latitude": -42.3551,
+      "longitude": 173.0134,
+      "epoch_ms": 1795247954682
     }
   ]
 }
