@@ -258,8 +258,6 @@
     "122124694317450344_2056878748310523"
   ],
   "posted_ids": [
-    "us7000txqr",
-    "emsc_20261112_0000049",
     "us7000txqx",
     "emsc_20261111_0000317",
     "emsc_20261112_0000062",
@@ -757,17 +755,11 @@
     "emsc_20261121_0000143",
     "us6000ucly",
     "emsc_20261121_0000150",
-    "emsc_20261121_0000156"
+    "emsc_20261121_0000156",
+    "emsc_20261121_0000167",
+    "aka2026xblysq"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261120_0000039",
-      "mag": 4.2,
-      "place": "OFFSHORE GUATEMALA",
-      "latitude": 13.755,
-      "longitude": -91.382,
-      "epoch_ms": 1795144295000
-    },
     {
       "id": "emsc_20261120_0000042",
       "mag": 4.8,
@@ -1159,6 +1151,14 @@
       "latitude": 13.971,
       "longitude": -93.322,
       "epoch_ms": 1795260830000
+    },
+    {
+      "id": "aka2026xblysq",
+      "mag": 4.6,
+      "place": "209 km S of Akhiok, Alaska",
+      "latitude": 55.071,
+      "longitude": -153.842,
+      "epoch_ms": 1795267565864
     }
   ]
 }
