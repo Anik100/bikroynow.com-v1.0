@@ -256,8 +256,6 @@
     "122121805197450344_1830383448311293"
   ],
   "posted_ids": [
-    "emsc_20261111_0000282",
-    "emsc_20261111_0000285",
     "us7000txns",
     "emsc_20261111_0000292",
     "emsc_20261111_0000297",
@@ -755,17 +753,11 @@
     "us6000uchd",
     "emsc_20261121_0000090",
     "emsc_20261121_0000102",
-    "us6000uchv"
+    "us6000uchv",
+    "emsc_20261121_0000107",
+    "us6000uci2"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261119_0000232",
-      "mag": 5.1,
-      "place": "OFFSHORE COQUIMBO, CHILE",
-      "latitude": -31.8226,
-      "longitude": -71.9887,
-      "epoch_ms": 1795111788000
-    },
     {
       "id": "emsc_20261119_0000243",
       "mag": 4.8,
@@ -1157,6 +1149,14 @@
       "latitude": 13.648,
       "longitude": -90.876,
       "epoch_ms": 1795243878000
+    },
+    {
+      "id": "us6000uci2",
+      "mag": 4.9,
+      "place": "65 km NNW of Port-Vila, Vanuatu",
+      "latitude": -17.1789,
+      "longitude": 168.0998,
+      "epoch_ms": 1795245644218
     }
   ]
 }
