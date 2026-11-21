@@ -256,7 +256,6 @@
     "122121805197450344_1830383448311293"
   ],
   "posted_ids": [
-    "us7000txmq",
     "emsc_20261111_0000275",
     "us7000txmx",
     "emsc_20261111_0000282",
@@ -755,17 +754,10 @@
     "aka2026xaubpp",
     "emsc_20261121_0000075",
     "emsc_20261121_0000083",
-    "us6000uchd"
+    "us6000uchd",
+    "emsc_20261121_0000090"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000uc0h",
-      "mag": 4.3,
-      "place": "170 km NW of Panguna, Papua New Guinea",
-      "latitude": -5.4474,
-      "longitude": 154.2159,
-      "epoch_ms": 1795102700197
-    },
     {
       "id": "emsc_20261119_0000226",
       "mag": 4.2,
@@ -1157,6 +1149,14 @@
       "latitude": -10.8622,
       "longitude": -75.9103,
       "epoch_ms": 1795237926000
+    },
+    {
+      "id": "emsc_20261121_0000090",
+      "mag": 4.3,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 5.26,
+      "longitude": 125.57,
+      "epoch_ms": 1795240595000
     }
   ]
 }
