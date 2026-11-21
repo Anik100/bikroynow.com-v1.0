@@ -256,7 +256,6 @@
     "122121805197450344_1830383448311293"
   ],
   "posted_ids": [
-    "us7000txpa",
     "emsc_20261111_0000303",
     "us7000txpk",
     "emsc_20261111_0000310",
@@ -755,17 +754,10 @@
     "us6000uci2",
     "emsc_20261120_0000336",
     "emsc_20261121_0000112",
-    "emsc_20261121_0000119"
+    "emsc_20261121_0000119",
+    "emsc_20261121_0000124"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261119_0000253",
-      "mag": 4.2,
-      "place": "KEPULAUAN BABAR, INDONESIA",
-      "latitude": -7.5,
-      "longitude": 129.0,
-      "epoch_ms": 1795116199000
-    },
     {
       "id": "emsc_20261119_0000260",
       "mag": 5.3,
@@ -1157,6 +1149,14 @@
       "latitude": -28.63,
       "longitude": -71.37,
       "epoch_ms": 1795250410000
+    },
+    {
+      "id": "emsc_20261121_0000124",
+      "mag": 4.2,
+      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
+      "latitude": -7.7,
+      "longitude": 127.77,
+      "epoch_ms": 1795251216000
     }
   ]
 }
