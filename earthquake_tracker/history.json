@@ -260,7 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "us7000txyq",
     "emsc_20261113_0000087",
     "us7000txyr",
     "emsc_20261112_0000317",
@@ -759,17 +758,10 @@
     "us6000uctj",
     "emsc_20261122_0000250",
     "emsc_20261122_0000259",
-    "emsc_20261122_0000267"
+    "emsc_20261122_0000267",
+    "emsc_20261122_0000271"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261121_0000075",
-      "mag": 4.3,
-      "place": "SUMBAWA REGION, INDONESIA",
-      "latitude": -8.69,
-      "longitude": 117.21,
-      "epoch_ms": 1795236775000
-    },
     {
       "id": "emsc_20261121_0000083",
       "mag": 5.0,
@@ -1161,6 +1153,14 @@
       "latitude": 15.557,
       "longitude": -95.915,
       "epoch_ms": 1795376023000
+    },
+    {
+      "id": "emsc_20261122_0000271",
+      "mag": 4.2,
+      "place": "OFFSHORE OAXACA, MEXICO",
+      "latitude": 16.067,
+      "longitude": -95.074,
+      "epoch_ms": 1795376588000
     }
   ]
 }
