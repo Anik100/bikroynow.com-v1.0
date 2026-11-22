@@ -260,7 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "emsc_20261113_0000133",
     "us7000ty0g",
     "emsc_20261113_0000139",
     "emsc_20261113_0000172",
@@ -759,17 +758,10 @@
     "us6000ucuj",
     "emsc_20261122_0000297",
     "emsc_20261122_0000299",
-    "us6000ucuk"
+    "us6000ucuk",
+    "emsc_20261122_0000303"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261121_0000112",
-      "mag": 4.4,
-      "place": "SOUTH ISLAND OF NEW ZEALAND",
-      "latitude": -42.3551,
-      "longitude": 173.0134,
-      "epoch_ms": 1795247954682
-    },
     {
       "id": "emsc_20261121_0000119",
       "mag": 4.0,
@@ -1161,6 +1153,14 @@
       "latitude": 3.11,
       "longitude": 126.55,
       "epoch_ms": 1795385925000
+    },
+    {
+      "id": "emsc_20261122_0000303",
+      "mag": 4.1,
+      "place": "KYUSHU, JAPAN",
+      "latitude": 32.0,
+      "longitude": 130.1,
+      "epoch_ms": 1795387770000
     }
   ]
 }
