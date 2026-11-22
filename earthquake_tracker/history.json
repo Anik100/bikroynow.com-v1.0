@@ -260,7 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "emsc_20261113_0000013",
     "us7000txxl",
     "emsc_20261113_0000014",
     "emsc_20261112_0000315",
@@ -759,17 +758,10 @@
     "emsc_20261122_0000103",
     "us6000ucr4",
     "emsc_20261122_0000109",
-    "us6000ucrb"
+    "us6000ucrb",
+    "emsc_20261122_0000121"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261120_0000306",
-      "mag": 4.4,
-      "place": "TARAPACA, CHILE",
-      "latitude": -21.19,
-      "longitude": -68.93,
-      "epoch_ms": 1795213933000
-    },
     {
       "id": "emsc_20261120_0000316",
       "mag": 4.9,
@@ -1161,6 +1153,14 @@
       "latitude": 3.0581,
       "longitude": 126.6721,
       "epoch_ms": 1795334081850
+    },
+    {
+      "id": "emsc_20261122_0000121",
+      "mag": 5.0,
+      "place": "NORTHERN XINJIANG, CHINA",
+      "latitude": 43.432,
+      "longitude": 88.0153,
+      "epoch_ms": 1795338512430
     }
   ]
 }
