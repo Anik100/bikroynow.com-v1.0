@@ -260,7 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "us7000ty0s",
     "emsc_20261113_0000182",
     "emsc_20261113_0000198",
     "emsc_20261113_0000206",
@@ -759,17 +758,10 @@
     "emsc_20261122_0000303",
     "emsc_20261122_0000313",
     "emsc_20261122_0000315",
-    "emsc_20261122_0000325"
+    "emsc_20261122_0000325",
+    "emsc_20261123_0000001"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000ucij",
-      "mag": 6.8,
-      "place": "103 km NE of Lospalos, Timor Leste",
-      "latitude": -7.7563,
-      "longitude": 127.5428,
-      "epoch_ms": 1795254130314
-    },
     {
       "id": "emsc_20261121_0000140",
       "mag": 4.4,
@@ -1161,6 +1153,14 @@
       "latitude": 3.29,
       "longitude": 126.59,
       "epoch_ms": 1795391448000
+    },
+    {
+      "id": "emsc_20261123_0000001",
+      "mag": 4.2,
+      "place": "KEPULAUAN TALAUD, INDONESIA",
+      "latitude": 3.17,
+      "longitude": 126.58,
+      "epoch_ms": 1795392481000
     }
   ]
 }
