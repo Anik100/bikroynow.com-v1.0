@@ -260,7 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "emsc_20261113_0000305",
     "aka2026wnlsfa",
     "emsc_20261113_0000306",
     "emsc_20261113_0000312",
@@ -759,17 +758,10 @@
     "emsc_20261123_0000105",
     "us6000ucx6",
     "emsc_20261123_0000106",
-    "emsc_20261123_0000108"
+    "emsc_20261123_0000108",
+    "emsc_20261123_0000109"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261121_0000257",
-      "mag": 4.1,
-      "place": "SOUTHERN SUMATRA, INDONESIA",
-      "latitude": -1.27,
-      "longitude": 100.21,
-      "epoch_ms": 1795290739000
-    },
     {
       "id": "emsc_20261121_0000270",
       "mag": 4.1,
@@ -1161,6 +1153,14 @@
       "latitude": -31.77,
       "longitude": -72.07,
       "epoch_ms": 1795420795000
+    },
+    {
+      "id": "emsc_20261123_0000109",
+      "mag": 5.4,
+      "place": "WEST OF MACQUARIE ISLAND",
+      "latitude": -60.7519,
+      "longitude": 153.7971,
+      "epoch_ms": 1795420887120
     }
   ]
 }
