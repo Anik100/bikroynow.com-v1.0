@@ -260,8 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "us7000ty1a",
-    "emsc_20261113_0000243",
     "emsc_20261113_0000249",
     "us7000ty3g",
     "us7000ty3q",
@@ -759,17 +757,11 @@
     "emsc_20261123_0000037",
     "emsc_20261123_0000038",
     "pt26327000",
-    "us6000ucvm"
+    "us6000ucvm",
+    "emsc_20261123_0000055",
+    "us6000ucw1"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261121_0000156",
-      "mag": 4.3,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 13.971,
-      "longitude": -93.322,
-      "epoch_ms": 1795260830000
-    },
     {
       "id": "aka2026xblysq",
       "mag": 4.6,
@@ -1161,6 +1153,14 @@
       "latitude": -13.5957,
       "longitude": 172.2743,
       "epoch_ms": 1795401657900
+    },
+    {
+      "id": "us6000ucw1",
+      "mag": 4.9,
+      "place": "Vanuatu region",
+      "latitude": -13.5634,
+      "longitude": 172.2236,
+      "epoch_ms": 1795403272031
     }
   ]
 }
