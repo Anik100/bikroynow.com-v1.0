@@ -260,8 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "us7000ty3q",
-    "emsc_20261113_0000254",
     "emsc_20261113_0000258",
     "emsc_20261113_0000268",
     "us7000ty3x",
@@ -759,25 +757,11 @@
     "emsc_20261123_0000055",
     "us6000ucw1",
     "emsc_20261123_0000074",
-    "us6000ucwd"
+    "us6000ucwd",
+    "emsc_20261123_0000081",
+    "emsc_20261123_0000082"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261121_0000178",
-      "mag": 4.1,
-      "place": "NEAR S COAST OF PAPUA, INDONESIA",
-      "latitude": -4.14,
-      "longitude": 135.74,
-      "epoch_ms": 1795270833000
-    },
-    {
-      "id": "emsc_20261121_0000195",
-      "mag": 4.2,
-      "place": "PANAMA",
-      "latitude": 7.4195,
-      "longitude": -81.4613,
-      "epoch_ms": 1795272114000
-    },
     {
       "id": "pt26325053",
       "mag": 4.8,
@@ -1161,6 +1145,22 @@
       "latitude": -4.7591,
       "longitude": 153.6467,
       "epoch_ms": 1795407499641
+    },
+    {
+      "id": "emsc_20261123_0000081",
+      "mag": 4.2,
+      "place": "JAVA, INDONESIA",
+      "latitude": -8.29,
+      "longitude": 109.27,
+      "epoch_ms": 1795411076000
+    },
+    {
+      "id": "emsc_20261123_0000082",
+      "mag": 4.3,
+      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
+      "latitude": -7.58,
+      "longitude": 128.84,
+      "epoch_ms": 1795410946000
     }
   ]
 }
