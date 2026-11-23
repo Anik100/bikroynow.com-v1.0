@@ -260,7 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "emsc_20261113_0000306",
     "emsc_20261113_0000312",
     "us7000ty56",
     "emsc_20261113_0000315",
@@ -759,17 +758,10 @@
     "emsc_20261123_0000106",
     "emsc_20261123_0000108",
     "emsc_20261123_0000109",
-    "us6000ucxi"
+    "us6000ucxi",
+    "emsc_20261123_0000112"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261121_0000270",
-      "mag": 4.1,
-      "place": "MYANMAR-INDIA BORDER REGION",
-      "latitude": 24.404,
-      "longitude": 94.616,
-      "epoch_ms": 1795295157000
-    },
     {
       "id": "emsc_20261121_0000276",
       "mag": 4.4,
@@ -1161,6 +1153,14 @@
       "latitude": -60.7519,
       "longitude": 153.7971,
       "epoch_ms": 1795420887120
+    },
+    {
+      "id": "emsc_20261123_0000112",
+      "mag": 4.1,
+      "place": "SOUTHERN XINJIANG, CHINA",
+      "latitude": 41.98,
+      "longitude": 82.47,
+      "epoch_ms": 1795421403000
     }
   ]
 }
