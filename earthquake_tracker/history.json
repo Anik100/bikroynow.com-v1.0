@@ -260,7 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "us7000ty6n",
     "emsc_20261114_0000049",
     "us7000ty6p",
     "emsc_20261114_0000061",
@@ -759,17 +758,10 @@
     "us6000ucy7",
     "emsc_20261123_0000144",
     "us6000ucyd",
-    "emsc_20261123_0000196"
+    "emsc_20261123_0000196",
+    "emsc_20261123_0000204"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261122_0000080",
-      "mag": 4.0,
-      "place": "RAJASTHAN, INDIA",
-      "latitude": 27.2224,
-      "longitude": 76.5749,
-      "epoch_ms": 1795327818000
-    },
     {
       "id": "emsc_20261122_0000081",
       "mag": 4.1,
@@ -1161,6 +1153,14 @@
       "latitude": 16.895,
       "longitude": -100.338,
       "epoch_ms": 1795444408000
+    },
+    {
+      "id": "emsc_20261123_0000204",
+      "mag": 4.7,
+      "place": "KEP. TANIMBAR REGION, INDONESIA",
+      "latitude": -6.889,
+      "longitude": 131.124,
+      "epoch_ms": 1795449339850
     }
   ]
 }
