@@ -260,7 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "emsc_20261113_0000258",
     "emsc_20261113_0000268",
     "us7000ty3x",
     "emsc_20261113_0000269",
@@ -759,17 +758,10 @@
     "emsc_20261123_0000074",
     "us6000ucwd",
     "emsc_20261123_0000081",
-    "emsc_20261123_0000082"
+    "emsc_20261123_0000082",
+    "emsc_20261123_0000086"
   ],
   "recent_posted_events": [
-    {
-      "id": "pt26325053",
-      "mag": 4.8,
-      "place": "7 km W of Salvale\u00f3n de Hig\u00fcey, Dominican Republic",
-      "latitude": 18.608,
-      "longitude": -68.78,
-      "epoch_ms": 1795273212000
-    },
     {
       "id": "emsc_20261121_0000209",
       "mag": 4.2,
@@ -1161,6 +1153,14 @@
       "latitude": -7.58,
       "longitude": 128.84,
       "epoch_ms": 1795410946000
+    },
+    {
+      "id": "emsc_20261123_0000086",
+      "mag": 4.0,
+      "place": "SUMBA REGION, INDONESIA",
+      "latitude": -9.42,
+      "longitude": 119.37,
+      "epoch_ms": 1795412079000
     }
   ]
 }
