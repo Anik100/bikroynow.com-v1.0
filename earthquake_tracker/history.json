@@ -260,7 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "emsc_20261113_0000249",
     "us7000ty3g",
     "us7000ty3q",
     "emsc_20261113_0000254",
@@ -759,17 +758,10 @@
     "pt26327000",
     "us6000ucvm",
     "emsc_20261123_0000055",
-    "us6000ucw1"
+    "us6000ucw1",
+    "emsc_20261123_0000074"
   ],
   "recent_posted_events": [
-    {
-      "id": "aka2026xblysq",
-      "mag": 4.6,
-      "place": "209 km S of Akhiok, Alaska",
-      "latitude": 55.071,
-      "longitude": -153.842,
-      "epoch_ms": 1795267565864
-    },
     {
       "id": "emsc_20261121_0000178",
       "mag": 4.1,
@@ -1161,6 +1153,14 @@
       "latitude": -13.5634,
       "longitude": 172.2236,
       "epoch_ms": 1795403272031
+    },
+    {
+      "id": "emsc_20261123_0000074",
+      "mag": 5.0,
+      "place": "NEW IRELAND REGION, P.N.G.",
+      "latitude": -4.7591,
+      "longitude": 153.6467,
+      "epoch_ms": 1795407499641
     }
   ]
 }
