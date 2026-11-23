@@ -260,8 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "us7000ty6e",
-    "emsc_20261113_0000336",
     "emsc_20261114_0000048",
     "us7000ty6n",
     "emsc_20261114_0000049",
@@ -759,17 +757,11 @@
     "emsc_20261123_0000136",
     "emsc_20261123_0000135",
     "us6000ucy6",
-    "us6000ucy7"
+    "us6000ucy7",
+    "emsc_20261123_0000144",
+    "us6000ucyd"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261122_0000002",
-      "mag": 4.2,
-      "place": "MINDANAO, PHILIPPINES",
-      "latitude": 5.33,
-      "longitude": 125.51,
-      "epoch_ms": 1795306990000
-    },
     {
       "id": "emsc_20261122_0000077",
       "mag": 5.1,
@@ -1161,6 +1153,14 @@
       "latitude": 49.7598,
       "longitude": 131.5672,
       "epoch_ms": 1795430360320
+    },
+    {
+      "id": "us6000ucyd",
+      "mag": 4.8,
+      "place": "209 km SSE of Tobi Village, Palau",
+      "latitude": 1.3368,
+      "longitude": 132.0172,
+      "epoch_ms": 1795433071100
     }
   ]
 }
