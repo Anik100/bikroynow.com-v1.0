@@ -1,20 +1,45 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { supabase } from '../../lib/supabaseClient';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { supabase, getInstantUser, getOrFetchUser, consumeUrlOAuthHash } from '../../lib/supabaseClient';
 import { useLanguage } from '../../context/LanguageContext';
 import { CheckCircle2, ShieldCheck, Zap, Loader2 } from 'lucide-react';
 import styles from './login.module.css';
 
 function LoginContent() {
+  const router = useRouter();
   const { lang } = useLanguage();
   const searchParams = useSearchParams();
   const redirectTarget = searchParams.get('redirect') || '/';
 
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Listen for active sign-in completion to smoothly route to destination
+  useEffect(() => {
+    // If arriving with OAuth hash token directly on /login, consume it immediately!
+    if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token=')) {
+      consumeUrlOAuthHash().then((user) => {
+        if (user) {
+          const dest = redirectTarget.startsWith('/') ? redirectTarget : '/' + redirectTarget;
+          router.replace(dest);
+        }
+      });
+    }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user && (event === 'SIGNED_IN' || event === 'USER_UPDATED')) {
+        const dest = redirectTarget.startsWith('/') ? redirectTarget : '/' + redirectTarget;
+        router.replace(dest);
+      }
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, [redirectTarget, router]);
 
   const handleGoogleLogin = async () => {
     try {

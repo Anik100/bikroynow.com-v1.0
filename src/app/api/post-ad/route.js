@@ -86,6 +86,63 @@ export async function POST(req) {
       userProfile.membership_type.toLowerCase() !== 'free' &&
       (!userProfile.membership_expires_at || new Date(userProfile.membership_expires_at) > new Date());
 
+    const adminEmails = [
+      'anikh0000@gmail.com',
+      'anikh00000@gmail.com',
+      'anikh00@gmail.com',
+      'aunik008@gmail.com',
+      'aunik003@gmail.com',
+      'anikhossain99999@gmail.com',
+      'admin@bikroynow.com'
+    ];
+    const isUserAdmin = adminEmails.includes(rawUserEmail) ||
+      rawUserEmail.includes('admin') ||
+      userProfile?.role === 'admin';
+
+    // 5 FREE ADS LIMIT PER MONTH (Strict: deleting ads does not restore quota!)
+    if (!hasActiveMembership && !isUserAdmin && serverSupabase) {
+      const now = new Date();
+      const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
+      const monthKey = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
+
+      // 1. Count listings created this month (including status 'deleted')
+      const { data: monthListings } = await serverSupabase
+        .from('listings')
+        .select('id, created_at, status')
+        .eq('user_id', validUserId)
+        .gte('created_at', startOfMonth);
+
+      const listingCount = Array.isArray(monthListings) ? monthListings.length : 0;
+
+      // 2. Check audit log in admin_settings
+      const settingKey = `ad_usage_${monthKey}_${validUserId}`;
+      const { data: settingData } = await serverSupabase
+        .from('admin_settings')
+        .select('value')
+        .eq('key', settingKey)
+        .maybeSingle();
+
+      let auditCount = 0;
+      if (settingData && settingData.value) {
+        try {
+          const parsed = JSON.parse(settingData.value);
+          auditCount = parseInt(parsed.count || 0, 10) || 0;
+        } catch (_) {
+          auditCount = parseInt(settingData.value || 0, 10) || 0;
+        }
+      }
+
+      const totalUsed = Math.max(listingCount, auditCount);
+      if (totalUsed >= 5) {
+        return NextResponse.json({
+          error: 'মাসিক ৫টি ফ্রি বিজ্ঞাপনের লিমিট শেষ হয়ে গেছে। বিজ্ঞাপন ডিলিট করলেও মাসিক ফ্রি কোটা পুনরুদ্ধার হয় না। আরও বিজ্ঞাপন দিতে মেম্বারশিপ প্যাকেজ গ্রহণ করুন।',
+          code: 'MONTHLY_LIMIT_REACHED',
+          limit: 5,
+          used: totalUsed
+        }, { status: 403 });
+      }
+    }
+
     const qualifiesForSlider = hasActiveMembership && doesPackageQualifyForSlider(userProfile.membership_type);
 
     // CRITICAL:
@@ -154,6 +211,41 @@ export async function POST(req) {
         if (sbErr) {
           console.error('Supabase listings insert error or timeout:', sbErr);
         } else if (inserted && inserted.length > 0) {
+          // Record to persistent monthly audit in admin_settings
+          try {
+            const now = new Date();
+            const monthKey = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
+            const settingKey = `ad_usage_${monthKey}_${validUserId}`;
+            const { data: curSetting } = await serverSupabase
+              .from('admin_settings')
+              .select('value')
+              .eq('key', settingKey)
+              .maybeSingle();
+
+            let curCount = 0;
+            let adIds = [];
+            if (curSetting?.value) {
+              try {
+                const parsed = JSON.parse(curSetting.value);
+                curCount = parseInt(parsed.count || 0, 10) || 0;
+                if (Array.isArray(parsed.ad_ids)) adIds = parsed.ad_ids;
+              } catch (_) {
+                curCount = parseInt(curSetting.value || 0, 10) || 0;
+              }
+            }
+            curCount += 1;
+            if (!adIds.includes(adId)) adIds.push(adId);
+
+            await serverSupabase
+              .from('admin_settings')
+              .upsert({
+                key: settingKey,
+                value: JSON.stringify({ count: curCount, ad_ids: adIds, updated_at: new Date().toISOString() })
+              }, { onConflict: 'key' });
+          } catch (auditErr) {
+            console.warn('Failed to record ad quota audit:', auditErr);
+          }
+
           if (!verificationRequired && qualifiesForSlider) {
             serverSupabase.from('featured_ads').upsert({
               listing_id: inserted[0].id,

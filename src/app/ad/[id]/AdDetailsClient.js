@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { supabase } from '../../../lib/supabaseClient';
+import { supabase, getInstantUser, getOrFetchUser, consumeUrlOAuthHash } from '../../../lib/supabaseClient';
 import styles from './ad-details.module.css';
 import { MapPin, Clock, Phone, User as UserIcon, ShieldCheck, Heart, Share2, ChevronLeft, ChevronRight, Trash2, Star, Edit, Check, X, MessageCircle } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
@@ -166,30 +166,26 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => getInstantUser());
   const [isMounted, setIsMounted] = useState(false);
 
   const handleStartChat = async () => {
     setSendingChat(true);
     try {
-      let activeUser = currentUser;
+      // 1. Instant synchronous check from state or localStorage
+      let activeUser = currentUser || getInstantUser();
 
+      // 2. Resilient session fetch with network grace period
       if (!activeUser) {
-        try {
-          const sessionPromise = supabase.auth.getSession();
-          const timeoutPromise = new Promise(resolve => setTimeout(() => resolve({ data: { session: null } }), 1200));
-          const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
-          if (session?.user) activeUser = session.user;
-        } catch (e) {}
+        activeUser = await getOrFetchUser(3500);
       }
 
+      // 3. Fallback synchronous re-check
       if (!activeUser) {
-        try {
-          const localUser = localStorage.getItem('bikroynow_demo_user');
-          if (localUser) activeUser = JSON.parse(localUser);
-        } catch (e) {}
+        activeUser = getInstantUser();
       }
 
+      // 4. Truly unauthenticated: route to login with return target
       if (!activeUser) {
         router.push(`/login?redirect=${encodeURIComponent('/ad/' + effectiveId)}`);
         return;
@@ -203,7 +199,7 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
       }
 
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 4000);
+      const timer = setTimeout(() => controller.abort(), 7000);
       const chatRes = await fetch('/api/chats', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -665,38 +661,15 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
       try {
         // Explicitly consume OAuth hash if redirected from Google
         if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token=')) {
-          try {
-            const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
-            const hashParams = new URLSearchParams(hashStr);
-            const accessToken = hashParams.get('access_token');
-            const refreshToken = hashParams.get('refresh_token');
-            if (accessToken) {
-              const { data: authData } = await supabase.auth.setSession({
-                access_token: accessToken,
-                refresh_token: refreshToken || ''
-              });
-              if (authData?.session?.user && !isCancelled) {
-                setCurrentUser(authData.session.user);
-                try {
-                  window.history.replaceState(null, '', window.location.pathname + window.location.search);
-                } catch (e) {}
-              }
-            }
-          } catch (e) {}
+          const consumed = await consumeUrlOAuthHash();
+          if (consumed && !isCancelled) {
+            setCurrentUser(consumed);
+          }
         }
 
-        const sessionPromise = supabase.auth.getSession();
-        const timeoutPromise = new Promise((resolve) => setTimeout(() => resolve({ data: { session: null } }), 1500));
-        const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
-        let activeUser = session?.user;
-        if (!activeUser) {
-          try {
-            const localUser = localStorage.getItem('bikroynow_demo_user');
-            if (localUser) activeUser = JSON.parse(localUser);
-          } catch (e) {}
-        }
+        const activeUser = await getOrFetchUser(3500);
         if (!isCancelled) {
-          setCurrentUser(activeUser || null);
+          if (activeUser) setCurrentUser(activeUser);
           if (activeUser && effectiveId && isValidUUID(effectiveId)) {
             supabase
               .from('favorites')
@@ -723,13 +696,12 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      let activeUser = session?.user;
-      if (!activeUser) {
-        try {
-          const localUser = localStorage.getItem('bikroynow_demo_user');
-          if (localUser) activeUser = JSON.parse(localUser);
-        } catch (e) {}
+      if (event === 'SIGNED_OUT' || !session?.user) {
+        setCurrentUser(null);
+        setIsFavorite(false);
+        return;
       }
+      let activeUser = session.user;
       if (activeUser) {
         setCurrentUser(activeUser);
         if (effectiveId) {

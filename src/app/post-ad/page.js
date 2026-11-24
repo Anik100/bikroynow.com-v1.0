@@ -261,7 +261,7 @@ export default function PostAd() {
         if (session?.user) {
           const { data: profile } = await supabase
             .from('profiles')
-            .select('membership_type, membership_expires_at, phone')
+            .select('role, membership_type, membership_expires_at, phone, email')
             .eq('id', session.user.id)
             .maybeSingle();
 
@@ -273,6 +273,45 @@ export default function PostAd() {
           }
         } else if (isMounted) {
           setUserProfile({ membership_type: 'free' });
+        }
+
+        // Fetch monthly ads quota usage (including deleted ads)
+        const quotaUserId = session?.user?.id || activeUser?.id;
+        if (quotaUserId) {
+          try {
+            const now = new Date();
+            const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
+            const monthKey = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
+
+            const { data: monthAds } = await supabase
+              .from('listings')
+              .select('id, created_at, status')
+              .eq('user_id', quotaUserId)
+              .gte('created_at', startOfMonth);
+
+            const listCount = Array.isArray(monthAds) ? monthAds.length : 0;
+
+            const { data: auditData } = await supabase
+              .from('admin_settings')
+              .select('value')
+              .eq('key', `ad_usage_${monthKey}_${quotaUserId}`)
+              .maybeSingle();
+
+            let auditCount = 0;
+            if (auditData?.value) {
+              try {
+                const parsed = JSON.parse(auditData.value);
+                auditCount = parseInt(parsed.count || 0, 10) || 0;
+              } catch (_) {
+                auditCount = parseInt(auditData.value || 0, 10) || 0;
+              }
+            }
+
+            const total = Math.max(listCount, auditCount);
+            if (isMounted) setMonthlyAdsCount(total);
+          } catch (qErr) {
+            console.warn('Quota check error:', qErr);
+          }
         }
       } catch (err) {
         if (isMounted) {
@@ -505,6 +544,34 @@ export default function PostAd() {
         return;
       }
 
+      const adminEmails = [
+        'anikh0000@gmail.com',
+        'anikh00000@gmail.com',
+        'anikh00@gmail.com',
+        'aunik008@gmail.com',
+        'aunik003@gmail.com',
+        'anikhossain99999@gmail.com',
+        'admin@bikroynow.com'
+      ];
+      const userEmailLower = (user?.email || '').toLowerCase().trim();
+      const isUserAdmin = adminEmails.includes(userEmailLower) ||
+        userEmailLower.includes('admin') ||
+        userProfile?.role === 'admin';
+
+      const hasActiveMembership = userProfile &&
+        userProfile.membership_type &&
+        userProfile.membership_type.toLowerCase() !== 'free' &&
+        (!userProfile.membership_expires_at || new Date(userProfile.membership_expires_at) > new Date());
+
+      if (!isUserAdmin && !hasActiveMembership && monthlyAdsCount >= 5) {
+        setSubmitting(false);
+        setError(lang === 'bn'
+          ? 'মাসিক ৫টি ফ্রি বিজ্ঞাপনের লিমিট শেষ হয়ে গেছে। বিজ্ঞাপন ডিলিট করলেও মাসিক ফ্রি কোটা পুনরুদ্ধার হয় না। আরও বিজ্ঞাপন দিতে মেম্বারশিপ প্যাকেজ গ্রহণ করুন।'
+          : 'You have reached your monthly limit of 5 free ads. Deleting ads does not restore your quota. Please upgrade your membership to post more.');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+
       const newAdPayload = {
         id: generateUUID(),
         user_id: adUserId,
@@ -536,8 +603,14 @@ export default function PostAd() {
         });
         clearTimeout(timeoutId);
         data = await res.json();
+        if (!res.ok) {
+          throw new Error(data?.error || (lang === 'bn' ? 'বিজ্ঞাপন জমা দিতে ব্যর্থ হয়েছে।' : 'Failed to post ad'));
+        }
       } catch (fetchErr) {
         clearTimeout(timeoutId);
+        if (data?.code === 'MONTHLY_LIMIT_REACHED' || fetchErr.message.includes('লিমিট') || fetchErr.message.includes('limit')) {
+          throw fetchErr;
+        }
         console.warn('Network delayed on /api/post-ad, activating instant client fallback:', fetchErr);
         data = { success: true, ad: newAdPayload, status: 'pending', fallback: true };
       }
@@ -684,6 +757,27 @@ export default function PostAd() {
     );
   }
 
+  const adminEmails = [
+    'anikh0000@gmail.com',
+    'anikh00000@gmail.com',
+    'anikh00@gmail.com',
+    'aunik008@gmail.com',
+    'aunik003@gmail.com',
+    'anikhossain99999@gmail.com',
+    'admin@bikroynow.com'
+  ];
+  const userEmailLower = (user?.email || '').toLowerCase().trim();
+  const isUserAdmin = adminEmails.includes(userEmailLower) ||
+    userEmailLower.includes('admin') ||
+    userProfile?.role === 'admin';
+
+  const hasActiveMembership = userProfile &&
+    userProfile.membership_type &&
+    userProfile.membership_type.toLowerCase() !== 'free' &&
+    (!userProfile.membership_expires_at || new Date(userProfile.membership_expires_at) > new Date());
+
+  const isLimitReached = !isUserAdmin && !hasActiveMembership && monthlyAdsCount >= 5;
+
   return (
     <div className={styles.postContainer}>
       <div className={styles.postCard}>
@@ -692,9 +786,9 @@ export default function PostAd() {
         {/* Free Monthly Ads Quota Indicator Badge */}
         {userProfile && (!userProfile.membership_type || userProfile.membership_type.toLowerCase() === 'free') && (
           <div style={{
-            background: monthlyAdsCount >= 3 ? '#fff1f2' : '#f0fdf4',
-            border: `1.5px solid ${monthlyAdsCount >= 3 ? '#fecdd3' : '#bbf7d0'}`,
-            color: monthlyAdsCount >= 3 ? '#991b1b' : '#166534',
+            background: monthlyAdsCount >= 5 ? '#fff1f2' : '#f0fdf4',
+            border: `1.5px solid ${monthlyAdsCount >= 5 ? '#fecdd3' : '#bbf7d0'}`,
+            color: monthlyAdsCount >= 5 ? '#991b1b' : '#166534',
             padding: '0.75rem 1.1rem',
             borderRadius: '12px',
             marginBottom: '1.5rem',
@@ -705,19 +799,42 @@ export default function PostAd() {
             justify: 'space-between',
             boxShadow: '0 2px 6px rgba(0,0,0,0.02)'
           }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              💡 {lang === 'bn' ? 'চলতি মাসের ফ্রি বিজ্ঞাপন কোটা:' : 'Monthly Free Ads Quota:'}
-            </span>
-            <span style={{
-              background: monthlyAdsCount >= 3 ? '#dc2626' : '#008b5e',
-              color: '#ffffff',
-              padding: '0.25rem 0.75rem',
-              borderRadius: '20px',
-              fontSize: '0.82rem',
-              fontWeight: 850
-            }}>
-              {monthlyAdsCount}/3 {lang === 'bn' ? 'ব্যবহৃত' : 'Used'}
-            </span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                💡 {lang === 'bn' ? 'চলতি মাসের ফ্রি বিজ্ঞাপন কোটা:' : 'Monthly Free Ads Quota:'}
+              </span>
+              <span style={{ fontSize: '0.78rem', fontWeight: 500, color: monthlyAdsCount >= 5 ? '#dc2626' : '#15803d' }}>
+                {lang === 'bn' ? '⚠️ বিজ্ঞাপন ডিলিট করলেও মাসিক ফ্রি কোটা পুনরুদ্ধার হয় না।' : '⚠️ Deleting ads does not restore your monthly free quota.'}
+              </span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{
+                background: monthlyAdsCount >= 5 ? '#dc2626' : '#008b5e',
+                color: '#ffffff',
+                padding: '0.25rem 0.75rem',
+                borderRadius: '20px',
+                fontSize: '0.82rem',
+                fontWeight: 850
+              }}>
+                {monthlyAdsCount}/5 {lang === 'bn' ? 'ব্যবহৃত' : 'Used'}
+              </span>
+              {monthlyAdsCount >= 5 && (
+                <Link
+                  href="/membership"
+                  style={{
+                    background: '#2563eb',
+                    color: '#ffffff',
+                    padding: '0.25rem 0.65rem',
+                    borderRadius: '8px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    textDecoration: 'none'
+                  }}
+                >
+                  {lang === 'bn' ? 'আপগ্রেড করুন' : 'Upgrade Plan'}
+                </Link>
+              )}
+            </div>
           </div>
         )}
 
@@ -1124,9 +1241,36 @@ export default function PostAd() {
           </div>
 
           {/* === SUBMIT === */}
-          <button type="submit" className={styles.submitBtn} disabled={submitting || uploadingSlots.length > 0}>
-            {submitting ? t('processing') : (lang === 'bn' ? 'বিজ্ঞাপন দিন' : 'Post Ad')}
-          </button>
+          {isLimitReached ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', width: '100%', marginTop: '0.5rem' }}>
+              <Link
+                href="/membership"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  background: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)',
+                  color: '#ffffff',
+                  padding: '1rem',
+                  borderRadius: '12px',
+                  fontWeight: 800,
+                  fontSize: '1rem',
+                  textDecoration: 'none',
+                  textAlign: 'center',
+                  boxShadow: '0 4px 14px rgba(220, 38, 38, 0.3)'
+                }}
+              >
+                ⛔ {lang === 'bn' ? 'মাসিক ৫টি ফ্রি কোটা শেষ — প্যাকেজ আপগ্রেড করুন' : 'Monthly 5 Free Ads Limit Reached — Upgrade Plan'}
+              </Link>
+              <p style={{ textAlign: 'center', fontSize: '0.82rem', color: '#64748b', margin: 0 }}>
+                {lang === 'bn' ? 'বিজ্ঞাপন ডিলিট করলেও মাসিক ফ্রি কোটা পুনরুদ্ধার হয় না।' : 'Deleting ads does not restore your monthly free quota.'}
+              </p>
+            </div>
+          ) : (
+            <button type="submit" className={styles.submitBtn} disabled={submitting || uploadingSlots.length > 0}>
+              {submitting ? t('processing') : (lang === 'bn' ? 'বিজ্ঞাপন দিন' : 'Post Ad')}
+            </button>
+          )}
         </form>
       </div>
 

@@ -13,6 +13,7 @@ export default function MyAds() {
   const { t, lang } = useLanguage();
   const [listings, setListings] = useState([]);
   const [user, setUser] = useState(null);
+  const [monthlyQuotaUsed, setMonthlyQuotaUsed] = useState(0);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null); // { id, title }
@@ -98,6 +99,42 @@ export default function MyAds() {
       }
 
       setListings(finalAds);
+
+      // Fetch user's monthly free ads usage (including deleted ads)
+      if (userId) {
+        try {
+          const now = new Date();
+          const startOfMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
+          const monthKey = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
+
+          const { data: monthAds } = await supabase
+            .from('listings')
+            .select('id, created_at, status')
+            .eq('user_id', userId)
+            .gte('created_at', startOfMonth);
+
+          const listCount = Array.isArray(monthAds) ? monthAds.length : 0;
+
+          const { data: auditData } = await supabase
+            .from('admin_settings')
+            .select('value')
+            .eq('key', `ad_usage_${monthKey}_${userId}`)
+            .maybeSingle();
+
+          let auditCount = 0;
+          if (auditData?.value) {
+            try {
+              const parsed = JSON.parse(auditData.value);
+              auditCount = parseInt(parsed.count || 0, 10) || 0;
+            } catch (_) {
+              auditCount = parseInt(auditData.value || 0, 10) || 0;
+            }
+          }
+          setMonthlyQuotaUsed(Math.max(listCount, auditCount));
+        } catch (qErr) {
+          console.warn('Quota check error in my-ads:', qErr);
+        }
+      }
     } catch (err) {
       console.error('Error fetching my ads:', err);
     } finally {
@@ -192,11 +229,11 @@ export default function MyAds() {
         console.error('API delete error:', apiErr);
       }
 
-      // 5. Also delete directly from Supabase via client session if authorized
+      // 5. Update status to 'deleted' in Supabase to maintain audit trail for monthly quota
       try {
         await supabase
           .from('listings')
-          .delete()
+          .update({ status: 'deleted' })
           .eq('id', targetId);
       } catch (sbErr) {}
 
@@ -249,6 +286,56 @@ export default function MyAds() {
             <PlusCircle size={17} />
             <span>{t('postAd')}</span>
           </Link>
+        </div>
+
+        {/* Free Monthly Ads Quota Indicator Banner */}
+        <div style={{
+          background: monthlyQuotaUsed >= 5 ? '#fef2f2' : '#f0fdf4',
+          border: `1.5px solid ${monthlyQuotaUsed >= 5 ? '#fca5a5' : '#bbf7d0'}`,
+          borderRadius: '12px',
+          padding: '0.85rem 1.2rem',
+          marginBottom: '1.5rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '0.75rem'
+        }}>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '0.92rem', color: monthlyQuotaUsed >= 5 ? '#991b1b' : '#166534' }}>
+              💡 {lang === 'bn' ? `চলতি মাসের ফ্রি বিজ্ঞাপন কোটা: ${monthlyQuotaUsed}/৫ ব্যবহৃত` : `Monthly Free Ads Quota: ${monthlyQuotaUsed}/5 Used`}
+            </div>
+            <div style={{ fontSize: '0.8rem', color: '#64748b', marginTop: '2px' }}>
+              ⚠️ {lang === 'bn' ? 'বিজ্ঞাপন ডিলিট করলেও মাসিক ফ্রি কোটা পুনরুদ্ধার হয় না।' : 'Deleting ads does not restore your monthly free quota.'}
+            </div>
+          </div>
+          {monthlyQuotaUsed >= 5 ? (
+            <Link
+              href="/membership"
+              style={{
+                background: '#dc2626',
+                color: '#fff',
+                padding: '0.35rem 0.85rem',
+                borderRadius: '8px',
+                fontSize: '0.82rem',
+                fontWeight: 750,
+                textDecoration: 'none'
+              }}
+            >
+              {lang === 'bn' ? 'মেম্বারশিপ আপগ্রেড করুন' : 'Upgrade Plan'}
+            </Link>
+          ) : (
+            <span style={{
+              background: '#008b5e',
+              color: '#fff',
+              padding: '0.25rem 0.75rem',
+              borderRadius: '20px',
+              fontSize: '0.82rem',
+              fontWeight: 800
+            }}>
+              {lang === 'bn' ? `বাকি আছে ${5 - monthlyQuotaUsed}টি` : `${5 - monthlyQuotaUsed} Remaining`}
+            </span>
+          )}
         </div>
 
         <div className={styles.adGrid}>
@@ -342,9 +429,25 @@ export default function MyAds() {
             <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '0.5rem', color: '#111' }}>
               {lang === 'bn' ? 'বিজ্ঞাপন ডিলিট করবেন?' : 'Delete Ad?'}
             </h3>
-            <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-              &quot;{deleteTarget.title}&quot; {lang === 'bn' ? 'বিজ্ঞাপনটি স্থায়ীভাবে মুছে যাবে।' : 'will be permanently deleted.'}
+            <p style={{ color: '#666', fontSize: '0.9rem', marginBottom: '1.2rem', lineHeight: 1.5 }}>
+              &quot;{deleteTarget.title}&quot; {lang === 'bn' ? 'বিজ্ঞাপনটি মুছে ফেলা হবে।' : 'will be deleted.'}
             </p>
+            <div style={{
+              background: '#fef2f2',
+              border: '1px solid #fecaca',
+              borderRadius: '8px',
+              padding: '0.65rem 0.85rem',
+              marginBottom: '1.25rem',
+              textAlign: 'left',
+              fontSize: '0.82rem',
+              color: '#b91c1c',
+              lineHeight: 1.4,
+              fontWeight: 600
+            }}>
+              ⚠️ {lang === 'bn'
+                ? 'বিজ্ঞাপন ডিলিট করলেও আপনার মাসিক ৫টি ফ্রি বিজ্ঞাপনের কোটা পুনরুদ্ধার হবে না।'
+                : 'Deleting this ad will NOT restore your monthly free ad quota.'}
+            </div>
             <div style={{ display: 'flex', gap: '0.75rem' }}>
               <button
                 onClick={() => setDeleteTarget(null)}

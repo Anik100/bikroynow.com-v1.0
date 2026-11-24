@@ -2,32 +2,12 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { supabase } from '../../lib/supabaseClient';
+import { supabase, getInstantUser, getOrFetchUser, consumeUrlOAuthHash } from '../../lib/supabaseClient';
 import { useLanguage } from '../../context/LanguageContext';
 import { getRelativeTime, formatLastSeen } from '../../lib/utils';
 import styles from './chat.module.css';
 import { MessageSquare, ArrowRight, Trash2, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
-
-// Instant synchronous user resolution from localStorage (0ms delay)
-const getInstantUser = () => {
-  if (typeof window === 'undefined') return null;
-  try {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (parsed?.user) return parsed.user;
-        }
-      }
-    }
-    const localUser = localStorage.getItem('bikroynow_demo_user');
-    if (localUser) return JSON.parse(localUser);
-  } catch (e) {}
-  return null;
-};
 
 // Instant synchronous cache resolution from localStorage (0ms delay)
 const getCachedChats = (uid) => {
@@ -56,6 +36,7 @@ export default function ChatListPage() {
     return true;
   });
   const [user, setUser] = useState(() => getInstantUser());
+  const [authReady, setAuthReady] = useState(() => Boolean(getInstantUser()));
 
   // Chat thread deletion & blocking states
   const [deletingChat, setDeletingChat] = useState(null);
@@ -354,38 +335,27 @@ export default function ChatListPage() {
     const verifySession = async () => {
       // Check for OAuth access_token in URL hash
       if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token=')) {
-        try {
-          const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
-          const hashParams = new URLSearchParams(hashStr);
-          const accessToken = hashParams.get('access_token');
-          const refreshToken = hashParams.get('refresh_token');
-          if (accessToken) {
-            const { data: authData } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken || ''
-            });
-            if (authData?.session?.user && !isCancelled) {
-              activeUserId = authData.session.user.id;
-              setUser(authData.session.user);
-              setLoading(false);
-              fetchChatsForUser(authData.session.user.id);
-              try {
-                window.history.replaceState(null, '', window.location.pathname + window.location.search);
-              } catch (e) {}
-              return;
-            }
-          }
-        } catch (e) {}
+        const consumed = await consumeUrlOAuthHash();
+        if (consumed && !isCancelled) {
+          activeUserId = consumed.id;
+          setUser(consumed);
+          setLoading(false);
+          fetchChatsForUser(consumed.id);
+          return;
+        }
       }
 
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session?.user && !isCancelled) {
-        activeUserId = session.user.id;
-        setUser(session.user);
-        setLoading(false);
-        fetchChatsForUser(session.user.id);
-      } else if (!instantUser && !isCancelled) {
-        setLoading(false);
+      const activeUser = await getOrFetchUser(3500);
+      if (!isCancelled) {
+        setAuthReady(true);
+        if (activeUser) {
+          activeUserId = activeUser.id;
+          setUser(activeUser);
+          setLoading(false);
+          fetchChatsForUser(activeUser.id);
+        } else if (!instantUser) {
+          setLoading(false);
+        }
       }
     };
 
@@ -393,19 +363,20 @@ export default function ChatListPage() {
 
     // 3. Listen to auth state changes to guarantee seamless login sync
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || !session?.user) {
+        if (!isCancelled) {
+          activeUserId = '';
+          setUser(null);
+          setLoading(false);
+          setChats([]);
+        }
+        return;
+      }
       if (session?.user && !isCancelled) {
         activeUserId = session.user.id;
         setUser(session.user);
         setLoading(false);
         fetchChatsForUser(session.user.id);
-      } else if (!isCancelled) {
-        const fallback = getInstantUser();
-        if (fallback) {
-          activeUserId = fallback.id;
-          setUser(fallback);
-          setLoading(false);
-          fetchChatsForUser(fallback.id);
-        }
       }
     });
 
@@ -425,7 +396,7 @@ export default function ChatListPage() {
     };
   }, []);
 
-  if (loading) return (
+  if (loading || !authReady) return (
     <div className="container" style={{padding: '5rem 0', textAlign: 'center', color: '#64748b', fontSize: '1.05rem', fontWeight: 600}}>
       {t('loading')}
     </div>

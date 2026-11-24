@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Search, MessageCircle, User, PlusCircle, Globe, MapPin, X, Home as HomeIcon, ChevronRight, ArrowRight, Heart, Crown } from 'lucide-react';
-import { supabase, syncUserProfile } from '../lib/supabaseClient';
+import { supabase, syncUserProfile, getInstantUser, consumeUrlOAuthHash } from '../lib/supabaseClient';
 import { useLanguage } from '../context/LanguageContext';
 import { LOCATIONS, matchesLocationQuery } from '../lib/constants';
 import { playMessageNotification, requestNotificationPermission, registerServiceWorker } from '../lib/notificationAudio';
@@ -15,7 +15,7 @@ const ProfileMenu = dynamic(() => import('./ProfileMenu'), { ssr: false });
 const OnboardingModal = dynamic(() => import('./OnboardingModal'), { ssr: false });
 
 export default function Navbar() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => getInstantUser());
   const [hasAdminAccess, setHasAdminAccess] = useState(false);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -270,30 +270,14 @@ export default function Navbar() {
     const checkUser = async () => {
       // 1. Explicitly detect & consume OAuth access_token from Google redirect hash
       if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token=')) {
-        try {
-          const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
-          const hashParams = new URLSearchParams(hashStr);
-          const accessToken = hashParams.get('access_token');
-          const refreshToken = hashParams.get('refresh_token');
-          if (accessToken) {
-            const { data: authData } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken || ''
-            });
-            if (authData?.session?.user) {
-              setUser(authData.session.user);
-              syncUserProfile(authData.session.user);
-              try {
-                window.history.replaceState(null, '', window.location.pathname + window.location.search);
-              } catch (e) {}
-              if (shouldShowPrompt(authData.session.user)) {
-                setTimeout(() => setShowOnboarding(true), 600);
-              }
-              return;
-            }
+        const consumedUser = await consumeUrlOAuthHash();
+        if (consumedUser) {
+          setUser(consumedUser);
+          syncUserProfile(consumedUser);
+          if (shouldShowPrompt(consumedUser)) {
+            setTimeout(() => setShowOnboarding(true), 600);
           }
-        } catch (e) {
-          console.warn('OAuth hash consumption error:', e);
+          return;
         }
       }
 
@@ -308,7 +292,11 @@ export default function Navbar() {
       } else {
         const localUser = localStorage.getItem('bikroynow_demo_user');
         if (localUser) {
-          setUser(JSON.parse(localUser));
+          try {
+            setUser(JSON.parse(localUser));
+          } catch (e) {
+            setUser(null);
+          }
         } else {
           setUser(null);
         }
@@ -319,19 +307,14 @@ export default function Navbar() {
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        if (session?.user) {
-          setUser(session.user);
-          syncUserProfile(session.user);
-          if (shouldShowPrompt(session.user)) {
-            setTimeout(() => setShowOnboarding(true), 600);
-          }
-        } else {
-          const localUser = localStorage.getItem('bikroynow_demo_user');
-          if (localUser) {
-            setUser(JSON.parse(localUser));
-          } else {
-            setUser(null);
-          }
+        if (event === 'SIGNED_OUT' || !session?.user) {
+          setUser(null);
+          return;
+        }
+        setUser(session.user);
+        syncUserProfile(session.user);
+        if (shouldShowPrompt(session.user)) {
+          setTimeout(() => setShowOnboarding(true), 600);
         }
       }
     );
@@ -413,11 +396,12 @@ export default function Navbar() {
     try {
       localStorage.removeItem('bikroynow_demo_user');
       sessionStorage.clear();
-      Object.keys(localStorage).forEach(key => {
-        if (key.startsWith('sb-') || key.startsWith('bkr_')) {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && (key.startsWith('sb-') || key.startsWith('bkr_') || key.includes('auth-token') || key.includes('supabase'))) {
           localStorage.removeItem(key);
         }
-      });
+      }
     } catch (e) {}
     setUser(null);
     setShowProfileMenu(false);

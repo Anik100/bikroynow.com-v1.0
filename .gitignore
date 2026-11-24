@@ -41,3 +41,6 @@ venv/
 # earthquake outputs
 earthquake_tracker/output/*
 !earthquake_tracker/output/.gitkeep
+
+# scratch
+scratch/

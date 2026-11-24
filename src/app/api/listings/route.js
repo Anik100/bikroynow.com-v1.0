@@ -315,16 +315,11 @@ export async function DELETE(req) {
         } catch (e) {}
 
         if (isValidUUID(id)) {
-          // Soft delete in listings first
+          // Soft delete in listings so monthly posting limits/quotas cannot be bypassed by deleting ads
           try {
             await serverSupabase.from('listings').update({ status: 'deleted' }).eq('id', id);
-          } catch (e) {}
-
-          // Hard delete from listings
-          try {
-            await serverSupabase.from('listings').delete().eq('id', id);
-          } catch (delErr) {
-            console.error('Hard delete error from Supabase:', delErr);
+          } catch (e) {
+            console.error('Error soft-deleting listing in Supabase:', e);
           }
         }
 

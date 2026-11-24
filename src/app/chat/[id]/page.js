@@ -3,33 +3,13 @@ import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { supabase } from '../../../lib/supabaseClient';
+import { supabase, getInstantUser, getOrFetchUser, consumeUrlOAuthHash } from '../../../lib/supabaseClient';
 import { uploadToImgBB } from '../../../lib/imgbb';
 import { useLanguage } from '../../../context/LanguageContext';
 import { getRelativeTime, formatLastSeen, compressImage } from '../../../lib/utils';
 import { playMessageNotification, requestNotificationPermission } from '../../../lib/notificationAudio';
 import styles from '../chat.module.css';
 import { Send, Camera, ChevronLeft, Loader2, User as UserIcon, ZoomIn, ZoomOut, X, Trash2, ShieldAlert, ShieldCheck } from 'lucide-react';
-
-// Instant synchronous user resolution from localStorage (0ms delay)
-const getInstantUser = () => {
-  if (typeof window === 'undefined') return null;
-  try {
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
-        const raw = localStorage.getItem(key);
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (parsed?.user) return parsed.user;
-        }
-      }
-    }
-    const localUser = localStorage.getItem('bikroynow_demo_user');
-    if (localUser) return JSON.parse(localUser);
-  } catch (e) {}
-  return null;
-};
 
 export default function ChatWindow({ params }) {
   const routeParams = useParams();
@@ -56,11 +36,13 @@ export default function ChatWindow({ params }) {
   });
   const [newMessage, setNewMessage] = useState('');
   const [user, setUser] = useState(() => getInstantUser());
+  const [authReady, setAuthReady] = useState(() => Boolean(getInstantUser()));
   const [loading, setLoading] = useState(() => {
     if (typeof window !== 'undefined' && effectiveId) {
+      const instant = getInstantUser();
       try {
         const cachedMeta = localStorage.getItem('bikroynow_chat_meta_' + effectiveId);
-        if (cachedMeta) return false;
+        if (cachedMeta && instant) return false;
       } catch (e) {}
     }
     return true;
@@ -361,30 +343,15 @@ export default function ChatWindow({ params }) {
 
       // Check URL hash for OAuth token
       if (typeof window !== 'undefined' && window.location.hash && window.location.hash.includes('access_token=')) {
-        try {
-          const hashStr = window.location.hash.startsWith('#') ? window.location.hash.substring(1) : window.location.hash;
-          const hashParams = new URLSearchParams(hashStr);
-          const accessToken = hashParams.get('access_token');
-          const refreshToken = hashParams.get('refresh_token');
-          if (accessToken) {
-            const { data: authData } = await supabase.auth.setSession({
-              access_token: accessToken,
-              refresh_token: refreshToken || ''
-            });
-            if (authData?.session?.user) {
-              activeUser = authData.session.user;
-              try { window.history.replaceState(null, '', window.location.pathname + window.location.search); } catch (e) {}
-            }
-          }
-        } catch (e) {}
+        const consumed = await consumeUrlOAuthHash();
+        if (consumed) activeUser = consumed;
       }
 
       if (!activeUser) {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-          activeUser = session.user;
-        }
+        activeUser = await getOrFetchUser(3500);
       }
+
+      if (!isCancelled) setAuthReady(true);
 
       if (!activeUser) {
         if (!isCancelled) {
@@ -453,6 +420,10 @@ export default function ChatWindow({ params }) {
 
     // Auth state listener
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT' || !session?.user) {
+        if (!isCancelled) setUser(null);
+        return;
+      }
       if (session?.user && !isCancelled) {
         setUser(session.user);
       }
@@ -641,7 +612,7 @@ export default function ChatWindow({ params }) {
     }
   };
 
-  if (loading) return (
+  if (loading || !authReady) return (
     <div className="container" style={{padding: '5rem 0', textAlign: 'center', color: '#64748b', fontSize: '1.05rem', fontWeight: 600}}>
       {lang === 'bn' ? 'লোড হচ্ছে...' : 'Loading...'}
     </div>

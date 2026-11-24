@@ -80,11 +80,12 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
     try {
       localStorage.removeItem('bikroynow_demo_user');
       sessionStorage.clear();
-      Object.keys(localStorage).forEach(key => {
-        if (key.startsWith('sb-') || key.startsWith('bkr_')) {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && (key.startsWith('sb-') || key.startsWith('bkr_') || key.includes('auth-token') || key.includes('supabase'))) {
           localStorage.removeItem(key);
         }
-      });
+      }
     } catch (e) {}
     window.location.href = '/';
   };
