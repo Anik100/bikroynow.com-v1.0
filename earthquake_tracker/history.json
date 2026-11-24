@@ -261,7 +261,6 @@
     "122120442483450344_2058709004780156"
   ],
   "posted_ids": [
-    "emsc_20261115_0000042",
     "us7000tyc0",
     "us7000tyc3",
     "emsc_20261115_0000048",
@@ -760,17 +759,10 @@
     "emsc_20261124_0000236",
     "aka2026xhgksb",
     "emsc_20261124_0000243",
-    "us6000ud9h"
+    "us6000ud9h",
+    "emsc_20261124_0000246"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261123_0000001",
-      "mag": 4.2,
-      "place": "KEPULAUAN TALAUD, INDONESIA",
-      "latitude": 3.17,
-      "longitude": 126.58,
-      "epoch_ms": 1795392481000
-    },
     {
       "id": "emsc_20261123_0000037",
       "mag": 4.7,
@@ -1162,6 +1154,14 @@
       "latitude": 31.8911,
       "longitude": 130.8637,
       "epoch_ms": 1795538461365
+    },
+    {
+      "id": "emsc_20261124_0000246",
+      "mag": 4.4,
+      "place": "MINDANAO, PHILIPPINES",
+      "latitude": 8.51,
+      "longitude": 122.54,
+      "epoch_ms": 1795539666000
     }
   ]
 }
