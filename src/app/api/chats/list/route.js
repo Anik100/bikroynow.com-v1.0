@@ -167,88 +167,115 @@ export async function GET(req) {
     const globalListings = getGlobalListings();
     const allLocalMsgs = getMessages();
 
-    // Enrich chats with listing, partner profile, lastMsg, unreadCount
-    const enriched = await Promise.all(myChats.map(async (chat) => {
+    // 1. Batch fetch missing listings in a single query
+    const listingsMap = new Map();
+    globalListings.forEach(l => listingsMap.set(String(l.id), l));
+
+    const missingListingIds = Array.from(new Set(
+      myChats
+        .map(c => String(c.listing_id))
+        .filter(id => !listingsMap.has(id) && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id))
+    ));
+
+    if (serverSupabase && missingListingIds.length > 0) {
+      try {
+        const { data: dbListings } = await serverSupabase
+          .from('listings')
+          .select('id, title, images, price')
+          .in('id', missingListingIds);
+        if (Array.isArray(dbListings)) {
+          dbListings.forEach(l => listingsMap.set(String(l.id), l));
+        }
+      } catch (e) {}
+    }
+
+    // 2. Batch fetch admin_settings chat messages in a single query
+    const adminMsgsMap = new Map();
+    if (serverSupabase && myChats.length > 0) {
+      try {
+        const chatKeys = myChats.map(c => 'chat_msgs_' + c.id);
+        const { data: msgRows } = await serverSupabase
+          .from('admin_settings')
+          .select('key, value')
+          .in('key', chatKeys);
+        if (Array.isArray(msgRows)) {
+          msgRows.forEach(row => {
+            if (row?.value) {
+              try {
+                const arr = JSON.parse(row.value);
+                if (Array.isArray(arr)) adminMsgsMap.set(row.key, arr);
+              } catch (_) {}
+            }
+          });
+        }
+      } catch (e) {}
+    }
+
+    // 3. Batch fetch supabase messages table in a single query
+    const dbMsgsMap = new Map();
+    const uuidChatIds = myChats
+      .map(c => c.id)
+      .filter(id => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id));
+
+    if (serverSupabase && uuidChatIds.length > 0) {
+      try {
+        const { data: dbMsgs } = await serverSupabase
+          .from('messages')
+          .select('*')
+          .in('chat_id', uuidChatIds)
+          .order('created_at', { ascending: true });
+        if (Array.isArray(dbMsgs)) {
+          dbMsgs.forEach(m => {
+            if (!dbMsgsMap.has(m.chat_id)) dbMsgsMap.set(m.chat_id, []);
+            dbMsgsMap.get(m.chat_id).push(m);
+          });
+        }
+      } catch (e) {}
+    }
+
+    // 4. Enrich chats 100% in-memory with zero network overhead
+    const enriched = myChats.map((chat) => {
       const isBuyer = userAliases.has(chat.buyer_id) || userAliases.has(String(chat.buyer_id).toLowerCase());
       const partnerId = isBuyer ? chat.seller_id : chat.buyer_id;
 
-      // 1. Get listing
-      let listing = globalListings.find(l => String(l.id) === String(chat.listing_id));
-      if (!listing && serverSupabase && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(chat.listing_id)) {
-        try {
-          const { data } = await serverSupabase
-            .from('listings')
-            .select('title, images, price')
-            .eq('id', chat.listing_id)
-            .maybeSingle();
-          if (data) listing = data;
-        } catch (e) {}
-      }
-      chat.listing = listing || { title: 'BikroyNow Item', images: ['https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800'] };
+      // Listing resolution
+      const listing = listingsMap.get(String(chat.listing_id)) || {
+        title: 'BikroyNow Item',
+        images: ['https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=800']
+      };
 
-      // 2. Get partner profile
-      let partner = profilesMap.get(partnerId) || profilesMap.get(String(partnerId).toLowerCase()) || null;
-      if (!partner && serverSupabase && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(partnerId)) {
-        try {
-          const { data } = await serverSupabase
-            .from('profiles')
-            .select('full_name, avatar_url, last_seen, email')
-            .eq('id', partnerId)
-            .maybeSingle();
-          if (data) partner = data;
-        } catch (e) {}
-      }
-      chat.partner = partner || { full_name: isBuyer ? 'বিক্রেতা (Seller)' : 'ক্রেতা (Buyer)' };
+      // Partner resolution
+      const partner = profilesMap.get(partnerId) || profilesMap.get(String(partnerId).toLowerCase()) || {
+        full_name: isBuyer ? 'বিক্রেতা (Seller)' : 'ক্রেতা (Buyer)'
+      };
 
-      // 3. Get messages for this chat (from admin_settings + db + local)
-      let chatMsgs = [];
+      // Messages resolution
+      const chatMsgs = [];
       const seenMsgIds = new Set();
 
-      // Cloud messages from admin_settings
-      if (serverSupabase) {
-        try {
-          const { data: row } = await serverSupabase
-            .from('admin_settings')
-            .select('value')
-            .eq('key', 'chat_msgs_' + chat.id)
-            .maybeSingle();
-          if (row?.value) {
-            const arr = JSON.parse(row.value);
-            if (Array.isArray(arr)) {
-              arr.forEach(m => {
-                if (m.id && !seenMsgIds.has(m.id)) {
-                  seenMsgIds.add(m.id);
-                  chatMsgs.push(m);
-                }
-              });
-            }
+      const cloudArr = adminMsgsMap.get('chat_msgs_' + chat.id);
+      if (Array.isArray(cloudArr)) {
+        cloudArr.forEach(m => {
+          if (m?.id && !seenMsgIds.has(m.id)) {
+            seenMsgIds.add(m.id);
+            chatMsgs.push(m);
           }
-        } catch (e) {}
+        });
       }
 
-      // Supabase messages table if UUID
-      if (serverSupabase && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(chat.id)) {
-        try {
-          const { data: msgs } = await serverSupabase
-            .from('messages')
-            .select('*')
-            .eq('chat_id', chat.id)
-            .order('created_at', { ascending: true });
-          if (Array.isArray(msgs)) {
-            msgs.forEach(m => {
-              if (m.id && !seenMsgIds.has(m.id)) {
-                seenMsgIds.add(m.id);
-                chatMsgs.push(m);
-              }
-            });
+      const dbArr = dbMsgsMap.get(chat.id);
+      if (Array.isArray(dbArr)) {
+        dbArr.forEach(m => {
+          if (m?.id && !seenMsgIds.has(m.id)) {
+            seenMsgIds.add(m.id);
+            chatMsgs.push(m);
           }
-        } catch (e) {}
+        });
       }
 
-      // Local store messages
-      const chatLocalMsgs = allLocalMsgs.filter(m => m.chat_id === chat.id);
-      chatLocalMsgs.forEach(m => {
-        if (m.id && !seenMsgIds.has(m.id)) {
+      const localArr = allLocalMsgs.filter(m => m.chat_id === chat.id);
+      localArr.forEach(m => {
+        if (m?.id && !seenMsgIds.has(m.id)) {
           seenMsgIds.add(m.id);
           chatMsgs.push(m);
         }
@@ -263,19 +290,19 @@ export async function GET(req) {
         unreadCount = chatMsgs.filter(m => !m.is_read && !userAliases.has(m.sender_id) && !userAliases.has(String(m.sender_id).toLowerCase())).length;
       }
 
-      const partnerWithLiveStatus = chat.partner ? {
-        ...chat.partner,
-        last_seen: getUserLastSeen(partnerId, chat.partner?.email, chat.partner?.last_seen)
+      const partnerWithLiveStatus = partner ? {
+        ...partner,
+        last_seen: getUserLastSeen(partnerId, partner?.email, partner?.last_seen)
       } : null;
 
       return {
         ...chat,
-        listing: chat.listing,
+        listing,
         partner: partnerWithLiveStatus,
         lastMsg,
         unreadCount
       };
-    }));
+    });
 
     // Filter out chats linked to non-existent demo ads that have no messages
     const validChats = enriched.filter(chat => {

@@ -4,10 +4,20 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase, getInstantUser, getOrFetchUser, consumeUrlOAuthHash } from '../../lib/supabaseClient';
 import { useLanguage } from '../../context/LanguageContext';
-import { getRelativeTime, formatLastSeen } from '../../lib/utils';
+import { getRelativeTime, formatLastSeen, isUserOnline } from '../../lib/utils';
 import styles from './chat.module.css';
 import { MessageSquare, ArrowRight, Trash2, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
+
+// Sort chats by latest activity (lastMsg created_at, or updated_at, or chat created_at)
+const sortChatList = (list) => {
+  if (!Array.isArray(list)) return [];
+  return [...list].sort((a, b) => {
+    const tA = new Date(a.lastMsg?.created_at || a.updated_at || a.created_at || 0).getTime();
+    const tB = new Date(b.lastMsg?.created_at || b.updated_at || b.created_at || 0).getTime();
+    return tB - tA;
+  });
+};
 
 // Instant synchronous cache resolution from localStorage (0ms delay)
 const getCachedChats = (uid) => {
@@ -16,7 +26,7 @@ const getCachedChats = (uid) => {
     const raw = localStorage.getItem('bikroynow_cached_chats_' + uid);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) return sortChatList(parsed);
     }
   } catch (e) {}
   return [];
@@ -75,7 +85,7 @@ export default function ChatListPage() {
       if (res.ok) {
         const json = await res.json();
         if (Array.isArray(json.chats)) {
-          const filtered = json.chats.filter(c => !localDeleted.has(c.id));
+          const filtered = sortChatList(json.chats.filter(c => !localDeleted.has(c.id)));
           try {
             localStorage.setItem('bikroynow_cached_chats_' + userId, JSON.stringify(filtered));
           } catch (e) {}
@@ -133,12 +143,7 @@ export default function ChatListPage() {
     }
   };
 
-  const isOnline = (lastSeen) => {
-    if (!lastSeen) return false;
-    const lastSeenDate = new Date(lastSeen);
-    const now = new Date();
-    return (now - lastSeenDate) < 180000; // 3 mins threshold
-  };
+  const isOnline = (lastSeen) => isUserOnline(lastSeen);
 
   // Touch Long-Press Handlers (for mobile press & hold)
   const handleTouchStart = (chat, e) => {
@@ -352,7 +357,9 @@ export default function ChatListPage() {
           activeUserId = activeUser.id;
           setUser(activeUser);
           setLoading(false);
-          fetchChatsForUser(activeUser.id);
+          if (activeUser.id !== instantUser?.id) {
+            fetchChatsForUser(activeUser.id);
+          }
         } else if (!instantUser) {
           setLoading(false);
         }
@@ -361,7 +368,78 @@ export default function ChatListPage() {
 
     verifySession();
 
-    // 3. Listen to auth state changes to guarantee seamless login sync
+    // 3. Realtime subscription: bump chats to top with 0 latency on incoming/outgoing messages
+    const channel = supabase
+      .channel('chat_list_realtime')
+      .on('broadcast', { event: 'new_msg' }, (payload) => {
+        if (payload?.payload && !isCancelled) {
+          const msg = payload.payload;
+          setChats(prev => {
+            let found = false;
+            const updated = prev.map(c => {
+              if (c.id === msg.chat_id) {
+                found = true;
+                const isIncoming = msg.sender_id !== activeUserId;
+                return {
+                  ...c,
+                  lastMsg: msg,
+                  updated_at: msg.created_at || new Date().toISOString(),
+                  unreadCount: isIncoming ? (c.unreadCount || 0) + 1 : (c.unreadCount || 0)
+                };
+              }
+              return c;
+            });
+            if (found) {
+              const sorted = sortChatList(updated);
+              if (activeUserId) {
+                try {
+                  localStorage.setItem('bikroynow_cached_chats_' + activeUserId, JSON.stringify(sorted));
+                } catch (_) {}
+              }
+              return sorted;
+            }
+            return prev;
+          });
+        }
+      })
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages'
+      }, (payload) => {
+        if (payload.new && !isCancelled) {
+          const msg = payload.new;
+          setChats(prev => {
+            let found = false;
+            const updated = prev.map(c => {
+              if (c.id === msg.chat_id) {
+                found = true;
+                const isIncoming = msg.sender_id !== activeUserId;
+                return {
+                  ...c,
+                  lastMsg: msg,
+                  updated_at: msg.created_at || new Date().toISOString(),
+                  unreadCount: isIncoming ? (c.unreadCount || 0) + 1 : (c.unreadCount || 0)
+                };
+              }
+              return c;
+            });
+            if (found) {
+              const sorted = sortChatList(updated);
+              if (activeUserId) {
+                try {
+                  localStorage.setItem('bikroynow_cached_chats_' + activeUserId, JSON.stringify(sorted));
+                } catch (_) {}
+              }
+              return sorted;
+            }
+            return prev;
+          });
+        }
+      })
+      .subscribe();
+
+    // 4. Listen to auth state changes to guarantee seamless login sync
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT' || !session?.user) {
         if (!isCancelled) {
@@ -380,17 +458,18 @@ export default function ChatListPage() {
       }
     });
 
-    // 4. Polling for live updates
+    // 5. Polling for live updates & accurate presence sync
     const interval = setInterval(() => {
       if (!isCancelled && activeUserId) {
         fetchChatsForUser(activeUserId);
       }
-    }, 4000);
+    }, 5000);
 
     return () => {
       isCancelled = true;
       clearTimeout(safetyTimer);
       clearInterval(interval);
+      if (channel) supabase.removeChannel(channel);
       if (authListener?.subscription) authListener.subscription.unsubscribe();
       if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
     };
@@ -424,7 +503,7 @@ export default function ChatListPage() {
           {t('myMessages')}
         </h2>
         <span style={{fontSize: '0.85rem', color: '#64748b', fontWeight: 600}}>
-          {chats.length > 0 ? (lang === 'bn' ? `${chats.length}টি চ্যাট সক্রিয়` : `${chats.length} active chats`) : ''}
+          {chats.length > 0 ? (lang === 'bn' ? `${chats.length}টি কথোপকথন` : `${chats.length} conversations`) : ''}
         </span>
       </div>
 

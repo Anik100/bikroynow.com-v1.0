@@ -125,6 +125,7 @@ export default function Navbar() {
     if (!user) return;
 
     const sendHeartbeat = async () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
       try {
         fetch('/api/user/heartbeat', {
           method: 'POST',
@@ -146,8 +147,14 @@ export default function Navbar() {
     };
 
     sendHeartbeat();
-    const interval = setInterval(sendHeartbeat, 10000); // Heartbeat every 10s
-    const handleActivity = () => sendHeartbeat();
+    const interval = setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
+      sendHeartbeat();
+    }, 12000); // Heartbeat every 12s when visible
+    const handleActivity = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
+      sendHeartbeat();
+    };
     window.addEventListener('focus', handleActivity);
     window.addEventListener('visibilitychange', handleActivity);
     window.addEventListener('click', handleActivity);

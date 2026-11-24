@@ -6,11 +6,51 @@ import Link from 'next/link';
 import { supabase, getInstantUser, getOrFetchUser, consumeUrlOAuthHash } from '../../../lib/supabaseClient';
 import { uploadToImgBB } from '../../../lib/imgbb';
 import { useLanguage } from '../../../context/LanguageContext';
-import { getRelativeTime, formatLastSeen, compressImage } from '../../../lib/utils';
+import { getRelativeTime, formatLastSeen, compressImage, isUserOnline } from '../../../lib/utils';
 import { playMessageNotification, requestNotificationPermission } from '../../../lib/notificationAudio';
 import { clearAppBadge } from '../../../lib/appBadge';
 import styles from '../chat.module.css';
 import { Send, Camera, ChevronLeft, Loader2, User as UserIcon, ZoomIn, ZoomOut, X, Trash2, ShieldAlert, ShieldCheck } from 'lucide-react';
+
+const updateGlobalCachedChat = (userId, chatId, lastMsg, chatMeta = null) => {
+  if (typeof window === 'undefined' || !userId || !chatId || !lastMsg) return;
+  try {
+    const key = 'bikroynow_cached_chats_' + userId;
+    const raw = localStorage.getItem(key);
+    let list = raw ? JSON.parse(raw) : [];
+    if (!Array.isArray(list)) list = [];
+
+    let found = false;
+    list = list.map(c => {
+      if (c.id === chatId) {
+        found = true;
+        return {
+          ...c,
+          lastMsg,
+          updated_at: lastMsg.created_at || new Date().toISOString()
+        };
+      }
+      return c;
+    });
+
+    if (!found && chatMeta) {
+      list.push({
+        ...chatMeta,
+        id: chatId,
+        lastMsg,
+        updated_at: lastMsg.created_at || new Date().toISOString()
+      });
+    }
+
+    list.sort((a, b) => {
+      const tA = new Date(a.lastMsg?.created_at || a.updated_at || a.created_at || 0).getTime();
+      const tB = new Date(b.lastMsg?.created_at || b.updated_at || b.created_at || 0).getTime();
+      return tB - tA;
+    });
+
+    localStorage.setItem(key, JSON.stringify(list));
+  } catch (e) {}
+};
 
 export default function ChatWindow({ params }) {
   const routeParams = useParams();
@@ -313,6 +353,10 @@ export default function ChatWindow({ params }) {
               }
             });
             merged.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            if (merged.length > 0) {
+              const lastMsg = merged[merged.length - 1];
+              updateGlobalCachedChat(user?.id, effectiveId, lastMsg, chat);
+            }
             try {
               localStorage.setItem('bikroynow_chat_' + effectiveId, JSON.stringify(merged));
             } catch (e) {}
@@ -449,7 +493,9 @@ export default function ChatWindow({ params }) {
               if (prev.some(m => m.id === incoming.id || (m.content === incoming.content && m.sender_id === incoming.sender_id))) {
                 return prev;
               }
-              return [...prev, incoming];
+              const next = [...prev, incoming];
+              updateGlobalCachedChat(activeUser?.id || user?.id, effectiveId, incoming, chat);
+              return next;
             });
             setTimeout(scrollToBottom, 30);
           }
@@ -473,7 +519,9 @@ export default function ChatWindow({ params }) {
           setMessages(prev => {
             const filtered = prev.filter(m => !String(m.id).startsWith('temp-') || m.content !== payload.new.content);
             if (filtered.some(m => m.id === payload.new.id)) return filtered;
-            return [...filtered, payload.new];
+            const next = [...filtered, payload.new];
+            updateGlobalCachedChat(activeUser?.id || user?.id, effectiveId, payload.new, chat);
+            return next;
           });
           setTimeout(scrollToBottom, 50);
         }
@@ -577,6 +625,7 @@ export default function ChatWindow({ params }) {
       } catch (e) {}
       return updated;
     });
+    updateGlobalCachedChat(user?.id, effectiveId, optimisticMsg, chat);
 
     // Instant 10ms Realtime Broadcast to partner's open window
     try {
@@ -614,6 +663,7 @@ export default function ChatWindow({ params }) {
             } catch (e) {}
             return updated;
           });
+          updateGlobalCachedChat(user?.id, effectiveId, json.message, chat);
         }
       }
     } catch (err) {
@@ -699,12 +749,7 @@ export default function ChatWindow({ params }) {
   const isBuyer = myIdentifiers.has(chat.buyer_id) || (chat.buyer?.email && myIdentifiers.has(chat.buyer.email?.toLowerCase()));
   const partner = isBuyer ? chat.seller : chat.buyer;
 
-  const isOnline = (lastSeen) => {
-    if (!lastSeen) return false;
-    const lastSeenDate = new Date(lastSeen);
-    const now = new Date();
-    return (now - lastSeenDate) < 180000; // 3 mins threshold
-  };
+  const isOnline = (lastSeen) => isUserOnline(lastSeen);
 
   return (
     <div className={styles.chatLayout}>
