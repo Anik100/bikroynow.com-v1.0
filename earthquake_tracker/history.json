@@ -260,7 +260,6 @@
     "122117756493450344_2573450263136968"
   ],
   "posted_ids": [
-    "emsc_20261114_0000084",
     "emsc_20261114_0000086",
     "us7000ty7b",
     "emsc_20261114_0000088",
@@ -759,17 +758,10 @@
     "emsc_20261123_0000225",
     "us6000ud18",
     "emsc_20261123_0000271",
-    "emsc_20261123_0000273"
+    "emsc_20261123_0000273",
+    "emsc_20261123_0000290"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000ucr3",
-      "mag": 4.9,
-      "place": "246 km ESE of Sarangani, Philippines",
-      "latitude": 4.56,
-      "longitude": 127.5165,
-      "epoch_ms": 1795331218521
-    },
     {
       "id": "us6000ucr4",
       "mag": 4.4,
@@ -1161,6 +1153,14 @@
       "latitude": 7.6188,
       "longitude": -81.4707,
       "epoch_ms": 1795473159000
+    },
+    {
+      "id": "emsc_20261123_0000290",
+      "mag": 4.1,
+      "place": "OFFSHORE CHIAPAS, MEXICO",
+      "latitude": 15.217,
+      "longitude": -93.69,
+      "epoch_ms": 1795477782000
     }
   ]
 }
