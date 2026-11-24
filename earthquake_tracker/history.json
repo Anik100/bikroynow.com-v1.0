@@ -267,7 +267,6 @@
     "122122808487450344_1080257418393799"
   ],
   "posted_ids": [
-    "us7000tyc0",
     "us7000tyc3",
     "emsc_20261115_0000048",
     "aka2026wptmlc",
@@ -766,17 +765,10 @@
     "aka2026xhgksb",
     "emsc_20261124_0000243",
     "us6000ud9h",
-    "emsc_20261124_0000246"
+    "emsc_20261124_0000246",
+    "emsc_20261124_0000291"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261123_0000037",
-      "mag": 4.7,
-      "place": "SOUTHERN XINJIANG, CHINA",
-      "latitude": 41.9388,
-      "longitude": 82.5417,
-      "epoch_ms": 1795400102630
-    },
     {
       "id": "emsc_20261123_0000038",
       "mag": 6.2,
@@ -1168,6 +1160,14 @@
       "latitude": 8.51,
       "longitude": 122.54,
       "epoch_ms": 1795539666000
+    },
+    {
+      "id": "emsc_20261124_0000291",
+      "mag": 4.4,
+      "place": "PAPUA, INDONESIA",
+      "latitude": -4.29,
+      "longitude": 137.02,
+      "epoch_ms": 1795548783000
     }
   ]
 }
