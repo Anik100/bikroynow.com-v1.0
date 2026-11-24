@@ -275,7 +275,6 @@
     "122119448685450344_1497508222218010"
   ],
   "posted_ids": [
-    "emsc_20261115_0000056",
     "emsc_20261115_0000070",
     "us7000tyd3",
     "emsc_20261115_0000079",
@@ -774,17 +773,10 @@
     "us6000udb8",
     "emsc_20261124_0000335",
     "emsc_20261124_0000338",
-    "us6000udbn"
+    "us6000udbn",
+    "emsc_20261124_0000343"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261123_0000082",
-      "mag": 4.3,
-      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
-      "latitude": -7.58,
-      "longitude": 128.84,
-      "epoch_ms": 1795410946000
-    },
     {
       "id": "emsc_20261123_0000086",
       "mag": 4.0,
@@ -1176,6 +1168,14 @@
       "latitude": 15.506,
       "longitude": -94.857,
       "epoch_ms": 1795554726000
+    },
+    {
+      "id": "emsc_20261124_0000343",
+      "mag": 4.2,
+      "place": "NEAR COAST OF ECUADOR",
+      "latitude": -1.39,
+      "longitude": -80.55,
+      "epoch_ms": 1795556405300
     }
   ]
 }
