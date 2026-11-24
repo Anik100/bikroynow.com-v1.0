@@ -119,6 +119,24 @@ export async function POST(req, { params }) {
           }
         }
 
+        if (!partnerId) {
+          const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+          if (isValidUUID) {
+            const { data: dbChat } = await serverSupabase
+              .from('chats')
+              .select('buyer_id, seller_id')
+              .eq('id', id)
+              .maybeSingle();
+            if (dbChat) {
+              const cleanSender = String(sender_id).toLowerCase().trim();
+              const bStr = String(dbChat.buyer_id).toLowerCase().trim();
+              partnerId = (cleanSender === bStr || cleanSender.includes(bStr) || bStr.includes(cleanSender))
+                ? dbChat.seller_id
+                : dbChat.buyer_id;
+            }
+          }
+        }
+
         if (partnerId) {
           const { data: blockRow } = await serverSupabase
             .from('admin_settings')
@@ -173,6 +191,8 @@ export async function POST(req, { params }) {
       is_read: false
     };
 
+    let msgsList = [];
+
     // 1. Central persistent cloud store via admin_settings (works 100% reliably for ALL chats)
     if (serverSupabase) {
       try {
@@ -182,10 +202,10 @@ export async function POST(req, { params }) {
           .eq('key', 'chat_msgs_' + id)
           .maybeSingle();
 
-        let msgsList = [];
         if (row?.value) {
           try { msgsList = JSON.parse(row.value); } catch (e) {}
         }
+        if (!Array.isArray(msgsList)) msgsList = [];
         msgsList.push(newMsg);
 
         await serverSupabase
@@ -252,7 +272,9 @@ export async function POST(req, { params }) {
     // 4. Send background push notification to recipient partner
     if (partnerId) {
       const msgSnippet = content ? (content.length > 80 ? content.substring(0, 77) + '...' : content) : (image_url ? '📷 [ছবি]' : 'নতুন মেসেজ এসেছে');
-      const unreadForPartner = Math.max(1, msgsList.filter(m => !m.is_read && m.sender_id !== partnerId).length);
+      const unreadForPartner = Array.isArray(msgsList)
+        ? Math.max(1, msgsList.filter(m => !m.is_read && m.sender_id !== partnerId).length)
+        : 1;
       try {
         await sendPushNotificationToUser(partnerId, {
           title: 'BikroyNow: নতুন মেসেজ এসেছে 💬',

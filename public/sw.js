@@ -51,29 +51,44 @@ self.addEventListener('push', (event) => {
     data = { text: event.data ? event.data.text() : '' };
   }
 
-  const unreadCount = Number(data.unreadCount || data.badgeCount || 1);
   const title = data.title || 'BikroyNow: নতুন মেসেজ এসেছে! 💬';
-  const options = {
-    body: data.body || data.text || 'আপনার বিজ্ঞাপনে একজন ক্রেতা মেসেজ পাঠিয়েছেন।',
-    icon: data.icon || '/icon-192.png',
-    badge: data.badge || '/favicon-48x48.png',
-    vibrate: [300, 150, 300, 150, 300],
-    sound: '/sounds/message_notification.wav',
-    tag: data.tag || `bikroynow-msg-${Date.now()}`,
-    renotify: true,
-    requireInteraction: true,
-    silent: false,
-    data: {
-      url: data.url || '/chat'
-    }
-  };
+  const bodyText = data.body || data.text || 'আপনার বিজ্ঞাপনে একজন ক্রেতা মেসেজ পাঠিয়েছেন।';
+  const targetUrl = data.url || '/chat';
+  const unreadCount = Number(data.unreadCount || data.badgeCount || 1);
 
-  const tasks = [];
-  tasks.push(self.registration.showNotification(title, options));
+  event.waitUntil(
+    (async () => {
+      // 1. Set app badge on home screen if supported
+      try {
+        if (self.navigator && 'setAppBadge' in self.navigator) {
+          await self.navigator.setAppBadge(unreadCount);
+        }
+      } catch (_) {}
 
-  if (self.navigator && 'setAppBadge' in self.navigator) {
-    tasks.push(self.navigator.setAppBadge(unreadCount).catch(() => {}));
-  }
+      // 2. Display Android Status Bar Notification
+      const options = {
+        body: bodyText,
+        icon: '/icon-192.png',
+        badge: '/favicon-48x48.png',
+        vibrate: [250, 100, 250, 100, 250],
+        tag: data.tag || 'bikroynow-new-message',
+        renotify: true,
+        data: {
+          url: targetUrl
+        }
+      };
 
-  event.waitUntil(Promise.all(tasks));
+      try {
+        await self.registration.showNotification(title, options);
+      } catch (err) {
+        // Fallback with minimal options if device launcher rejected extended options
+        try {
+          await self.registration.showNotification(title, {
+            body: bodyText,
+            icon: '/icon-192.png'
+          });
+        } catch (_) {}
+      }
+    })()
+  );
 });

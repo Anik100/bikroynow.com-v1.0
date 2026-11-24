@@ -79,16 +79,29 @@ export async function sendPushNotificationToUser(recipientUserId, payload) {
     let failed = 0;
     const survivingSubs = [];
 
+    // Ensure VAPID keys are always initialized
+    try {
+      if (webpush && typeof webpush.setVapidDetails === 'function') {
+        webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
+      }
+    } catch (_) {}
+
     for (const sub of subscriptions) {
       try {
         await webpush.sendNotification(sub, notificationPayload, {
-          TTL: 60 * 60 * 24, // 24 hours delivery window
+          vapidDetails: {
+            subject: VAPID_SUBJECT,
+            publicKey: VAPID_PUBLIC_KEY,
+            privateKey: VAPID_PRIVATE_KEY
+          },
+          TTL: 86400,
           urgency: 'high'
         });
         sent++;
         survivingSubs.push(sub);
       } catch (err) {
         failed++;
+        console.error('[WebPush] Send error:', err.statusCode, err.body || err.message);
         // If endpoint is expired or unsubscribed (404/410), do not keep it
         if (err.statusCode !== 404 && err.statusCode !== 410) {
           survivingSubs.push(sub);
@@ -98,13 +111,15 @@ export async function sendPushNotificationToUser(recipientUserId, payload) {
 
     // Prune expired endpoints if any were removed
     if (survivingSubs.length !== subscriptions.length) {
-      await serverSupabase
-        .from('admin_settings')
-        .upsert({
-          key: settingsKey,
-          value: JSON.stringify(survivingSubs)
-        }, { onConflict: 'key' })
-        .catch(() => {});
+      for (const k of keysToTry) {
+        await serverSupabase
+          .from('admin_settings')
+          .upsert({
+            key: k,
+            value: JSON.stringify(survivingSubs)
+          }, { onConflict: 'key' })
+          .catch(() => {});
+      }
     }
 
     return { sent, failed };
