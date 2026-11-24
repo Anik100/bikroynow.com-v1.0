@@ -253,16 +253,18 @@ export async function POST(req, { params }) {
     if (partnerId) {
       const msgSnippet = content ? (content.length > 80 ? content.substring(0, 77) + '...' : content) : (image_url ? '📷 [ছবি]' : 'নতুন মেসেজ এসেছে');
       const unreadForPartner = Math.max(1, msgsList.filter(m => !m.is_read && m.sender_id !== partnerId).length);
-      sendPushNotificationToUser(partnerId, {
-        title: 'BikroyNow: নতুন মেসেজ এসেছে 💬',
-        body: msgSnippet,
-        url: `/chat/${id}`,
-        tag: `chat-msg-${id}`,
-        unreadCount: unreadForPartner,
-        badgeCount: unreadForPartner
-      }).catch(err => {
+      try {
+        await sendPushNotificationToUser(partnerId, {
+          title: 'BikroyNow: নতুন মেসেজ এসেছে 💬',
+          body: msgSnippet,
+          url: `/chat/${id}`,
+          tag: `chat-msg-${id}-${Date.now()}`,
+          unreadCount: unreadForPartner,
+          badgeCount: unreadForPartner
+        });
+      } catch (err) {
         console.warn('Background push delivery non-fatal error:', err);
-      });
+      }
     }
 
     return NextResponse.json({ success: true, message: newMsg }, {

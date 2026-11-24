@@ -12,25 +12,57 @@ export async function sendPushNotificationToUser(recipientUserId, payload) {
   if (!serverSupabase) return { sent: 0, failed: 0 };
 
   try {
-    const settingsKey = `push_subs_${recipientUserId}`;
-    const { data: row } = await serverSupabase
-      .from('admin_settings')
-      .select('value')
-      .eq('key', settingsKey)
-      .maybeSingle();
+    const rawId = String(recipientUserId).trim();
+    const keysToTry = new Set([`push_subs_${rawId}`, `push_subs_${rawId.toLowerCase()}`]);
 
-    if (!row?.value) return { sent: 0, failed: 0 };
+    // Check if recipient has matching UUID/email profile to catch all devices
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawId);
+      const query = serverSupabase.from('profiles').select('id, email');
+      const { data: prof } = isUUID
+        ? await query.eq('id', rawId).maybeSingle()
+        : await query.ilike('email', rawId).maybeSingle();
+
+      if (prof) {
+        if (prof.id) {
+          keysToTry.add(`push_subs_${prof.id}`);
+          keysToTry.add(`push_subs_${String(prof.id).toLowerCase()}`);
+        }
+        if (prof.email) {
+          const em = prof.email.toLowerCase();
+          keysToTry.add(`push_subs_${em}`);
+          keysToTry.add(`push_subs_user-${em.replace(/[^a-z0-9]/g, '')}`);
+        }
+      }
+    } catch (_) {}
+
+    const { data: rows } = await serverSupabase
+      .from('admin_settings')
+      .select('key, value')
+      .in('key', Array.from(keysToTry));
 
     let subscriptions = [];
-    try {
-      subscriptions = JSON.parse(row.value);
-    } catch (_) {
-      return { sent: 0, failed: 0 };
+    const seenEndpoints = new Set();
+
+    if (Array.isArray(rows)) {
+      for (const row of rows) {
+        if (row?.value) {
+          try {
+            const parsed = JSON.parse(row.value);
+            if (Array.isArray(parsed)) {
+              for (const sub of parsed) {
+                if (sub?.endpoint && !seenEndpoints.has(sub.endpoint)) {
+                  seenEndpoints.add(sub.endpoint);
+                  subscriptions.push(sub);
+                }
+              }
+            }
+          } catch (_) {}
+        }
+      }
     }
 
-    if (!Array.isArray(subscriptions) || subscriptions.length === 0) {
-      return { sent: 0, failed: 0 };
-    }
+    if (subscriptions.length === 0) return { sent: 0, failed: 0 };
 
     const notificationPayload = JSON.stringify({
       title: payload.title || 'BikroyNow: নতুন মেসেজ এসেছে! 💬',

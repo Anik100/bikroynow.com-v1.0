@@ -52,26 +52,28 @@ self.addEventListener('push', (event) => {
   }
 
   const unreadCount = Number(data.unreadCount || data.badgeCount || 1);
-
-  // Set App Launcher Icon Badge on Android / Desktop home screen
-  if (self.navigator && 'setAppBadge' in self.navigator) {
-    self.navigator.setAppBadge(unreadCount).catch(() => {});
-  }
-
   const title = data.title || 'BikroyNow: নতুন মেসেজ এসেছে! 💬';
   const options = {
     body: data.body || data.text || 'আপনার বিজ্ঞাপনে একজন ক্রেতা মেসেজ পাঠিয়েছেন।',
     icon: data.icon || '/icon-192.png',
     badge: data.badge || '/favicon-48x48.png',
-    vibrate: [250, 100, 250, 100, 250],
+    vibrate: [300, 150, 300, 150, 300],
     sound: '/sounds/message_notification.wav',
-    tag: data.tag || 'bikroynow-new-message',
+    tag: data.tag || `bikroynow-msg-${Date.now()}`,
     renotify: true,
     requireInteraction: true,
+    silent: false,
     data: {
       url: data.url || '/chat'
     }
   };
 
-  event.waitUntil(self.registration.showNotification(title, options));
+  const tasks = [];
+  tasks.push(self.registration.showNotification(title, options));
+
+  if (self.navigator && 'setAppBadge' in self.navigator) {
+    tasks.push(self.navigator.setAppBadge(unreadCount).catch(() => {}));
+  }
+
+  event.waitUntil(Promise.all(tasks));
 });
