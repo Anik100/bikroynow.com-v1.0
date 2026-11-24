@@ -370,7 +370,7 @@ export default function ChatListPage() {
 
     // 3. Realtime subscription: bump chats to top with 0 latency on incoming/outgoing messages
     const channel = supabase
-      .channel('chat_list_realtime')
+      .channel('bikroynow_live_messages', { config: { broadcast: { self: false } } })
       .on('broadcast', { event: 'new_msg' }, (payload) => {
         if (payload?.payload && !isCancelled) {
           const msg = payload.payload;
@@ -458,17 +458,30 @@ export default function ChatListPage() {
       }
     });
 
-    // 5. Polling for live updates & accurate presence sync
-    const interval = setInterval(() => {
-      if (!isCancelled && activeUserId) {
+    // 5. Instant Wakeup: on tab focus, unlock, or screen tap, refresh chat list immediately
+    const handleInstantWakeup = () => {
+      if (activeUserId && typeof document !== 'undefined' && document.visibilityState !== 'hidden') {
         fetchChatsForUser(activeUserId);
       }
-    }, 5000);
+    };
+    window.addEventListener('visibilitychange', handleInstantWakeup);
+    window.addEventListener('focus', handleInstantWakeup);
+    window.addEventListener('touchstart', handleInstantWakeup, { passive: true });
+
+    // 6. Fast polling every 1.5s for live updates & accurate presence sync
+    const interval = setInterval(() => {
+      if (!isCancelled && activeUserId && typeof document !== 'undefined' && document.visibilityState !== 'hidden') {
+        fetchChatsForUser(activeUserId);
+      }
+    }, 1500);
 
     return () => {
       isCancelled = true;
       clearTimeout(safetyTimer);
       clearInterval(interval);
+      window.removeEventListener('visibilitychange', handleInstantWakeup);
+      window.removeEventListener('focus', handleInstantWakeup);
+      window.removeEventListener('touchstart', handleInstantWakeup);
       if (channel) supabase.removeChannel(channel);
       if (authListener?.subscription) authListener.subscription.unsubscribe();
       if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);

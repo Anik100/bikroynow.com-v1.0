@@ -100,6 +100,7 @@ export default function ChatWindow({ params }) {
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [isBlocking, setIsBlocking] = useState(false);
   const channelRef = useRef(null);
+  const globalChannelRef = useRef(null);
 
   const getPartnerId = () => {
     if (!chat || !user) return null;
@@ -476,30 +477,35 @@ export default function ChatWindow({ params }) {
       }
     });
 
-    // Supabase Realtime subscription for instant 10ms message delivery via Broadcast & Database
-    const channel = supabase
-      .channel(`chat-room-${effectiveId}`)
-      .on('broadcast', { event: 'new_msg' }, (payload) => {
-        if (payload?.payload && !isCancelled) {
-          const incoming = payload.payload;
-          if (incoming.sender_id !== activeUser?.id && incoming.sender_id !== user?.id) {
-            playMessageNotification({
-              title: chat?.partner?.name || (lang === 'bn' ? 'নতুন মেসেজ এসেছে 💬' : 'New Message 💬'),
-              body: incoming.content || (incoming.image_url ? '📷 [ছবি]' : '...'),
-              url: `/chat/${effectiveId}`,
-              chatId: effectiveId
-            });
-            setMessages(prev => {
-              if (prev.some(m => m.id === incoming.id || (m.content === incoming.content && m.sender_id === incoming.sender_id))) {
-                return prev;
-              }
-              const next = [...prev, incoming];
-              updateGlobalCachedChat(activeUser?.id || user?.id, effectiveId, incoming, chat);
-              return next;
-            });
-            setTimeout(scrollToBottom, 30);
-          }
+    // Unified handler for incoming realtime messages (0ms instant display)
+    const handleIncoming = (incoming) => {
+      if (!incoming || isCancelled) return;
+      if (incoming.sender_id === activeUser?.id || incoming.sender_id === user?.id) return;
+
+      playMessageNotification({
+        title: chat?.partner?.name || (lang === 'bn' ? 'নতুন মেসেজ এসেছে 💬' : 'New Message 💬'),
+        body: incoming.content || (incoming.image_url ? '📷 [ছবি]' : '...'),
+        url: `/chat/${effectiveId}`,
+        chatId: effectiveId
+      });
+
+      setMessages(prev => {
+        if (prev.some(m => m.id === incoming.id || (m.content && m.content === incoming.content && m.sender_id === incoming.sender_id))) {
+          return prev;
         }
+        const filtered = prev.filter(m => !String(m.id).startsWith('temp-') || m.content !== incoming.content);
+        const next = [...filtered, incoming];
+        updateGlobalCachedChat(activeUser?.id || user?.id, effectiveId, incoming, chat);
+        return next;
+      });
+      setTimeout(scrollToBottom, 20);
+    };
+
+    // 1. Room-specific broadcast channel
+    const channel = supabase
+      .channel(`chat-room-${effectiveId}`, { config: { broadcast: { self: false } } })
+      .on('broadcast', { event: 'new_msg' }, (payload) => {
+        if (payload?.payload) handleIncoming(payload.payload);
       })
       .on('postgres_changes', {
         event: 'INSERT',
@@ -507,28 +513,22 @@ export default function ChatWindow({ params }) {
         table: 'messages',
         filter: `chat_id=eq.${effectiveId}`
       }, (payload) => {
-        if (payload.new && !isCancelled) {
-          if (payload.new.sender_id !== activeUser?.id && payload.new.sender_id !== user?.id) {
-            playMessageNotification({
-              title: chat?.partner?.name || (lang === 'bn' ? 'নতুন মেসেজ এসেছে 💬' : 'New Message 💬'),
-              body: payload.new.content || (payload.new.image_url ? '📷 [ছবি]' : '...'),
-              url: `/chat/${effectiveId}`,
-              chatId: effectiveId
-            });
-          }
-          setMessages(prev => {
-            const filtered = prev.filter(m => !String(m.id).startsWith('temp-') || m.content !== payload.new.content);
-            if (filtered.some(m => m.id === payload.new.id)) return filtered;
-            const next = [...filtered, payload.new];
-            updateGlobalCachedChat(activeUser?.id || user?.id, effectiveId, payload.new, chat);
-            return next;
-          });
-          setTimeout(scrollToBottom, 50);
+        if (payload.new) handleIncoming(payload.new);
+      })
+      .subscribe();
+
+    // 2. Global live broadcast channel (catches messages sent across any view)
+    const globalChannel = supabase
+      .channel('bikroynow_live_messages', { config: { broadcast: { self: false } } })
+      .on('broadcast', { event: 'new_msg' }, (payload) => {
+        if (payload?.payload && String(payload.payload.chat_id) === String(effectiveId)) {
+          handleIncoming(payload.payload);
         }
       })
       .subscribe();
 
     channelRef.current = channel;
+    globalChannelRef.current = globalChannel;
 
     const fetchPartnerStatus = async () => {
       try {
@@ -551,18 +551,36 @@ export default function ChatWindow({ params }) {
       } catch (e) {}
     };
 
-    // Background poll every 1.2s for instant messages and live partner online status
-    const interval = setInterval(() => {
-      if (!isCancelled) {
+    // Instant Wakeup: on tab focus, unlock, or screen tap, fetch messages immediately
+    const handleInstantWakeup = () => {
+      if (typeof document !== 'undefined' && document.visibilityState !== 'hidden') {
         fetchMessages();
-        fetchPartnerStatus();
       }
-    }, 1200);
+    };
+    window.addEventListener('visibilitychange', handleInstantWakeup);
+    window.addEventListener('focus', handleInstantWakeup);
+    window.addEventListener('touchstart', handleInstantWakeup, { passive: true });
+
+    // Background poll every 800ms for hyper-fast message updates
+    let pollTick = 0;
+    const interval = setInterval(() => {
+      if (!isCancelled && typeof document !== 'undefined' && document.visibilityState !== 'hidden') {
+        fetchMessages();
+        pollTick++;
+        if (pollTick % 5 === 0) {
+          fetchPartnerStatus();
+        }
+      }
+    }, 800);
 
     return () => {
       isCancelled = true;
       clearInterval(interval);
-      supabase.removeChannel(channel);
+      window.removeEventListener('visibilitychange', handleInstantWakeup);
+      window.removeEventListener('focus', handleInstantWakeup);
+      window.removeEventListener('touchstart', handleInstantWakeup);
+      if (channel) supabase.removeChannel(channel);
+      if (globalChannel) supabase.removeChannel(globalChannel);
     };
   }, [effectiveId, router]);
 
@@ -627,9 +645,14 @@ export default function ChatWindow({ params }) {
     });
     updateGlobalCachedChat(user?.id, effectiveId, optimisticMsg, chat);
 
-    // Instant 10ms Realtime Broadcast to partner's open window
+    // Instant 5ms Realtime Broadcast to partner's window (both room and global channels)
     try {
       channelRef.current?.send({
+        type: 'broadcast',
+        event: 'new_msg',
+        payload: optimisticMsg
+      });
+      globalChannelRef.current?.send({
         type: 'broadcast',
         event: 'new_msg',
         payload: optimisticMsg

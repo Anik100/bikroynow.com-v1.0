@@ -208,12 +208,21 @@ export default function Navbar() {
 
     fetchUnreadCount();
 
+    const liveChannel = supabase
+      .channel('navbar_live_messages', { config: { broadcast: { self: false } } })
+      .on('broadcast', { event: 'new_msg' }, () => {
+        fetchUnreadCount();
+      })
+      .subscribe();
+
     const interval = setInterval(() => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
       fetchUnreadCount();
     }, 1500); // 1.5s interval for instant live updates on mobile and desktop
 
     return () => {
       clearInterval(interval);
+      if (liveChannel) supabase.removeChannel(liveChannel);
     };
   }, [user?.id, pathname]);
 
