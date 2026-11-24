@@ -261,8 +261,6 @@
     "122120442483450344_2058709004780156"
   ],
   "posted_ids": [
-    "emsc_20261115_0000029",
-    "aka2026wppbfb",
     "emsc_20261115_0000037",
     "us7000tybx",
     "emsc_20261115_0000042",
@@ -760,17 +758,11 @@
     "emsc_20261124_0000202",
     "emsc_20261124_0000213",
     "us6000ud7z",
-    "emsc_20261124_0000226"
+    "emsc_20261124_0000226",
+    "emsc_20261124_0000236",
+    "aka2026xhgksb"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261122_0000315",
-      "mag": 4.0,
-      "place": "DODECANESE ISLANDS, GREECE",
-      "latitude": 36.757,
-      "longitude": 26.5725,
-      "epoch_ms": 1795390968577
-    },
     {
       "id": "emsc_20261122_0000325",
       "mag": 4.0,
@@ -1162,6 +1154,14 @@
       "latitude": 37.14,
       "longitude": 27.85,
       "epoch_ms": 1795534784640
+    },
+    {
+      "id": "aka2026xhgksb",
+      "mag": 4.3,
+      "place": "11 km WSW of Point MacKenzie, Alaska",
+      "latitude": 61.308,
+      "longitude": -150.167,
+      "epoch_ms": 1795538251049
     }
   ]
 }
