@@ -261,8 +261,6 @@
     "122120442483450344_2058709004780156"
   ],
   "posted_ids": [
-    "us7000ty7h",
-    "emsc_20261114_0000100",
     "us7000ty7m",
     "emsc_20261114_0000110",
     "emsc_20261114_0000115",
@@ -760,17 +758,11 @@
     "emsc_20261123_0000292",
     "emsc_20261124_0000019",
     "us6000ud3i",
-    "emsc_20261124_0000024"
+    "emsc_20261124_0000024",
+    "emsc_20261124_0000028",
+    "us6000ud3m"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261122_0000132",
-      "mag": 4.3,
-      "place": "OFFSHORE OAXACA, MEXICO",
-      "latitude": 16.042,
-      "longitude": -95.09,
-      "epoch_ms": 1795342016000
-    },
     {
       "id": "emsc_20261122_0000138",
       "mag": 4.0,
@@ -1162,6 +1154,14 @@
       "latitude": 8.586,
       "longitude": -82.3068,
       "epoch_ms": 1795485385000
+    },
+    {
+      "id": "us6000ud3m",
+      "mag": 4.5,
+      "place": "9 km NNW of La Tronosa, Panama",
+      "latitude": 7.5171,
+      "longitude": -80.6224,
+      "epoch_ms": 1795485357417
     }
   ]
 }
