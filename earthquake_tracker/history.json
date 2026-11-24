@@ -261,7 +261,6 @@
     "122120442483450344_2058709004780156"
   ],
   "posted_ids": [
-    "emsc_20261114_0000096",
     "us7000ty7h",
     "emsc_20261114_0000100",
     "us7000ty7m",
@@ -760,17 +759,10 @@
     "emsc_20261124_0000002",
     "emsc_20261123_0000292",
     "emsc_20261124_0000019",
-    "us6000ud3i"
+    "us6000ud3i",
+    "emsc_20261124_0000024"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261122_0000121",
-      "mag": 5.0,
-      "place": "NORTHERN XINJIANG, CHINA",
-      "latitude": 43.432,
-      "longitude": 88.0153,
-      "epoch_ms": 1795338512430
-    },
     {
       "id": "emsc_20261122_0000132",
       "mag": 4.3,
@@ -1162,6 +1154,14 @@
       "latitude": 27.9353,
       "longitude": 87.9704,
       "epoch_ms": 1795483969070
+    },
+    {
+      "id": "emsc_20261124_0000024",
+      "mag": 4.1,
+      "place": "PANAMA-COSTA RICA BORDER REGION",
+      "latitude": 8.586,
+      "longitude": -82.3068,
+      "epoch_ms": 1795485385000
     }
   ]
 }
