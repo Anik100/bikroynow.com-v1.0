@@ -9,6 +9,7 @@ import { supabase, syncUserProfile, getInstantUser, consumeUrlOAuthHash } from '
 import { useLanguage } from '../context/LanguageContext';
 import { LOCATIONS, matchesLocationQuery } from '../lib/constants';
 import { playMessageNotification, requestNotificationPermission, registerServiceWorker, subscribeUserToPush } from '../lib/notificationAudio';
+import { updateAppBadge, clearAppBadge } from '../lib/appBadge';
 import styles from './Navbar.module.css';
 
 const ProfileMenu = dynamic(() => import('./ProfileMenu'), { ssr: false });
@@ -163,6 +164,7 @@ export default function Navbar() {
   useEffect(() => {
     if (!user?.id) {
       setUnreadCount(0);
+      clearAppBadge();
       return;
     }
 
@@ -189,6 +191,7 @@ export default function Navbar() {
             isFirstFetchRef.current = false;
             prevUnreadRef.current = totalUnread;
             setUnreadCount(totalUnread);
+            updateAppBadge(totalUnread);
           }
         }
       } catch (err) {

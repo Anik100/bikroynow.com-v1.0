@@ -38,7 +38,9 @@ export async function sendPushNotificationToUser(recipientUserId, payload) {
       url: payload.url || '/chat',
       icon: '/icon-192.png',
       badge: '/favicon-48x48.png',
-      tag: payload.tag || `bkr-msg-${Date.now()}`
+      tag: payload.tag || `bkr-msg-${Date.now()}`,
+      unreadCount: payload.unreadCount || payload.badgeCount || 1,
+      badgeCount: payload.unreadCount || payload.badgeCount || 1
     });
 
     let sent = 0;

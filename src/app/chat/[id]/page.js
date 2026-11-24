@@ -8,6 +8,7 @@ import { uploadToImgBB } from '../../../lib/imgbb';
 import { useLanguage } from '../../../context/LanguageContext';
 import { getRelativeTime, formatLastSeen, compressImage } from '../../../lib/utils';
 import { playMessageNotification, requestNotificationPermission } from '../../../lib/notificationAudio';
+import { clearAppBadge } from '../../../lib/appBadge';
 import styles from '../chat.module.css';
 import { Send, Camera, ChevronLeft, Loader2, User as UserIcon, ZoomIn, ZoomOut, X, Trash2, ShieldAlert, ShieldCheck } from 'lucide-react';
 
@@ -326,6 +327,7 @@ export default function ChatWindow({ params }) {
   const markAsRead = async (userId) => {
     if (!effectiveId || !userId) return;
     try {
+      clearAppBadge();
       fetch(`/api/chats/${effectiveId}/read`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

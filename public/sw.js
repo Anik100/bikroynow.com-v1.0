@@ -10,6 +10,12 @@ self.addEventListener('activate', (event) => {
 // Handle clicking on the notification from Android status bar / shade
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+
+  // Clear app launcher icon badge when notification is opened
+  if (self.navigator && 'clearAppBadge' in self.navigator) {
+    self.navigator.clearAppBadge().catch(() => {});
+  }
+
   const targetUrl = event.notification.data?.url || '/chat';
 
   event.waitUntil(
@@ -29,6 +35,13 @@ self.addEventListener('notificationclick', (event) => {
   );
 });
 
+// Clear app badge if user swipes away / closes notification
+self.addEventListener('notificationclose', (event) => {
+  if (self.navigator && 'clearAppBadge' in self.navigator) {
+    self.navigator.clearAppBadge().catch(() => {});
+  }
+});
+
 // Background push notification listener
 self.addEventListener('push', (event) => {
   let data = {};
@@ -36,6 +49,13 @@ self.addEventListener('push', (event) => {
     data = event.data ? event.data.json() : {};
   } catch (e) {
     data = { text: event.data ? event.data.text() : '' };
+  }
+
+  const unreadCount = Number(data.unreadCount || data.badgeCount || 1);
+
+  // Set App Launcher Icon Badge on Android / Desktop home screen
+  if (self.navigator && 'setAppBadge' in self.navigator) {
+    self.navigator.setAppBadge(unreadCount).catch(() => {});
   }
 
   const title = data.title || 'BikroyNow: নতুন মেসেজ এসেছে! 💬';
