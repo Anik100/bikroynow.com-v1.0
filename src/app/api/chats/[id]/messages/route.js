@@ -95,18 +95,21 @@ export async function POST(req, { params }) {
 
     const serverSupabase = getServerSupabase();
 
-    // 0. Check Block Status between sender and partner
     let partnerId = null;
+    let allChats = [];
+    let msgsList = [];
+
+    // Parallel Read: Fetch all_chats_list, blocked_users, and chat_msgs simultaneously
     if (serverSupabase) {
       try {
-        const { data: chatsRow } = await serverSupabase
-          .from('admin_settings')
-          .select('value')
-          .eq('key', 'all_chats_list')
-          .maybeSingle();
+        const [chatsRow, blockRow, msgsRow] = await Promise.all([
+          serverSupabase.from('admin_settings').select('value').eq('key', 'all_chats_list').maybeSingle(),
+          serverSupabase.from('admin_settings').select('value').eq('key', 'blocked_users').maybeSingle(),
+          serverSupabase.from('admin_settings').select('value').eq('key', 'chat_msgs_' + id).maybeSingle()
+        ]);
 
-        if (chatsRow?.value) {
-          const allChats = JSON.parse(chatsRow.value);
+        if (chatsRow?.data?.value) {
+          try { allChats = JSON.parse(chatsRow.data.value); } catch (_) {}
           if (Array.isArray(allChats)) {
             const currentChat = allChats.find(c => c.id === id);
             if (currentChat) {
@@ -137,15 +140,10 @@ export async function POST(req, { params }) {
           }
         }
 
-        if (partnerId) {
-          const { data: blockRow } = await serverSupabase
-            .from('admin_settings')
-            .select('value')
-            .eq('key', 'blocked_users')
-            .maybeSingle();
-
-          if (blockRow?.value) {
-            const blockedList = JSON.parse(blockRow.value);
+        // Check Block Status between sender and partner
+        if (partnerId && blockRow?.data?.value) {
+          try {
+            const blockedList = JSON.parse(blockRow.data.value);
             if (Array.isArray(blockedList)) {
               const cleanSender = String(sender_id).toLowerCase().trim();
               const cleanPartner = String(partnerId).toLowerCase().trim();
@@ -174,10 +172,14 @@ export async function POST(req, { params }) {
                 }, { status: 400 });
               }
             }
-          }
+          } catch (_) {}
+        }
+
+        if (msgsRow?.data?.value) {
+          try { msgsList = JSON.parse(msgsRow.data.value); } catch (_) {}
         }
       } catch (err) {
-        console.error('Error in block status check:', err);
+        console.error('Parallel read error in messages POST:', err);
       }
     }
 
@@ -191,103 +193,72 @@ export async function POST(req, { params }) {
       is_read: false
     };
 
-    let msgsList = [];
+    if (!Array.isArray(msgsList)) msgsList = [];
+    msgsList.push(newMsg);
 
-    // 1. Central persistent cloud store via admin_settings (works 100% reliably for ALL chats)
-    if (serverSupabase) {
-      try {
-        const { data: row } = await serverSupabase
-          .from('admin_settings')
-          .select('value')
-          .eq('key', 'chat_msgs_' + id)
-          .maybeSingle();
-
-        if (row?.value) {
-          try { msgsList = JSON.parse(row.value); } catch (e) {}
+    // Update conversation timestamp
+    if (Array.isArray(allChats)) {
+      const currentChat = allChats.find(c => c.id === id);
+      if (currentChat) {
+        currentChat.updated_at = newMsg.created_at;
+        if (Array.isArray(currentChat.deleted_for) && partnerId) {
+          currentChat.deleted_for = currentChat.deleted_for.filter(a => String(a).toLowerCase() !== String(partnerId).toLowerCase());
         }
-        if (!Array.isArray(msgsList)) msgsList = [];
-        msgsList.push(newMsg);
-
-        await serverSupabase
-          .from('admin_settings')
-          .upsert({
-            key: 'chat_msgs_' + id,
-            value: JSON.stringify(msgsList)
-          }, { onConflict: 'key' });
-
-        // Update updated_at in all_chats_list to bump conversation to top
-        const { data: chatsRow } = await serverSupabase
-          .from('admin_settings')
-          .select('value')
-          .eq('key', 'all_chats_list')
-          .maybeSingle();
-
-        if (chatsRow?.value) {
-          const allChats = JSON.parse(chatsRow.value);
-          if (Array.isArray(allChats)) {
-            const currentChat = allChats.find(c => c.id === id);
-            if (currentChat) {
-              currentChat.updated_at = newMsg.created_at;
-              // If receiver had deleted chat previously, un-hide it upon incoming message
-              if (Array.isArray(currentChat.deleted_for) && partnerId) {
-                currentChat.deleted_for = currentChat.deleted_for.filter(a => String(a).toLowerCase() !== String(partnerId).toLowerCase());
-              }
-              await serverSupabase
-                .from('admin_settings')
-                .upsert({
-                  key: 'all_chats_list',
-                  value: JSON.stringify(allChats)
-                }, { onConflict: 'key' });
-            }
-          }
-        }
-      } catch (err) {
-        console.error('Error saving chat_msgs to admin_settings:', err);
       }
     }
 
-    // 2. Try inserting to Supabase messages table if UUID
-    const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
-    if (isValidUUID && serverSupabase) {
-      try {
-        await serverSupabase
-          .from('messages')
-          .insert({
+    // Parallel Writes & Push: Write msgs, update chat list, insert to DB and fire push notification all at once
+    if (serverSupabase) {
+      const parallelTasks = [
+        serverSupabase.from('admin_settings').upsert({
+          key: 'chat_msgs_' + id,
+          value: JSON.stringify(msgsList)
+        }, { onConflict: 'key' }),
+        serverSupabase.from('admin_settings').upsert({
+          key: 'all_chats_list',
+          value: JSON.stringify(allChats)
+        }, { onConflict: 'key' })
+      ];
+
+      const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+      if (isValidUUID) {
+        parallelTasks.push(
+          serverSupabase.from('messages').insert({
             chat_id: id,
             sender_id: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(sender_id) ? sender_id : null,
             content: content || null,
             image_url: image_url || null,
             is_read: false
-          });
-      } catch (e) {}
+          }).then(() => {}).catch(() => {})
+        );
+      }
+
+      if (partnerId) {
+        const msgSnippet = content ? (content.length > 80 ? content.substring(0, 77) + '...' : content) : (image_url ? '📷 [ছবি]' : 'নতুন মেসেজ এসেছে');
+        const unreadForPartner = Array.isArray(msgsList)
+          ? Math.max(1, msgsList.filter(m => !m.is_read && m.sender_id !== partnerId).length)
+          : 1;
+        parallelTasks.push(
+          sendPushNotificationToUser(partnerId, {
+            title: 'BikroyNow: নতুন মেসেজ এসেছে 💬',
+            body: msgSnippet,
+            url: `/chat/${id}`,
+            tag: `chat-msg-${id}-${Date.now()}`,
+            unreadCount: unreadForPartner,
+            badgeCount: unreadForPartner
+          }).catch(err => console.warn('Background push delivery error:', err))
+        );
+      }
+
+      await Promise.all(parallelTasks);
     }
 
-    // 3. Save to local store fallback
+    // Local fallback store
     try {
       const allMsgs = getMessages();
       allMsgs.push(newMsg);
       saveMessages(allMsgs);
     } catch (e) {}
-
-    // 4. Send background push notification to recipient partner
-    if (partnerId) {
-      const msgSnippet = content ? (content.length > 80 ? content.substring(0, 77) + '...' : content) : (image_url ? '📷 [ছবি]' : 'নতুন মেসেজ এসেছে');
-      const unreadForPartner = Array.isArray(msgsList)
-        ? Math.max(1, msgsList.filter(m => !m.is_read && m.sender_id !== partnerId).length)
-        : 1;
-      try {
-        await sendPushNotificationToUser(partnerId, {
-          title: 'BikroyNow: নতুন মেসেজ এসেছে 💬',
-          body: msgSnippet,
-          url: `/chat/${id}`,
-          tag: `chat-msg-${id}-${Date.now()}`,
-          unreadCount: unreadForPartner,
-          badgeCount: unreadForPartner
-        });
-      } catch (err) {
-        console.warn('Background push delivery non-fatal error:', err);
-      }
-    }
 
     return NextResponse.json({ success: true, message: newMsg }, {
       headers: {

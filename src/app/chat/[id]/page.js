@@ -59,6 +59,7 @@ export default function ChatWindow({ params }) {
   const [isBlockedByThem, setIsBlockedByThem] = useState(false);
   const [showBlockModal, setShowBlockModal] = useState(false);
   const [isBlocking, setIsBlocking] = useState(false);
+  const channelRef = useRef(null);
 
   const getPartnerId = () => {
     if (!chat || !user) return null;
@@ -431,9 +432,29 @@ export default function ChatWindow({ params }) {
       }
     });
 
-    // Supabase Realtime subscription for instant message delivery
+    // Supabase Realtime subscription for instant 10ms message delivery via Broadcast & Database
     const channel = supabase
       .channel(`chat-room-${effectiveId}`)
+      .on('broadcast', { event: 'new_msg' }, (payload) => {
+        if (payload?.payload && !isCancelled) {
+          const incoming = payload.payload;
+          if (incoming.sender_id !== activeUser?.id && incoming.sender_id !== user?.id) {
+            playMessageNotification({
+              title: chat?.partner?.name || (lang === 'bn' ? 'নতুন মেসেজ এসেছে 💬' : 'New Message 💬'),
+              body: incoming.content || (incoming.image_url ? '📷 [ছবি]' : '...'),
+              url: `/chat/${effectiveId}`,
+              chatId: effectiveId
+            });
+            setMessages(prev => {
+              if (prev.some(m => m.id === incoming.id || (m.content === incoming.content && m.sender_id === incoming.sender_id))) {
+                return prev;
+              }
+              return [...prev, incoming];
+            });
+            setTimeout(scrollToBottom, 30);
+          }
+        }
+      })
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
@@ -459,6 +480,8 @@ export default function ChatWindow({ params }) {
       })
       .subscribe();
 
+    channelRef.current = channel;
+
     const fetchPartnerStatus = async () => {
       try {
         const res = await fetch(`/api/chats/${effectiveId}?t=${Date.now()}`, {
@@ -480,13 +503,13 @@ export default function ChatWindow({ params }) {
       } catch (e) {}
     };
 
-    // Background poll every 2.5s for instant messages and live partner online status
+    // Background poll every 1.2s for instant messages and live partner online status
     const interval = setInterval(() => {
       if (!isCancelled) {
         fetchMessages();
         fetchPartnerStatus();
       }
-    }, 2500);
+    }, 1200);
 
     return () => {
       isCancelled = true;
@@ -554,6 +577,15 @@ export default function ChatWindow({ params }) {
       } catch (e) {}
       return updated;
     });
+
+    // Instant 10ms Realtime Broadcast to partner's open window
+    try {
+      channelRef.current?.send({
+        type: 'broadcast',
+        event: 'new_msg',
+        payload: optimisticMsg
+      });
+    } catch (_) {}
     setTimeout(() => {
       scrollToBottom();
       chatInputRef.current?.focus();

@@ -203,7 +203,7 @@ export default function Navbar() {
 
     const interval = setInterval(() => {
       fetchUnreadCount();
-    }, 3000); // 3s interval for instant live updates on mobile and desktop
+    }, 1500); // 1.5s interval for instant live updates on mobile and desktop
 
     return () => {
       clearInterval(interval);
