@@ -261,7 +261,6 @@
     "122120442483450344_2058709004780156"
   ],
   "posted_ids": [
-    "us7000ty9l",
     "emsc_20261114_0000197",
     "emsc_20261114_0000206",
     "emsc_20261114_0000210",
@@ -760,17 +759,10 @@
     "us6000ud6h",
     "emsc_20261124_0000145",
     "emsc_20261124_0000146",
-    "us6000ud6z"
+    "us6000ud6z",
+    "emsc_20261124_0000152"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261122_0000259",
-      "mag": 4.1,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 13.926,
-      "longitude": -93.048,
-      "epoch_ms": 1795373489000
-    },
     {
       "id": "emsc_20261122_0000267",
       "mag": 4.3,
@@ -1162,6 +1154,14 @@
       "latitude": 14.6308,
       "longitude": -93.1373,
       "epoch_ms": 1795521105580
+    },
+    {
+      "id": "emsc_20261124_0000152",
+      "mag": 4.0,
+      "place": "NEAR EAST COAST OF HONSHU, JAPAN",
+      "latitude": 37.0,
+      "longitude": 141.1,
+      "epoch_ms": 1795522050000
     }
   ]
 }
