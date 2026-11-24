@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSupabase } from '../../../../../lib/serverSupabase';
 import { getMessages, saveMessages } from '../../../../../lib/chatsStore';
+import { sendPushNotificationToUser } from '../../../../../lib/pushSender';
 
 export const dynamic = 'force-dynamic';
 
@@ -247,6 +248,19 @@ export async function POST(req, { params }) {
       allMsgs.push(newMsg);
       saveMessages(allMsgs);
     } catch (e) {}
+
+    // 4. Send background push notification to recipient partner
+    if (partnerId) {
+      const msgSnippet = content ? (content.length > 80 ? content.substring(0, 77) + '...' : content) : (image_url ? '📷 [ছবি]' : 'নতুন মেসেজ এসেছে');
+      sendPushNotificationToUser(partnerId, {
+        title: 'BikroyNow: নতুন মেসেজ এসেছে 💬',
+        body: msgSnippet,
+        url: `/chat/${id}`,
+        tag: `chat-msg-${id}`
+      }).catch(err => {
+        console.warn('Background push delivery non-fatal error:', err);
+      });
+    }
 
     return NextResponse.json({ success: true, message: newMsg }, {
       headers: {

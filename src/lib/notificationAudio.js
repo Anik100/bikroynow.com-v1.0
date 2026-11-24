@@ -66,6 +66,56 @@ export const playNotificationSound = () => {
   }
 };
 
+// Base64 helper for VAPID public key conversion
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
+// Subscribes current device to Web Push and syncs endpoint with backend API
+export const subscribeUserToPush = async (userId) => {
+  if (typeof window === 'undefined' || !('serviceWorker' in navigator) || !('PushManager' in window)) {
+    return null;
+  }
+  if (!userId) return null;
+
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    if (!reg.pushManager) return null;
+
+    const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || 'BJOmaOksk0mUbNzIe1FiT34MpGAlus-RlYNnVwRCdT3dm_C_ny2BvFsLJzZET4MLRhL1CP4xlKks-WOYBvnlxmI';
+
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(vapidKey)
+      });
+    }
+
+    if (sub) {
+      await fetch('/api/notifications/push-subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id: userId,
+          subscription: sub.toJSON()
+        })
+      }).catch(() => {});
+      return sub;
+    }
+  } catch (err) {
+    console.warn('[PushManager] subscribe error:', err);
+  }
+  return null;
+};
+
 // Auto-register Service Worker on mobile / desktop browsers
 export const registerServiceWorker = async () => {
   if (typeof window === 'undefined' || !('serviceWorker' in navigator)) return null;
@@ -78,15 +128,20 @@ export const registerServiceWorker = async () => {
   }
 };
 
-export const requestNotificationPermission = async () => {
+export const requestNotificationPermission = async (userId = null) => {
   if (typeof window === 'undefined' || !('Notification' in window)) return 'unsupported';
-  if (Notification.permission === 'granted') return 'granted';
+  if (Notification.permission === 'granted') {
+    registerServiceWorker();
+    if (userId) subscribeUserToPush(userId);
+    return 'granted';
+  }
   if (Notification.permission === 'denied') return 'denied';
 
   try {
     const perm = await Notification.requestPermission();
     if (perm === 'granted') {
-      registerServiceWorker();
+      await registerServiceWorker();
+      if (userId) subscribeUserToPush(userId);
     }
     return perm;
   } catch (e) {

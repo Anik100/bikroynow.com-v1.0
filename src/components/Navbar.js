@@ -8,7 +8,7 @@ import { Search, MessageCircle, User, PlusCircle, Globe, MapPin, X, Home as Home
 import { supabase, syncUserProfile, getInstantUser, consumeUrlOAuthHash } from '../lib/supabaseClient';
 import { useLanguage } from '../context/LanguageContext';
 import { LOCATIONS, matchesLocationQuery } from '../lib/constants';
-import { playMessageNotification, requestNotificationPermission, registerServiceWorker } from '../lib/notificationAudio';
+import { playMessageNotification, requestNotificationPermission, registerServiceWorker, subscribeUserToPush } from '../lib/notificationAudio';
 import styles from './Navbar.module.css';
 
 const ProfileMenu = dynamic(() => import('./ProfileMenu'), { ssr: false });
@@ -96,6 +96,9 @@ export default function Navbar() {
 
   useEffect(() => {
     registerServiceWorker();
+    if (user?.id) {
+      subscribeUserToPush(user.id);
+    }
     if (typeof window !== 'undefined' && 'Notification' in window) {
       if (Notification.permission === 'default') {
         const timer = setTimeout(() => {
@@ -109,7 +112,7 @@ export default function Navbar() {
         return () => clearTimeout(timer);
       }
     }
-  }, []);
+  }, [user?.id]);
   const prevUnreadRef = useRef(null);
   const isFirstFetchRef = useRef(true);
 
@@ -852,7 +855,7 @@ export default function Navbar() {
               type="button"
               onClick={async () => {
                 setShowNotificationBanner(false);
-                await requestNotificationPermission();
+                await requestNotificationPermission(user?.id);
               }}
               style={{
                 background: '#10b981',

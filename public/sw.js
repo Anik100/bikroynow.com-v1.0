@@ -41,11 +41,13 @@ self.addEventListener('push', (event) => {
   const title = data.title || 'BikroyNow: নতুন মেসেজ এসেছে! 💬';
   const options = {
     body: data.body || data.text || 'আপনার বিজ্ঞাপনে একজন ক্রেতা মেসেজ পাঠিয়েছেন।',
-    icon: '/icon-192.png',
-    badge: '/favicon-48x48.png',
-    vibrate: [200, 100, 200],
-    tag: 'bikroynow-new-message',
+    icon: data.icon || '/icon-192.png',
+    badge: data.badge || '/favicon-48x48.png',
+    vibrate: [250, 100, 250, 100, 250],
+    sound: '/sounds/message_notification.wav',
+    tag: data.tag || 'bikroynow-new-message',
     renotify: true,
+    requireInteraction: true,
     data: {
       url: data.url || '/chat'
     }
