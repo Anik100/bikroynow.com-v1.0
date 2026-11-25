@@ -628,18 +628,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static final String CHANNEL_ID = "bikroynow_messages";
+    private static final String CHANNEL_ID = "bikroynow_silent_badge_channel";
     private static final int BADGE_NOTIFICATION_ID = 9001;
 
     private void initNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
-                    "মেসেজ নোটিফিকেশন",
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    "মেসেজ ও ব্যাজ নোটিফিকেশন",
+                    NotificationManager.IMPORTANCE_LOW
             );
-            channel.setDescription("নতুন চ্যাট ও মেসেজ নোটিফিকেশন");
+            channel.setDescription("নতুন চ্যাট ও অ্যাপ আইকন ব্যাজ");
             channel.setShowBadge(true);
+            channel.setSound(null, null);
+            channel.enableVibration(false);
             NotificationManager manager = getSystemService(NotificationManager.class);
             if (manager != null) {
                 manager.createNotificationChannel(channel);
@@ -660,7 +662,7 @@ public class MainActivity extends AppCompatActivity {
                         ShortcutBadger.removeCount(context.getApplicationContext());
                     }
 
-                    // 2. Android System Notification with Badge Counter (Only notify in status bar if app is in background)
+                    // 2. Android System Notification with Badge Counter (Completely silent - zero duplicate sound!)
                     NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     if (manager != null) {
                         if (count <= 0) {
@@ -687,8 +689,11 @@ public class MainActivity extends AppCompatActivity {
                                     .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                                     .setContentIntent(pendingIntent)
                                     .setAutoCancel(true)
-                                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                                    .setDefaults(NotificationCompat.DEFAULT_ALL);
+                                    .setSilent(true)
+                                    .setSound(null)
+                                    .setVibrate(null)
+                                    .setOnlyAlertOnce(true)
+                                    .setPriority(NotificationCompat.PRIORITY_LOW);
 
                             if (Build.VERSION.SDK_INT < 33 ||
                                     ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
