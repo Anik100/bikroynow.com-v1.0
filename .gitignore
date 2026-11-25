@@ -45,6 +45,3 @@ earthquake_tracker/output/*
 # scratch
 scratch/
 
-# android apk
-*.apk
-public/*.apk
