@@ -1,7 +1,6 @@
-package com.bikroynow.official;
+package com.bikroynow.bd;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ClipData;
 import android.content.Context;
@@ -28,7 +27,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+public class MainActivity extends AppCompatActivity {
 
     private static final String APP_URL = "https://www.bikroynow.com";
     private static final int FILE_CHOOSER_RESULT_CODE = 1001;
@@ -36,6 +40,7 @@ public class MainActivity extends Activity {
 
     private WebView mWebView;
     private ProgressBar mProgressBar;
+    private SwipeRefreshLayout mSwipeRefresh;
     private LinearLayout mErrorLayout;
     private Button mBtnRetry;
     private ValueCallback<Uri[]> mFilePathCallback;
@@ -47,11 +52,20 @@ public class MainActivity extends Activity {
 
         mWebView = findViewById(R.id.webView);
         mProgressBar = findViewById(R.id.progressBar);
+        mSwipeRefresh = findViewById(R.id.swipeRefresh);
         mErrorLayout = findViewById(R.id.errorLayout);
         mBtnRetry = findViewById(R.id.btnRetry);
 
         initWebView();
         checkAndRequestPermissions();
+
+        mSwipeRefresh.setColorSchemeResources(R.color.primary, R.color.accent);
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mWebView.reload();
+            }
+        });
 
         mBtnRetry.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,8 +85,8 @@ public class MainActivity extends Activity {
 
     private void checkAndRequestPermissions() {
         if (Build.VERSION.SDK_INT >= 33) {
-            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{
                         Manifest.permission.POST_NOTIFICATIONS,
                         Manifest.permission.CAMERA
                 }, PERMISSIONS_REQUEST_CODE);
@@ -118,6 +132,7 @@ public class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 mProgressBar.setVisibility(View.GONE);
+                mSwipeRefresh.setRefreshing(false);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     CookieManager.getInstance().flush();
                 }
@@ -127,6 +142,7 @@ public class MainActivity extends Activity {
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 if (request.isForMainFrame()) {
                     mProgressBar.setVisibility(View.GONE);
+                    mSwipeRefresh.setRefreshing(false);
                     mWebView.setVisibility(View.GONE);
                     mErrorLayout.setVisibility(View.VISIBLE);
                 }
@@ -300,8 +316,8 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void requestNotificationPermission() {
             if (Build.VERSION.SDK_INT >= 33) {
-                if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSIONS_REQUEST_CODE);
+                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSIONS_REQUEST_CODE);
                 }
             }
         }
