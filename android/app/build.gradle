@@ -1,0 +1,42 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.bikroynow.official'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.bikroynow.official"
+        minSdk 21
+        targetSdk 34
+        versionCode 4
+        versionName "1.0.3"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../bikroynow-release.jks")
+            storePassword "bikroynow2026"
+            keyAlias "bikroynow"
+            keyPassword "bikroynow2026"
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+}
