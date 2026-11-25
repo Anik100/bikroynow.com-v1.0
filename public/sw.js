@@ -7,6 +7,11 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim());
 });
 
+// Pass-through fetch event listener required by Google Chrome / Android for PWA installability criteria
+self.addEventListener('fetch', (event) => {
+  // Pass through network requests
+});
+
 // Handle clicking on the notification from Android status bar / shade
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();

@@ -200,7 +200,7 @@ export default function AppInstallBanner() {
               className={styles.modalDoneBtn}
               onClick={() => {
                 setShowManualModal(false);
-                markPWAInstalled();
+                dismissInstallPopup();
                 setVisible(false);
               }}
             >

@@ -1,8 +1,10 @@
 {
+  "id": "/",
   "name": "BikroyNow",
   "short_name": "BikroyNow",
   "description": "Buy & Sell Anything in Bangladesh",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#F59E0B",

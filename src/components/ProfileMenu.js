@@ -689,8 +689,6 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
             <button
               onClick={() => {
                 setShowInstallGuide(false);
-                markPWAInstalled();
-                setIsInstalled(true);
               }}
               style={{
                 marginTop: '1.25rem',
