@@ -282,7 +282,6 @@
     "122117973015450344_1419476739756974"
   ],
   "posted_ids": [
-    "us7000tyg6",
     "emsc_20261115_0000257",
     "emsc_20261115_0000259",
     "us7000tyga",
@@ -781,17 +780,10 @@
     "emsc_20261125_0000133",
     "emsc_20261125_0000138",
     "us6000udef",
-    "emsc_20261125_0000144"
+    "emsc_20261125_0000144",
+    "emsc_20261125_0000145"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261123_0000204",
-      "mag": 4.7,
-      "place": "KEP. TANIMBAR REGION, INDONESIA",
-      "latitude": -6.889,
-      "longitude": 131.124,
-      "epoch_ms": 1795449339850
-    },
     {
       "id": "us6000ud18",
       "mag": 4.2,
@@ -1183,6 +1175,14 @@
       "latitude": 17.35,
       "longitude": -94.623,
       "epoch_ms": 1795596164000
+    },
+    {
+      "id": "emsc_20261125_0000145",
+      "mag": 4.2,
+      "place": "OFF COAST OF CENTRAL PERU",
+      "latitude": -15.38,
+      "longitude": -76.0,
+      "epoch_ms": 1795597652000
     }
   ]
 }
