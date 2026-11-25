@@ -186,51 +186,23 @@ export default function AppInstallBanner() {
                 </>
               ) : (
                 <>
-                  <div style={{ marginBottom: '14px', padding: '12px', background: '#ecfdf5', borderRadius: '12px', border: '1px solid #a7f3d0', textAlign: 'center' }}>
-                    <p style={{ margin: '0 0 10px 0', fontSize: '0.85rem', color: '#065f46', fontWeight: 600 }}>
-                      {lang === 'bn' ? 'সরাসরি মোবাইলে অফিসিয়াল অ্যাপ ইনস্টল করুন:' : 'Install the official Android app directly:'}
-                    </p>
-                    <a
-                      href="/BikroyNow.apk"
-                      download="BikroyNow.apk"
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '8px',
-                        background: '#059669',
-                        color: 'white',
-                        padding: '10px 18px',
-                        borderRadius: '10px',
-                        fontWeight: 700,
-                        fontSize: '0.92rem',
-                        textDecoration: 'none',
-                        boxShadow: '0 4px 12px rgba(5,150,105,0.25)',
-                        width: '100%',
-                        boxSizing: 'border-box'
-                      }}
-                      onClick={() => {
-                        setShowManualModal(false);
-                        dismissInstallPopup();
-                        setVisible(false);
-                      }}
-                    >
-                      <Download size={18} />
-                      {lang === 'bn' ? 'Android APK ডাউনলোড করুন (54 MB)' : 'Download Android APK'}
-                    </a>
-                  </div>
-
-                  <p style={{ margin: '0 0 10px 0', fontSize: '0.82rem', color: '#64748b', textAlign: 'center' }}>
-                    {lang === 'bn' ? '— অথবা ব্রাউজার থেকে ইনস্টল করুন —' : '— OR Install from browser menu —'}
+                  <p style={{ margin: '0 0 12px 0', fontSize: '0.88rem', color: '#1e293b', fontWeight: 600 }}>
+                    {lang === 'bn'
+                      ? 'ব্রাউজার মেনু থেকে সরাসরি অ্যাপ ইনস্টল করুন:'
+                      : 'Install app directly from your browser menu:'}
                   </p>
                   <div className={styles.stepList}>
                     <div className={styles.stepItem}>
                       <span className={styles.stepBadge}>১</span>
-                      <span>ব্রাউজারের উপরে/নিচে <strong>৩-ডট (⋮) <MoreVertical size={14} style={{ display: 'inline', verticalAlign: 'middle' }} /></strong> মেনুতে চাপ দিন</span>
+                      <span>ব্রাউজারের উপরে ডানপাশে <strong>৩-ডট (⋮) <MoreVertical size={14} style={{ display: 'inline', verticalAlign: 'middle' }} /></strong> মেনুতে চাপ দিন</span>
                     </div>
                     <div className={styles.stepItem}>
                       <span className={styles.stepBadge}>২</span>
-                      <span><strong>&quot;Install app&quot;</strong> অথবা <strong>&quot;Add to Home screen&quot;</strong> চাপুন</span>
+                      <span>মেনুর তালিকা থেকে <strong>&quot;Install app&quot;</strong> (বা <strong>&quot;Add to Home screen&quot;</strong>) চাপুন</span>
+                    </div>
+                    <div className={styles.stepItem}>
+                      <span className={styles.stepBadge}>৩</span>
+                      <span><strong>&quot;Install&quot;</strong> ট্যাপ করলেই BikroyNow অ্যাপটি ফোনে ইনস্টল হয়ে যাবে</span>
                     </div>
                   </div>
                 </>

@@ -151,7 +151,30 @@ export function markPWAInstalled() {
 export async function promptPWAInstall({ onAccepted, onDismissed, onFallback } = {}) {
   if (typeof window === 'undefined') return { success: false };
 
-  const prompt = getDeferredPrompt();
+  let prompt = getDeferredPrompt();
+
+  // If prompt is not yet available, wait up to 800ms in case beforeinstallprompt is in-flight
+  if (!prompt) {
+    await new Promise((resolve) => {
+      let resolved = false;
+      const onReady = () => {
+        if (!resolved) {
+          resolved = true;
+          window.removeEventListener('pwa_prompt_ready', onReady);
+          resolve();
+        }
+      };
+      window.addEventListener('pwa_prompt_ready', onReady);
+      setTimeout(() => {
+        if (!resolved) {
+          resolved = true;
+          window.removeEventListener('pwa_prompt_ready', onReady);
+          resolve();
+        }
+      }, 800);
+    });
+    prompt = getDeferredPrompt();
+  }
 
   if (prompt) {
     try {

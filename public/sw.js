@@ -1,10 +1,18 @@
-// BikroyNow Service Worker for Android Mobile Push & In-Browser Notifications
+// BikroyNow Service Worker for Android Mobile Push & In-Browser Notifications (v2)
+const CACHE_NAME = 'bikroynow-sw-v2';
+
 self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+  event.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+      );
+    }).then(() => self.clients.claim())
+  );
 });
 
 // Pass-through fetch event listener required by Google Chrome / Android for PWA installability criteria
