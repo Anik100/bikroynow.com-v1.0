@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
         isSplashDismissed = true;
 
         long elapsed = System.currentTimeMillis() - splashLaunchTime;
-        long minDisplayDuration = 1800; // 1.8 seconds minimum so user sees the welcome screen smoothly
+        long minDisplayDuration = 2000; // 2 seconds so user sees the custom splash artwork cleanly
         long remaining = Math.max(0, minDisplayDuration - elapsed);
 
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {

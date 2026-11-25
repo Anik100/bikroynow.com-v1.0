@@ -72,91 +72,22 @@
             android:paddingRight="24dp" />
     </LinearLayout>
 
-    <!-- Professional Fullscreen Native Splash Screen Overlay -->
+    <!-- Fullscreen Native Splash Screen with User's Custom Artwork -->
     <RelativeLayout
         android:id="@+id/splashLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF"
+        android:background="#FFA000"
         android:clickable="true"
         android:focusable="true">
 
-        <!-- Center Content -->
-        <LinearLayout
+        <ImageView
+            android:id="@+id/splashImage"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <!-- App Logo -->
-            <ImageView
-                android:id="@+id/splashLogo"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/app_logo"
-                android:contentDescription="@string/app_name"
-                android:layout_marginBottom="18dp" />
-
-            <!-- Brand Name -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="BikroyNow"
-                android:textColor="#0F172A"
-                android:textSize="26sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.02"
-                android:layout_marginBottom="6dp" />
-
-            <!-- Welcome Message in Bengali -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ওয়েলকাম টু বিক্রয় নাও ডট কম"
-                android:textColor="#D97706"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="6dp" />
-
-            <!-- Tagline -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ক্রয়-বিক্রয়ের সহজ ও নিরাপদ মাধ্যম"
-                android:textColor="#64748B"
-                android:textSize="13sp"
-                android:layout_marginBottom="28dp" />
-
-            <!-- Smooth Indeterminate Progress Bar -->
-            <ProgressBar
-                android:id="@+id/splashProgressBar"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:indeterminate="true" />
-
-        </LinearLayout>
-
-        <!-- Bottom Footer Branding -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="24dp"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="www.bikroynow.com"
-                android:textColor="#94A3B8"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/splash_screen"
+            android:contentDescription="@string/app_name" />
 
     </RelativeLayout>
 
