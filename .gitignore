@@ -45,7 +45,12 @@ earthquake_tracker/output/*
 # scratch
 scratch/
 
-# android apk
+# android apk (allow lightweight official release apk)
 *.apk
-public/*.apk
+!public/BikroyNow.apk
+!android/BikroyNow.apk
+android/build/
+android/app/build/
+android/.gradle/
+
 

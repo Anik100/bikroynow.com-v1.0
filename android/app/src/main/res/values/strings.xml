@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BikroyNow</string>
+    <string name="error_title">সংযোগ ত্রুটি (Connection Error)</string>
+    <string name="error_message">ইন্টারনেট সংযোগ চেক করুন এবং পুনরায় চেষ্টা করুন।</string>
+    <string name="btn_retry">পুনরায় চেষ্টা করুন (Retry)</string>
+</resources>

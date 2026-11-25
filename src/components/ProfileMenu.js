@@ -23,10 +23,17 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
   const [isInstalled, setIsInstalled] = useState(false);
   const [showInstallGuide, setShowInstallGuide] = useState(false);
   const [notifGranted, setNotifGranted] = useState(false);
+  const [isNativeApp, setIsNativeApp] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      setNotifGranted(Notification.permission === 'granted');
+    if (typeof window !== 'undefined') {
+      const isNative = !!window.AndroidNative || navigator.userAgent.includes('BikroyNowApp');
+      setIsNativeApp(isNative);
+      if ('Notification' in window) {
+        setNotifGranted(Notification.permission === 'granted' || isNative);
+      } else if (isNative) {
+        setNotifGranted(true);
+      }
     }
   }, []);
 
@@ -560,6 +567,17 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
           <div
             className={styles.menuItem}
             onClick={async () => {
+              if (isNativeApp) {
+                if (typeof window !== 'undefined' && window.AndroidNative?.requestNotificationPermission) {
+                  window.AndroidNative.requestNotificationPermission();
+                }
+                setNotifGranted(true);
+                alert(lang === 'bn' 
+                  ? 'অফিসিয়াল অ্যান্ড্রয়েড অ্যাপে সরাসরি সিস্টেম নোটিফিকেশন সক্রিয় রয়েছে! 🎉' 
+                  : 'System notifications are active in the official Android app! 🎉');
+                return;
+              }
+
               if (typeof window !== 'undefined' && 'Notification' in window) {
                 if (Notification.permission === 'granted') {
                   if (user?.id) {
@@ -576,9 +594,12 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
                   }
                   alert(lang === 'bn' ? 'মেসেজ নোটিফিকেশন সফলভাবে চালু হয়েছে! 🎉' : 'Notifications successfully enabled! 🎉');
                 } else if (perm === 'denied') {
-                  alert(lang === 'bn' 
-                    ? 'আপনার ব্রাউজারে নোটিফিকেশন ব্লক করা আছে। চালু করতে: উপরে তালা (🔒) আইকনে চাপ দিয়ে Notifications: Allow করে দিন।' 
-                    : 'Notifications are blocked in your browser. Click the lock icon in the address bar to allow.');
+                  const wantApk = confirm(lang === 'bn' 
+                    ? 'আপনার ব্রাউজারে নোটিফিকেশন ব্লক করা আছে। ক্রোম ব্রাউজারে সাইট সেটিংসে গিয়ে Notifications: Allow করতে পারেন।\n\nঅথবা আপনি কি সরাসরি নোটিফিকেশন পেতে অফিসিয়াল BikroyNow APK (মাত্র ১১৭ কেবি) ডাউনলোড করতে চান?' 
+                    : 'Notifications are blocked in browser settings.\n\nWould you like to download the official lightweight BikroyNow APK (117 KB) for direct notifications?');
+                  if (wantApk) {
+                    window.location.href = '/BikroyNow.apk';
+                  }
                 }
               }
             }}
@@ -587,17 +608,21 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
             <Bell size={20} color={notifGranted ? '#059669' : '#f59e0b'} />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <span style={{ color: notifGranted ? '#059669' : '#1c2b38', fontWeight: 650 }}>
-                {notifGranted 
-                  ? (lang === 'bn' ? 'মেসেজ নোটিফিকেশন (চালু আছে)' : 'Message Alerts (Active)')
-                  : (lang === 'bn' ? 'নোটিফিকেশন চালু করুন' : 'Enable Notifications')}
+                {isNativeApp 
+                  ? (lang === 'bn' ? 'মেসেজ নোটিফিকেশন (অফিসিয়াল অ্যাপ)' : 'Message Alerts (Native App)')
+                  : (notifGranted 
+                    ? (lang === 'bn' ? 'মেসেজ নোটিফিকেশন (চালু আছে)' : 'Message Alerts (Active)')
+                    : (lang === 'bn' ? 'নোটিফিকেশন চালু করুন' : 'Enable Notifications'))}
               </span>
               <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 500 }}>
-                {notifGranted
-                  ? (lang === 'bn' ? 'নতুন মেসেজ এলে ফোনে সরাসরি অ্যালার্ট পাবেন' : 'You will receive alerts on new messages')
-                  : (lang === 'bn' ? 'মেসেজ আসার সাথে সাথে অ্যালার্ট পেতে ট্যাপ করুন' : 'Tap to receive instant message alerts')}
+                {isNativeApp
+                  ? (lang === 'bn' ? 'অফিসিয়াল অ্যাপে নোটিফিকেশন সিস্টেম দ্বারা সক্রিয়' : 'Active via native Android app')
+                  : (notifGranted
+                    ? (lang === 'bn' ? 'নতুন মেসেজ এলে ফোনে সরাসরি অ্যালার্ট পাবেন' : 'You will receive alerts on new messages')
+                    : (lang === 'bn' ? 'মেসেজ আসার সাথে সাথে অ্যালার্ট পেতে ট্যাপ করুন' : 'Tap to receive instant message alerts'))}
               </span>
             </div>
-            {notifGranted && (
+            {(notifGranted || isNativeApp) && (
               <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#059669', fontWeight: 800 }}>
                 ✓
               </span>
@@ -608,10 +633,23 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
           <div
             className={styles.menuItem}
             onClick={async () => {
-              if (isStandalone()) {
-                alert(lang === 'bn' ? 'আপনি ইতিমধ্যে BikroyNow অ্যাপে আছেন!' : 'You are already in BikroyNow app!');
+              if (isNativeApp) {
+                alert(lang === 'bn' 
+                  ? 'আপনি ইতিমধ্যে অফিসিয়াল BikroyNow Native Android App ব্যবহার করছেন! ✓' 
+                  : 'You are using the official BikroyNow Native Android App! ✓');
                 return;
               }
+
+              if (isStandalone()) {
+                const wantApk = confirm(lang === 'bn' 
+                  ? 'আপনি ওয়েব অ্যাপ ব্যবহার করছেন। আপনি কি সরাসরি অফিসিয়াল BikroyNow APK (মাত্র ১১৭ কেবি) ডাউনলোড করতে চান?' 
+                  : 'You are using the Web App. Would you like to download the official BikroyNow APK (117 KB)?');
+                if (wantApk) {
+                  window.location.href = '/BikroyNow.apk';
+                }
+                return;
+              }
+
               const res = await promptPWAInstall({
                 onAccepted: () => {
                   setIsInstalled(true);
@@ -626,20 +664,24 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
             }}
             style={{ cursor: 'pointer' }}
           >
-            <Download size={20} color={isStandalone() ? '#059669' : '#f59e0b'} />
+            <Download size={20} color={(isNativeApp || isStandalone()) ? '#059669' : '#f59e0b'} />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ color: isStandalone() ? '#059669' : '#1c2b38', fontWeight: 650 }}>
-                {isStandalone()
-                  ? (lang === 'bn' ? 'অফিসিয়াল অ্যাপ ভার্সন' : 'Official App Version')
-                  : (lang === 'bn' ? 'অ্যাপ ইনস্টল করুন' : 'Install App')}
+              <span style={{ color: (isNativeApp || isStandalone()) ? '#059669' : '#1c2b38', fontWeight: 650 }}>
+                {isNativeApp
+                  ? (lang === 'bn' ? 'অফিসিয়াল অ্যান্ড্রয়েড অ্যাপ' : 'Official Android App')
+                  : (isStandalone()
+                    ? (lang === 'bn' ? 'BikroyNow অ্যাপ (PWA)' : 'BikroyNow App (PWA)')
+                    : (lang === 'bn' ? 'অ্যাপ ইনস্টল / ডাউনলোড' : 'Install / Download App'))}
               </span>
               <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 500 }}>
-                {isStandalone()
-                  ? (lang === 'bn' ? 'আপনি BikroyNow অ্যাপ ব্যবহার করছেন' : 'You are using BikroyNow App')
-                  : (lang === 'bn' ? 'দ্রুত ব্যবহারের জন্য মোবাইলে অ্যাপ ইনস্টল করুন' : 'Install app for faster access')}
+                {isNativeApp
+                  ? (lang === 'bn' ? 'BikroyNow v1.0 অফিসিয়াল নেটিভ সংস্করণ' : 'BikroyNow v1.0 Official Native App')
+                  : (isStandalone()
+                    ? (lang === 'bn' ? 'ট্যাপ করে সরাসরি অফিসিয়াল APK ও ডাউনলোড করতে পারেন' : 'Tap to download official APK')
+                    : (lang === 'bn' ? 'দ্রুত ব্যবহারের জন্য মোবাইলে অ্যাপ ইনস্টল করুন' : 'Install app for faster access'))}
               </span>
             </div>
-            {isStandalone() && (
+            {(isNativeApp || isStandalone()) && (
               <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#059669', fontWeight: 800 }}>
                 ✓
               </span>

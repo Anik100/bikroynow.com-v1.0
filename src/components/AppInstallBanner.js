@@ -205,6 +205,34 @@ export default function AppInstallBanner() {
                       <span><strong>&quot;Install&quot;</strong> ট্যাপ করলেই BikroyNow অ্যাপটি ফোনে ইনস্টল হয়ে যাবে</span>
                     </div>
                   </div>
+
+                  <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px dashed #cbd5e1', textAlign: 'center' }}>
+                    <p style={{ margin: '0 0 8px 0', fontSize: '0.82rem', color: '#64748b' }}>
+                      {lang === 'bn' ? 'অথবা সরাসরি অফিসিয়াল অ্যান্ড্রয়েড অ্যাপ ডাউনলোড করুন (মাত্র ১১৭ কেবি):' : 'Or download the official Android APK directly (117 KB):'}
+                    </p>
+                    <a
+                      href="/BikroyNow.apk"
+                      download
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                        background: '#0284c7',
+                        color: '#ffffff',
+                        fontWeight: 700,
+                        fontSize: '0.84rem',
+                        padding: '9px 18px',
+                        borderRadius: '8px',
+                        textDecoration: 'none',
+                        width: '100%',
+                        boxSizing: 'border-box'
+                      }}
+                    >
+                      <Download size={15} />
+                      <span>{lang === 'bn' ? 'BikroyNow.apk ডাউনলোড করুন (117 KB)' : 'Download BikroyNow.apk (117 KB)'}</span>
+                    </a>
+                  </div>
                 </>
               )}
             </div>
