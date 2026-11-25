@@ -99,7 +99,7 @@ export default function AppInstallBanner() {
           aria-label={lang === 'bn' ? 'বন্ধ করুন' : 'Close'}
           title={lang === 'bn' ? 'কেটে দিন' : 'Dismiss'}
         >
-          <X size={16} />
+          <X size={17} strokeWidth={2.8} />
         </button>
 
         {/* App Icon Thumbnail */}

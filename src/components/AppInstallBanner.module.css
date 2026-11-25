@@ -3,16 +3,16 @@
 .bannerWrapper {
   position: fixed;
   z-index: 3400;
-  bottom: 68px; /* sits right above 56px mobile bottomNav with breathing room */
-  left: 10px;
-  right: 10px;
+  bottom: 84px; /* Raised comfortably above bottom navigation bar */
+  left: 12px;
+  right: 12px;
   max-width: 420px;
   margin: 0 auto;
   background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
-  box-shadow: 0 14px 34px -4px rgba(15, 23, 42, 0.16), 0 6px 14px -2px rgba(15, 23, 42, 0.08);
-  padding: 10px 14px;
+  box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.18), 0 6px 16px -2px rgba(15, 23, 42, 0.08);
+  padding: 11px 14px;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -22,8 +22,8 @@
 
 @media (min-width: 768px) {
   .bannerWrapper {
-    bottom: 24px;
-    right: 24px;
+    bottom: 28px;
+    right: 28px;
     left: auto;
     margin: 0;
     max-width: 380px;
@@ -42,26 +42,35 @@
   }
 }
 
-/* Corner close button (X) */
+/* Corner close button (X): raised prominent circular badge */
 .closeBtn {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  background: transparent;
-  border: none;
-  color: #94a3b8;
+  top: -11px;
+  right: -7px;
+  width: 28px;
+  height: 28px;
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
   cursor: pointer;
-  padding: 4px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.14);
   transition: all 0.2s ease;
+  z-index: 10;
 }
 
 .closeBtn:hover {
-  background: #f1f5f9;
+  background: #f8fafc;
   color: #0f172a;
+  transform: scale(1.1);
+  border-color: #94a3b8;
+}
+
+.closeBtn:active {
+  transform: scale(0.92);
 }
 
 /* App icon thumbnail */
