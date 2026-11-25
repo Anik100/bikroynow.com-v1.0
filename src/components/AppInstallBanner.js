@@ -46,16 +46,24 @@ export default function AppInstallBanner() {
       }
     };
 
+    const handleCanInstall = () => {
+      if (canShowInstallPopup()) {
+        setVisible(true);
+      }
+    };
+
     const handleAppInstalled = () => {
       setVisible(false);
       setShowManualModal(false);
     };
 
     window.addEventListener('pwa_prompt_ready', handlePromptReady);
+    window.addEventListener('pwa_can_install', handleCanInstall);
     window.addEventListener('pwa_installed', handleAppInstalled);
 
     return () => {
       window.removeEventListener('pwa_prompt_ready', handlePromptReady);
+      window.removeEventListener('pwa_can_install', handleCanInstall);
       window.removeEventListener('pwa_installed', handleAppInstalled);
     };
   }, [mounted]);

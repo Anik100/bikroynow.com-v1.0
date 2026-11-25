@@ -25,8 +25,13 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
   useEffect(() => {
     setIsInstalled(isPWAInstalled() || isStandalone());
     const handleInstalled = () => setIsInstalled(true);
+    const handleCanInstall = () => setIsInstalled(false);
     window.addEventListener('pwa_installed', handleInstalled);
-    return () => window.removeEventListener('pwa_installed', handleInstalled);
+    window.addEventListener('pwa_can_install', handleCanInstall);
+    return () => {
+      window.removeEventListener('pwa_installed', handleInstalled);
+      window.removeEventListener('pwa_can_install', handleCanInstall);
+    };
   }, []);
 
   useEffect(() => {
@@ -547,8 +552,8 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
           <div
             className={styles.menuItem}
             onClick={async () => {
-              if (isInstalled || isStandalone()) {
-                alert(lang === 'bn' ? 'BikroyNow অ্যাপটি ইতিমধ্যে ইনস্টল করা আছে!' : 'BikroyNow app is already installed!');
+              if (isStandalone()) {
+                alert(lang === 'bn' ? 'আপনি ইতিমধ্যে BikroyNow অ্যাপে আছেন!' : 'You are already in BikroyNow app!');
                 return;
               }
               const res = await promptPWAInstall({
@@ -565,20 +570,20 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
             }}
             style={{ cursor: 'pointer' }}
           >
-            <Download size={20} color={isInstalled ? '#059669' : '#f59e0b'} />
+            <Download size={20} color={isStandalone() ? '#059669' : '#f59e0b'} />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ color: isInstalled ? '#059669' : '#1c2b38', fontWeight: 650 }}>
-                {isInstalled
-                  ? (lang === 'bn' ? 'অ্যাপ ইনস্টল করা আছে' : 'App Installed')
+              <span style={{ color: isStandalone() ? '#059669' : '#1c2b38', fontWeight: 650 }}>
+                {isStandalone()
+                  ? (lang === 'bn' ? 'অফিসিয়াল অ্যাপ ভার্সন' : 'Official App Version')
                   : (lang === 'bn' ? 'অ্যাপ ইনস্টল করুন' : 'Install App')}
               </span>
-              {!isInstalled && (
-                <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 500 }}>
-                  {lang === 'bn' ? 'দ্রুত ব্যবহারের জন্য হোম স্ক্রিনে যোগ করুন' : 'Add to home screen for fast access'}
-                </span>
-              )}
+              <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 500 }}>
+                {isStandalone()
+                  ? (lang === 'bn' ? 'আপনি BikroyNow অ্যাপ ব্যবহার করছেন' : 'You are using BikroyNow App')
+                  : (lang === 'bn' ? 'দ্রুত ব্যবহারের জন্য মোবাইলে অ্যাপ ইনস্টল করুন' : 'Install app for faster access')}
+              </span>
             </div>
-            {isInstalled && (
+            {isStandalone() && (
               <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#059669', fontWeight: 800 }}>
                 ✓
               </span>

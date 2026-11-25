@@ -3,22 +3,58 @@
 let deferredPrompt = null;
 let listenersInitialized = false;
 
+// Clear any installed state flag (e.g. when uninstalled or beforeinstallprompt fires)
+export function clearInstalledState() {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem('bikroynow_pwa_installed');
+    localStorage.removeItem('bikroynow_pwa_installed_v2');
+  } catch (_) {}
+}
+
 export function initPWAInstallListener() {
-  if (typeof window === 'undefined' || listenersInitialized) return;
+  if (typeof window === 'undefined') return;
+
+  // Always purge legacy contaminated key
+  try {
+    localStorage.removeItem('bikroynow_pwa_installed');
+  } catch (_) {}
+
+  // Check if browser supports getInstalledRelatedApps to verify true installation state
+  if ('getInstalledRelatedApps' in navigator) {
+    navigator.getInstalledRelatedApps().then((apps) => {
+      if (Array.isArray(apps) && apps.length > 0) {
+        // App is truly installed on the device
+        try {
+          localStorage.setItem('bikroynow_pwa_installed_v2', 'true');
+        } catch (_) {}
+        window.dispatchEvent(new CustomEvent('pwa_installed'));
+      } else {
+        // Not installed or was UNINSTALLED!
+        clearInstalledState();
+        window.dispatchEvent(new CustomEvent('pwa_can_install'));
+      }
+    }).catch(() => {});
+  }
+
+  if (listenersInitialized) return;
   listenersInitialized = true;
 
   // Capture the native PWA install prompt event
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    // If beforeinstallprompt fires, the app is 100% NOT installed (or was uninstalled)
+    clearInstalledState();
     window.dispatchEvent(new CustomEvent('pwa_prompt_ready'));
+    window.dispatchEvent(new CustomEvent('pwa_can_install'));
   });
 
-  // Track when app is installed
+  // Track when app is actually installed
   window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
     try {
-      localStorage.setItem('bikroynow_pwa_installed', 'true');
+      localStorage.setItem('bikroynow_pwa_installed_v2', 'true');
     } catch (_) {}
     window.dispatchEvent(new CustomEvent('pwa_installed'));
   });
@@ -37,9 +73,14 @@ export function isStandalone() {
 // Check if the user has already installed the app
 export function isPWAInstalled() {
   if (typeof window === 'undefined') return false;
+  // If running inside the standalone app, it is 100% installed
   if (isStandalone()) return true;
+
+  // If beforeinstallprompt is ready, it is definitely NOT installed
+  if (deferredPrompt) return false;
+
   try {
-    return localStorage.getItem('bikroynow_pwa_installed') === 'true';
+    return localStorage.getItem('bikroynow_pwa_installed_v2') === 'true';
   } catch (_) {
     return false;
   }
@@ -52,7 +93,7 @@ export function canShowInstallPopup() {
   // 1. NEVER show inside standalone PWA app
   if (isStandalone()) return false;
 
-  // 2. NEVER show if user has already installed it
+  // 2. NEVER show if verified installed
   if (isPWAInstalled()) return false;
 
   // 3. If closed via corner cross button, suppress for 10 minutes
@@ -77,10 +118,10 @@ export function dismissInstallPopup() {
   } catch (_) {}
 }
 
-// User installed app: permanently prevent showing popup again
+// User installed app: mark installed
 export function markPWAInstalled() {
   try {
-    localStorage.setItem('bikroynow_pwa_installed', 'true');
+    localStorage.setItem('bikroynow_pwa_installed_v2', 'true');
   } catch (_) {}
 }
 
