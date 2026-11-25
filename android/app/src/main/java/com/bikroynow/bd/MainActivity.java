@@ -7,10 +7,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.GeolocationPermissions;
 import android.webkit.JavascriptInterface;
@@ -25,6 +30,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -39,22 +45,42 @@ public class MainActivity extends AppCompatActivity {
 
     private WebView mWebView;
     private ProgressBar mProgressBar;
+    private RelativeLayout mSplashLayout;
     private LinearLayout mErrorLayout;
     private Button mBtnRetry;
     private ValueCallback<Uri[]> mFilePathCallback;
 
+    private boolean isSplashDismissed = false;
+    private long splashLaunchTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Configure full native light status bar (crisp white background with dark system icons)
+        setupNativeStatusBar();
+
         setContentView(R.layout.activity_main);
 
         mWebView = findViewById(R.id.webView);
         mProgressBar = findViewById(R.id.progressBar);
+        mSplashLayout = findViewById(R.id.splashLayout);
         mErrorLayout = findViewById(R.id.errorLayout);
         mBtnRetry = findViewById(R.id.btnRetry);
 
+        splashLaunchTime = System.currentTimeMillis();
+        mSplashLayout.setVisibility(View.VISIBLE);
+
         initWebView();
         checkAndRequestPermissions();
+
+        // Safety timeout: smoothly dismiss splash after 3.5s if network is exceptionally slow
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dismissSplash();
+            }
+        }, 3500);
 
         mBtnRetry.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +96,44 @@ public class MainActivity extends AppCompatActivity {
         } else {
             mWebView.restoreState(savedInstanceState);
         }
+    }
+
+    private void setupNativeStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.WHITE);
+            View decor = window.getDecorView();
+            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }
+    }
+
+    private void dismissSplash() {
+        if (isSplashDismissed || mSplashLayout == null) return;
+        isSplashDismissed = true;
+
+        long elapsed = System.currentTimeMillis() - splashLaunchTime;
+        long minDisplayDuration = 1800; // 1.8 seconds minimum so user sees the welcome screen smoothly
+        long remaining = Math.max(0, minDisplayDuration - elapsed);
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mSplashLayout != null && mSplashLayout.getVisibility() == View.VISIBLE) {
+                    mSplashLayout.animate()
+                            .alpha(0f)
+                            .setDuration(450)
+                            .withEndAction(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mSplashLayout.setVisibility(View.GONE);
+                                }
+                            })
+                            .start();
+                }
+            }
+        }, remaining);
     }
 
     private void checkAndRequestPermissions() {
@@ -88,6 +152,17 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         mWebView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        mWebView.setVerticalScrollBarEnabled(false);
+        mWebView.setHorizontalScrollBarEnabled(false);
+
+        // Prevent browser long-press text selection / context menu
+        mWebView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return true;
+            }
+        });
+        mWebView.setHapticFeedbackEnabled(false);
 
         WebSettings settings = mWebView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -130,6 +205,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 mProgressBar.setVisibility(View.GONE);
+                injectNativeStyles(view);
+                dismissSplash();
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     CookieManager.getInstance().flush();
                 }
@@ -141,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
                     mProgressBar.setVisibility(View.GONE);
                     mWebView.setVisibility(View.GONE);
                     mErrorLayout.setVisibility(View.VISIBLE);
+                    dismissSplash();
                 }
             }
 
@@ -208,6 +287,22 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    private void injectNativeStyles(WebView view) {
+        String css = "* { -webkit-tap-highlight-color: transparent !important; -webkit-touch-callout: none !important; } " +
+                     "a, button, img { -webkit-user-select: none !important; user-select: none !important; } " +
+                     "::-webkit-scrollbar { display: none !important; width: 0 !important; }";
+        String js = "(function() {" +
+                    "  var id = 'bikroynow-native-style';" +
+                    "  if (!document.getElementById(id)) {" +
+                    "    var el = document.createElement('style');" +
+                    "    el.id = id;" +
+                    "    el.innerHTML = '" + css + "';" +
+                    "    document.head.appendChild(el);" +
+                    "  }" +
+                    "})();";
+        view.evaluateJavascript(js, null);
     }
 
     private boolean handleUrl(String url) {
