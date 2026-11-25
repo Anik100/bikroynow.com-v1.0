@@ -105,7 +105,9 @@ public class BadgeSyncReceiver extends BroadcastReceiver {
             );
 
             long triggerAt = System.currentTimeMillis() + 25000; // 25 seconds
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi);
             } else {
                 am.set(AlarmManager.RTC_WAKEUP, triggerAt, pi);

@@ -190,7 +190,11 @@ export const playMessageNotification = ({
   playNotificationSound();
 
   // 2. Android Status Bar Notification & Desktop System Notification
-  if ('Notification' in window && Notification.permission === 'granted') {
+  // Only post system notification if the app/tab is in the background (hidden).
+  // If the user is actively viewing the screen, the in-app audio chime is sufficient!
+  const isBackground = typeof document !== 'undefined' && document.visibilityState === 'hidden';
+
+  if (isBackground && 'Notification' in window && Notification.permission === 'granted') {
     const notificationOptions = {
       body,
       icon: '/icon-192.png',

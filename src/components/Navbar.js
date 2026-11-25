@@ -128,8 +128,7 @@ export default function Navbar() {
       }
     }
   }, [user?.id, user?.email]);
-  const alertedMsgIdsRef = useRef(new Set());
-  const isInitialUnreadDoneRef = useRef(false);
+  const lastAlertedTimestampRef = useRef(null);
 
   // Helper to validate Supabase UUIDs
   const isValidUUID = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
@@ -212,26 +211,28 @@ export default function Navbar() {
               }
             });
 
-            // On very first fetch when app opens: mark all existing unread messages as already alerted
-            // This guarantees existing unread messages NEVER trigger repeating sound/alerts!
-            if (!isInitialUnreadDoneRef.current) {
-              incomingUnread.forEach(m => {
-                const key = m.id || (m.created_at + '_' + m.content);
-                alertedMsgIdsRef.current.add(key);
-              });
-              isInitialUnreadDoneRef.current = true;
+            // Find newest timestamp of currently unread messages
+            const newestUnreadTimestamp = incomingUnread.reduce((max, m) => {
+              const t = m.created_at ? new Date(m.created_at).getTime() : 0;
+              return Math.max(max, t);
+            }, 0);
+
+            // On very first fetch when app opens: record baseline timestamp.
+            // DO NOT ALERT FOR ANY ALREADY EXISTING UNREAD MESSAGES!
+            if (lastAlertedTimestampRef.current === null) {
+              lastAlertedTimestampRef.current = Math.max(newestUnreadTimestamp, Date.now());
             } else {
-              // Find brand-new incoming messages that have NOT been alerted yet
+              // Only alert if there is a brand-new incoming message strictly newer than last alerted timestamp
               const brandNewMsg = incomingUnread.find(m => {
-                const key = m.id || (m.created_at + '_' + m.content);
-                return !alertedMsgIdsRef.current.has(key);
+                const t = m.created_at ? new Date(m.created_at).getTime() : 0;
+                return t > lastAlertedTimestampRef.current;
               });
 
               if (brandNewMsg) {
-                const key = brandNewMsg.id || (brandNewMsg.created_at + '_' + brandNewMsg.content);
-                alertedMsgIdsRef.current.add(key);
+                const t = brandNewMsg.created_at ? new Date(brandNewMsg.created_at).getTime() : Date.now();
+                lastAlertedTimestampRef.current = Math.max(t, Date.now());
 
-                // Alert ONLY ONCE for this brand-new incoming message!
+                // Alert EXACTLY ONCE for this new message!
                 playMessageNotification({
                   title: lang === 'bn' ? 'BikroyNow: নতুন মেসেজ এসেছে! 💬' : 'BikroyNow: New Message Received! 💬',
                   body: brandNewMsg.content || (lang === 'bn' ? 'আপনার বিজ্ঞাপনে একটি নতুন মেসেজ এসেছে।' : 'You have a new message.'),

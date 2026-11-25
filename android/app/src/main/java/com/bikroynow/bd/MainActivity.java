@@ -568,6 +568,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public static boolean isAppForeground = false;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        isAppForeground = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isAppForeground = false;
+        BadgeSyncReceiver.scheduleNext(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isAppForeground = false;
+        BadgeSyncReceiver.scheduleNext(this);
+    }
+
     @Override
     public void onBackPressed() {
         if (mWebView != null && mWebView.canGoBack()) {
@@ -638,12 +660,12 @@ public class MainActivity extends AppCompatActivity {
                         ShortcutBadger.removeCount(context.getApplicationContext());
                     }
 
-                    // 2. Android System Notification with Badge Counter
+                    // 2. Android System Notification with Badge Counter (Only notify in status bar if app is in background)
                     NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     if (manager != null) {
                         if (count <= 0) {
                             manager.cancel(BADGE_NOTIFICATION_ID);
-                        } else {
+                        } else if (!isAppForeground) {
                             Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             PendingIntent pendingIntent = PendingIntent.getActivity(
@@ -665,7 +687,8 @@ public class MainActivity extends AppCompatActivity {
                                     .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                                     .setContentIntent(pendingIntent)
                                     .setAutoCancel(true)
-                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                    .setDefaults(NotificationCompat.DEFAULT_ALL);
 
                             if (Build.VERSION.SDK_INT < 33 ||
                                     ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
