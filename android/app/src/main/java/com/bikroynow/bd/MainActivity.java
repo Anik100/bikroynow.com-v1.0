@@ -13,6 +13,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import androidx.core.app.NotificationCompat;
+import me.leolin.shortcutbadger.ShortcutBadger;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -95,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
         setupPullToRefresh();
         initWebView();
+        initNotificationChannel();
         checkAndRequestPermissions();
 
         // Safety timeout: smoothly dismiss splash after 3.5s if network is exceptionally slow
@@ -600,6 +606,75 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private static final String CHANNEL_ID = "bikroynow_messages";
+    private static final int BADGE_NOTIFICATION_ID = 9001;
+
+    private void initNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "মেসেজ নোটিফিকেশন",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            channel.setDescription("নতুন চ্যাট ও মেসেজ নোটিফিকেশন");
+            channel.setShowBadge(true);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            if (manager != null) {
+                manager.createNotificationChannel(channel);
+            }
+        }
+    }
+
+    public void updateLauncherBadge(final int count) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // 1. ShortcutBadger for OEM Launchers (Vivo, Xiaomi, Oppo, Samsung, Huawei, etc.)
+                    if (count > 0) {
+                        ShortcutBadger.applyCount(getApplicationContext(), count);
+                    } else {
+                        ShortcutBadger.removeCount(getApplicationContext());
+                    }
+
+                    // 2. Android System Notification with Badge Counter
+                    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    if (manager != null) {
+                        if (count <= 0) {
+                            manager.cancel(BADGE_NOTIFICATION_ID);
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            PendingIntent pendingIntent = PendingIntent.getActivity(
+                                    getApplicationContext(),
+                                    0,
+                                    intent,
+                                    PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0)
+                            );
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setContentTitle("BikroyNow")
+                                    .setContentText(count == 1 ? "আপনার ১টি নতুন অপঠিত মেসেজ রয়েছে" : "আপনার " + count + "টি নতুন অপঠিত মেসেজ রয়েছে")
+                                    .setNumber(count)
+                                    .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+                                    .setContentIntent(pendingIntent)
+                                    .setAutoCancel(true)
+                                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+                            if (Build.VERSION.SDK_INT < 33 ||
+                                    ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                                manager.notify(BADGE_NOTIFICATION_ID, builder.build());
+                            }
+                        }
+                    }
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }
+        });
+    }
+
     public class WebAppInterface {
         Context mContext;
 
@@ -620,6 +695,16 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public void openExternalUrl(String url) {
             openInChromeOrBrowser(url);
+        }
+
+        @JavascriptInterface
+        public void setAppBadge(final int count) {
+            updateLauncherBadge(count);
+        }
+
+        @JavascriptInterface
+        public void clearAppBadge() {
+            updateLauncherBadge(0);
         }
 
         @JavascriptInterface

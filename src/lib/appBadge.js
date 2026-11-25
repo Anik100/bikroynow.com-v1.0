@@ -59,6 +59,15 @@ export function updateAppBadge(count) {
   if (typeof window === 'undefined') return;
   const num = Math.max(0, parseInt(count, 10) || 0);
 
+  // 0. Android Native Launcher Badge (Vivo, Xiaomi, Samsung, Oppo, Android System)
+  if (typeof window !== 'undefined' && window.AndroidNative) {
+    try {
+      if (typeof window.AndroidNative.setAppBadge === 'function') {
+        window.AndroidNative.setAppBadge(num);
+      }
+    } catch (_) {}
+  }
+
   // 1. W3C Badging API (Android PWA launcher icon, Windows/Mac desktop icon)
   if (typeof navigator !== 'undefined') {
     try {
@@ -87,5 +96,12 @@ export function updateAppBadge(count) {
 }
 
 export function clearAppBadge() {
+  if (typeof window !== 'undefined' && window.AndroidNative) {
+    try {
+      if (typeof window.AndroidNative.clearAppBadge === 'function') {
+        window.AndroidNative.clearAppBadge();
+      }
+    } catch (_) {}
+  }
   updateAppBadge(0);
 }
