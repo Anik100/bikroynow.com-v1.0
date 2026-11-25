@@ -29,7 +29,7 @@ if ($LASTEXITCODE -ne 0) { throw "aapt2 compile failed" }
 
 Write-Host "--- 3. Linking resources with aapt2 ---"
 $flatFiles = Get-ChildItem "$BUILD_DIR\compiled_res\*.flat" | ForEach-Object { $_.FullName }
-& $AAPT2 link -I $ANDROID_JAR --manifest $MANIFEST --java "$BUILD_DIR\gen" --min-sdk-version 21 --target-sdk-version 34 --version-code 2 --version-name "1.0.1" -o "$BUILD_DIR\unaligned_no_dex.apk" --auto-add-overlay $flatFiles
+& $AAPT2 link -I $ANDROID_JAR --manifest $MANIFEST --java "$BUILD_DIR\gen" --min-sdk-version 21 --target-sdk-version 34 --version-code 3 --version-name "1.0.2" -o "$BUILD_DIR\unaligned_no_dex.apk" --auto-add-overlay $flatFiles
 if ($LASTEXITCODE -ne 0) { throw "aapt2 link failed" }
 
 Write-Host "--- 4. Compiling Java sources ---"
@@ -61,7 +61,7 @@ $KEY_ALIAS = "bikroynow"
 $KEY_PASS = "bikroynow2026"
 if (-not (Test-Path $KEYSTORE)) {
     Write-Host "Generating official release keystore..."
-    & $KEYTOOL -genkeypair -v -keystore $KEYSTORE -alias $KEY_ALIAS -keyalg RSA -keysize 2048 -validity 10000 -storepass $KEY_PASS -keypass $KEY_PASS -dname "CN=BikroyNow, OU=Mobile, O=BikroyNow Technologies, L=Dhaka, ST=Dhaka, C=BD"
+    & $KEYTOOL -genkeypair -v -keystore $KEYSTORE -alias $KEY_ALIAS -keyalg RSA -keysize 2048 -sigalg SHA256withRSA -validity 10000 -storepass $KEY_PASS -keypass $KEY_PASS -dname "CN=BikroyNow, OU=Mobile, O=BikroyNow Technologies, L=Dhaka, ST=Dhaka, C=BD"
     if ($LASTEXITCODE -ne 0) { throw "keytool failed" }
 }
 
