@@ -47,9 +47,9 @@ function LoginContent() {
       setError(null);
       
       const origin = typeof window !== 'undefined' ? window.location.origin : 'https://bikroynow.com';
-      const redirectUri = `${origin}${redirectTarget.startsWith('/') ? redirectTarget : '/' + redirectTarget}`;
+      const redirectUri = `${origin}/auth/callback?redirect=${encodeURIComponent(redirectTarget)}`;
 
-      const { error: authErr } = await supabase.auth.signInWithOAuth({
+      const { data, error: authErr } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: redirectUri

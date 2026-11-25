@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { consumeUrlOAuthHash } from '../../../lib/supabaseClient';
 
 export default function AuthCallbackPage() {
   const [intentLink, setIntentLink] = useState('');
@@ -11,23 +12,26 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
+    // Register session in Supabase if access_token exists in URL
+    consumeUrlOAuthHash();
+
     const hash = window.location.hash || '';
     const search = window.location.search || '';
     const params = hash || search;
 
-    // 1. Android Intent URL format (Bypasses Chrome custom-scheme navigation blockers)
-    const androidIntent = `intent://login-callback${params}#Intent;scheme=io.supabase.bikroynow;package=com.bikroynow.bikroynow_app;end;`;
+    // 1. Android Intent URL format targeting our official native package com.bikroynow.bd
+    const androidIntent = `intent://login-callback${params}#Intent;scheme=bikroynow;package=com.bikroynow.bd;end;`;
     // 2. Direct Custom Scheme URL
-    const customScheme = `io.supabase.bikroynow://login-callback${params}`;
+    const customScheme = `bikroynow://login-callback${params}`;
 
     setIntentLink(androidIntent);
     setSchemeLink(customScheme);
 
-    // Auto-launch mobile app
+    // Auto-launch mobile app if on mobile device
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile) {
       try {
-        // First try Android Intent scheme
+        // First try Android Intent scheme to return directly to BikroyNow app
         window.location.href = androidIntent;
       } catch (e) {
         try {
@@ -42,8 +46,10 @@ export default function AuthCallbackPage() {
       return () => clearTimeout(timer);
     } else {
       // Desktop Web: Return to homepage after 1 second
+      const urlParams = new URLSearchParams(window.location.search);
+      const dest = urlParams.get('redirect') || '/';
       const timer = setTimeout(() => {
-        window.location.href = '/';
+        window.location.href = dest;
       }, 1000);
       return () => clearTimeout(timer);
     }
@@ -104,12 +110,12 @@ export default function AuthCallbackPage() {
               width: '100%',
               padding: '0.95rem 1rem',
               borderRadius: '12px',
-              background: '#FF7519',
-              color: '#ffffff',
+              background: '#EAB308',
+              color: '#000000',
               fontWeight: 800,
               textDecoration: 'none',
               fontSize: '1.05rem',
-              boxShadow: '0 4px 16px rgba(255, 117, 25, 0.35)',
+              boxShadow: '0 4px 16px rgba(234, 179, 8, 0.35)',
               marginBottom: '1rem',
               transition: 'transform 0.15s ease'
             }}

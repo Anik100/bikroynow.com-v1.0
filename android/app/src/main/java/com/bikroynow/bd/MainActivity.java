@@ -97,10 +97,52 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (savedInstanceState == null) {
+        // Handle initial deep link if app opened via intent
+        if (getIntent() != null && getIntent().getData() != null) {
+            handleDeepLink(getIntent());
+        } else if (savedInstanceState == null) {
             mWebView.loadUrl(APP_URL);
         } else {
             mWebView.restoreState(savedInstanceState);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleDeepLink(intent);
+    }
+
+    private void handleDeepLink(Intent intent) {
+        if (intent == null) return;
+        Uri data = intent.getData();
+        if (data == null) return;
+
+        String uriStr = data.toString();
+
+        // Check for custom scheme login-callback (e.g. from Google OAuth in Chrome)
+        if (uriStr.startsWith("bikroynow://login-callback") || uriStr.startsWith("io.supabase.bikroynow://login-callback")) {
+            String fragment = data.getFragment();
+            String query = data.getQuery();
+
+            String targetUrl = APP_URL + "/";
+            if (fragment != null && !fragment.isEmpty()) {
+                targetUrl += "#" + fragment;
+            } else if (query != null && !query.isEmpty()) {
+                targetUrl += "?" + query;
+            }
+            if (mWebView != null) {
+                mWebView.loadUrl(targetUrl);
+            }
+        } else if (uriStr.contains("bikroynow.com/auth/callback")) {
+            if (mWebView != null) {
+                mWebView.loadUrl(uriStr);
+            }
+        } else if (uriStr.startsWith("http://") || uriStr.startsWith("https://")) {
+            if (mWebView != null) {
+                mWebView.loadUrl(uriStr);
+            }
         }
     }
 
@@ -361,6 +403,19 @@ public class MainActivity extends AppCompatActivity {
     private boolean handleUrl(String url) {
         if (url == null) return false;
 
+        // 1. Google OAuth flow - Open in Google Chrome so user's saved Google accounts are available
+        if (url.contains("accounts.google.com") || 
+            (url.contains("supabase.co/auth/v1/authorize") && url.contains("provider=google"))) {
+            openInChromeOrBrowser(url);
+            return true;
+        }
+
+        // 2. Custom Scheme Deep Link callback
+        if (url.startsWith("bikroynow://") || url.startsWith("io.supabase.bikroynow://")) {
+            handleDeepLink(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            return true;
+        }
+
         if (url.startsWith("tel:")) {
             try {
                 Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(url));
@@ -385,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception ignored) {}
         }
 
-        if (url.contains("bikroynow.com") || url.contains("accounts.google.com")) {
+        if (url.contains("bikroynow.com")) {
             return false;
         }
 
@@ -396,6 +451,27 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception ignored) {}
 
         return false;
+    }
+
+    private void openInChromeOrBrowser(String url) {
+        Uri uri = Uri.parse(url);
+        // Try launching directly in Google Chrome so the user's logged-in Google accounts are immediately available
+        try {
+            Intent chromeIntent = new Intent(Intent.ACTION_VIEW, uri);
+            chromeIntent.setPackage("com.android.chrome");
+            chromeIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(chromeIntent);
+            return;
+        } catch (Exception ignored) {}
+
+        // Fallback to default browser
+        try {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+            browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(browserIntent);
+        } catch (Exception e) {
+            Toast.makeText(this, "ব্রাউজার খুলতে ব্যর্থ হয়েছে", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -476,6 +552,11 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public void showToast(String toast) {
             Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
+        }
+
+        @JavascriptInterface
+        public void openExternalUrl(String url) {
+            openInChromeOrBrowser(url);
         }
 
         @JavascriptInterface
