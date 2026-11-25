@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { supabase } from '../lib/supabaseClient';
-import { X, FileText, Star, Award, Settings, HelpCircle, LogOut, User as UserIcon, MessageSquare, Heart, Loader2 } from 'lucide-react';
+import { X, FileText, Star, Award, Settings, HelpCircle, LogOut, User as UserIcon, MessageSquare, Heart, Loader2, Download, Smartphone, Share, PlusSquare, MoreVertical } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
 import styles from './ProfileMenu.module.css';
 import { uploadToImgBB } from '../lib/imgbb';
 import { compressImage } from '../lib/utils';
+import { isStandalone, isPWAInstalled, promptPWAInstall, markPWAInstalled, isIOS } from '../lib/pwaInstall';
 
 export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin, onClose, onLogout }) {
   const { lang, t, toggleLanguage } = useLanguage();
@@ -18,6 +19,15 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+  const [showInstallGuide, setShowInstallGuide] = useState(false);
+
+  useEffect(() => {
+    setIsInstalled(isPWAInstalled() || isStandalone());
+    const handleInstalled = () => setIsInstalled(true);
+    window.addEventListener('pwa_installed', handleInstalled);
+    return () => window.removeEventListener('pwa_installed', handleInstalled);
+  }, []);
 
   useEffect(() => {
     const adminEmails = [
@@ -532,6 +542,48 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
               </span>
             )}
           </Link>
+
+          {/* App Install Button in Profile */}
+          <div
+            className={styles.menuItem}
+            onClick={async () => {
+              if (isInstalled || isStandalone()) {
+                alert(lang === 'bn' ? 'BikroyNow অ্যাপটি ইতিমধ্যে ইনস্টল করা আছে!' : 'BikroyNow app is already installed!');
+                return;
+              }
+              const res = await promptPWAInstall({
+                onAccepted: () => {
+                  setIsInstalled(true);
+                },
+                onFallback: () => {
+                  setShowInstallGuide(true);
+                }
+              });
+              if (res?.success && res.outcome === 'accepted') {
+                setIsInstalled(true);
+              }
+            }}
+            style={{ cursor: 'pointer' }}
+          >
+            <Download size={20} color={isInstalled ? '#059669' : '#f59e0b'} />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ color: isInstalled ? '#059669' : '#1c2b38', fontWeight: 650 }}>
+                {isInstalled
+                  ? (lang === 'bn' ? 'অ্যাপ ইনস্টল করা আছে' : 'App Installed')
+                  : (lang === 'bn' ? 'অ্যাপ ইনস্টল করুন' : 'Install App')}
+              </span>
+              {!isInstalled && (
+                <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 500 }}>
+                  {lang === 'bn' ? 'দ্রুত ব্যবহারের জন্য হোম স্ক্রিনে যোগ করুন' : 'Add to home screen for fast access'}
+                </span>
+              )}
+            </div>
+            {isInstalled && (
+              <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#059669', fontWeight: 800 }}>
+                ✓
+              </span>
+            )}
+          </div>
           
           {user && (
             <div className={`${styles.menuItem} ${styles.logout}`} onClick={() => setShowLogoutConfirm(true)} style={{ cursor: 'pointer' }}>
@@ -584,6 +636,77 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
                 )}
               </button>
             </div>
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {showInstallGuide && mounted && createPortal(
+        <div className={styles.confirmOverlay} onClick={() => setShowInstallGuide(false)}>
+          <div className={styles.confirmCard} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '380px', textAlign: 'left' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Smartphone size={22} color="#008b5e" />
+                <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#0f172a' }}>
+                  {lang === 'bn' ? 'অ্যাপ ইনস্টল করার নিয়ম' : 'How to Install App'}
+                </h3>
+              </div>
+              <button 
+                onClick={() => setShowInstallGuide(false)}
+                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {typeof window !== 'undefined' && isIOS() ? (
+              <div style={{ fontSize: '0.85rem', color: '#334155', lineHeight: 1.5 }}>
+                <p style={{ margin: '0 0 10px 0' }}>
+                  {lang === 'bn'
+                    ? 'আইফোনে অ্যাপ ইনস্টল করতে নিচের ধাপগুলো অনুসরণ করুন:'
+                    : 'To install on iPhone / iPad:'}
+                </p>
+                <div style={{ background: '#f8fafc', padding: '10px 12px', borderRadius: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div>১. Safari ব্রাউজারের নিচে <strong>Share <Share size={13} style={{ display: 'inline' }} /></strong> বাটনে চাপ দিন</div>
+                  <div>২. <strong>&quot;Add to Home Screen&quot; <PlusSquare size={13} style={{ display: 'inline' }} /></strong> চাপুন</div>
+                  <div>৩. উপরে ডানপাশে <strong>&quot;Add&quot;</strong> ট্যাপ করুন</div>
+                </div>
+              </div>
+            ) : (
+              <div style={{ fontSize: '0.85rem', color: '#334155', lineHeight: 1.5 }}>
+                <p style={{ margin: '0 0 10px 0' }}>
+                  {lang === 'bn'
+                    ? 'ব্রাউজার মেনু থেকে সরাসরি ইনস্টল করুন:'
+                    : 'Install directly from your browser menu:'}
+                </p>
+                <div style={{ background: '#f8fafc', padding: '10px 12px', borderRadius: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div>১. ব্রাউজারের ৩-ডট <strong>(⋮) <MoreVertical size={13} style={{ display: 'inline' }} /></strong> মেনুতে চাপ দিন</div>
+                  <div>২. <strong>&quot;Install app&quot;</strong> বা <strong>&quot;Add to Home screen&quot;</strong> বেছে নিন</div>
+                </div>
+              </div>
+            )}
+
+            <button
+              onClick={() => {
+                setShowInstallGuide(false);
+                markPWAInstalled();
+                setIsInstalled(true);
+              }}
+              style={{
+                marginTop: '1.25rem',
+                width: '100%',
+                background: '#008b5e',
+                color: 'white',
+                border: 'none',
+                borderRadius: '10px',
+                padding: '0.65rem',
+                fontWeight: 750,
+                fontSize: '0.9rem',
+                cursor: 'pointer'
+              }}
+            >
+              {lang === 'bn' ? 'বুঝেছি' : 'Got it'}
+            </button>
           </div>
         </div>,
         document.body

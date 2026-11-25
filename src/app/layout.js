@@ -11,6 +11,10 @@ const AiSupportWidget = dynamic(() => import('../components/AiSupportWidget'), {
   ssr: false,
 });
 
+const AppInstallBanner = dynamic(() => import('../components/AppInstallBanner'), {
+  ssr: false,
+});
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
@@ -236,6 +240,7 @@ export default function RootLayout({ children }) {
           </main>
           <Footer />
           <AiSupportWidget />
+          <AppInstallBanner />
         </LanguageProvider>
         {gaId && (
           <>
