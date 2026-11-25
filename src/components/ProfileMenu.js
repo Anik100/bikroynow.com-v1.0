@@ -679,10 +679,40 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
               </div>
             ) : (
               <div style={{ fontSize: '0.85rem', color: '#334155', lineHeight: 1.5 }}>
-                <p style={{ margin: '0 0 10px 0' }}>
-                  {lang === 'bn'
-                    ? 'ব্রাউজার মেনু থেকে সরাসরি ইনস্টল করুন:'
-                    : 'Install directly from your browser menu:'}
+                <div style={{ marginBottom: '14px', padding: '12px', background: '#ecfdf5', borderRadius: '12px', border: '1px solid #a7f3d0', textAlign: 'center' }}>
+                  <p style={{ margin: '0 0 10px 0', fontSize: '0.85rem', color: '#065f46', fontWeight: 600 }}>
+                    {lang === 'bn' ? 'সরাসরি মোবাইলে অফিসিয়াল অ্যাপ ইনস্টল করুন:' : 'Install the official Android app directly:'}
+                  </p>
+                  <a
+                    href="/BikroyNow.apk"
+                    download="BikroyNow.apk"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      background: '#059669',
+                      color: 'white',
+                      padding: '10px 18px',
+                      borderRadius: '10px',
+                      fontWeight: 700,
+                      fontSize: '0.92rem',
+                      textDecoration: 'none',
+                      boxShadow: '0 4px 12px rgba(5,150,105,0.25)',
+                      width: '100%',
+                      boxSizing: 'border-box'
+                    }}
+                    onClick={() => {
+                      setShowInstallGuide(false);
+                    }}
+                  >
+                    <Download size={18} />
+                    {lang === 'bn' ? 'Android APK ডাউনলোড করুন (54 MB)' : 'Download Android APK'}
+                  </a>
+                </div>
+
+                <p style={{ margin: '0 0 10px 0', fontSize: '0.82rem', color: '#64748b', textAlign: 'center' }}>
+                  {lang === 'bn' ? '— অথবা ব্রাউজার মেনু থেকে ইনস্টল করুন —' : '— OR Install from browser menu —'}
                 </p>
                 <div style={{ background: '#f8fafc', padding: '10px 12px', borderRadius: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <div>১. ব্রাউজারের ৩-ডট <strong>(⋮) <MoreVertical size={13} style={{ display: 'inline' }} /></strong> মেনুতে চাপ দিন</div>

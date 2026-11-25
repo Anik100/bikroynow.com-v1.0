@@ -12,6 +12,21 @@ export function clearInstalledState() {
   } catch (_) {}
 }
 
+export function getDeferredPrompt() {
+  if (typeof window === 'undefined') return null;
+  return deferredPrompt || window.__bikroynow_pwa?.deferredPrompt || null;
+}
+
+export function isAndroid() {
+  if (typeof window === 'undefined') return false;
+  return /android/i.test(navigator.userAgent);
+}
+
+export function isIOS() {
+  if (typeof window === 'undefined') return false;
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
 export function initPWAInstallListener() {
   if (typeof window === 'undefined') return;
 
@@ -19,6 +34,11 @@ export function initPWAInstallListener() {
   try {
     localStorage.removeItem('bikroynow_pwa_installed');
   } catch (_) {}
+
+  // Pick up early prompt if captured in <head>
+  if (window.__bikroynow_pwa?.deferredPrompt) {
+    deferredPrompt = window.__bikroynow_pwa.deferredPrompt;
+  }
 
   // Check if browser supports getInstalledRelatedApps to verify true installation state
   if ('getInstalledRelatedApps' in navigator) {
@@ -44,6 +64,7 @@ export function initPWAInstallListener() {
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
+    if (window.__bikroynow_pwa) window.__bikroynow_pwa.deferredPrompt = e;
     // If beforeinstallprompt fires, the app is 100% NOT installed (or was uninstalled)
     clearInstalledState();
     window.dispatchEvent(new CustomEvent('pwa_prompt_ready'));
@@ -53,6 +74,7 @@ export function initPWAInstallListener() {
   // Track when app is actually installed
   window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
+    if (window.__bikroynow_pwa) window.__bikroynow_pwa.deferredPrompt = null;
     try {
       localStorage.setItem('bikroynow_pwa_installed_v2', 'true');
     } catch (_) {}
@@ -77,7 +99,7 @@ export function isPWAInstalled() {
   if (isStandalone()) return true;
 
   // If beforeinstallprompt is ready, it is definitely NOT installed
-  if (deferredPrompt) return false;
+  if (getDeferredPrompt()) return false;
 
   try {
     return localStorage.getItem('bikroynow_pwa_installed_v2') === 'true';
@@ -125,22 +147,20 @@ export function markPWAInstalled() {
   } catch (_) {}
 }
 
-export function isIOS() {
-  if (typeof window === 'undefined') return false;
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-}
-
 // Trigger installation prompt
 export async function promptPWAInstall({ onAccepted, onDismissed, onFallback } = {}) {
   if (typeof window === 'undefined') return { success: false };
 
-  if (deferredPrompt) {
+  const prompt = getDeferredPrompt();
+
+  if (prompt) {
     try {
-      deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice;
+      prompt.prompt();
+      const choice = await prompt.userChoice;
       if (choice?.outcome === 'accepted') {
         markPWAInstalled();
         deferredPrompt = null;
+        if (window.__bikroynow_pwa) window.__bikroynow_pwa.deferredPrompt = null;
         if (onAccepted) onAccepted();
         return { success: true, outcome: 'accepted' };
       } else {

@@ -8,13 +8,6 @@
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#F59E0B",
-  "related_applications": [
-    {
-      "platform": "webapp",
-      "url": "https://bikroynow.com/manifest.json"
-    }
-  ],
-  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/favicon-16x16.png",

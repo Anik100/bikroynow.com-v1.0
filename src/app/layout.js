@@ -205,6 +205,41 @@ export default function RootLayout({ children }) {
         <link rel="manifest" href="/manifest.json?v=2" />
         <meta name="theme-color" content="#F59E0B" />
         <meta name="msapplication-TileColor" content="#F59E0B" />
+        {/* Early PWA install event listener & Service Worker registration */}
+        <script
+          id="pwa-install-init"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  window.__bikroynow_pwa = { deferredPrompt: null };
+                  window.addEventListener('beforeinstallprompt', function(e) {
+                    e.preventDefault();
+                    window.__bikroynow_pwa.deferredPrompt = e;
+                    try {
+                      localStorage.removeItem('bikroynow_pwa_installed');
+                      localStorage.removeItem('bikroynow_pwa_installed_v2');
+                    } catch(err) {}
+                    window.dispatchEvent(new CustomEvent('pwa_prompt_ready'));
+                    window.dispatchEvent(new CustomEvent('pwa_can_install'));
+                  });
+                  window.addEventListener('appinstalled', function() {
+                    window.__bikroynow_pwa.deferredPrompt = null;
+                    try {
+                      localStorage.setItem('bikroynow_pwa_installed_v2', 'true');
+                    } catch(err) {}
+                    window.dispatchEvent(new CustomEvent('pwa_installed'));
+                  });
+                  if ('serviceWorker' in navigator) {
+                    window.addEventListener('load', function() {
+                      navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function(){});
+                    });
+                  }
+                } catch(e) {}
+              })();
+            `
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
