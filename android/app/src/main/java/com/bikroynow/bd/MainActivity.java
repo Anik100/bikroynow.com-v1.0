@@ -625,37 +625,42 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void updateLauncherBadge(final int count) {
+    public static void updateBadgeFromContext(final Context context, final int count, final String messageSnippet) {
+        if (context == null) return;
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 try {
                     // 1. ShortcutBadger for OEM Launchers (Vivo, Xiaomi, Oppo, Samsung, Huawei, etc.)
                     if (count > 0) {
-                        ShortcutBadger.applyCount(getApplicationContext(), count);
+                        ShortcutBadger.applyCount(context.getApplicationContext(), count);
                     } else {
-                        ShortcutBadger.removeCount(getApplicationContext());
+                        ShortcutBadger.removeCount(context.getApplicationContext());
                     }
 
                     // 2. Android System Notification with Badge Counter
-                    NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                    NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     if (manager != null) {
                         if (count <= 0) {
                             manager.cancel(BADGE_NOTIFICATION_ID);
                         } else {
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             PendingIntent pendingIntent = PendingIntent.getActivity(
-                                    getApplicationContext(),
+                                    context.getApplicationContext(),
                                     0,
                                     intent,
                                     PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0)
                             );
 
-                            NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID)
+                            String snippet = messageSnippet != null && !messageSnippet.isEmpty()
+                                    ? messageSnippet
+                                    : (count == 1 ? "আপনার ১টি নতুন অপঠিত মেসেজ রয়েছে" : "আপনার " + count + "টি নতুন অপঠিত মেসেজ রয়েছে");
+
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(context.getApplicationContext(), CHANNEL_ID)
                                     .setSmallIcon(R.mipmap.ic_launcher)
                                     .setContentTitle("BikroyNow")
-                                    .setContentText(count == 1 ? "আপনার ১টি নতুন অপঠিত মেসেজ রয়েছে" : "আপনার " + count + "টি নতুন অপঠিত মেসেজ রয়েছে")
+                                    .setContentText(snippet)
                                     .setNumber(count)
                                     .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                                     .setContentIntent(pendingIntent)
@@ -663,7 +668,7 @@ public class MainActivity extends AppCompatActivity {
                                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
                             if (Build.VERSION.SDK_INT < 33 ||
-                                    ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                                    ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                                 manager.notify(BADGE_NOTIFICATION_ID, builder.build());
                             }
                         }
@@ -673,6 +678,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void updateLauncherBadge(final int count) {
+        updateBadgeFromContext(getApplicationContext(), count, null);
     }
 
     public class WebAppInterface {
@@ -685,6 +694,15 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public boolean isNativeApp() {
             return true;
+        }
+
+        @JavascriptInterface
+        public void setUserId(String userId) {
+            if (userId != null && !userId.trim().isEmpty()) {
+                mContext.getSharedPreferences("bikroynow_prefs", Context.MODE_PRIVATE)
+                        .edit().putString("user_id", userId.trim()).apply();
+                BadgeSyncReceiver.scheduleNext(mContext);
+            }
         }
 
         @JavascriptInterface

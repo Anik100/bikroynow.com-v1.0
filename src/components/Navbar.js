@@ -128,8 +128,8 @@ export default function Navbar() {
       }
     }
   }, [user?.id, user?.email]);
-  const prevUnreadRef = useRef(null);
-  const isFirstFetchRef = useRef(true);
+  const alertedMsgIdsRef = useRef(new Set());
+  const isInitialUnreadDoneRef = useRef(false);
 
   // Helper to validate Supabase UUIDs
   const isValidUUID = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
@@ -181,7 +181,7 @@ export default function Navbar() {
     };
   }, [user]);
 
-  // Fetch unread count and subscribe
+  // Fetch unread count and subscribe (with single-alert deduplication)
   useEffect(() => {
     if (!user?.id) {
       setUnreadCount(0);
@@ -199,20 +199,57 @@ export default function Navbar() {
           if (Array.isArray(json.chats)) {
             // Sum unreadCount from all active chat sessions
             const totalUnread = json.chats.reduce((sum, chat) => sum + (chat.unreadCount || 0), 0);
-            if (!isFirstFetchRef.current && prevUnreadRef.current !== null && totalUnread > prevUnreadRef.current) {
-              const newChat = json.chats.find(c => (c.unreadCount || 0) > 0);
-              const previewText = newChat?.lastMessage?.content || (lang === 'bn' ? 'আপনার বিজ্ঞাপনে একটি নতুন মেসেজ এসেছে।' : 'You have a new message.');
-              playMessageNotification({
-                title: lang === 'bn' ? 'BikroyNow: নতুন মেসেজ এসেছে! 💬' : 'BikroyNow: New Message Received! 💬',
-                body: previewText,
-                url: newChat?.id ? `/chat/${newChat.id}` : '/chat',
-                chatId: newChat?.id
+
+            // Collect all incoming unread messages
+            const incomingUnread = [];
+            json.chats.forEach(c => {
+              if (c.lastMsg && (c.unreadCount || 0) > 0) {
+                const isFromOther = c.lastMsg.sender_id !== user.id && 
+                  String(c.lastMsg.sender_id).toLowerCase() !== String(user.email || '').toLowerCase();
+                if (isFromOther) {
+                  incomingUnread.push(c.lastMsg);
+                }
+              }
+            });
+
+            // On very first fetch when app opens: mark all existing unread messages as already alerted
+            // This guarantees existing unread messages NEVER trigger repeating sound/alerts!
+            if (!isInitialUnreadDoneRef.current) {
+              incomingUnread.forEach(m => {
+                const key = m.id || (m.created_at + '_' + m.content);
+                alertedMsgIdsRef.current.add(key);
               });
+              isInitialUnreadDoneRef.current = true;
+            } else {
+              // Find brand-new incoming messages that have NOT been alerted yet
+              const brandNewMsg = incomingUnread.find(m => {
+                const key = m.id || (m.created_at + '_' + m.content);
+                return !alertedMsgIdsRef.current.has(key);
+              });
+
+              if (brandNewMsg) {
+                const key = brandNewMsg.id || (brandNewMsg.created_at + '_' + brandNewMsg.content);
+                alertedMsgIdsRef.current.add(key);
+
+                // Alert ONLY ONCE for this brand-new incoming message!
+                playMessageNotification({
+                  title: lang === 'bn' ? 'BikroyNow: নতুন মেসেজ এসেছে! 💬' : 'BikroyNow: New Message Received! 💬',
+                  body: brandNewMsg.content || (lang === 'bn' ? 'আপনার বিজ্ঞাপনে একটি নতুন মেসেজ এসেছে।' : 'You have a new message.'),
+                  url: brandNewMsg.chat_id ? `/chat/${brandNewMsg.chat_id}` : '/chat',
+                  chatId: brandNewMsg.chat_id
+                });
+              }
             }
-            isFirstFetchRef.current = false;
-            prevUnreadRef.current = totalUnread;
+
             setUnreadCount(totalUnread);
             updateAppBadge(totalUnread);
+
+            // Sync user_id to Android Native app for background launcher badge updates
+            if (typeof window !== 'undefined' && window.AndroidNative && typeof window.AndroidNative.setUserId === 'function') {
+              try {
+                window.AndroidNative.setUserId(user.id);
+              } catch (_) {}
+            }
           }
         }
       } catch (err) {
@@ -232,13 +269,13 @@ export default function Navbar() {
     const interval = setInterval(() => {
       if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
       fetchUnreadCount();
-    }, 1500); // 1.5s interval for instant live updates on mobile and desktop
+    }, 2500); // 2.5s interval for smooth live updates
 
     return () => {
       clearInterval(interval);
       if (liveChannel) supabase.removeChannel(liveChannel);
     };
-  }, [user?.id, pathname]);
+  }, [user?.id]);
 
   // Fetch unread support messages count and subscribe
   useEffect(() => {
