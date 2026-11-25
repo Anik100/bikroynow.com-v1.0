@@ -1,12 +1,11 @@
 import { getAdForSeo } from '../../../lib/seoHelper';
 import AdDetailsClient from './AdDetailsClient';
 
-export const dynamic = 'force-dynamic';
+// Cache on edge/server for 60 seconds so ad pages load instantaneously in milliseconds
+export const revalidate = 60;
 
 export default async function AdPage({ params }) {
-  console.log('>>> AdPage params:', params);
   const id = params?.id;
   const ad = await getAdForSeo(id);
-  console.log('>>> AdPage ad found:', !!ad, ad?.title);
   return <AdDetailsClient initialAd={ad} adId={id} />;
 }

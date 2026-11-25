@@ -621,7 +621,7 @@ export default function HomeClient({ initialFeaturedAds = [], initialListings = 
 
             return sortedListings.length > 0 ? (
               sortedListings.map((ad) => (
-                <Link href={`/ad/${ad.id}`} key={ad.id} className={styles.adCard}>
+                <Link href={`/ad/${ad.id}`} key={ad.id} className={styles.adCard} prefetch={true}>
                   <div className={styles.adImageWrapper}>
                     {ad.is_featured ? (
                       <div className={styles.verifiedBadge} style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', color: '#ffffff', fontWeight: 850, boxShadow: '0 2px 8px rgba(245, 158, 11, 0.4)' }}>

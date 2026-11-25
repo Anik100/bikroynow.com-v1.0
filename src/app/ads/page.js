@@ -499,7 +499,7 @@ function AdsContent() {
                 <div style={{gridColumn: '1/-1', textAlign: 'center', padding: '2rem'}}>{t('loading')}</div>
               ) : sortedListings.length > 0 ? (
                 sortedListings.map((ad) => (
-                  <Link href={`/ad/${ad.id}`} key={ad.id} className={viewMode === 'list' ? styles.adCard : styles.adCardGrid}>
+                  <Link href={`/ad/${ad.id}`} key={ad.id} prefetch={true} className={viewMode === 'list' ? styles.adCard : styles.adCardGrid}>
                     {/* Left Compact Image */}
                     <div className={styles.imageBox}>
                       {ad.is_featured ? (

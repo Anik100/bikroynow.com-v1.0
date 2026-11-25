@@ -547,49 +547,32 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
 
     const fetchAdData = async () => {
       try {
-        let adData = null;
+        let adData = initialAd || null;
         const isValidUUID = (str) => typeof str === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 
-        // 1. Instant cache check from localStorage (renders in 0ms)
-        try {
-          const localAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
-          const localFound = localAds.find(l => String(l.id) === String(effectiveId));
-          if (localFound) {
-            adData = localFound;
-            if (!isCancelled) {
-              setAd(localFound);
-              if (localFound.profiles) setProfile(localFound.profiles);
-              setLoading(false);
-            }
-          }
-        } catch (e) {}
-
-        // 2. Fetch from fast internal API /api/listings?id=... (fastest server response ~50ms)
-        try {
-          const res = await fetchWithTimeout(`/api/listings?id=${encodeURIComponent(effectiveId)}&t=${Date.now()}`, 2500);
-          if (res && res.ok) {
-            const data = await res.json();
-            if (data?.listing) {
-              adData = data.listing;
+        // If initialAd is already provided from server, we do not need to refetch the ad!
+        if (!adData) {
+          // 1. Instant cache check from localStorage (renders in 0ms)
+          try {
+            const localAds = JSON.parse(localStorage.getItem('bikroynow_public_ads') || '[]');
+            const localFound = localAds.find(l => String(l.id) === String(effectiveId));
+            if (localFound) {
+              adData = localFound;
               if (!isCancelled) {
-                setAd(adData);
-                if (adData.profiles) setProfile(adData.profiles);
+                setAd(localFound);
+                if (localFound.profiles) setProfile(localFound.profiles);
                 setLoading(false);
               }
             }
-          }
-        } catch (e) {}
+          } catch (e) {}
 
-        // 3. Fallback: Check full /api/listings feed
-        if (!adData) {
+          // 2. Fetch from fast internal API /api/listings?id=... (fastest server response ~50ms)
           try {
-            const res = await fetchWithTimeout(`/api/listings?t=${Date.now()}`, 2500);
+            const res = await fetchWithTimeout(`/api/listings?id=${encodeURIComponent(effectiveId)}&t=${Date.now()}`, 2500);
             if (res && res.ok) {
-              const resJson = await res.json();
-              const allListings = Array.isArray(resJson) ? resJson : (resJson?.listings || []);
-              const found = allListings.find(l => String(l.id) === String(effectiveId));
-              if (found) {
-                adData = found;
+              const data = await res.json();
+              if (data?.listing) {
+                adData = data.listing;
                 if (!isCancelled) {
                   setAd(adData);
                   if (adData.profiles) setProfile(adData.profiles);
@@ -598,22 +581,42 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
               }
             }
           } catch (e) {}
-        }
 
-        // 4. Fallback: Direct Supabase query with 2.5s race timeout
-        if (!adData && isValidUUID(effectiveId)) {
-          try {
-            const sbPromise = supabase.from('listings').select('*').eq('id', effectiveId).maybeSingle();
-            const timeoutPromise = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 2500));
-            const { data } = await Promise.race([sbPromise, timeoutPromise]);
-            if (data) {
-              adData = data;
-              if (!isCancelled) {
-                setAd(adData);
-                setLoading(false);
+          // 3. Fallback: Check full /api/listings feed
+          if (!adData) {
+            try {
+              const res = await fetchWithTimeout(`/api/listings?t=${Date.now()}`, 2500);
+              if (res && res.ok) {
+                const resJson = await res.json();
+                const allListings = Array.isArray(resJson) ? resJson : (resJson?.listings || []);
+                const found = allListings.find(l => String(l.id) === String(effectiveId));
+                if (found) {
+                  adData = found;
+                  if (!isCancelled) {
+                    setAd(adData);
+                    if (adData.profiles) setProfile(adData.profiles);
+                    setLoading(false);
+                  }
+                }
               }
-            }
-          } catch (e) {}
+            } catch (e) {}
+          }
+
+          // 4. Fallback: Direct Supabase query with 2.5s race timeout
+          if (!adData && isValidUUID(effectiveId)) {
+            try {
+              const sbPromise = supabase.from('listings').select('*').eq('id', effectiveId).maybeSingle();
+              const timeoutPromise = new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 2500));
+              const { data } = await Promise.race([sbPromise, timeoutPromise]);
+              if (data) {
+                adData = data;
+                if (!isCancelled) {
+                  setAd(adData);
+                  setLoading(false);
+                }
+              }
+            } catch (e) {}
+          }
         }
 
         // Always end loading state promptly
@@ -949,6 +952,37 @@ export default function AdDetailsClient({ initialAd, adId, params }) {
       )}
 
       <div className={`container ${styles.detailsContainer}`}>
+        {/* Quick Mobile/Desktop Back Button */}
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '-0.75rem' }}>
+          <button
+            onClick={() => {
+              if (typeof window !== 'undefined' && window.history.length > 1) {
+                router.back();
+              } else {
+                router.push('/');
+              }
+            }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '7px 14px',
+              borderRadius: '20px',
+              border: '1px solid #e2e8f0',
+              background: '#ffffff',
+              color: '#1e293b',
+              fontSize: '0.88rem',
+              fontWeight: 650,
+              cursor: 'pointer',
+              boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+              WebkitTapHighlightColor: 'transparent'
+            }}
+            aria-label={lang === 'bn' ? 'আগের পেজে ফিরে যান' : 'Go Back'}
+          >
+            <ChevronLeft size={18} />
+            <span>{lang === 'bn' ? 'ফিরে যান' : 'Back'}</span>
+          </button>
+        </div>
         <div className={styles.mainContent}>
           <div className={styles.card}>
             <div className={styles.gallerySection}>

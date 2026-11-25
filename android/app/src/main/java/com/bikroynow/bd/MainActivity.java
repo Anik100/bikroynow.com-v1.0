@@ -30,7 +30,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
     private WebView mWebView;
     private ProgressBar mProgressBar;
-    private SwipeRefreshLayout mSwipeRefresh;
     private LinearLayout mErrorLayout;
     private Button mBtnRetry;
     private ValueCallback<Uri[]> mFilePathCallback;
@@ -52,20 +50,11 @@ public class MainActivity extends AppCompatActivity {
 
         mWebView = findViewById(R.id.webView);
         mProgressBar = findViewById(R.id.progressBar);
-        mSwipeRefresh = findViewById(R.id.swipeRefresh);
         mErrorLayout = findViewById(R.id.errorLayout);
         mBtnRetry = findViewById(R.id.btnRetry);
 
         initWebView();
         checkAndRequestPermissions();
-
-        mSwipeRefresh.setColorSchemeResources(R.color.primary, R.color.accent);
-        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mWebView.reload();
-            }
-        });
 
         mBtnRetry.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initWebView() {
+        // Enable Hardware Acceleration for 60/120Hz smooth scrolling
+        mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        mWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        mWebView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+
         WebSettings settings = mWebView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
@@ -103,12 +97,16 @@ public class MainActivity extends AppCompatActivity {
         settings.setAllowContentAccess(true);
         settings.setGeolocationEnabled(true);
         settings.setMediaPlaybackRequiresUserGesture(false);
-        settings.setSupportZoom(true);
+
+        // Remove 300ms touch delay by disabling double-tap zoom
+        settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
+
         settings.setUseWideViewPort(true);
         settings.setLoadWithOverviewMode(true);
         settings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             settings.setMixedContentMode(WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
@@ -132,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 mProgressBar.setVisibility(View.GONE);
-                mSwipeRefresh.setRefreshing(false);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     CookieManager.getInstance().flush();
                 }
@@ -142,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 if (request.isForMainFrame()) {
                     mProgressBar.setVisibility(View.GONE);
-                    mSwipeRefresh.setRefreshing(false);
                     mWebView.setVisibility(View.GONE);
                     mErrorLayout.setVisibility(View.VISIBLE);
                 }
@@ -282,7 +278,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (mWebView != null && mWebView.canGoBack()) {
-            mWebView.goBack();
+            // First attempt instant SPA back navigation via JavaScript popstate
+            mWebView.evaluateJavascript(
+                "(function() {" +
+                "  if (window.history && window.history.length > 1) {" +
+                "    window.history.back();" +
+                "    return 'true';" +
+                "  }" +
+                "  return 'false';" +
+                "})()",
+                new ValueCallback<String>() {
+                    @Override
+                    public void onReceiveValue(String value) {
+                        if (!"\"true\"".equals(value) && !"true".equals(value)) {
+                            if (mWebView != null && mWebView.canGoBack()) {
+                                mWebView.goBack();
+                            } else {
+                                MainActivity.super.onBackPressed();
+                            }
+                        }
+                    }
+                }
+            );
         } else {
             super.onBackPressed();
         }

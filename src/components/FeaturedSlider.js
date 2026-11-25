@@ -230,6 +230,7 @@ export default function FeaturedSlider({ lang = 'en', initialFeaturedAds = [] })
   const renderSlideCard = (listItem, { isPriority = false, isLazy = false, fetchPriority = 'auto', extraClass = '' } = {}) => (
     <Link
       href={listItem ? `/ad/${listItem.id}` : '#'}
+      prefetch={true}
       className={`${styles.slideCard} ${extraClass}`.trim()}
     >
       <div className={styles.slideImageWrapper}>
