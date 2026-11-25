@@ -79,7 +79,7 @@ function urlBase64ToUint8Array(base64String) {
 }
 
 // Subscribes current device to Web Push and syncs endpoint with backend API
-export const subscribeUserToPush = async (userId) => {
+export const subscribeUserToPush = async (userId, userEmail = null) => {
   if (typeof window === 'undefined' || !('serviceWorker' in navigator) || !('PushManager' in window)) {
     return null;
   }
@@ -100,11 +100,13 @@ export const subscribeUserToPush = async (userId) => {
     }
 
     if (sub) {
+      const emailToUse = userEmail || (typeof window !== 'undefined' ? window.__bikroynow_user_email : null);
       await fetch('/api/notifications/push-subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           user_id: userId,
+          email: emailToUse,
           subscription: sub.toJSON()
         })
       }).catch(() => {});

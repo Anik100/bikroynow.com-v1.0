@@ -98,7 +98,10 @@ export default function Navbar() {
   useEffect(() => {
     registerServiceWorker();
     if (user?.id) {
-      subscribeUserToPush(user.id);
+      if (user.email && typeof window !== 'undefined') {
+        window.__bikroynow_user_email = user.email;
+      }
+      subscribeUserToPush(user.id, user.email);
     }
     if (typeof window !== 'undefined' && 'Notification' in window) {
       if (Notification.permission === 'default') {
@@ -113,7 +116,7 @@ export default function Navbar() {
         return () => clearTimeout(timer);
       }
     }
-  }, [user?.id]);
+  }, [user?.id, user?.email]);
   const prevUnreadRef = useRef(null);
   const isFirstFetchRef = useRef(true);
 

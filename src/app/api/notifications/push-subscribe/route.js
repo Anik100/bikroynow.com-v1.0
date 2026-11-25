@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req) {
   try {
-    const { user_id, subscription } = await req.json();
+    const { user_id, email, subscription } = await req.json();
 
     if (!user_id || !subscription || !subscription.endpoint) {
       return NextResponse.json({ error: 'Missing user_id or subscription endpoint' }, { status: 400 });
@@ -16,21 +16,45 @@ export async function POST(req) {
       return NextResponse.json({ error: 'Database client not available' }, { status: 500 });
     }
 
-    // Key in admin_settings for user's push subscriptions
-    const settingsKey = `push_subs_${user_id}`;
+    const keysToUpdate = new Set([`push_subs_${user_id}`, `push_subs_${String(user_id).toLowerCase()}`]);
+    if (email) {
+      keysToUpdate.add(`push_subs_${email.toLowerCase().trim()}`);
+    }
+
+    // Also look up profile to find associated email/id if any
+    try {
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(user_id);
+      if (isUUID) {
+        const { data: prof } = await serverSupabase.from('profiles').select('email').eq('id', user_id).maybeSingle();
+        if (prof?.email) {
+          keysToUpdate.add(`push_subs_${prof.email.toLowerCase().trim()}`);
+        }
+      }
+    } catch (_) {}
 
     // 1. Fetch existing subscriptions for this user
     let userSubs = [];
     try {
-      const { data: row } = await serverSupabase
+      const { data: rows } = await serverSupabase
         .from('admin_settings')
         .select('value')
-        .eq('key', settingsKey)
-        .maybeSingle();
+        .in('key', Array.from(keysToUpdate));
 
-      if (row?.value) {
-        userSubs = JSON.parse(row.value);
-        if (!Array.isArray(userSubs)) userSubs = [];
+      if (Array.isArray(rows)) {
+        for (const row of rows) {
+          if (row?.value) {
+            try {
+              const parsed = JSON.parse(row.value);
+              if (Array.isArray(parsed)) {
+                for (const s of parsed) {
+                  if (s?.endpoint && !userSubs.some(x => x.endpoint === s.endpoint)) {
+                    userSubs.push(s);
+                  }
+                }
+              }
+            } catch (_) {}
+          }
+        }
       }
     } catch (_) {}
 
@@ -52,13 +76,17 @@ export async function POST(req) {
       userSubs = userSubs.slice(-5);
     }
 
-    // 3. Save back to admin_settings
-    await serverSupabase
-      .from('admin_settings')
-      .upsert({
-        key: settingsKey,
-        value: JSON.stringify(userSubs)
-      }, { onConflict: 'key' });
+    // 3. Save back to all keys in admin_settings
+    const upsertTasks = Array.from(keysToUpdate).map(key => 
+      serverSupabase
+        .from('admin_settings')
+        .upsert({
+          key,
+          value: JSON.stringify(userSubs)
+        }, { onConflict: 'key' })
+    );
+
+    await Promise.all(upsertTasks);
 
     return NextResponse.json({ success: true, count: userSubs.length });
   } catch (err) {
