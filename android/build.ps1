@@ -29,7 +29,7 @@ if ($LASTEXITCODE -ne 0) { throw "aapt2 compile failed" }
 
 Write-Host "--- 3. Linking resources with aapt2 ---"
 $flatFiles = Get-ChildItem "$BUILD_DIR\compiled_res\*.flat" | ForEach-Object { $_.FullName }
-& $AAPT2 link -I $ANDROID_JAR --manifest $MANIFEST --java "$BUILD_DIR\gen" -o "$BUILD_DIR\unaligned_no_dex.apk" --auto-add-overlay $flatFiles
+& $AAPT2 link -I $ANDROID_JAR --manifest $MANIFEST --java "$BUILD_DIR\gen" --min-sdk-version 21 --target-sdk-version 34 --version-code 2 --version-name "1.0.1" -o "$BUILD_DIR\unaligned_no_dex.apk" --auto-add-overlay $flatFiles
 if ($LASTEXITCODE -ne 0) { throw "aapt2 link failed" }
 
 Write-Host "--- 4. Compiling Java sources ---"
@@ -42,7 +42,7 @@ if ($LASTEXITCODE -ne 0) { throw "javac failed" }
 
 Write-Host "--- 5. Compiling classes to DEX with d8 ---"
 $classFiles = Get-ChildItem -Path "$BUILD_DIR\classes" -Filter "*.class" -Recurse | ForEach-Object { $_.FullName }
-& $D8 --lib $ANDROID_JAR --output "$BUILD_DIR" $classFiles
+& $D8 --lib $ANDROID_JAR --min-api 21 --output "$BUILD_DIR" $classFiles
 if ($LASTEXITCODE -ne 0) { throw "d8 failed" }
 
 Write-Host "--- 6. Adding classes.dex to APK ---"
