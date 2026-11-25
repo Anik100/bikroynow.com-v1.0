@@ -72,7 +72,7 @@
             android:paddingRight="24dp" />
     </LinearLayout>
 
-    <!-- Fullscreen Native Splash Screen with User's Custom Artwork -->
+    <!-- Fullscreen Native Splash Screen with User's Custom Artwork (fitXY to prevent any side clipping) -->
     <RelativeLayout
         android:id="@+id/splashLayout"
         android:layout_width="match_parent"
@@ -85,7 +85,7 @@
             android:id="@+id/splashImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
+            android:scaleType="fitXY"
             android:src="@drawable/splash_screen"
             android:contentDescription="@string/app_name" />
 
