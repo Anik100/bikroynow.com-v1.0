@@ -72,12 +72,12 @@
             android:paddingRight="24dp" />
     </LinearLayout>
 
-    <!-- Fullscreen Native Splash Screen with User's Custom Artwork (fitXY to prevent any side clipping) -->
+    <!-- Fullscreen Native Splash Screen with User's Custom Artwork (1080x2400 Proportions & Live Spinner) -->
     <RelativeLayout
         android:id="@+id/splashLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFA000"
+        android:background="#FE6102"
         android:clickable="true"
         android:focusable="true">
 
@@ -85,9 +85,21 @@
             android:id="@+id/splashImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:src="@drawable/splash_screen"
             android:contentDescription="@string/app_name" />
+
+        <!-- Rotating Indeterminate Circular Progress Bar placed right over the circular loader in the artwork -->
+        <ProgressBar
+            android:id="@+id/splashLoader"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="148dp"
+            android:indeterminate="true"
+            android:indeterminateTint="#FFFFFF"
+            android:indeterminateTintMode="src_in" />
 
     </RelativeLayout>
 

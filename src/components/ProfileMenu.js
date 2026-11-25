@@ -629,10 +629,10 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
             )}
           </div>
 
-          {/* App Install Button in Profile */}
+          {/* App Install / APK Download Button in Profile */}
           <div
             className={styles.menuItem}
-            onClick={async () => {
+            onClick={() => {
               if (isNativeApp) {
                 alert(lang === 'bn' 
                   ? 'আপনি ইতিমধ্যে অফিসিয়াল BikroyNow Native Android App ব্যবহার করছেন! ✓' 
@@ -640,50 +640,36 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
                 return;
               }
 
-              if (isStandalone()) {
-                const wantApk = confirm(lang === 'bn' 
-                  ? 'আপনি ওয়েব অ্যাপ ব্যবহার করছেন। আপনি কি সরাসরি অফিসিয়াল BikroyNow APK ডাউনলোড করতে চান?' 
-                  : 'You are using the Web App. Would you like to download the official BikroyNow APK?');
-                if (wantApk) {
-                  window.location.href = '/BikroyNow.apk';
-                }
+              if (isIOS()) {
+                setShowInstallGuide(true);
                 return;
               }
 
-              const res = await promptPWAInstall({
-                onAccepted: () => {
-                  setIsInstalled(true);
-                },
-                onFallback: () => {
-                  setShowInstallGuide(true);
-                }
-              });
-              if (res?.success && res.outcome === 'accepted') {
-                setIsInstalled(true);
-              }
+              // Directly download the official Android APK
+              window.location.href = '/BikroyNow.apk';
             }}
             style={{ cursor: 'pointer' }}
           >
-            <Download size={20} color={(isNativeApp || isStandalone()) ? '#059669' : '#f59e0b'} />
+            <Download size={20} color={isNativeApp ? '#059669' : '#0284c7'} />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ color: (isNativeApp || isStandalone()) ? '#059669' : '#1c2b38', fontWeight: 650 }}>
+              <span style={{ color: isNativeApp ? '#059669' : '#1c2b38', fontWeight: 650 }}>
                 {isNativeApp
-                  ? (lang === 'bn' ? 'অফিসিয়াল অ্যান্ড্রয়েড অ্যাপ' : 'Official Android App')
-                  : (isStandalone()
-                    ? (lang === 'bn' ? 'BikroyNow অ্যাপ (PWA)' : 'BikroyNow App (PWA)')
-                    : (lang === 'bn' ? 'অ্যাপ ইনস্টল / ডাউনলোড' : 'Install / Download App'))}
+                  ? (lang === 'bn' ? 'অফিসিয়াল অ্যান্ড্রয়েড অ্যাপ (চালু আছে ✓)' : 'Official Android App (Active ✓)')
+                  : (lang === 'bn' ? 'অফিসিয়াল অ্যাপ ডাউনলোড' : 'Download Official App')}
               </span>
               <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 500 }}>
                 {isNativeApp
                   ? (lang === 'bn' ? 'BikroyNow v1.0 অফিসিয়াল নেটিভ সংস্করণ' : 'BikroyNow v1.0 Official Native App')
-                  : (isStandalone()
-                    ? (lang === 'bn' ? 'ট্যাপ করে সরাসরি অফিসিয়াল APK ও ডাউনলোড করতে পারেন' : 'Tap to download official APK')
-                    : (lang === 'bn' ? 'দ্রুত ব্যবহারের জন্য মোবাইলে অ্যাপ ইনস্টল করুন' : 'Install app for faster access'))}
+                  : (lang === 'bn' ? 'নতুন সুপার ফাস্ট অফিসিয়াল অ্যান্ড্রয়েড APK ডাউনলোড করুন' : 'Download new super fast official Android APK')}
               </span>
             </div>
-            {(isNativeApp || isStandalone()) && (
+            {isNativeApp ? (
               <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#059669', fontWeight: 800 }}>
                 ✓
+              </span>
+            ) : (
+              <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: '#0284c7', fontWeight: 700, background: '#f0f9ff', padding: '2px 8px', borderRadius: '6px', border: '1px solid #bae6fd' }}>
+                APK
               </span>
             )}
           </div>

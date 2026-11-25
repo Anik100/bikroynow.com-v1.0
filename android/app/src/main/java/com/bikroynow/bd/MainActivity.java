@@ -76,6 +76,23 @@ public class MainActivity extends AppCompatActivity {
         splashLaunchTime = System.currentTimeMillis();
         mSplashLayout.setVisibility(View.VISIBLE);
 
+        final ProgressBar splashLoader = findViewById(R.id.splashLoader);
+        if (mSplashLayout != null && splashLoader != null) {
+            mSplashLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    int layoutHeight = mSplashLayout.getHeight();
+                    int layoutWidth = mSplashLayout.getWidth();
+                    if (layoutHeight > 0 && layoutWidth > 0) {
+                        float targetX = (layoutWidth - splashLoader.getWidth()) / 2f;
+                        float targetY = (layoutHeight * 0.79125f) - (splashLoader.getHeight() / 2f);
+                        splashLoader.setX(targetX);
+                        splashLoader.setY(targetY);
+                    }
+                }
+            });
+        }
+
         setupPullToRefresh();
         initWebView();
         checkAndRequestPermissions();
