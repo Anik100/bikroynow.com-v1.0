@@ -283,7 +283,6 @@
     "122124579243450344_2244297916443260"
   ],
   "posted_ids": [
-    "us7000tyhr",
     "emsc_20261115_0000031",
     "emsc_20261115_0000040",
     "emsc_20261116_0000093",
@@ -782,17 +781,10 @@
     "us6000udf2",
     "emsc_20261125_0000215",
     "emsc_20261125_0000233",
-    "emsc_20261125_0000234"
+    "emsc_20261125_0000234",
+    "emsc_20261125_0000244"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261124_0000041",
-      "mag": 4.3,
-      "place": "KEPULAUAN BARAT DAYA, INDONESIA",
-      "latitude": -7.35,
-      "longitude": 125.21,
-      "epoch_ms": 1795489945000
-    },
     {
       "id": "emsc_20261124_0000070",
       "mag": 4.1,
@@ -1184,6 +1176,14 @@
       "latitude": -9.6,
       "longitude": -74.91,
       "epoch_ms": 1795616564000
+    },
+    {
+      "id": "emsc_20261125_0000244",
+      "mag": 4.0,
+      "place": "MINDORO, PHILIPPINES",
+      "latitude": 13.68,
+      "longitude": 120.5,
+      "epoch_ms": 1795618937000
     }
   ]
 }
