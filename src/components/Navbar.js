@@ -492,13 +492,15 @@ export default function Navbar() {
               aria-label={user ? (lang === 'bn' ? 'ব্যবহারকারী প্রোফাইল' : 'User Profile') : (lang === 'bn' ? 'লগইন' : 'Login')}
               title={user ? (lang === 'bn' ? 'প্রোফাইল' : 'Profile') : (lang === 'bn' ? 'লগইন করুন' : 'Login')}
             >
-              <User size={18} />
+              <div style={{ position: 'relative', display: 'inline-flex' }}>
+                <User size={18} />
+                {(unreadCount + unreadSupportCount) > 0 && (
+                  <span className={styles.desktopBadge} style={{ background: '#ef4444' }}>
+                    {(unreadCount + unreadSupportCount) > 99 ? '99+' : (unreadCount + unreadSupportCount)}
+                  </span>
+                )}
+              </div>
               <span>{user ? (lang === 'bn' ? 'প্রোফাইল' : 'Profile') : (lang === 'bn' ? 'লগইন' : 'Login')}</span>
-              {unreadSupportCount > 0 && (
-                <span className={styles.desktopBadge}>
-                  {unreadSupportCount}
-                </span>
-              )}
             </button>
 
             {/* 2. Messages */}
@@ -818,9 +820,9 @@ export default function Navbar() {
          <button className={`${styles.bottomNavItem} ${showProfileMenu ? styles.activeProfile : ''}`} onClick={() => setShowProfileMenu(true)} aria-label={t('profile') || 'Profile'}>
           <div className={styles.iconWrapper}>
             <User size={22} className={styles.iconProfile} />
-            {unreadSupportCount > 0 && (
+            {(unreadCount + unreadSupportCount) > 0 && (
               <span className={styles.badge} style={{ background: '#ef4444' }}>
-                {unreadSupportCount}
+                {(unreadCount + unreadSupportCount) > 99 ? '99+' : (unreadCount + unreadSupportCount)}
               </span>
             )}
           </div>
@@ -833,6 +835,7 @@ export default function Navbar() {
         <ProfileMenu 
           user={user} 
           hasAdminAccess={hasAdminAccess}
+          unreadCount={unreadCount}
           onClose={() => setShowProfileMenu(false)} 
           onLogout={handleLogout}
         />

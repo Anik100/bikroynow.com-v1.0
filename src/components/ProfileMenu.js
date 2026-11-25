@@ -12,7 +12,7 @@ import { compressImage } from '../lib/utils';
 import { isStandalone, isPWAInstalled, promptPWAInstall, markPWAInstalled, isIOS } from '../lib/pwaInstall';
 import { requestNotificationPermission, subscribeUserToPush } from '../lib/notificationAudio';
 
-export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin, onClose, onLogout }) {
+export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin, unreadCount = 0, onClose, onLogout }) {
   const { lang, t, toggleLanguage } = useLanguage();
   const [user, setUser] = useState(propUser || null);
   const [profile, setProfile] = useState(null);
@@ -463,11 +463,39 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
         <div className={styles.header}>
           <div className={styles.profileInfo}>
             <div className={styles.avatarWrapper}>
-              <div className={styles.avatar}>
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt="Profile" className={styles.avatarImage} />
-                ) : (
-                  <UserIcon size={30} color="white" />
+              <div style={{ position: 'relative', display: 'inline-block' }}>
+                <div className={styles.avatar}>
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Profile" className={styles.avatarImage} />
+                  ) : (
+                    <UserIcon size={30} color="white" />
+                  )}
+                </div>
+                {(unreadCount + unreadSupportCount) > 0 && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '-4px',
+                      right: '-4px',
+                      backgroundColor: '#ef4444',
+                      color: '#ffffff',
+                      fontSize: '0.72rem',
+                      fontWeight: 800,
+                      minWidth: '20px',
+                      height: '20px',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      padding: '0 5px',
+                      border: '2px solid #ffffff',
+                      boxShadow: '0 2px 6px rgba(239, 68, 68, 0.55)',
+                      zIndex: 10
+                    }}
+                    title={lang === 'bn' ? `${unreadCount + unreadSupportCount}টি নতুন মেসেজ` : `${unreadCount + unreadSupportCount} unread messages`}
+                  >
+                    {(unreadCount + unreadSupportCount) > 99 ? '99+' : (unreadCount + unreadSupportCount)}
+                  </span>
                 )}
               </div>
               {user && (
@@ -531,6 +559,11 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
           <Link href="/chat" className={styles.menuItem} onClick={onClose}>
             <MessageSquare size={20} color="#3b82f6" />
             <span>{t('messages')}</span>
+            {unreadCount > 0 && (
+              <span className={styles.supportBadge} style={{ background: '#ef4444', marginLeft: 'auto' }}>
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </span>
+            )}
           </Link>
           <Link href="/favorites" className={styles.menuItem} onClick={onClose}>
             <Heart size={20} color="#ef4444" fill="#ef4444" />
