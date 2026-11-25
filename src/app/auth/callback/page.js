@@ -19,6 +19,18 @@ export default function AuthCallbackPage() {
     const search = window.location.search || '';
     const params = hash || search;
 
+    // If already inside the native app WebView, seamlessly navigate to home with tokens
+    const isInsideNativeApp = (
+      Boolean(window.AndroidNative?.isNativeApp?.()) ||
+      navigator.userAgent.includes('BikroyNowApp') ||
+      document.cookie.includes('is_native_app=true')
+    );
+
+    if (isInsideNativeApp) {
+      window.location.replace(`/${params}`);
+      return;
+    }
+
     // 1. Android Intent URL format targeting our official native package com.bikroynow.bd
     const androidIntent = `intent://login-callback${params}#Intent;scheme=bikroynow;package=com.bikroynow.bd;end;`;
     // 2. Direct Custom Scheme URL
@@ -27,11 +39,10 @@ export default function AuthCallbackPage() {
     setIntentLink(androidIntent);
     setSchemeLink(customScheme);
 
-    // Auto-launch mobile app if on mobile device
+    // Auto-launch mobile app if on mobile browser
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     if (isMobile) {
       try {
-        // First try Android Intent scheme to return directly to BikroyNow app
         window.location.href = androidIntent;
       } catch (e) {
         try {

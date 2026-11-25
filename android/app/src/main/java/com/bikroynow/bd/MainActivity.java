@@ -121,8 +121,11 @@ public class MainActivity extends AppCompatActivity {
 
         String uriStr = data.toString();
 
-        // Check for custom scheme login-callback (e.g. from Google OAuth in Chrome)
-        if (uriStr.startsWith("bikroynow://login-callback") || uriStr.startsWith("io.supabase.bikroynow://login-callback")) {
+        // Check for login callback (custom scheme or https auth/callback)
+        if (uriStr.startsWith("bikroynow://login-callback") ||
+            uriStr.startsWith("io.supabase.bikroynow://login-callback") ||
+            uriStr.contains("bikroynow.com/auth/callback")) {
+
             String fragment = data.getFragment();
             String query = data.getQuery();
 
@@ -132,15 +135,24 @@ public class MainActivity extends AppCompatActivity {
             } else if (query != null && !query.isEmpty()) {
                 targetUrl += "?" + query;
             }
+
+            // Immediately clear any error screen and reveal WebView
+            if (mErrorLayout != null) {
+                mErrorLayout.setVisibility(View.GONE);
+            }
             if (mWebView != null) {
+                mWebView.setVisibility(View.VISIBLE);
                 mWebView.loadUrl(targetUrl);
             }
-        } else if (uriStr.contains("bikroynow.com/auth/callback")) {
-            if (mWebView != null) {
-                mWebView.loadUrl(uriStr);
+            return;
+        }
+
+        if (uriStr.startsWith("http://") || uriStr.startsWith("https://")) {
+            if (mErrorLayout != null) {
+                mErrorLayout.setVisibility(View.GONE);
             }
-        } else if (uriStr.startsWith("http://") || uriStr.startsWith("https://")) {
             if (mWebView != null) {
+                mWebView.setVisibility(View.VISIBLE);
                 mWebView.loadUrl(uriStr);
             }
         }
@@ -307,6 +319,17 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                if (request.getUrl() != null) {
+                    String scheme = request.getUrl().getScheme();
+                    String fullUrl = request.getUrl().toString();
+                    // Do not show error layout for non-http(s) schemes or auth callback transitions
+                    if (scheme != null && !scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https")) {
+                        return;
+                    }
+                    if (fullUrl.contains("auth/callback") || fullUrl.contains("login-callback")) {
+                        return;
+                    }
+                }
                 if (request.isForMainFrame()) {
                     mProgressBar.setVisibility(View.GONE);
                     if (mSwipeRefresh != null) {
@@ -402,6 +425,29 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean handleUrl(String url) {
         if (url == null) return false;
+
+        // 0. Handle intent:// URLs safely without triggering ERR_UNKNOWN_URL_SCHEME
+        if (url.startsWith("intent://")) {
+            try {
+                Intent parsedIntent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
+                if (parsedIntent != null) {
+                    if (parsedIntent.getPackage() != null && parsedIntent.getPackage().equals(getPackageName())) {
+                        handleDeepLink(parsedIntent);
+                        return true;
+                    }
+                    if (getPackageManager().resolveActivity(parsedIntent, 0) != null) {
+                        startActivity(parsedIntent);
+                        return true;
+                    }
+                    String fallbackUrl = parsedIntent.getStringExtra("browser_fallback_url");
+                    if (fallbackUrl != null) {
+                        mWebView.loadUrl(fallbackUrl);
+                        return true;
+                    }
+                }
+            } catch (Exception ignored) {}
+            return true;
+        }
 
         // 1. Google OAuth flow - Open in Google Chrome so user's saved Google accounts are available
         if (url.contains("accounts.google.com") || 
