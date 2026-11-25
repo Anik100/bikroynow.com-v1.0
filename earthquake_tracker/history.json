@@ -278,7 +278,6 @@
     "122118770847450344_1633682028302741"
   ],
   "posted_ids": [
-    "us7000tyde",
     "emsc_20261115_0000086",
     "us7000tydm",
     "emsc_20261115_0000102",
@@ -777,17 +776,10 @@
     "emsc_20261124_0000343",
     "emsc_20261124_0000361",
     "emsc_20261124_0000371",
-    "us6000udck"
+    "us6000udck",
+    "emsc_20261124_0000377"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261123_0000089",
-      "mag": 4.0,
-      "place": "BARBADOS REGION, WINDWARD ISL.",
-      "latitude": 12.83,
-      "longitude": -60.159,
-      "epoch_ms": 1795415658000
-    },
     {
       "id": "emsc_20261123_0000097",
       "mag": 4.4,
@@ -1179,6 +1171,14 @@
       "latitude": 10.882,
       "longitude": 122.4485,
       "epoch_ms": 1795562995670
+    },
+    {
+      "id": "emsc_20261124_0000377",
+      "mag": 4.0,
+      "place": "CENTRAL PERU",
+      "latitude": -9.59,
+      "longitude": -75.89,
+      "epoch_ms": 1795564344000
     }
   ]
 }
