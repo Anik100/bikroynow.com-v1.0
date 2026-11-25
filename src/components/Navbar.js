@@ -104,16 +104,27 @@ export default function Navbar() {
       subscribeUserToPush(user.id, user.email);
     }
     if (typeof window !== 'undefined' && 'Notification' in window) {
-      if (Notification.permission === 'default') {
-        const timer = setTimeout(() => {
-          try {
-            const dismissed = localStorage.getItem('bikroynow_notif_banner_dismissed');
-            if (!dismissed) {
+      if (Notification.permission === 'granted') {
+        if (user?.id) {
+          subscribeUserToPush(user.id, user.email);
+        }
+      } else if (Notification.permission === 'default') {
+        try {
+          const isApp = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+          const dismissedAt = localStorage.getItem('bikroynow_notif_banner_dismissed_at');
+          
+          if (isApp) {
+            // When opened in installed standalone app, always prompt immediately on launch!
+            setShowNotificationBanner(true);
+          } else if (!dismissedAt || (Date.now() - Number(dismissedAt) > 10 * 60 * 1000)) {
+            const timer = setTimeout(() => {
               setShowNotificationBanner(true);
-            }
-          } catch(e){}
-        }, 2200);
-        return () => clearTimeout(timer);
+            }, 800);
+            return () => clearTimeout(timer);
+          }
+        } catch(e) {
+          setShowNotificationBanner(true);
+        }
       }
     }
   }, [user?.id, user?.email]);
@@ -877,7 +888,16 @@ export default function Navbar() {
               type="button"
               onClick={async () => {
                 setShowNotificationBanner(false);
-                await requestNotificationPermission(user?.id);
+                const perm = await requestNotificationPermission(user?.id, user?.email);
+                if (perm === 'granted') {
+                  if (user?.id) {
+                    await subscribeUserToPush(user.id, user.email);
+                  }
+                } else if (perm === 'denied') {
+                  alert(lang === 'bn' 
+                    ? 'আপনার ব্রাউজারে নোটিফিকেশন ব্লক করা আছে। সাইটের উপরে তালা (🔒) আইকনে চাপ দিয়ে Notifications: Allow করে দিন।' 
+                    : 'Notifications are blocked in your browser. Click the lock icon in the address bar to allow.');
+                }
               }}
               style={{
                 background: '#10b981',
@@ -896,7 +916,9 @@ export default function Navbar() {
               type="button"
               onClick={() => {
                 setShowNotificationBanner(false);
-                try { localStorage.setItem('bikroynow_notif_banner_dismissed', 'true'); } catch(e){}
+                try { 
+                  localStorage.setItem('bikroynow_notif_banner_dismissed_at', String(Date.now())); 
+                } catch(e){}
               }}
               style={{
                 background: 'transparent',

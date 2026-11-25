@@ -130,11 +130,11 @@ export const registerServiceWorker = async () => {
   }
 };
 
-export const requestNotificationPermission = async (userId = null) => {
+export const requestNotificationPermission = async (userId = null, userEmail = null) => {
   if (typeof window === 'undefined' || !('Notification' in window)) return 'unsupported';
   if (Notification.permission === 'granted') {
-    registerServiceWorker();
-    if (userId) subscribeUserToPush(userId);
+    await registerServiceWorker();
+    if (userId) await subscribeUserToPush(userId, userEmail);
     return 'granted';
   }
   if (Notification.permission === 'denied') return 'denied';
@@ -143,7 +143,7 @@ export const requestNotificationPermission = async (userId = null) => {
     const perm = await Notification.requestPermission();
     if (perm === 'granted') {
       await registerServiceWorker();
-      if (userId) subscribeUserToPush(userId);
+      if (userId) await subscribeUserToPush(userId, userEmail);
     }
     return perm;
   } catch (e) {

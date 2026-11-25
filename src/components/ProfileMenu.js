@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { supabase } from '../lib/supabaseClient';
-import { X, FileText, Star, Award, Settings, HelpCircle, LogOut, User as UserIcon, MessageSquare, Heart, Loader2, Download, Smartphone, Share, PlusSquare, MoreVertical } from 'lucide-react';
+import { X, FileText, Star, Award, Settings, HelpCircle, LogOut, User as UserIcon, MessageSquare, Heart, Loader2, Download, Smartphone, Share, PlusSquare, MoreVertical, Bell } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
 import styles from './ProfileMenu.module.css';
 import { uploadToImgBB } from '../lib/imgbb';
 import { compressImage } from '../lib/utils';
 import { isStandalone, isPWAInstalled, promptPWAInstall, markPWAInstalled, isIOS } from '../lib/pwaInstall';
+import { requestNotificationPermission, subscribeUserToPush } from '../lib/notificationAudio';
 
 export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin, onClose, onLogout }) {
   const { lang, t, toggleLanguage } = useLanguage();
@@ -21,6 +22,13 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
   const [mounted, setMounted] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [showInstallGuide, setShowInstallGuide] = useState(false);
+  const [notifGranted, setNotifGranted] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'Notification' in window) {
+      setNotifGranted(Notification.permission === 'granted');
+    }
+  }, []);
 
   useEffect(() => {
     setIsInstalled(isPWAInstalled() || isStandalone());
@@ -547,6 +555,54 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
               </span>
             )}
           </Link>
+
+          {/* Notification Permission Item in Profile */}
+          <div
+            className={styles.menuItem}
+            onClick={async () => {
+              if (typeof window !== 'undefined' && 'Notification' in window) {
+                if (Notification.permission === 'granted') {
+                  if (user?.id) {
+                    await subscribeUserToPush(user.id, user.email);
+                  }
+                  alert(lang === 'bn' ? 'মেসেজ নোটিফিকেশন ইতিমধ্যে চালু রয়েছে! ✓' : 'Message notifications are already active! ✓');
+                  return;
+                }
+                const perm = await requestNotificationPermission(user?.id, user?.email);
+                if (perm === 'granted') {
+                  setNotifGranted(true);
+                  if (user?.id) {
+                    await subscribeUserToPush(user.id, user.email);
+                  }
+                  alert(lang === 'bn' ? 'মেসেজ নোটিফিকেশন সফলভাবে চালু হয়েছে! 🎉' : 'Notifications successfully enabled! 🎉');
+                } else if (perm === 'denied') {
+                  alert(lang === 'bn' 
+                    ? 'আপনার ব্রাউজারে নোটিফিকেশন ব্লক করা আছে। চালু করতে: উপরে তালা (🔒) আইকনে চাপ দিয়ে Notifications: Allow করে দিন।' 
+                    : 'Notifications are blocked in your browser. Click the lock icon in the address bar to allow.');
+                }
+              }
+            }}
+            style={{ cursor: 'pointer' }}
+          >
+            <Bell size={20} color={notifGranted ? '#059669' : '#f59e0b'} />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ color: notifGranted ? '#059669' : '#1c2b38', fontWeight: 650 }}>
+                {notifGranted 
+                  ? (lang === 'bn' ? 'মেসেজ নোটিফিকেশন (চালু আছে)' : 'Message Alerts (Active)')
+                  : (lang === 'bn' ? 'নোটিফিকেশন চালু করুন' : 'Enable Notifications')}
+              </span>
+              <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 500 }}>
+                {notifGranted
+                  ? (lang === 'bn' ? 'নতুন মেসেজ এলে ফোনে সরাসরি অ্যালার্ট পাবেন' : 'You will receive alerts on new messages')
+                  : (lang === 'bn' ? 'মেসেজ আসার সাথে সাথে অ্যালার্ট পেতে ট্যাপ করুন' : 'Tap to receive instant message alerts')}
+              </span>
+            </div>
+            {notifGranted && (
+              <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#059669', fontWeight: 800 }}>
+                ✓
+              </span>
+            )}
+          </div>
 
           {/* App Install Button in Profile */}
           <div
