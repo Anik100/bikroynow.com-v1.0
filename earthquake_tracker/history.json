@@ -280,7 +280,6 @@
     "122124579243450344_2369493533839559"
   ],
   "posted_ids": [
-    "us7000tydm",
     "emsc_20261115_0000102",
     "emsc_20261115_0000119",
     "emsc_20261115_0000125",
@@ -779,17 +778,10 @@
     "emsc_20261124_0000371",
     "us6000udck",
     "emsc_20261124_0000377",
-    "emsc_20261125_0000002"
+    "emsc_20261125_0000002",
+    "us6000udcy"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261123_0000098",
-      "mag": 4.1,
-      "place": "OFFSHORE GUERRERO, MEXICO",
-      "latitude": 16.521,
-      "longitude": -100.472,
-      "epoch_ms": 1795416514000
-    },
     {
       "id": "emsc_20261123_0000105",
       "mag": 5.4,
@@ -1181,6 +1173,14 @@
       "latitude": 19.469,
       "longitude": -104.305,
       "epoch_ms": 1795564903000
+    },
+    {
+      "id": "us6000udcy",
+      "mag": 4.3,
+      "place": "69 km SSW of Shihezi, China",
+      "latitude": 43.7,
+      "longitude": 85.7992,
+      "epoch_ms": 1795569596424
     }
   ]
 }
