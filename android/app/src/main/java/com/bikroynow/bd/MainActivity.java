@@ -33,9 +33,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     private WebView mWebView;
     private ProgressBar mProgressBar;
+    private SwipeRefreshLayout mSwipeRefresh;
     private RelativeLayout mSplashLayout;
     private LinearLayout mErrorLayout;
     private Button mBtnRetry;
@@ -64,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
         mWebView = findViewById(R.id.webView);
         mProgressBar = findViewById(R.id.progressBar);
+        mSwipeRefresh = findViewById(R.id.swipeRefresh);
         mSplashLayout = findViewById(R.id.splashLayout);
         mErrorLayout = findViewById(R.id.errorLayout);
         mBtnRetry = findViewById(R.id.btnRetry);
@@ -71,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         splashLaunchTime = System.currentTimeMillis();
         mSplashLayout.setVisibility(View.VISIBLE);
 
+        setupPullToRefresh();
         initWebView();
         checkAndRequestPermissions();
 
@@ -109,6 +115,43 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setupPullToRefresh() {
+        mSwipeRefresh.setEnabled(false); // Disabled initially while splash is visible
+        mSwipeRefresh.setColorSchemeColors(
+                Color.parseColor("#EAB308"), // Brand Gold
+                Color.parseColor("#CA8A04"), // Deep Gold
+                Color.parseColor("#0284C7")  // Accent Blue
+        );
+        mSwipeRefresh.setProgressBackgroundColorSchemeColor(Color.WHITE);
+        mSwipeRefresh.setDistanceToTriggerSync(300);
+
+        // Crucial: Only trigger pull-to-refresh when user is at the absolute top (scrollY == 0)
+        mSwipeRefresh.setOnChildScrollUpCallback(new SwipeRefreshLayout.OnChildScrollUpCallback() {
+            @Override
+            public boolean canChildScrollUp(@NonNull SwipeRefreshLayout parent, @Nullable View child) {
+                return mWebView != null && mWebView.getScrollY() > 0;
+            }
+        });
+
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (mWebView != null) {
+                    mWebView.reload();
+                }
+                // Safety timeout: auto dismiss spinner after 4 seconds
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mSwipeRefresh != null && mSwipeRefresh.isRefreshing()) {
+                            mSwipeRefresh.setRefreshing(false);
+                        }
+                    }
+                }, 4000);
+            }
+        });
+    }
+
     private void dismissSplash() {
         if (isSplashDismissed || mSplashLayout == null) return;
         isSplashDismissed = true;
@@ -120,6 +163,9 @@ public class MainActivity extends AppCompatActivity {
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (mSwipeRefresh != null) {
+                    mSwipeRefresh.setEnabled(true);
+                }
                 if (mSplashLayout != null && mSplashLayout.getVisibility() == View.VISIBLE) {
                     mSplashLayout.animate()
                             .alpha(0f)
@@ -188,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
             CookieManager cookieManager = CookieManager.getInstance();
             cookieManager.setAcceptCookie(true);
             cookieManager.setAcceptThirdPartyCookies(mWebView, true);
+            cookieManager.setCookie(APP_URL, "is_native_app=true; path=/; max-age=31536000");
         }
 
         String defaultUa = settings.getUserAgentString();
@@ -205,6 +252,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 mProgressBar.setVisibility(View.GONE);
+                if (mSwipeRefresh != null) {
+                    mSwipeRefresh.setRefreshing(false);
+                }
                 injectNativeStyles(view);
                 dismissSplash();
 
@@ -217,6 +267,9 @@ public class MainActivity extends AppCompatActivity {
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 if (request.isForMainFrame()) {
                     mProgressBar.setVisibility(View.GONE);
+                    if (mSwipeRefresh != null) {
+                        mSwipeRefresh.setRefreshing(false);
+                    }
                     mWebView.setVisibility(View.GONE);
                     mErrorLayout.setVisibility(View.VISIBLE);
                     dismissSplash();

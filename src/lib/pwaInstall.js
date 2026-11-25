@@ -82,9 +82,19 @@ export function initPWAInstallListener() {
   });
 }
 
-// Check if currently running inside the installed PWA standalone window
+export function isNativeApp() {
+  if (typeof window === 'undefined') return false;
+  return Boolean(
+    (typeof window.AndroidNative !== 'undefined' && window.AndroidNative?.isNativeApp?.()) ||
+    (navigator.userAgent && navigator.userAgent.includes('BikroyNowApp')) ||
+    (typeof document !== 'undefined' && document.cookie.includes('is_native_app=true'))
+  );
+}
+
+// Check if currently running inside the installed PWA standalone window OR native Android app
 export function isStandalone() {
   if (typeof window === 'undefined') return false;
+  if (isNativeApp()) return true;
   return (
     window.matchMedia('(display-mode: standalone)').matches ||
     window.navigator.standalone === true ||
@@ -95,8 +105,8 @@ export function isStandalone() {
 // Check if the user has already installed the app
 export function isPWAInstalled() {
   if (typeof window === 'undefined') return false;
-  // If running inside the standalone app, it is 100% installed
-  if (isStandalone()) return true;
+  // If running inside the native Android app or standalone PWA, it is 100% installed
+  if (isNativeApp() || isStandalone()) return true;
 
   // If beforeinstallprompt is ready, it is definitely NOT installed
   if (getDeferredPrompt()) return false;
@@ -112,8 +122,8 @@ export function isPWAInstalled() {
 export function canShowInstallPopup() {
   if (typeof window === 'undefined') return false;
 
-  // 1. NEVER show inside standalone PWA app
-  if (isStandalone()) return false;
+  // 1. NEVER show inside native Android app or standalone PWA app
+  if (isNativeApp() || isStandalone()) return false;
 
   // 2. NEVER show if verified installed
   if (isPWAInstalled()) return false;

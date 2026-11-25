@@ -595,8 +595,8 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
                   alert(lang === 'bn' ? 'মেসেজ নোটিফিকেশন সফলভাবে চালু হয়েছে! 🎉' : 'Notifications successfully enabled! 🎉');
                 } else if (perm === 'denied') {
                   const wantApk = confirm(lang === 'bn' 
-                    ? 'আপনার ব্রাউজারে নোটিফিকেশন ব্লক করা আছে। ক্রোম ব্রাউজারে সাইট সেটিংসে গিয়ে Notifications: Allow করতে পারেন।\n\nঅথবা আপনি কি সরাসরি নোটিফিকেশন পেতে অফিসিয়াল BikroyNow APK (মাত্র ১১৭ কেবি) ডাউনলোড করতে চান?' 
-                    : 'Notifications are blocked in browser settings.\n\nWould you like to download the official lightweight BikroyNow APK (117 KB) for direct notifications?');
+                    ? 'আপনার ব্রাউজারে নোটিফিকেশন ব্লক করা আছে। ক্রোম ব্রাউজারে সাইট সেটিংসে গিয়ে Notifications: Allow করতে পারেন।\n\nঅথবা আপনি কি সরাসরি নোটিফিকেশন পেতে অফিসিয়াল BikroyNow APK ডাউনলোড করতে চান?' 
+                    : 'Notifications are blocked in browser settings.\n\nWould you like to download the official BikroyNow APK for direct notifications?');
                   if (wantApk) {
                     window.location.href = '/BikroyNow.apk';
                   }
@@ -642,8 +642,8 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
 
               if (isStandalone()) {
                 const wantApk = confirm(lang === 'bn' 
-                  ? 'আপনি ওয়েব অ্যাপ ব্যবহার করছেন। আপনি কি সরাসরি অফিসিয়াল BikroyNow APK (মাত্র ১১৭ কেবি) ডাউনলোড করতে চান?' 
-                  : 'You are using the Web App. Would you like to download the official BikroyNow APK (117 KB)?');
+                  ? 'আপনি ওয়েব অ্যাপ ব্যবহার করছেন। আপনি কি সরাসরি অফিসিয়াল BikroyNow APK ডাউনলোড করতে চান?' 
+                  : 'You are using the Web App. Would you like to download the official BikroyNow APK?');
                 if (wantApk) {
                   window.location.href = '/BikroyNow.apk';
                 }

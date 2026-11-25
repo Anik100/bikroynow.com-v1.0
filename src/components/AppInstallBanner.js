@@ -5,6 +5,7 @@ import { X, Download, Smartphone, Share, PlusSquare, MoreVertical, CheckCircle2 
 import { useLanguage } from '../context/LanguageContext';
 import {
   initPWAInstallListener,
+  isNativeApp,
   isStandalone,
   isPWAInstalled,
   canShowInstallPopup,
@@ -78,6 +79,13 @@ export default function AppInstallBanner() {
 
   // Install Button Click
   const handleInstall = async () => {
+    // If user is browsing on Android, clicking Install directly delivers the official Android APK
+    if (isAndroid()) {
+      window.location.href = '/BikroyNow.apk';
+      setVisible(false);
+      return;
+    }
+
     const res = await promptPWAInstall({
       onAccepted: () => {
         setVisible(false);
@@ -92,7 +100,7 @@ export default function AppInstallBanner() {
     }
   };
 
-  if (!mounted || !visible || isStandalone() || isPWAInstalled()) {
+  if (!mounted || !visible || isNativeApp() || isStandalone() || isPWAInstalled()) {
     return null;
   }
 
@@ -208,11 +216,11 @@ export default function AppInstallBanner() {
 
                   <div style={{ marginTop: '16px', paddingTop: '14px', borderTop: '1px dashed #cbd5e1', textAlign: 'center' }}>
                     <p style={{ margin: '0 0 8px 0', fontSize: '0.82rem', color: '#64748b' }}>
-                      {lang === 'bn' ? 'অথবা সরাসরি অফিসিয়াল অ্যান্ড্রয়েড অ্যাপ ডাউনলোড করুন (মাত্র ১১৭ কেবি):' : 'Or download the official Android APK directly (117 KB):'}
+                      {lang === 'bn' ? 'অথবা সরাসরি অফিসিয়াল অ্যান্ড্রয়েড অ্যাপ ডাউনলোড করুন:' : 'Or download the official Android APK directly:'}
                     </p>
                     <a
                       href="/BikroyNow.apk"
-                      download
+                      download="BikroyNow.apk"
                       style={{
                         display: 'inline-flex',
                         alignItems: 'center',
@@ -230,7 +238,7 @@ export default function AppInstallBanner() {
                       }}
                     >
                       <Download size={15} />
-                      <span>{lang === 'bn' ? 'BikroyNow.apk ডাউনলোড করুন (117 KB)' : 'Download BikroyNow.apk (117 KB)'}</span>
+                      <span>{lang === 'bn' ? 'BikroyNow.apk ডাউনলোড করুন (অফিসিয়াল অ্যাপ)' : 'Download BikroyNow.apk (Official App)'}</span>
                     </a>
                   </div>
                 </>

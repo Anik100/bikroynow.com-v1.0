@@ -4,13 +4,21 @@
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Primary App WebView -->
-    <WebView
-        android:id="@+id/webView"
+    <!-- Swipe to Refresh Layout for Pull-to-Refresh -->
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:overScrollMode="never" />
+        android:layout_height="match_parent">
+
+        <!-- Primary App WebView -->
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:overScrollMode="never" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <!-- Thin Top Progress Bar for Page Transitions -->
     <ProgressBar
