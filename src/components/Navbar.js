@@ -241,10 +241,26 @@ export default function Navbar() {
                 const t = brandNewMsg.created_at ? new Date(brandNewMsg.created_at).getTime() : Date.now();
                 lastAlertedTimestampRef.current = Math.max(t, Date.now());
 
+                const activeChat = json.chats.find(c => c.id === brandNewMsg.chat_id);
+                const partnerName = activeChat?.partner?.full_name || activeChat?.partner?.name || 'BikroyNow';
+                const msgBody = brandNewMsg.content || (lang === 'bn' ? 'রিপ্লাই...' : 'Reply...');
+
+                // Trigger in-app custom notification card (matching user-provided design)
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new CustomEvent('bikroynow_incoming_msg', {
+                    detail: {
+                      senderName: partnerName,
+                      content: msgBody,
+                      chatId: brandNewMsg.chat_id,
+                      unreadCount: totalUnread
+                    }
+                  }));
+                }
+
                 // Alert EXACTLY ONCE for this new message!
                 playMessageNotification({
                   title: lang === 'bn' ? 'BikroyNow: নতুন মেসেজ এসেছে! 💬' : 'BikroyNow: New Message Received! 💬',
-                  body: brandNewMsg.content || (lang === 'bn' ? 'আপনার বিজ্ঞাপনে একটি নতুন মেসেজ এসেছে।' : 'You have a new message.'),
+                  body: msgBody,
                   url: brandNewMsg.chat_id ? `/chat/${brandNewMsg.chat_id}` : '/chat',
                   chatId: brandNewMsg.chat_id
                 });
@@ -253,8 +269,10 @@ export default function Navbar() {
                   try {
                     window.AndroidNative.showNotification(
                       lang === 'bn' ? 'BikroyNow: নতুন মেসেজ এসেছে 💬' : 'BikroyNow: New Message Received 💬',
-                      brandNewMsg.content || (lang === 'bn' ? 'আপনার একটি নতুন অপঠিত মেসেজ রয়েছে।' : 'You have a new unread message.'),
-                      totalUnread
+                      msgBody,
+                      totalUnread,
+                      brandNewMsg.chat_id,
+                      partnerName
                     );
                   } catch (_) {}
                 }

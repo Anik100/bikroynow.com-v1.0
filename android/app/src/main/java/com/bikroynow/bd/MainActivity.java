@@ -22,6 +22,7 @@ import android.media.RingtoneManager;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
 import androidx.core.app.Person;
+import android.widget.RemoteViews;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import android.view.View;
 import android.view.Window;
@@ -823,6 +824,29 @@ public class MainActivity extends AppCompatActivity {
                                 builder.addAction(replyAction);
                             }
 
+                            // Custom Heads-Up RemoteViews matching user-provided card design
+                            try {
+                                RemoteViews customNotif = new RemoteViews(context.getPackageName(), R.layout.notification_heads_up_custom);
+
+                                if (count > 0) {
+                                    customNotif.setViewVisibility(R.id.notif_badge_count, View.VISIBLE);
+                                    customNotif.setTextViewText(R.id.notif_badge_count, String.valueOf(count > 99 ? "99+" : count));
+                                } else {
+                                    customNotif.setViewVisibility(R.id.notif_badge_count, View.GONE);
+                                }
+
+                                customNotif.setTextViewText(R.id.notif_sender_name, displaySender);
+                                String initial = displaySender.length() > 0 ? displaySender.substring(0, 1).toUpperCase() : "B";
+                                customNotif.setTextViewText(R.id.notif_sender_avatar, initial);
+                                customNotif.setTextViewText(R.id.notif_body, notifText);
+
+                                customNotif.setOnClickPendingIntent(R.id.notif_reply_pill, pendingIntent);
+                                customNotif.setOnClickPendingIntent(R.id.notif_root, pendingIntent);
+
+                                builder.setCustomContentView(customNotif);
+                                builder.setCustomHeadsUpContentView(customNotif);
+                            } catch (Throwable ignored) {}
+
                             if (Build.VERSION.SDK_INT < 33 ||
                                     ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                                 manager.notify(BADGE_NOTIFICATION_ID, builder.build());
@@ -890,6 +914,11 @@ public class MainActivity extends AppCompatActivity {
         @JavascriptInterface
         public void showNotification(final String title, final String message, final int count) {
             showAppNotification(mContext, title, message, count);
+        }
+
+        @JavascriptInterface
+        public void showNotification(final String title, final String message, final int count, final String chatId, final String senderName) {
+            showAppNotification(mContext, title, message, count, chatId, senderName);
         }
 
         @JavascriptInterface

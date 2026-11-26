@@ -15,6 +15,10 @@ const AppInstallBanner = dynamic(() => import('../components/AppInstallBanner'),
   ssr: false,
 });
 
+const InAppNotificationBanner = dynamic(() => import('../components/InAppNotificationBanner'), {
+  ssr: false,
+});
+
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
@@ -290,6 +294,7 @@ export default function RootLayout({ children }) {
           <Footer />
           <AiSupportWidget />
           <AppInstallBanner />
+          <InAppNotificationBanner />
         </LanguageProvider>
         {gaId && (
           <>
