@@ -701,9 +701,6 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
                 onAccepted: () => {
                   markPWAInstalled();
                   setIsInstalled(true);
-                },
-                onFallback: () => {
-                  setShowInstallGuide(true);
                 }
               });
             }}

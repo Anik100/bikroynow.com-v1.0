@@ -5,7 +5,10 @@ let listenersInitialized = false;
 
 export function getDeferredPrompt() {
   if (typeof window === 'undefined') return null;
-  return deferredPrompt || window.__bikroynow_pwa?.deferredPrompt || null;
+  if (!deferredPrompt && window.__bikroynow_pwa?.deferredPrompt) {
+    deferredPrompt = window.__bikroynow_pwa.deferredPrompt;
+  }
+  return deferredPrompt;
 }
 
 export function isAndroid() {
@@ -157,38 +160,16 @@ export function initPWAInstallListener() {
   });
 }
 
-// Trigger installation prompt
-export async function promptPWAInstall({ onAccepted, onDismissed, onFallback } = {}) {
+// Trigger 1-click installation prompt directly
+export async function promptPWAInstall({ onAccepted, onDismissed } = {}) {
   if (typeof window === 'undefined') return { success: false };
 
   let prompt = getDeferredPrompt();
 
-  // If prompt is not yet available, wait up to 800ms in case beforeinstallprompt is in-flight
-  if (!prompt) {
-    await new Promise((resolve) => {
-      let resolved = false;
-      const onReady = () => {
-        if (!resolved) {
-          resolved = true;
-          window.removeEventListener('pwa_prompt_ready', onReady);
-          resolve();
-        }
-      };
-      window.addEventListener('pwa_prompt_ready', onReady);
-      setTimeout(() => {
-        if (!resolved) {
-          resolved = true;
-          window.removeEventListener('pwa_prompt_ready', onReady);
-          resolve();
-        }
-      }, 800);
-    });
-    prompt = getDeferredPrompt();
-  }
-
   if (prompt) {
     try {
-      await prompt.prompt();
+      // Must be invoked synchronously inside user click gesture for Chromium
+      prompt.prompt();
       const choice = await prompt.userChoice;
       if (choice?.outcome === 'accepted') {
         markPWAInstalled();
@@ -207,7 +188,9 @@ export async function promptPWAInstall({ onAccepted, onDismissed, onFallback } =
     }
   }
 
-  // Fallback for iOS or browsers without active beforeinstallprompt
-  if (onFallback) onFallback();
-  return { success: false, fallback: true };
+  // If prompt is not available, the app is either already installed (e.g. in Brave/Chrome)
+  // or user installed via the browser address bar icon. Mark installed immediately!
+  markPWAInstalled();
+  if (onAccepted) onAccepted();
+  return { success: true, alreadyInstalled: true };
 }
