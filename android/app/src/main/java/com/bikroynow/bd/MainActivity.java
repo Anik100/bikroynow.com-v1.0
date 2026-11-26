@@ -770,11 +770,11 @@ public class MainActivity extends AppCompatActivity {
                                     .setAutoCancel(true)
                                     .setSound(soundUri)
                                     .setVibrate(new long[]{0, 250, 150, 250})
-                                    .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
-                                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                    .setDefaults(Notification.DEFAULT_ALL)
+                                    .setPriority(NotificationCompat.PRIORITY_MAX)
                                     .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                                    .setOnlyAlertOnce(true);
+                                    .setOnlyAlertOnce(false);
 
                             // Modern conversation messaging layout: renders message bubble with dedicated reply entry box
                             Person userPerson = new Person.Builder()
@@ -813,7 +813,7 @@ public class MainActivity extends AppCompatActivity {
 
                                 NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
                                         android.R.drawable.ic_menu_send,
-                                        "রিপ্লাই...",
+                                        "↩ রিপ্লাই...",
                                         replyPendingIntent
                                 )
                                 .addRemoteInput(remoteInput)
@@ -823,29 +823,6 @@ public class MainActivity extends AppCompatActivity {
 
                                 builder.addAction(replyAction);
                             }
-
-                            // Custom Heads-Up RemoteViews matching user-provided card design
-                            try {
-                                RemoteViews customNotif = new RemoteViews(context.getPackageName(), R.layout.notification_heads_up_custom);
-
-                                if (count > 0) {
-                                    customNotif.setViewVisibility(R.id.notif_badge_count, View.VISIBLE);
-                                    customNotif.setTextViewText(R.id.notif_badge_count, String.valueOf(count > 99 ? "99+" : count));
-                                } else {
-                                    customNotif.setViewVisibility(R.id.notif_badge_count, View.GONE);
-                                }
-
-                                customNotif.setTextViewText(R.id.notif_sender_name, displaySender);
-                                String initial = displaySender.length() > 0 ? displaySender.substring(0, 1).toUpperCase() : "B";
-                                customNotif.setTextViewText(R.id.notif_sender_avatar, initial);
-                                customNotif.setTextViewText(R.id.notif_body, notifText);
-
-                                customNotif.setOnClickPendingIntent(R.id.notif_reply_pill, pendingIntent);
-                                customNotif.setOnClickPendingIntent(R.id.notif_root, pendingIntent);
-
-                                builder.setCustomContentView(customNotif);
-                                builder.setCustomHeadsUpContentView(customNotif);
-                            } catch (Throwable ignored) {}
 
                             if (Build.VERSION.SDK_INT < 33 ||
                                     ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
@@ -873,7 +850,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void updateLauncherBadge(final int count) {
-        showAppNotification(getApplicationContext(), "BikroyNow: নতুন মেসেজ এসেছে 💬", null, count, null, null);
+        try {
+            if (count > 0) {
+                ShortcutBadger.applyCount(getApplicationContext(), count);
+            } else {
+                ShortcutBadger.removeCount(getApplicationContext());
+                NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                if (manager != null) {
+                    manager.cancel(BADGE_NOTIFICATION_ID);
+                }
+            }
+        } catch (Throwable ignored) {}
     }
 
     public class WebAppInterface {
@@ -913,7 +900,12 @@ public class MainActivity extends AppCompatActivity {
 
         @JavascriptInterface
         public void showNotification(final String title, final String message, final int count) {
-            showAppNotification(mContext, title, message, count);
+            showAppNotification(mContext, title, message, count, null, null);
+        }
+
+        @JavascriptInterface
+        public void showNotification(final String title, final String message, final int count, final String chatId) {
+            showAppNotification(mContext, title, message, count, chatId, null);
         }
 
         @JavascriptInterface

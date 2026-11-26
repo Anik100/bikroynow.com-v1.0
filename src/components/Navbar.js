@@ -129,6 +129,7 @@ export default function Navbar() {
     }
   }, [user?.id, user?.email]);
   const lastAlertedTimestampRef = useRef(null);
+  const seenMsgIdsRef = useRef(null);
 
   // Helper to validate Supabase UUIDs
   const isValidUUID = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
@@ -226,20 +227,26 @@ export default function Navbar() {
               return Math.max(max, t);
             }, 0);
 
-            // On very first fetch when app opens: record baseline timestamp.
+            // Unique fingerprint helper for message
+            const getMsgKey = (m) => m.id || `${m.sender_id}_${m.content}_${m.created_at}`;
+
+            // On very first fetch when app opens: record baseline message keys.
             // DO NOT ALERT FOR ANY ALREADY EXISTING UNREAD MESSAGES!
-            if (lastAlertedTimestampRef.current === null) {
-              lastAlertedTimestampRef.current = Math.max(newestUnreadTimestamp, Date.now());
+            if (seenMsgIdsRef.current === null) {
+              seenMsgIdsRef.current = new Set(incomingUnread.map(getMsgKey));
+              lastAlertedTimestampRef.current = newestUnreadTimestamp || Date.now();
             } else {
-              // Only alert if there is a brand-new incoming message strictly newer than last alerted timestamp
+              // Brand-new incoming message is one not present in initial load
               const brandNewMsg = incomingUnread.find(m => {
-                const t = m.created_at ? new Date(m.created_at).getTime() : 0;
-                return t > lastAlertedTimestampRef.current;
+                const key = getMsgKey(m);
+                return !seenMsgIdsRef.current.has(key);
               });
 
               if (brandNewMsg) {
+                const key = getMsgKey(brandNewMsg);
+                seenMsgIdsRef.current.add(key);
                 const t = brandNewMsg.created_at ? new Date(brandNewMsg.created_at).getTime() : Date.now();
-                lastAlertedTimestampRef.current = Math.max(t, Date.now());
+                lastAlertedTimestampRef.current = Math.max(t, lastAlertedTimestampRef.current || 0);
 
                 const activeChat = json.chats.find(c => c.id === brandNewMsg.chat_id);
                 const partnerName = activeChat?.partner?.full_name || activeChat?.partner?.name || 'BikroyNow';
@@ -257,7 +264,7 @@ export default function Navbar() {
                   }));
                 }
 
-                // Alert EXACTLY ONCE for this new message!
+                // Native audio and web alert
                 playMessageNotification({
                   title: lang === 'bn' ? 'BikroyNow: নতুন মেসেজ এসেছে! 💬' : 'BikroyNow: New Message Received! 💬',
                   body: msgBody,
@@ -297,8 +304,24 @@ export default function Navbar() {
 
     fetchUnreadCount();
 
+    // Instant real-time listener: triggers whenever laptop or any client sends a message
     const liveChannel = supabase
-      .channel('navbar_live_messages', { config: { broadcast: { self: false } } })
+      .channel('navbar_realtime_triggers')
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'admin_settings',
+        filter: 'key=eq.all_chats_list'
+      }, () => {
+        fetchUnreadCount();
+      })
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'messages'
+      }, () => {
+        fetchUnreadCount();
+      })
       .on('broadcast', { event: 'new_msg' }, () => {
         fetchUnreadCount();
       })
@@ -307,7 +330,7 @@ export default function Navbar() {
     const interval = setInterval(() => {
       if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
       fetchUnreadCount();
-    }, 2500); // 2.5s interval for smooth live updates
+    }, 2500); // 2.5s interval fallback
 
     return () => {
       clearInterval(interval);
