@@ -192,7 +192,7 @@ export default function AppInstallBanner() {
                     </div>
                   </div>
                 </>
-              ) : (
+              ) : isAndroid() ? (
                 <>
                   <p style={{ margin: '0 0 12px 0', fontSize: '0.88rem', color: '#1e293b', fontWeight: 600 }}>
                     {lang === 'bn'
@@ -240,6 +240,28 @@ export default function AppInstallBanner() {
                       <Download size={15} />
                       <span>{lang === 'bn' ? 'BikroyNow.apk ডাউনলোড করুন (অফিসিয়াল অ্যাপ)' : 'Download BikroyNow.apk (Official App)'}</span>
                     </a>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p style={{ margin: '0 0 12px 0', fontSize: '0.88rem', color: '#1e293b', fontWeight: 600 }}>
+                    {lang === 'bn'
+                      ? 'কম্পিউটারে আলাদা উইন্ডো অ্যাপ হিসেবে ইনস্টল করুন:'
+                      : 'Install as standalone desktop app window:'}
+                  </p>
+                  <div className={styles.stepList}>
+                    <div className={styles.stepItem}>
+                      <span className={styles.stepBadge}>১</span>
+                      <span>ব্রাউজারের অ্যাড্রেস বারের ডানপাশে থাকা <strong>ইনস্টল আইকন <Download size={14} style={{ display: 'inline', verticalAlign: 'middle' }} /></strong> এ ক্লিক করুন</span>
+                    </div>
+                    <div className={styles.stepItem}>
+                      <span className={styles.stepBadge}>২</span>
+                      <span>অথবা ৩-ডট <strong>(⋮) <MoreVertical size={14} style={{ display: 'inline', verticalAlign: 'middle' }} /></strong> মেনু থেকে <strong>&quot;Install BikroyNow&quot;</strong> বেছে নিন</span>
+                    </div>
+                    <div className={styles.stepItem}>
+                      <span className={styles.stepBadge}>৩</span>
+                      <span><strong>&quot;Install&quot;</strong> বাটনে চাপলেই ডেস্কটপ ও টাস্কবারে আলাদা কম্পিউটার অ্যাপ তৈরি হয়ে যাবে</span>
+                    </div>
                   </div>
                 </>
               )}

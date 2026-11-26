@@ -9,7 +9,7 @@ import { useLanguage } from '../context/LanguageContext';
 import styles from './ProfileMenu.module.css';
 import { uploadToImgBB } from '../lib/imgbb';
 import { compressImage } from '../lib/utils';
-import { isStandalone, isPWAInstalled, promptPWAInstall, markPWAInstalled, isIOS } from '../lib/pwaInstall';
+import { isStandalone, isPWAInstalled, promptPWAInstall, markPWAInstalled, isIOS, isAndroid } from '../lib/pwaInstall';
 import { requestNotificationPermission, subscribeUserToPush } from '../lib/notificationAudio';
 
 export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin, unreadCount = 0, onClose, onLogout }) {
@@ -662,7 +662,7 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
             )}
           </div>
 
-          {/* App Install / APK Download Button in Profile */}
+          {/* App Install / PC Standalone / APK Download Button in Profile */}
           <div
             className={styles.menuItem}
             onClick={() => {
@@ -673,36 +673,68 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
                 return;
               }
 
+              if (isStandalone()) {
+                alert(lang === 'bn'
+                  ? 'আপনি ইতিমধ্যে কম্পিউটারে BikroyNow অফিসিয়াল অ্যাপ ব্যবহার করছেন! ✓'
+                  : 'You are already using the official BikroyNow desktop app! ✓');
+                return;
+              }
+
               if (isIOS()) {
                 setShowInstallGuide(true);
                 return;
               }
 
-              // Directly download the official Android APK
-              window.location.href = '/BikroyNow.apk';
+              if (isAndroid()) {
+                // Directly download official Android APK on Android phones
+                window.location.href = '/BikroyNow.apk';
+                return;
+              }
+
+              // On PC / Desktop: Trigger browser PWA install prompt to make it a standalone tab / desktop app window
+              promptPWAInstall({
+                onAccepted: () => {
+                  setIsInstalled(true);
+                },
+                onFallback: () => {
+                  setShowInstallGuide(true);
+                }
+              });
             }}
             style={{ cursor: 'pointer' }}
           >
-            <Download size={20} color={isNativeApp ? '#059669' : '#0284c7'} />
+            <Download size={20} color={isNativeApp || isStandalone() ? '#059669' : '#0284c7'} />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ color: isNativeApp ? '#059669' : '#1c2b38', fontWeight: 650 }}>
+              <span style={{ color: isNativeApp || isStandalone() ? '#059669' : '#1c2b38', fontWeight: 650 }}>
                 {isNativeApp
                   ? (lang === 'bn' ? 'অফিসিয়াল অ্যান্ড্রয়েড অ্যাপ (চালু আছে ✓)' : 'Official Android App (Active ✓)')
-                  : (lang === 'bn' ? 'অফিসিয়াল অ্যাপ ডাউনলোড' : 'Download Official App')}
+                  : isStandalone()
+                    ? (lang === 'bn' ? 'BikroyNow পিসি অ্যাপ (চালু আছে ✓)' : 'BikroyNow PC App (Active ✓)')
+                    : isAndroid()
+                      ? (lang === 'bn' ? 'অফিসিয়াল অ্যাপ ডাউনলোড' : 'Download Official App')
+                      : (lang === 'bn' ? 'পিসি অ্যাপ ইনস্টল করুন' : 'Install PC App')}
               </span>
               <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 500 }}>
                 {isNativeApp
                   ? (lang === 'bn' ? 'BikroyNow v1.0 অফিসিয়াল নেটিভ সংস্করণ' : 'BikroyNow v1.0 Official Native App')
-                  : (lang === 'bn' ? 'নতুন সুপার ফাস্ট অফিসিয়াল অ্যান্ড্রয়েড APK ডাউনলোড করুন' : 'Download new super fast official Android APK')}
+                  : isStandalone()
+                    ? (lang === 'bn' ? 'কম্পিউটারে আলাদা উইন্ডো অ্যাপ হিসেবে সক্রিয়' : 'Active as standalone desktop window')
+                    : isAndroid()
+                      ? (lang === 'bn' ? 'নতুন সুপার ফাস্ট অফিসিয়াল অ্যান্ড্রয়েড APK ডাউনলোড করুন' : 'Download new super fast official Android APK')
+                      : (lang === 'bn' ? 'কম্পিউটারে আলাদা অ্যাপ উইন্ডোতে দ্রুত ব্যবহার করুন' : 'Run in a dedicated desktop app window')}
               </span>
             </div>
-            {isNativeApp ? (
+            {isNativeApp || isStandalone() ? (
               <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#059669', fontWeight: 800 }}>
                 ✓
               </span>
-            ) : (
+            ) : isAndroid() ? (
               <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: '#0284c7', fontWeight: 700, background: '#f0f9ff', padding: '2px 8px', borderRadius: '6px', border: '1px solid #bae6fd' }}>
                 APK
+              </span>
+            ) : (
+              <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: '#0284c7', fontWeight: 700, background: '#f0f9ff', padding: '2px 8px', borderRadius: '6px', border: '1px solid #bae6fd' }}>
+                {lang === 'bn' ? 'পিসি' : 'PC'}
               </span>
             )}
           </div>
@@ -794,7 +826,7 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
                   <div>৩. উপরে ডানপাশে <strong>&quot;Add&quot;</strong> ট্যাপ করুন</div>
                 </div>
               </div>
-            ) : (
+            ) : typeof window !== 'undefined' && isAndroid() ? (
               <div style={{ fontSize: '0.85rem', color: '#334155', lineHeight: 1.5 }}>
                 <p style={{ margin: '0 0 10px 0', fontWeight: 600, color: '#1e293b' }}>
                   {lang === 'bn'
@@ -805,6 +837,19 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
                   <div>১. ব্রাউজারের ৩-ডট <strong>(⋮) <MoreVertical size={13} style={{ display: 'inline' }} /></strong> মেনুতে চাপ দিন</div>
                   <div>২. <strong>&quot;Install app&quot;</strong> বা <strong>&quot;Add to Home screen&quot;</strong> বেছে নিন</div>
                   <div>৩. <strong>&quot;Install&quot;</strong> ট্যাপ করলেই BikroyNow অ্যাপটি মোবাইলে ইনস্টল হয়ে যাবে</div>
+                </div>
+              </div>
+            ) : (
+              <div style={{ fontSize: '0.85rem', color: '#334155', lineHeight: 1.5 }}>
+                <p style={{ margin: '0 0 10px 0', fontWeight: 600, color: '#1e293b' }}>
+                  {lang === 'bn'
+                    ? 'কম্পিউটারে আলাদা উইন্ডো অ্যাপ হিসেবে ইনস্টল করুন:'
+                    : 'Install as standalone desktop app window:'}
+                </p>
+                <div style={{ background: '#f8fafc', padding: '10px 12px', borderRadius: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div>১. ব্রাউজারের অ্যাড্রেস বারের ডানপাশে থাকা <strong>ইনস্টল আইকন <Download size={13} style={{ display: 'inline' }} /></strong> এ ক্লিক করুন</div>
+                  <div>২. অথবা ৩-ডট <strong>(⋮)</strong> মেনু থেকে <strong>&quot;Install BikroyNow&quot;</strong> বেছে নিন</div>
+                  <div>৩. <strong>&quot;Install&quot;</strong> বাটনে চাপলেই কম্পিউটারের ডেস্কটপ ও টাস্কবারে আলাদা অ্যাপ তৈরি হয়ে যাবে</div>
                 </div>
               </div>
             )}
