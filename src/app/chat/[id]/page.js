@@ -588,33 +588,65 @@ export default function ChatWindow({ params }) {
     scrollToBottom();
   }, [messages]);
 
-  // Auto-focus mouse cursor into chat input immediately on page load and trigger mobile keyboard
+  // Handle mobile virtual keyboard dynamic resize via visualViewport
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const updateViewport = () => {
+      const vv = window.visualViewport;
+      if (vv) {
+        const height = vv.height;
+        document.documentElement.style.setProperty('--chat-vh', `${height}px`);
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        document.documentElement.style.setProperty('--chat-vh', `${window.innerHeight}px`);
+      }
+    };
+
+    updateViewport();
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateViewport);
+      window.visualViewport.addEventListener('scroll', updateViewport);
+    } else {
+      window.addEventListener('resize', updateViewport);
+    }
+
+    return () => {
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', updateViewport);
+        window.visualViewport.removeEventListener('scroll', updateViewport);
+      } else {
+        window.removeEventListener('resize', updateViewport);
+      }
+    };
+  }, []);
+
+  // Auto-focus mouse cursor into chat input on desktop only (avoid popping keyboard on touch devices)
   useEffect(() => {
     if (!loading && chat) {
-      const doFocus = () => {
-        if (chatInputRef.current) {
-          try {
-            chatInputRef.current.focus({ preventScroll: true });
-          } catch (e) {
-            chatInputRef.current.focus();
-          }
-        }
-      };
-
-      doFocus();
-      const focusTimer1 = setTimeout(doFocus, 60);
-      const focusTimer2 = setTimeout(doFocus, 220);
-      const focusTimer3 = setTimeout(doFocus, 500);
-      return () => {
-        clearTimeout(focusTimer1);
-        clearTimeout(focusTimer2);
-        clearTimeout(focusTimer3);
-      };
+      const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+      if (!isTouch && chatInputRef.current) {
+        chatInputRef.current.focus({ preventScroll: true });
+      }
     }
   }, [loading, chat]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleInputFocus = () => {
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 300);
   };
 
   const handleSend = async (e, imageUrl = null) => {
@@ -969,7 +1001,7 @@ export default function ChatWindow({ params }) {
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               disabled={isBlockedByMe || isBlockedByThem}
-              autoFocus
+              onFocus={handleInputFocus}
             />
           </div>
           <button type="submit" className={styles.sendBtn} disabled={!newMessage.trim() || isBlockedByMe || isBlockedByThem}>

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { X, Download } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import {
@@ -17,6 +18,7 @@ import {
 import styles from './AppInstallBanner.module.css';
 
 export default function AppInstallBanner() {
+  const pathname = usePathname();
   const { lang } = useLanguage();
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -112,7 +114,7 @@ export default function AppInstallBanner() {
     }
   };
 
-  if (!mounted || !visible || isNativeApp() || isStandalone() || isPWAInstalled()) {
+  if (!mounted || !visible || pathname?.startsWith('/chat') || isNativeApp() || isStandalone() || isPWAInstalled()) {
     return null;
   }
 

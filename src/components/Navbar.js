@@ -509,8 +509,10 @@ export default function Navbar() {
     router.push(`/ads?${params.toString()}`);
   };
 
+  const isChatRoom = pathname?.startsWith('/chat/') && pathname !== '/chat';
+
   return (
-    <header className={styles.navbar}>
+    <header className={`${styles.navbar} ${isChatRoom ? styles.hideOnMobileChat : ''}`}>
       <div className={`container ${styles.navContainer}`}>
         <div className={styles.left}>
           <Link href="/" className={styles.logo}>

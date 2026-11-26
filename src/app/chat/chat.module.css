@@ -497,10 +497,9 @@
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
     width: 100vw;
-    height: 100dvh;
-    height: -webkit-fill-available;
+    height: var(--chat-vh, 100dvh);
+    max-height: var(--chat-vh, 100dvh);
     max-width: 100%;
     margin: 0;
     border-radius: 0;
@@ -523,11 +522,9 @@
     flex-direction: column;
     width: 100%;
     height: 100%;
+    flex: 1 1 0%;
+    min-height: 0;
     position: relative;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     background: #f8fafc;
     overflow: hidden;
   }
@@ -622,7 +619,8 @@
   }
 
   .messages {
-    flex: 1;
+    flex: 1 1 0%;
+    min-height: 0;
     padding: 0.85rem 0.75rem;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -640,6 +638,8 @@
   }
 
   .inputArea {
+    position: sticky;
+    bottom: 0;
     padding: 0.55rem 0.75rem calc(0.55rem + env(safe-area-inset-bottom, 0px)) 0.75rem;
     background: #ffffff;
     border-top: 1px solid #e2e8f0;
