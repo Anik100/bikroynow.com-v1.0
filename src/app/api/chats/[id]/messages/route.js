@@ -243,7 +243,8 @@ export async function POST(req, { params }) {
           title: 'BikroyNow: নতুন মেসেজ এসেছে 💬',
           body: msgSnippet,
           url: `/chat/${id}`,
-          tag: `chat-msg-${id}-${Date.now()}`,
+          tag: `chat-msg-${id}`,
+          chatId: id,
           unreadCount: unreadForPartner,
           badgeCount: unreadForPartner
         }).catch(err => console.warn('Background push delivery error:', err));

@@ -71,6 +71,8 @@ export async function sendPushNotificationToUser(recipientUserId, payload) {
       icon: '/icon-192.png',
       badge: '/favicon-48x48.png',
       tag: payload.tag || `bkr-msg-${Date.now()}`,
+      chatId: payload.chatId || null,
+      recipientId: recipientUserId || null,
       unreadCount: payload.unreadCount || payload.badgeCount || 1,
       badgeCount: payload.unreadCount || payload.badgeCount || 1
     });

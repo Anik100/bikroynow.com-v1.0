@@ -1,5 +1,5 @@
-// BikroyNow Service Worker for Android Mobile Push & In-Browser Notifications (v2)
-const CACHE_NAME = 'bikroynow-sw-v2';
+// BikroyNow Service Worker for Android Mobile Push & In-Browser Notifications (v3)
+const CACHE_NAME = 'bikroynow-sw-v3';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -27,6 +27,27 @@ self.addEventListener('notificationclick', (event) => {
   // Clear app launcher icon badge when notification is opened
   if (self.navigator && 'clearAppBadge' in self.navigator) {
     self.navigator.clearAppBadge().catch(() => {});
+  }
+
+  // Handle Inline Direct Reply right from Android Notification shade
+  if (event.action === 'reply') {
+    const replyText = event.reply;
+    const chatId = event.notification.data?.chatId;
+    const senderId = event.notification.data?.senderId;
+
+    if (replyText && replyText.trim() && chatId) {
+      event.waitUntil(
+        fetch(`/api/chats/${chatId}/messages`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sender_id: senderId || null,
+            content: replyText.trim()
+          })
+        }).catch(() => {})
+      );
+    }
+    return;
   }
 
   const targetUrl = event.notification.data?.url || '/chat';
@@ -78,17 +99,31 @@ self.addEventListener('push', (event) => {
         }
       } catch (_) {}
 
-      // 2. Display Android Status Bar Notification
+      // 2. Display Android Status Bar Notification with Direct Reply & Single Alert
       const options = {
         body: bodyText,
         icon: '/icon-192.png',
         badge: '/favicon-48x48.png',
-        vibrate: [250, 100, 250, 100, 250],
+        vibrate: [250, 100, 250],
         tag: data.tag || 'bikroynow-new-message',
-        renotify: true,
+        renotify: false, // Prevent repeatedly buzzing/ringing for unread notifications
         data: {
-          url: targetUrl
-        }
+          url: targetUrl,
+          chatId: data.chatId || (targetUrl.includes('/chat/') ? targetUrl.split('/chat/')[1] : null),
+          senderId: data.recipientId || null
+        },
+        actions: [
+          {
+            action: 'reply',
+            type: 'text',
+            title: 'রিপ্লাই (Reply)',
+            placeholder: 'উত্তর লিখুন...'
+          },
+          {
+            action: 'open',
+            title: 'চ্যাট খুলুন'
+          }
+        ]
       };
 
       try {
