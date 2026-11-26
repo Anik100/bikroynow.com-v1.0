@@ -284,7 +284,6 @@
     "122125683141450344_2336789667106427"
   ],
   "posted_ids": [
-    "us7000tykh",
     "emsc_20261116_0000239",
     "emsc_20261116_0000246",
     "emsc_20261116_0000250",
@@ -783,17 +782,10 @@
     "emsc_20261125_0000381",
     "emsc_20261126_0000034",
     "emsc_20261125_0000425",
-    "emsc_20261126_0000039"
+    "emsc_20261126_0000039",
+    "us6000udjx"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261124_0000170",
-      "mag": 4.3,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 14.365,
-      "longitude": -93.971,
-      "epoch_ms": 1795525040000
-    },
     {
       "id": "emsc_20261124_0000172",
       "mag": 5.2,
@@ -1185,6 +1177,14 @@
       "latitude": -36.0772,
       "longitude": 179.4712,
       "epoch_ms": 1795657736110
+    },
+    {
+      "id": "us6000udjx",
+      "mag": 5.2,
+      "place": "183 km N of Hicks Bay, New Zealand",
+      "latitude": -35.9665,
+      "longitude": 178.6429,
+      "epoch_ms": 1795657724213
     }
   ]
 }
