@@ -26,6 +26,7 @@ public class BadgeSyncReceiver extends BroadcastReceiver {
         final String userId = prefs.getString("user_id", null);
 
         if (userId == null || userId.trim().isEmpty()) {
+            scheduleNext(context);
             return;
         }
 

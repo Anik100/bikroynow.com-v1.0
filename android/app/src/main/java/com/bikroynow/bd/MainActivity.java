@@ -13,9 +13,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.media.AudioAttributes;
+import android.media.RingtoneManager;
 import androidx.core.app.NotificationCompat;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import android.view.View;
@@ -139,6 +142,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleDeepLink(Intent intent) {
         if (intent == null) return;
+
+        if (intent.hasExtra("target_url")) {
+            String target = intent.getStringExtra("target_url");
+            if (target != null && !target.isEmpty()) {
+                if (mWebView != null) {
+                    mWebView.loadUrl(APP_URL + target);
+                }
+                return;
+            }
+        }
+
         Uri data = intent.getData();
         if (data == null) return;
 
@@ -628,28 +642,42 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static final String CHANNEL_ID = "bikroynow_silent_badge_channel";
+    private static final String CHANNEL_ID = "bikroynow_chat_alerts_v2";
     private static final int BADGE_NOTIFICATION_ID = 9001;
 
     private void initNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "মেসেজ ও ব্যাজ নোটিফিকেশন",
-                    NotificationManager.IMPORTANCE_LOW
-            );
-            channel.setDescription("নতুন চ্যাট ও অ্যাপ আইকন ব্যাজ");
-            channel.setShowBadge(true);
-            channel.setSound(null, null);
-            channel.enableVibration(false);
             NotificationManager manager = getSystemService(NotificationManager.class);
             if (manager != null) {
+                // Delete legacy silent channels so new high-priority channel takes full effect
+                try {
+                    manager.deleteNotificationChannel("bikroynow_silent_badge_channel");
+                    manager.deleteNotificationChannel("bikroynow_silent_badge_v3");
+                } catch (Throwable ignored) {}
+
+                NotificationChannel channel = new NotificationChannel(
+                        CHANNEL_ID,
+                        "BikroyNow মেসেজ নোটিফিকেশন",
+                        NotificationManager.IMPORTANCE_HIGH
+                );
+                channel.setDescription("নতুন চ্যাট ও মেসেজ নোটিফিকেশন");
+                channel.setShowBadge(true);
+                channel.enableVibration(true);
+                channel.setVibrationPattern(new long[]{0, 250, 150, 250});
+
+                Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT)
+                        .build();
+                channel.setSound(soundUri, audioAttributes);
+
                 manager.createNotificationChannel(channel);
             }
         }
     }
 
-    public static void updateBadgeFromContext(final Context context, final int count, final String messageSnippet) {
+    public static void showAppNotification(final Context context, final String title, final String message, final int count) {
         if (context == null) return;
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -662,14 +690,15 @@ public class MainActivity extends AppCompatActivity {
                         ShortcutBadger.removeCount(context.getApplicationContext());
                     }
 
-                    // 2. Android System Notification with Badge Counter (Completely silent - zero duplicate sound!)
+                    // 2. High-Priority Android System Notification with sound, vibration, heads-up banner & badge
                     NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     if (manager != null) {
                         if (count <= 0) {
                             manager.cancel(BADGE_NOTIFICATION_ID);
-                        } else if (!isAppForeground) {
+                        } else {
                             Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                            intent.putExtra("target_url", "/chat");
                             PendingIntent pendingIntent = PendingIntent.getActivity(
                                     context.getApplicationContext(),
                                     0,
@@ -677,23 +706,25 @@ public class MainActivity extends AppCompatActivity {
                                     PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0)
                             );
 
-                            String snippet = messageSnippet != null && !messageSnippet.isEmpty()
-                                    ? messageSnippet
-                                    : (count == 1 ? "আপনার ১টি নতুন অপঠিত মেসেজ রয়েছে" : "আপনার " + count + "টি নতুন অপঠিত মেসেজ রয়েছে");
+                            String notifTitle = (title != null && !title.isEmpty()) ? title : "BikroyNow: নতুন মেসেজ এসেছে 💬";
+                            String notifText = (message != null && !message.isEmpty()) ? message : "আপনার নতুন অপঠিত মেসেজ রয়েছে";
+
+                            Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
                             NotificationCompat.Builder builder = new NotificationCompat.Builder(context.getApplicationContext(), CHANNEL_ID)
                                     .setSmallIcon(R.mipmap.ic_launcher)
-                                    .setContentTitle("BikroyNow")
-                                    .setContentText(snippet)
+                                    .setContentTitle(notifTitle)
+                                    .setContentText(notifText)
                                     .setNumber(count)
                                     .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
                                     .setContentIntent(pendingIntent)
                                     .setAutoCancel(true)
-                                    .setSilent(true)
-                                    .setSound(null)
-                                    .setVibrate(null)
-                                    .setOnlyAlertOnce(true)
-                                    .setPriority(NotificationCompat.PRIORITY_LOW);
+                                    .setSound(soundUri)
+                                    .setVibrate(new long[]{0, 250, 150, 250})
+                                    .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
+                                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
 
                             if (Build.VERSION.SDK_INT < 33 ||
                                     ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
@@ -708,8 +739,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public static void updateBadgeFromContext(final Context context, final int count, final String messageSnippet) {
+        showAppNotification(context, "BikroyNow: নতুন মেসেজ এসেছে 💬", messageSnippet, count);
+    }
+
     public void updateLauncherBadge(final int count) {
-        updateBadgeFromContext(getApplicationContext(), count, null);
+        showAppNotification(getApplicationContext(), "BikroyNow: নতুন মেসেজ এসেছে 💬", null, count);
     }
 
     public class WebAppInterface {
@@ -743,6 +778,11 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
+        }
+
+        @JavascriptInterface
+        public void showNotification(final String title, final String message, final int count) {
+            showAppNotification(mContext, title, message, count);
         }
 
         @JavascriptInterface

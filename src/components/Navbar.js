@@ -133,6 +133,15 @@ export default function Navbar() {
   // Helper to validate Supabase UUIDs
   const isValidUUID = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
 
+  // Immediately sync user_id to Android native app for background alerts & badge updates
+  useEffect(() => {
+    if (user?.id && typeof window !== 'undefined' && window.AndroidNative?.setUserId) {
+      try {
+        window.AndroidNative.setUserId(user.id);
+      } catch (_) {}
+    }
+  }, [user?.id]);
+
   // Update last seen heartbeat
   useEffect(() => {
     if (!user) return;
@@ -239,6 +248,16 @@ export default function Navbar() {
                   url: brandNewMsg.chat_id ? `/chat/${brandNewMsg.chat_id}` : '/chat',
                   chatId: brandNewMsg.chat_id
                 });
+
+                if (typeof window !== 'undefined' && window.AndroidNative?.showNotification) {
+                  try {
+                    window.AndroidNative.showNotification(
+                      lang === 'bn' ? 'BikroyNow: নতুন মেসেজ এসেছে 💬' : 'BikroyNow: New Message Received 💬',
+                      brandNewMsg.content || (lang === 'bn' ? 'আপনার একটি নতুন অপঠিত মেসেজ রয়েছে।' : 'You have a new unread message.'),
+                      totalUnread
+                    );
+                  } catch (_) {}
+                }
               }
             }
 
