@@ -284,7 +284,6 @@
     "122125683141450344_2336789667106427"
   ],
   "posted_ids": [
-    "emsc_20261116_0000289",
     "emsc_20261116_0000292",
     "emsc_20261116_0000294",
     "us7000tymu",
@@ -783,17 +782,10 @@
     "emsc_20261126_0000057",
     "us6000udk5",
     "emsc_20261126_0000065",
-    "emsc_20261126_0000084"
+    "emsc_20261126_0000084",
+    "emsc_20261126_0000086"
   ],
   "recent_posted_events": [
-    {
-      "id": "aka2026xhgksb",
-      "mag": 4.3,
-      "place": "11 km WSW of Point MacKenzie, Alaska",
-      "latitude": 61.308,
-      "longitude": -150.167,
-      "epoch_ms": 1795538251049
-    },
     {
       "id": "us6000ud9h",
       "mag": 4.4,
@@ -1185,6 +1177,14 @@
       "latitude": -35.4007,
       "longitude": 178.737,
       "epoch_ms": 1795665651308
+    },
+    {
+      "id": "emsc_20261126_0000086",
+      "mag": 4.3,
+      "place": "OFFSHORE EL SALVADOR",
+      "latitude": 12.872,
+      "longitude": -88.077,
+      "epoch_ms": 1795665519000
     }
   ]
 }
