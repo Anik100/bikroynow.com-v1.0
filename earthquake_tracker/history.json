@@ -284,7 +284,6 @@
     "122125683141450344_2336789667106427"
   ],
   "posted_ids": [
-    "emsc_20261117_0000163",
     "us7000tysa",
     "emsc_20261117_0000200",
     "emsc_20261117_0000202",
@@ -783,17 +782,10 @@
     "emsc_20261126_0000302",
     "emsc_20261126_0000317",
     "emsc_20261126_0000327",
-    "emsc_20261126_0000347"
+    "emsc_20261126_0000347",
+    "us6000udry"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261125_0000109",
-      "mag": 4.0,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 13.982,
-      "longitude": -93.044,
-      "epoch_ms": 1795590114000
-    },
     {
       "id": "emsc_20261125_0000112",
       "mag": 4.1,
@@ -1185,6 +1177,14 @@
       "latitude": 27.9625,
       "longitude": 141.9752,
       "epoch_ms": 1795721584110
+    },
+    {
+      "id": "us6000udry",
+      "mag": 5.1,
+      "place": "Bonin Islands, Japan region",
+      "latitude": 28.3661,
+      "longitude": 141.2639,
+      "epoch_ms": 1795721588628
     }
   ]
 }
