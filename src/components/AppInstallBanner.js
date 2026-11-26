@@ -37,6 +37,14 @@ export default function AppInstallBanner() {
       }, 800);
       return () => clearTimeout(timer);
     }
+
+    // Periodic check in case 10-minute dismissal period expires while on page
+    const interval = setInterval(() => {
+      if (canShowInstallPopup()) {
+        setVisible(true);
+      }
+    }, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
@@ -55,6 +63,7 @@ export default function AppInstallBanner() {
     };
 
     const handleAppInstalled = () => {
+      markPWAInstalled();
       setVisible(false);
       setShowManualModal(false);
     };
@@ -81,6 +90,7 @@ export default function AppInstallBanner() {
   const handleInstall = async () => {
     // If user is browsing on Android, clicking Install directly delivers the official Android APK
     if (isAndroid()) {
+      markPWAInstalled();
       window.location.href = '/BikroyNow.apk';
       setVisible(false);
       return;
@@ -88,6 +98,7 @@ export default function AppInstallBanner() {
 
     const res = await promptPWAInstall({
       onAccepted: () => {
+        markPWAInstalled();
         setVisible(false);
       },
       onFallback: () => {
@@ -96,6 +107,7 @@ export default function AppInstallBanner() {
     });
 
     if (res?.success && res.outcome === 'accepted') {
+      markPWAInstalled();
       setVisible(false);
     }
   };

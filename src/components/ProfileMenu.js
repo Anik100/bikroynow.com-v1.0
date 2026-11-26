@@ -699,6 +699,7 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
               // On PC / Desktop: Trigger browser PWA install prompt to make it a standalone tab / desktop app window
               promptPWAInstall({
                 onAccepted: () => {
+                  markPWAInstalled();
                   setIsInstalled(true);
                 },
                 onFallback: () => {

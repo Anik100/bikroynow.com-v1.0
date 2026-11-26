@@ -216,24 +216,35 @@ export default function RootLayout({ children }) {
                   window.addEventListener('beforeinstallprompt', function(e) {
                     e.preventDefault();
                     window.__bikroynow_pwa.deferredPrompt = e;
-                    try {
-                      localStorage.removeItem('bikroynow_pwa_installed');
-                      localStorage.removeItem('bikroynow_pwa_installed_v2');
-                    } catch(err) {}
                     window.dispatchEvent(new CustomEvent('pwa_prompt_ready'));
-                    window.dispatchEvent(new CustomEvent('pwa_can_install'));
+                    try {
+                      var isInstalled = localStorage.getItem('bikroynow_app_installed') === 'true' ||
+                                        localStorage.getItem('bikroynow_pwa_installed_v2') === 'true' ||
+                                        localStorage.getItem('bikroynow_pwa_installed') === 'true';
+                      if (!isInstalled) {
+                        window.dispatchEvent(new CustomEvent('pwa_can_install'));
+                      }
+                    } catch(err) {}
                   });
                   window.addEventListener('appinstalled', function() {
                     window.__bikroynow_pwa.deferredPrompt = null;
                     try {
+                      localStorage.setItem('bikroynow_app_installed', 'true');
                       localStorage.setItem('bikroynow_pwa_installed_v2', 'true');
+                      localStorage.setItem('bikroynow_pwa_installed', 'true');
+                      document.cookie = 'bikroynow_app_installed=true; max-age=31536000; path=/';
                     } catch(err) {}
                     window.dispatchEvent(new CustomEvent('pwa_installed'));
                   });
-                  if ('serviceWorker' in navigator) {
-                    window.addEventListener('load', function() {
+                  function registerSW() {
+                    if ('serviceWorker' in navigator) {
                       navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function(){});
-                    });
+                    }
+                  }
+                  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                    registerSW();
+                  } else {
+                    window.addEventListener('load', registerSW);
                   }
                 } catch(e) {}
               })();
