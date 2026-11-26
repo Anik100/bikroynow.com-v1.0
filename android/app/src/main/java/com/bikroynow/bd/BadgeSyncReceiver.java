@@ -60,21 +60,44 @@ public class BadgeSyncReceiver extends BroadcastReceiver {
                             JSONArray chats = json.getJSONArray("chats");
                             int totalUnread = 0;
                             String latestContent = null;
+                            String targetChatId = null;
+                            String latestMsgId = null;
 
                             for (int i = 0; i < chats.length(); i++) {
                                 JSONObject c = chats.getJSONObject(i);
                                 int u = c.optInt("unreadCount", 0);
                                 totalUnread += u;
                                 if (u > 0 && latestContent == null) {
+                                    targetChatId = c.optString("id", null);
                                     JSONObject lastMsg = c.optJSONObject("lastMsg");
                                     if (lastMsg != null) {
+                                        latestMsgId = lastMsg.optString("id", lastMsg.optString("created_at", ""));
                                         latestContent = lastMsg.optString("content", "নতুন মেসেজ এসেছে 💬");
                                     }
                                 }
                             }
 
-                            // Update launcher icon badge and native Android notification
-                            MainActivity.updateBadgeFromContext(context, totalUnread, latestContent);
+                            if (totalUnread <= 0) {
+                                // No unread messages: clear stored notification key and remove notification
+                                prefs.edit().remove("last_notified_msg_key").apply();
+                                MainActivity.updateBadgeFromContext(context, 0, null, null);
+                            } else {
+                                // Construct unique fingerprint for the newest message: chat + msgId + count
+                                String currentMsgKey = (targetChatId != null ? targetChatId : "") + "_" +
+                                        (latestMsgId != null ? latestMsgId : "") + "_" + totalUnread;
+                                String lastNotifiedKey = prefs.getString("last_notified_msg_key", "");
+
+                                if (!currentMsgKey.equals(lastNotifiedKey)) {
+                                    // New message arrived! Alert once
+                                    prefs.edit().putString("last_notified_msg_key", currentMsgKey).apply();
+                                    MainActivity.updateBadgeFromContext(context, totalUnread, latestContent, targetChatId);
+                                } else {
+                                    // Same unread message already notified: keep app icon badge synced without ringing/vibrating again
+                                    try {
+                                        me.leolin.shortcutbadger.ShortcutBadger.applyCount(context.getApplicationContext(), totalUnread);
+                                    } catch (Throwable ignored) {}
+                                }
+                            }
                         }
                     }
                 } catch (Throwable t) {

@@ -663,7 +663,9 @@ export default function ChatWindow({ params }) {
       chatInputRef.current?.focus();
     }, 20);
 
-    setSending(true);
+    if (imageUrl) {
+      setSending(true);
+    }
 
     try {
       const res = await fetch(`/api/chats/${effectiveId}/messages`, {
@@ -956,7 +958,7 @@ export default function ChatWindow({ params }) {
         <form className={styles.inputArea} onSubmit={handleSend}>
           <label className={styles.uploadBtn}>
             <input type="file" hidden accept=".jpg,.jpeg,.png,.webp" onChange={handleImageUpload} disabled={sending || isBlockedByMe || isBlockedByThem} />
-            <Camera size={22} />
+            {sending ? <Loader2 className="spinner" size={20} /> : <Camera size={22} />}
           </label>
           <div className={styles.inputWrapper}>
             <input 
@@ -966,12 +968,12 @@ export default function ChatWindow({ params }) {
               placeholder={isBlockedByMe ? (lang === 'bn' ? 'মেসেজ পাঠাতে প্রথমে ব্যবহারকারীকে আনব্লক করুন' : 'Unblock user to send messages') : isBlockedByThem ? (lang === 'bn' ? 'আপনাকে ব্লক করা হয়েছে' : 'You have been blocked') : t('typeMessage')}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              disabled={sending}
+              disabled={isBlockedByMe || isBlockedByThem}
               autoFocus
             />
           </div>
-          <button type="submit" className={styles.sendBtn} disabled={sending || (!newMessage.trim())}>
-            {sending ? <Loader2 className="spinner" size={18} /> : <Send size={20} />}
+          <button type="submit" className={styles.sendBtn} disabled={!newMessage.trim() || isBlockedByMe || isBlockedByThem}>
+            <Send size={20} />
           </button>
         </form>
       </div>

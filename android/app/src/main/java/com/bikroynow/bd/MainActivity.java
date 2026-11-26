@@ -20,6 +20,7 @@ import android.app.PendingIntent;
 import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.RemoteInput;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import android.view.View;
 import android.view.Window;
@@ -642,8 +643,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static final String CHANNEL_ID = "bikroynow_chat_alerts_v2";
-    private static final int BADGE_NOTIFICATION_ID = 9001;
+    public static final String CHANNEL_ID = "bikroynow_chat_alerts_v2";
+    public static final int BADGE_NOTIFICATION_ID = 9001;
+    public static final String KEY_TEXT_REPLY = "key_text_reply";
 
     private void initNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -678,6 +680,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void showAppNotification(final Context context, final String title, final String message, final int count) {
+        showAppNotification(context, title, message, count, null);
+    }
+
+    public static void showAppNotification(final Context context, final String title, final String message, final int count, final String chatId) {
         if (context == null) return;
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -690,7 +696,7 @@ public class MainActivity extends AppCompatActivity {
                         ShortcutBadger.removeCount(context.getApplicationContext());
                     }
 
-                    // 2. High-Priority Android System Notification with sound, vibration, heads-up banner & badge
+                    // 2. High-Priority Android System Notification with sound, vibration, heads-up banner & Direct Reply
                     NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                     if (manager != null) {
                         if (count <= 0) {
@@ -698,7 +704,12 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                            intent.putExtra("target_url", "/chat");
+                            if (chatId != null && !chatId.trim().isEmpty()) {
+                                intent.putExtra("target_url", "/chat/" + chatId.trim());
+                            } else {
+                                intent.putExtra("target_url", "/chat");
+                            }
+
                             PendingIntent pendingIntent = PendingIntent.getActivity(
                                     context.getApplicationContext(),
                                     0,
@@ -724,7 +735,34 @@ public class MainActivity extends AppCompatActivity {
                                     .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND)
                                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                                     .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                                    .setOnlyAlertOnce(true);
+
+                            // Add Direct Reply Action if chatId is present
+                            if (chatId != null && !chatId.trim().isEmpty()) {
+                                RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
+                                        .setLabel("উত্তর লিখুন (Type a reply)...")
+                                        .build();
+
+                                Intent replyIntent = new Intent(context.getApplicationContext(), DirectReplyReceiver.class);
+                                replyIntent.setAction(DirectReplyReceiver.ACTION_DIRECT_REPLY);
+                                replyIntent.putExtra("chat_id", chatId.trim());
+
+                                PendingIntent replyPendingIntent = PendingIntent.getBroadcast(
+                                        context.getApplicationContext(),
+                                        8901,
+                                        replyIntent,
+                                        PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_MUTABLE : 0)
+                                );
+
+                                NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
+                                        android.R.drawable.ic_menu_send,
+                                        "রিপ্লাই (Reply)",
+                                        replyPendingIntent
+                                ).addRemoteInput(remoteInput).build();
+
+                                builder.addAction(replyAction);
+                            }
 
                             if (Build.VERSION.SDK_INT < 33 ||
                                     ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
@@ -739,12 +777,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public static void updateBadgeFromContext(final Context context, final int count, final String messageSnippet, final String chatId) {
+        showAppNotification(context, "BikroyNow: নতুন মেসেজ এসেছে 💬", messageSnippet, count, chatId);
+    }
+
     public static void updateBadgeFromContext(final Context context, final int count, final String messageSnippet) {
-        showAppNotification(context, "BikroyNow: নতুন মেসেজ এসেছে 💬", messageSnippet, count);
+        showAppNotification(context, "BikroyNow: নতুন মেসেজ এসেছে 💬", messageSnippet, count, null);
     }
 
     public void updateLauncherBadge(final int count) {
-        showAppNotification(getApplicationContext(), "BikroyNow: নতুন মেসেজ এসেছে 💬", null, count);
+        showAppNotification(getApplicationContext(), "BikroyNow: নতুন মেসেজ এসেছে 💬", null, count, null);
     }
 
     public class WebAppInterface {
