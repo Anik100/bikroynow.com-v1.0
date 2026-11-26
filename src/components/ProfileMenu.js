@@ -298,7 +298,11 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.menu} onClick={(e) => e.stopPropagation()}>
+      <div 
+        className={styles.menu} 
+        onClick={(e) => e.stopPropagation()}
+        onTouchMove={(e) => e.stopPropagation()}
+      >
         
         {/* Sleek Slide-over profile editor */}
         {isEditing && (

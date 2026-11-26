@@ -434,21 +434,15 @@ export default function Navbar() {
     checkAdminAccess();
   }, [user]);
 
-  // Lock body scroll when profile menu is open
+  // Lock background body scroll when profile menu is open without freezing touch scrolling inside the drawer
   useEffect(() => {
     if (showProfileMenu) {
       document.body.style.overflow = 'hidden';
-      document.documentElement.style.overflow = 'hidden';
-      document.documentElement.style.paddingRight = '0px';
     } else {
       document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-      document.documentElement.style.paddingRight = '';
     }
     return () => {
       document.body.style.overflow = '';
-      document.documentElement.style.overflow = '';
-      document.documentElement.style.paddingRight = '';
     };
   }, [showProfileMenu]);
 
