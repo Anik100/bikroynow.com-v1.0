@@ -21,6 +21,7 @@ import android.media.AudioAttributes;
 import android.media.RingtoneManager;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
+import androidx.core.app.Person;
 import me.leolin.shortcutbadger.ShortcutBadger;
 import android.view.View;
 import android.view.Window;
@@ -106,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
         initWebView();
         initNotificationChannel();
         checkAndRequestPermissions();
+
+        // Start continuous fast background sync loop immediately
+        startFastBackgroundSync(this);
 
         // Safety timeout: smoothly dismiss splash after 3.5s if network is exceptionally slow
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
@@ -595,14 +599,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         isAppForeground = false;
+        BadgeSyncReceiver.performSync(this);
         BadgeSyncReceiver.scheduleNext(this);
+        startFastBackgroundSync(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         isAppForeground = false;
+        BadgeSyncReceiver.performSync(this);
         BadgeSyncReceiver.scheduleNext(this);
+        startFastBackgroundSync(this);
     }
 
     @Override
@@ -679,11 +687,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private static Thread sFastSyncThread = null;
+    private static volatile boolean sFastSyncRunning = false;
+
+    public static void startFastBackgroundSync(final Context context) {
+        if (sFastSyncRunning || context == null) return;
+        sFastSyncRunning = true;
+        sFastSyncThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (sFastSyncRunning) {
+                    try {
+                        Thread.sleep(3000); // 3-second rapid background poll
+                        BadgeSyncReceiver.performSync(context.getApplicationContext());
+                    } catch (InterruptedException e) {
+                        break;
+                    } catch (Throwable ignored) {}
+                }
+            }
+        });
+        sFastSyncThread.setDaemon(true);
+        sFastSyncThread.setName("BikroyNowFastSync");
+        sFastSyncThread.start();
+    }
+
     public static void showAppNotification(final Context context, final String title, final String message, final int count) {
-        showAppNotification(context, title, message, count, null);
+        showAppNotification(context, title, message, count, null, null);
     }
 
     public static void showAppNotification(final Context context, final String title, final String message, final int count, final String chatId) {
+        showAppNotification(context, title, message, count, chatId, null);
+    }
+
+    public static void showAppNotification(final Context context, final String title, final String message, final int count, final String chatId, final String senderName) {
         if (context == null) return;
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -719,12 +755,13 @@ public class MainActivity extends AppCompatActivity {
 
                             String notifTitle = (title != null && !title.isEmpty()) ? title : "BikroyNow: নতুন মেসেজ এসেছে 💬";
                             String notifText = (message != null && !message.isEmpty()) ? message : "আপনার নতুন অপঠিত মেসেজ রয়েছে";
+                            String displaySender = (senderName != null && !senderName.trim().isEmpty()) ? senderName.trim() : "ক্রেতা / বিক্রেতা";
 
                             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
                             NotificationCompat.Builder builder = new NotificationCompat.Builder(context.getApplicationContext(), CHANNEL_ID)
                                     .setSmallIcon(R.mipmap.ic_launcher)
-                                    .setContentTitle(notifTitle)
+                                    .setContentTitle(displaySender)
                                     .setContentText(notifText)
                                     .setNumber(count)
                                     .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
@@ -738,10 +775,28 @@ public class MainActivity extends AppCompatActivity {
                                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                                     .setOnlyAlertOnce(true);
 
-                            // Add Direct Reply Action if chatId is present
+                            // Modern conversation messaging layout: renders message bubble with dedicated reply entry box
+                            Person userPerson = new Person.Builder()
+                                    .setName("আমি")
+                                    .setKey("me")
+                                    .build();
+
+                            Person senderPerson = new Person.Builder()
+                                    .setName(displaySender)
+                                    .setKey("sender")
+                                    .build();
+
+                            NotificationCompat.MessagingStyle messagingStyle = new NotificationCompat.MessagingStyle(userPerson)
+                                    .setConversationTitle(displaySender)
+                                    .setGroupConversation(false)
+                                    .addMessage(notifText, System.currentTimeMillis(), senderPerson);
+
+                            builder.setStyle(messagingStyle);
+
+                            // Add Direct Reply Action with inline entry box and light hint "রিপ্লাই..."
                             if (chatId != null && !chatId.trim().isEmpty()) {
                                 RemoteInput remoteInput = new RemoteInput.Builder(KEY_TEXT_REPLY)
-                                        .setLabel("উত্তর লিখুন (Type a reply)...")
+                                        .setLabel("রিপ্লাই...")
                                         .build();
 
                                 Intent replyIntent = new Intent(context.getApplicationContext(), DirectReplyReceiver.class);
@@ -757,9 +812,13 @@ public class MainActivity extends AppCompatActivity {
 
                                 NotificationCompat.Action replyAction = new NotificationCompat.Action.Builder(
                                         android.R.drawable.ic_menu_send,
-                                        "রিপ্লাই (Reply)",
+                                        "রিপ্লাই...",
                                         replyPendingIntent
-                                ).addRemoteInput(remoteInput).build();
+                                )
+                                .addRemoteInput(remoteInput)
+                                .setAllowGeneratedReplies(true)
+                                .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
+                                .build();
 
                                 builder.addAction(replyAction);
                             }
@@ -777,16 +836,20 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public static void updateBadgeFromContext(final Context context, final int count, final String messageSnippet, final String chatId, final String senderName) {
+        showAppNotification(context, "BikroyNow: নতুন মেসেজ এসেছে 💬", messageSnippet, count, chatId, senderName);
+    }
+
     public static void updateBadgeFromContext(final Context context, final int count, final String messageSnippet, final String chatId) {
-        showAppNotification(context, "BikroyNow: নতুন মেসেজ এসেছে 💬", messageSnippet, count, chatId);
+        showAppNotification(context, "BikroyNow: নতুন মেসেজ এসেছে 💬", messageSnippet, count, chatId, null);
     }
 
     public static void updateBadgeFromContext(final Context context, final int count, final String messageSnippet) {
-        showAppNotification(context, "BikroyNow: নতুন মেসেজ এসেছে 💬", messageSnippet, count, null);
+        showAppNotification(context, "BikroyNow: নতুন মেসেজ এসেছে 💬", messageSnippet, count, null, null);
     }
 
     public void updateLauncherBadge(final int count) {
-        showAppNotification(getApplicationContext(), "BikroyNow: নতুন মেসেজ এসেছে 💬", null, count, null);
+        showAppNotification(getApplicationContext(), "BikroyNow: নতুন মেসেজ এসেছে 💬", null, count, null, null);
     }
 
     public class WebAppInterface {
@@ -806,7 +869,9 @@ public class MainActivity extends AppCompatActivity {
             if (userId != null && !userId.trim().isEmpty()) {
                 mContext.getSharedPreferences("bikroynow_prefs", Context.MODE_PRIVATE)
                         .edit().putString("user_id", userId.trim()).apply();
+                BadgeSyncReceiver.performSync(mContext);
                 BadgeSyncReceiver.scheduleNext(mContext);
+                startFastBackgroundSync(mContext);
             }
         }
 

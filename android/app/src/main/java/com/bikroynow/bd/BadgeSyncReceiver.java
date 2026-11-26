@@ -15,13 +15,20 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BadgeSyncReceiver extends BroadcastReceiver {
 
     public static final String ACTION_SYNC_BADGE = "com.bikroynow.bd.ACTION_SYNC_BADGE";
+    private static final AtomicBoolean isSyncing = new AtomicBoolean(false);
 
     @Override
     public void onReceive(final Context context, Intent intent) {
+        performSync(context);
+    }
+
+    public static void performSync(final Context context) {
+        if (context == null) return;
         final SharedPreferences prefs = context.getSharedPreferences("bikroynow_prefs", Context.MODE_PRIVATE);
         final String userId = prefs.getString("user_id", null);
 
@@ -30,7 +37,10 @@ public class BadgeSyncReceiver extends BroadcastReceiver {
             return;
         }
 
-        // Perform lightweight network poll on background thread
+        if (!isSyncing.compareAndSet(false, true)) {
+            return;
+        }
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -41,8 +51,8 @@ public class BadgeSyncReceiver extends BroadcastReceiver {
 
                     URL url = new URL(queryUrl);
                     conn = (HttpURLConnection) url.openConnection();
-                    conn.setConnectTimeout(8000);
-                    conn.setReadTimeout(8000);
+                    conn.setConnectTimeout(5000);
+                    conn.setReadTimeout(5000);
                     conn.setRequestMethod("GET");
                     conn.setRequestProperty("User-Agent", "BikroyNowNativeApp/1.0");
 
@@ -62,6 +72,7 @@ public class BadgeSyncReceiver extends BroadcastReceiver {
                             String latestContent = null;
                             String targetChatId = null;
                             String latestMsgId = null;
+                            String targetPartnerName = null;
 
                             for (int i = 0; i < chats.length(); i++) {
                                 JSONObject c = chats.getJSONObject(i);
@@ -69,6 +80,10 @@ public class BadgeSyncReceiver extends BroadcastReceiver {
                                 totalUnread += u;
                                 if (u > 0 && latestContent == null) {
                                     targetChatId = c.optString("id", null);
+                                    JSONObject partner = c.optJSONObject("partner");
+                                    if (partner != null) {
+                                        targetPartnerName = partner.optString("name", partner.optString("fullName", "BikroyNow"));
+                                    }
                                     JSONObject lastMsg = c.optJSONObject("lastMsg");
                                     if (lastMsg != null) {
                                         latestMsgId = lastMsg.optString("id", lastMsg.optString("created_at", ""));
@@ -80,7 +95,7 @@ public class BadgeSyncReceiver extends BroadcastReceiver {
                             if (totalUnread <= 0) {
                                 // No unread messages: clear stored notification key and remove notification
                                 prefs.edit().remove("last_notified_msg_key").apply();
-                                MainActivity.updateBadgeFromContext(context, 0, null, null);
+                                MainActivity.updateBadgeFromContext(context, 0, null, null, null);
                             } else {
                                 // Construct unique fingerprint for the newest message: chat + msgId + count
                                 String currentMsgKey = (targetChatId != null ? targetChatId : "") + "_" +
@@ -88,9 +103,9 @@ public class BadgeSyncReceiver extends BroadcastReceiver {
                                 String lastNotifiedKey = prefs.getString("last_notified_msg_key", "");
 
                                 if (!currentMsgKey.equals(lastNotifiedKey)) {
-                                    // New message arrived! Alert once
+                                    // New message arrived! Alert immediately
                                     prefs.edit().putString("last_notified_msg_key", currentMsgKey).apply();
-                                    MainActivity.updateBadgeFromContext(context, totalUnread, latestContent, targetChatId);
+                                    MainActivity.updateBadgeFromContext(context, totalUnread, latestContent, targetChatId, targetPartnerName);
                                 } else {
                                     // Same unread message already notified: keep app icon badge synced without ringing/vibrating again
                                     try {
@@ -100,13 +115,13 @@ public class BadgeSyncReceiver extends BroadcastReceiver {
                             }
                         }
                     }
-                } catch (Throwable t) {
+                } catch (Throwable ignored) {
                     // Suppress network drops silently in background
                 } finally {
+                    isSyncing.set(false);
                     if (conn != null) {
                         try { conn.disconnect(); } catch (Throwable ignored) {}
                     }
-                    // Schedule next check in 25 seconds
                     scheduleNext(context);
                 }
             }
@@ -114,6 +129,7 @@ public class BadgeSyncReceiver extends BroadcastReceiver {
     }
 
     public static void scheduleNext(Context context) {
+        if (context == null) return;
         try {
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             if (am == null) return;
@@ -128,13 +144,14 @@ public class BadgeSyncReceiver extends BroadcastReceiver {
                     PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0)
             );
 
-            long triggerAt = System.currentTimeMillis() + 25000; // 25 seconds
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi);
+            // Fast 8-second interval when app is closed / in background
+            long triggerAt = System.currentTimeMillis() + 8000;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                am.setAlarmClock(new AlarmManager.AlarmClockInfo(triggerAt, pi), pi);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, pi);
             } else {
-                am.set(AlarmManager.RTC_WAKEUP, triggerAt, pi);
+                am.setExact(AlarmManager.RTC_WAKEUP, triggerAt, pi);
             }
         } catch (Throwable ignored) {}
     }

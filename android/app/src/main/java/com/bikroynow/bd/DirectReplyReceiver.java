@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.Person;
 import androidx.core.app.RemoteInput;
 
 import org.json.JSONObject;
@@ -46,17 +47,29 @@ public class DirectReplyReceiver extends BroadcastReceiver {
         final String textToSend = replyText.toString().trim();
         final NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        // Prevent self-reply from triggering a new incoming alert
+        prefs.edit().putString("last_notified_msg_key", "replied_" + System.currentTimeMillis()).apply();
+
         // 1. Instantly update notification shade to confirm the reply was recorded
         if (manager != null) {
+            Person userPerson = new Person.Builder()
+                    .setName("আমি")
+                    .setKey("me")
+                    .build();
+
+            NotificationCompat.MessagingStyle repliedStyle = new NotificationCompat.MessagingStyle(userPerson)
+                    .addMessage(textToSend, System.currentTimeMillis(), userPerson);
+
             NotificationCompat.Builder repliedBuilder = new NotificationCompat.Builder(context.getApplicationContext(), MainActivity.CHANNEL_ID)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle("BikroyNow")
                     .setContentText("✓ উত্তর পাঠানো হয়েছে: " + textToSend)
+                    .setStyle(repliedStyle)
                     .setOnlyAlertOnce(true)
                     .setAutoCancel(true);
             manager.notify(MainActivity.BADGE_NOTIFICATION_ID, repliedBuilder.build());
 
-            // Auto-dismiss confirmation notification after 3 seconds
+            // Auto-dismiss confirmation notification after 2.5 seconds
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -64,7 +77,7 @@ public class DirectReplyReceiver extends BroadcastReceiver {
                         manager.cancel(MainActivity.BADGE_NOTIFICATION_ID);
                     } catch (Throwable ignored) {}
                 }
-            }, 3000);
+            }, 2500);
         }
 
         // 2. Transmit message directly to backend in background thread
