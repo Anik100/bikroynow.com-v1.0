@@ -284,7 +284,6 @@
     "122125683141450344_2336789667106427"
   ],
   "posted_ids": [
-    "emsc_20261116_0000239",
     "emsc_20261116_0000246",
     "emsc_20261116_0000250",
     "emsc_20261116_0000260",
@@ -783,17 +782,10 @@
     "emsc_20261126_0000034",
     "emsc_20261125_0000425",
     "emsc_20261126_0000039",
-    "us6000udjx"
+    "us6000udjx",
+    "us6000udjz"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261124_0000172",
-      "mag": 5.2,
-      "place": "ATACAMA, CHILE",
-      "latitude": -28.6148,
-      "longitude": -71.2173,
-      "epoch_ms": 1795526560810
-    },
     {
       "id": "emsc_20261124_0000171",
       "mag": 4.0,
@@ -1185,6 +1177,14 @@
       "latitude": -35.9665,
       "longitude": 178.6429,
       "epoch_ms": 1795657724213
+    },
+    {
+      "id": "us6000udjz",
+      "mag": 5.0,
+      "place": "184 km N of Hicks Bay, New Zealand",
+      "latitude": -35.934,
+      "longitude": 178.26,
+      "epoch_ms": 1795658957972
     }
   ]
 }
