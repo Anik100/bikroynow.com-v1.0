@@ -638,26 +638,17 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
             }}
             style={{ cursor: 'pointer' }}
           >
-            <Bell size={20} color={notifGranted ? '#059669' : '#f59e0b'} />
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ color: notifGranted ? '#059669' : '#1c2b38', fontWeight: 650 }}>
-                {isNativeApp 
-                  ? (lang === 'bn' ? 'মেসেজ নোটিফিকেশন (অফিসিয়াল অ্যাপ)' : 'Message Alerts (Native App)')
-                  : (notifGranted 
-                    ? (lang === 'bn' ? 'মেসেজ নোটিফিকেশন (চালু আছে)' : 'Message Alerts (Active)')
-                    : (lang === 'bn' ? 'নোটিফিকেশন চালু করুন' : 'Enable Notifications'))}
+            <Bell size={20} color={notifGranted || isNativeApp ? '#059669' : '#f59e0b'} />
+            <span style={{ color: notifGranted || isNativeApp ? '#059669' : '#1c2b38' }}>
+              {lang === 'bn' ? 'মেসেজ অ্যালার্ট' : 'Message Alerts'}
+            </span>
+            {(notifGranted || isNativeApp) ? (
+              <span style={{ marginLeft: 'auto', fontSize: '0.72rem', color: '#059669', fontWeight: 700, background: '#ecfdf5', padding: '2px 8px', borderRadius: '12px', border: '1px solid #a7f3d0' }}>
+                ✓ {lang === 'bn' ? 'চালু' : 'Active'}
               </span>
-              <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 500 }}>
-                {isNativeApp
-                  ? (lang === 'bn' ? 'অফিসিয়াল অ্যাপে নোটিফিকেশন সিস্টেম দ্বারা সক্রিয়' : 'Active via native Android app')
-                  : (notifGranted
-                    ? (lang === 'bn' ? 'নতুন মেসেজ এলে ফোনে সরাসরি অ্যালার্ট পাবেন' : 'You will receive alerts on new messages')
-                    : (lang === 'bn' ? 'মেসেজ আসার সাথে সাথে অ্যালার্ট পেতে ট্যাপ করুন' : 'Tap to receive instant message alerts'))}
-              </span>
-            </div>
-            {(notifGranted || isNativeApp) && (
-              <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#059669', fontWeight: 800 }}>
-                ✓
+            ) : (
+              <span style={{ marginLeft: 'auto', fontSize: '0.72rem', color: '#d97706', fontWeight: 600, background: '#fffbeb', padding: '2px 8px', borderRadius: '12px', border: '1px solid #fde68a' }}>
+                {lang === 'bn' ? 'চালু করুন' : 'Enable'}
               </span>
             )}
           </div>
@@ -704,37 +695,26 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
             style={{ cursor: 'pointer' }}
           >
             <Download size={20} color={isNativeApp || isStandalone() ? '#059669' : '#0284c7'} />
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ color: isNativeApp || isStandalone() ? '#059669' : '#1c2b38', fontWeight: 650 }}>
-                {isNativeApp
-                  ? (lang === 'bn' ? 'অফিসিয়াল অ্যান্ড্রয়েড অ্যাপ (চালু আছে ✓)' : 'Official Android App (Active ✓)')
-                  : isStandalone()
-                    ? (lang === 'bn' ? 'BikroyNow পিসি অ্যাপ (চালু আছে ✓)' : 'BikroyNow PC App (Active ✓)')
-                    : isAndroid()
-                      ? (lang === 'bn' ? 'অফিসিয়াল অ্যাপ ডাউনলোড' : 'Download Official App')
-                      : (lang === 'bn' ? 'পিসি অ্যাপ ইনস্টল করুন' : 'Install PC App')}
-              </span>
-              <span style={{ fontSize: '0.72rem', color: '#64748b', fontWeight: 500 }}>
-                {isNativeApp
-                  ? (lang === 'bn' ? 'BikroyNow v1.0 অফিসিয়াল নেটিভ সংস্করণ' : 'BikroyNow v1.0 Official Native App')
-                  : isStandalone()
-                    ? (lang === 'bn' ? 'কম্পিউটারে আলাদা উইন্ডো অ্যাপ হিসেবে সক্রিয়' : 'Active as standalone desktop window')
-                    : isAndroid()
-                      ? (lang === 'bn' ? 'নতুন সুপার ফাস্ট অফিসিয়াল অ্যান্ড্রয়েড APK ডাউনলোড করুন' : 'Download new super fast official Android APK')
-                      : (lang === 'bn' ? 'কম্পিউটারে আলাদা অ্যাপ উইন্ডোতে দ্রুত ব্যবহার করুন' : 'Run in a dedicated desktop app window')}
-              </span>
-            </div>
+            <span style={{ color: isNativeApp || isStandalone() ? '#059669' : '#1c2b38' }}>
+              {isNativeApp
+                ? (lang === 'bn' ? 'অফিসিয়াল অ্যাপ' : 'Official App')
+                : isStandalone()
+                  ? (lang === 'bn' ? 'পিসি অ্যাপ' : 'PC App')
+                  : isAndroid()
+                    ? (lang === 'bn' ? 'অফিসিয়াল অ্যাপ' : 'Official App')
+                    : (lang === 'bn' ? 'পিসি অ্যাপ' : 'PC App')}
+            </span>
             {isNativeApp || isStandalone() ? (
-              <span style={{ marginLeft: 'auto', fontSize: '0.8rem', color: '#059669', fontWeight: 800 }}>
-                ✓
+              <span style={{ marginLeft: 'auto', fontSize: '0.72rem', color: '#059669', fontWeight: 700, background: '#ecfdf5', padding: '2px 8px', borderRadius: '12px', border: '1px solid #a7f3d0' }}>
+                ✓ {lang === 'bn' ? 'চালু' : 'Active'}
               </span>
             ) : isAndroid() ? (
-              <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: '#0284c7', fontWeight: 700, background: '#f0f9ff', padding: '2px 8px', borderRadius: '6px', border: '1px solid #bae6fd' }}>
+              <span style={{ marginLeft: 'auto', fontSize: '0.72rem', color: '#0284c7', fontWeight: 700, background: '#f0f9ff', padding: '2px 8px', borderRadius: '12px', border: '1px solid #bae6fd' }}>
                 APK
               </span>
             ) : (
-              <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: '#0284c7', fontWeight: 700, background: '#f0f9ff', padding: '2px 8px', borderRadius: '6px', border: '1px solid #bae6fd' }}>
-                {lang === 'bn' ? 'পিসি' : 'PC'}
+              <span style={{ marginLeft: 'auto', fontSize: '0.72rem', color: '#0284c7', fontWeight: 700, background: '#f0f9ff', padding: '2px 8px', borderRadius: '12px', border: '1px solid #bae6fd' }}>
+                {lang === 'bn' ? 'ইনস্টল' : 'Install'}
               </span>
             )}
           </div>
