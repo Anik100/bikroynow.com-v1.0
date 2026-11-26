@@ -34,7 +34,17 @@ export default function ProfileMenu({ user: propUser, hasAdminAccess: propAdmin,
       } else if (isNative) {
         setNotifGranted(true);
       }
+
+      if (window.AndroidNative?.setSwipeRefreshEnabled) {
+        window.AndroidNative.setSwipeRefreshEnabled(false);
+      }
     }
+
+    return () => {
+      if (typeof window !== 'undefined' && window.AndroidNative?.setSwipeRefreshEnabled) {
+        window.AndroidNative.setSwipeRefreshEnabled(true);
+      }
+    };
   }, []);
 
   useEffect(() => {

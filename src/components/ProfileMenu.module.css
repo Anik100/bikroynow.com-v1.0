@@ -5,35 +5,38 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.55);
-  z-index: 4000;
+  z-index: 100000;
   backdrop-filter: blur(3px);
 }
 
 .menu {
   position: fixed;
-  bottom: 64px;
-  right: 12px;
-  width: 285px;
-  max-width: calc(100vw - 24px);
-  max-height: calc(100vh - 120px);
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  max-width: 310px;
+  max-height: 82vh;
   background: #ffffff;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-  border-radius: 16px;
+  box-shadow: -4px -6px 30px rgba(0, 0, 0, 0.22);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   overflow: hidden;
-  z-index: 4001;
-  animation: slideUpMenu 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100001;
+  animation: slideUpMenu 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes slideUpMenu {
   from {
     opacity: 0;
-    transform: translateY(12px) scale(0.97);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
   }
 }
 
@@ -43,6 +46,7 @@
     bottom: auto;
     right: 20px;
     max-height: calc(100vh - 90px);
+    border-radius: 16px;
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
     animation: fadeInMenu 0.18s ease-out;
   }
@@ -167,13 +171,17 @@
 .menuList {
   flex: 1 1 auto;
   min-height: 0;
-  max-height: 340px;
+  max-height: 420px;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
   overscroll-behavior: contain;
-  padding: 0.2rem 0 0.8rem;
+  overscroll-behavior-y: contain;
+  padding: 0.25rem 0 calc(env(safe-area-inset-bottom, 12px) + 24px);
   touch-action: pan-y;
+  transform: translateZ(0);
+  will-change: scroll-position;
 }
 
 /* Custom scrollbar - visible, slim & smooth */

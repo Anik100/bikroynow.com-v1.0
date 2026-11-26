@@ -128,7 +128,8 @@ export default function Navbar() {
       }
     }
   }, [user?.id, user?.email]);
-  const lastAlertedTimestampRef = useRef(null);
+  const alertedMessageIdsRef = useRef(new Set());
+  const isInitialUnreadCheckRef = useRef(true);
 
   // Helper to validate Supabase UUIDs
   const isValidUUID = (str) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(str);
@@ -211,26 +212,23 @@ export default function Navbar() {
               }
             });
 
-            // Find newest timestamp of currently unread messages
-            const newestUnreadTimestamp = incomingUnread.reduce((max, m) => {
-              const t = m.created_at ? new Date(m.created_at).getTime() : 0;
-              return Math.max(max, t);
-            }, 0);
-
-            // On very first fetch when app opens: record baseline timestamp.
-            // DO NOT ALERT FOR ANY ALREADY EXISTING UNREAD MESSAGES!
-            if (lastAlertedTimestampRef.current === null) {
-              lastAlertedTimestampRef.current = Math.max(newestUnreadTimestamp, Date.now());
+            // On very first fetch when app opens: record existing unread messages so they NEVER alert
+            if (isInitialUnreadCheckRef.current) {
+              incomingUnread.forEach(m => {
+                const key = m.id || `${m.chat_id || ''}-${m.created_at || ''}-${m.content || ''}`;
+                alertedMessageIdsRef.current.add(key);
+              });
+              isInitialUnreadCheckRef.current = false;
             } else {
-              // Only alert if there is a brand-new incoming message strictly newer than last alerted timestamp
+              // Only alert if there is a brand-new incoming message not yet alerted
               const brandNewMsg = incomingUnread.find(m => {
-                const t = m.created_at ? new Date(m.created_at).getTime() : 0;
-                return t > lastAlertedTimestampRef.current;
+                const key = m.id || `${m.chat_id || ''}-${m.created_at || ''}-${m.content || ''}`;
+                return !alertedMessageIdsRef.current.has(key);
               });
 
               if (brandNewMsg) {
-                const t = brandNewMsg.created_at ? new Date(brandNewMsg.created_at).getTime() : Date.now();
-                lastAlertedTimestampRef.current = Math.max(t, Date.now());
+                const key = brandNewMsg.id || `${brandNewMsg.chat_id || ''}-${brandNewMsg.created_at || ''}-${brandNewMsg.content || ''}`;
+                alertedMessageIdsRef.current.add(key);
 
                 // Alert EXACTLY ONCE for this new message!
                 playMessageNotification({

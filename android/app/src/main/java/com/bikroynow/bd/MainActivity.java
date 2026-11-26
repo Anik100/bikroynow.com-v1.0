@@ -628,22 +628,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static final String CHANNEL_ID = "bikroynow_silent_badge_channel";
+    private static final String CHANNEL_ID = "bikroynow_silent_badge_v3";
     private static final int BADGE_NOTIFICATION_ID = 9001;
 
     private void initNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "মেসেজ ও ব্যাজ নোটিফিকেশন",
-                    NotificationManager.IMPORTANCE_LOW
-            );
-            channel.setDescription("নতুন চ্যাট ও অ্যাপ আইকন ব্যাজ");
-            channel.setShowBadge(true);
-            channel.setSound(null, null);
-            channel.enableVibration(false);
             NotificationManager manager = getSystemService(NotificationManager.class);
             if (manager != null) {
+                try {
+                    manager.deleteNotificationChannel("bikroynow_silent_badge_channel");
+                } catch (Throwable ignored) {}
+
+                NotificationChannel channel = new NotificationChannel(
+                        CHANNEL_ID,
+                        "অ্যাপ আইকন ব্যাজ ও নোটিফিকেশন",
+                        NotificationManager.IMPORTANCE_MIN
+                );
+                channel.setDescription("অ্যাপ আইকন ব্যাজ কাউন্টার");
+                channel.setShowBadge(true);
+                channel.setSound(null, null);
+                channel.enableVibration(false);
+                channel.enableLights(false);
                 manager.createNotificationChannel(channel);
             }
         }
@@ -667,7 +672,7 @@ public class MainActivity extends AppCompatActivity {
                     if (manager != null) {
                         if (count <= 0) {
                             manager.cancel(BADGE_NOTIFICATION_ID);
-                        } else if (!isAppForeground) {
+                        } else {
                             Intent intent = new Intent(context.getApplicationContext(), MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                             PendingIntent pendingIntent = PendingIntent.getActivity(
@@ -693,7 +698,7 @@ public class MainActivity extends AppCompatActivity {
                                     .setSound(null)
                                     .setVibrate(null)
                                     .setOnlyAlertOnce(true)
-                                    .setPriority(NotificationCompat.PRIORITY_LOW);
+                                    .setPriority(NotificationCompat.PRIORITY_MIN);
 
                             if (Build.VERSION.SDK_INT < 33 ||
                                     ContextCompat.checkSelfPermission(context.getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
@@ -731,6 +736,18 @@ public class MainActivity extends AppCompatActivity {
                         .edit().putString("user_id", userId.trim()).apply();
                 BadgeSyncReceiver.scheduleNext(mContext);
             }
+        }
+
+        @JavascriptInterface
+        public void setSwipeRefreshEnabled(final boolean enabled) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mSwipeRefresh != null) {
+                        mSwipeRefresh.setEnabled(enabled);
+                    }
+                }
+            });
         }
 
         @JavascriptInterface
