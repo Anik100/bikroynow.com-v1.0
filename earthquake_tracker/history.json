@@ -284,7 +284,6 @@
     "122125683141450344_2336789667106427"
   ],
   "posted_ids": [
-    "pt26322050",
     "us7000tywi",
     "emsc_20261118_0000038",
     "us7000tywm",
@@ -783,17 +782,10 @@
     "emsc_20261127_0000219",
     "emsc_20261127_0000249",
     "emsc_20261127_0000285",
-    "emsc_20261127_0000290"
+    "emsc_20261127_0000290",
+    "emsc_20261127_0000302"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261125_0000357",
-      "mag": 4.3,
-      "place": "OFFSHORE EL SALVADOR",
-      "latitude": 12.594,
-      "longitude": -88.25,
-      "epoch_ms": 1795640114000
-    },
     {
       "id": "emsc_20261125_0000363",
       "mag": 4.3,
@@ -1185,6 +1177,14 @@
       "latitude": 14.733,
       "longitude": -92.949,
       "epoch_ms": 1795803018000
+    },
+    {
+      "id": "emsc_20261127_0000302",
+      "mag": 4.0,
+      "place": "XIZANG-QINGHAI BORDER REGION",
+      "latitude": 32.65,
+      "longitude": 93.89,
+      "epoch_ms": 1795803970000
     }
   ]
 }
