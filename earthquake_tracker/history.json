@@ -284,7 +284,6 @@
     "122125683141450344_2336789667106427"
   ],
   "posted_ids": [
-    "emsc_20261118_0000089",
     "emsc_20261118_0000091",
     "us7000tyxz",
     "emsc_20261118_0000098",
@@ -783,17 +782,10 @@
     "emsc_20261128_0000065",
     "us6000ue1p",
     "emsc_20261128_0000109",
-    "aka2026xnvqjt"
+    "aka2026xnvqjt",
+    "emsc_20261128_0000110"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261126_0000181",
-      "mag": 4.7,
-      "place": "SOUTH OF SUMBAWA, INDONESIA",
-      "latitude": -10.724,
-      "longitude": 117.068,
-      "epoch_ms": 1795683643500
-    },
     {
       "id": "emsc_20261126_0000182",
       "mag": 5.2,
@@ -1185,6 +1177,14 @@
       "latitude": 61.332,
       "longitude": -150.136,
       "epoch_ms": 1795846301383
+    },
+    {
+      "id": "emsc_20261128_0000110",
+      "mag": 4.1,
+      "place": "CHINA-LAOS BORDER REGION",
+      "latitude": 22.414,
+      "longitude": 101.69,
+      "epoch_ms": 1795845523000
     }
   ]
 }
