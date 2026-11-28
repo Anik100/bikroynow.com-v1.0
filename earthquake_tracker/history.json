@@ -284,7 +284,6 @@
     "122125683141450344_2336789667106427"
   ],
   "posted_ids": [
-    "us7000tywx",
     "us7000tyx2",
     "emsc_20261118_0000050",
     "emsc_20261118_0000057",
@@ -783,17 +782,10 @@
     "emsc_20261127_0000329",
     "emsc_20261127_0000363",
     "emsc_20261127_0000379",
-    "emsc_20261127_0000384"
+    "emsc_20261127_0000384",
+    "emsc_20261128_0000009"
   ],
   "recent_posted_events": [
-    {
-      "id": "us6000udjz",
-      "mag": 5.0,
-      "place": "184 km N of Hicks Bay, New Zealand",
-      "latitude": -35.934,
-      "longitude": 178.26,
-      "epoch_ms": 1795658957972
-    },
     {
       "id": "emsc_20261126_0000057",
       "mag": 4.3,
@@ -1185,6 +1177,14 @@
       "latitude": 0.3,
       "longitude": 122.68,
       "epoch_ms": 1795822913000
+    },
+    {
+      "id": "emsc_20261128_0000009",
+      "mag": 4.4,
+      "place": "VOLCANO ISLANDS, JAPAN REGION",
+      "latitude": 22.0658,
+      "longitude": 142.7746,
+      "epoch_ms": 1795825219976
     }
   ]
 }
