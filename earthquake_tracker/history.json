@@ -285,7 +285,6 @@
     "122122375077450344_1144502601271182"
   ],
   "posted_ids": [
-    "emsc_20261118_0000091",
     "us7000tyxz",
     "emsc_20261118_0000098",
     "us7000tyy2",
@@ -784,17 +783,10 @@
     "us6000ue1p",
     "emsc_20261128_0000109",
     "aka2026xnvqjt",
-    "emsc_20261128_0000110"
+    "emsc_20261128_0000110",
+    "emsc_20261128_0000112"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261126_0000182",
-      "mag": 5.2,
-      "place": "FIJI REGION",
-      "latitude": -20.5363,
-      "longitude": -177.7629,
-      "epoch_ms": 1795684965352
-    },
     {
       "id": "emsc_20261126_0000187",
       "mag": 4.2,
@@ -1186,6 +1178,14 @@
       "latitude": 22.414,
       "longitude": 101.69,
       "epoch_ms": 1795845523000
+    },
+    {
+      "id": "emsc_20261128_0000112",
+      "mag": 4.0,
+      "place": "OFFSHORE GUERRERO, MEXICO",
+      "latitude": 16.186,
+      "longitude": -99.177,
+      "epoch_ms": 1795846066000
     }
   ]
 }
