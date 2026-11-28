@@ -286,7 +286,6 @@
     "122124579243450344_1152222154076510"
   ],
   "posted_ids": [
-    "emsc_20261118_0000102",
     "emsc_20261118_0000104",
     "us7000tyy8",
     "emsc_20261118_0000111",
@@ -785,17 +784,10 @@
     "emsc_20261128_0000112",
     "emsc_20261128_0000114",
     "emsc_20261128_0000138",
-    "us6000ue2z"
+    "us6000ue2z",
+    "emsc_20261128_0000142"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261126_0000187",
-      "mag": 4.2,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 14.043,
-      "longitude": -93.308,
-      "epoch_ms": 1795685629000
-    },
     {
       "id": "emsc_20261126_0000199",
       "mag": 4.4,
@@ -1187,6 +1179,14 @@
       "latitude": 16.186,
       "longitude": -99.177,
       "epoch_ms": 1795846066000
+    },
+    {
+      "id": "emsc_20261128_0000142",
+      "mag": 4.2,
+      "place": "NEAR COAST OF NICARAGUA",
+      "latitude": 12.143,
+      "longitude": -87.422,
+      "epoch_ms": 1795858084000
     }
   ]
 }
