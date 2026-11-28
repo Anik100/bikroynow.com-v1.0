@@ -284,7 +284,6 @@
     "122125683141450344_2336789667106427"
   ],
   "posted_ids": [
-    "us7000tyxi",
     "emsc_20261118_0000073",
     "emsc_20261118_0000078",
     "emsc_20261118_0000076",
@@ -783,17 +782,10 @@
     "us6000ue1b",
     "us6000ue1a",
     "emsc_20261128_0000028",
-    "us6000ue1d"
+    "us6000ue1d",
+    "emsc_20261128_0000045"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261126_0000086",
-      "mag": 4.3,
-      "place": "OFFSHORE EL SALVADOR",
-      "latitude": 12.872,
-      "longitude": -88.077,
-      "epoch_ms": 1795665519000
-    },
     {
       "id": "emsc_20261126_0000103",
       "mag": 4.0,
@@ -1185,6 +1177,14 @@
       "latitude": 2.2665,
       "longitude": 125.9667,
       "epoch_ms": 1795829806461
+    },
+    {
+      "id": "emsc_20261128_0000045",
+      "mag": 5.2,
+      "place": "SALTA, ARGENTINA",
+      "latitude": -24.252,
+      "longitude": -67.144,
+      "epoch_ms": 1795832706590
     }
   ]
 }
