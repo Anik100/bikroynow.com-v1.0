@@ -284,8 +284,6 @@
     "122125683141450344_2336789667106427"
   ],
   "posted_ids": [
-    "us7000tyxc",
-    "emsc_20261118_0000066",
     "us7000tyxi",
     "emsc_20261118_0000073",
     "emsc_20261118_0000078",
@@ -783,17 +781,11 @@
     "emsc_20261128_0000019",
     "emsc_20261128_0000021",
     "us6000ue1b",
-    "us6000ue1a"
+    "us6000ue1a",
+    "emsc_20261128_0000028",
+    "us6000ue1d"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261126_0000084",
-      "mag": 4.1,
-      "place": "OFF E. COAST OF N. ISLAND, N.Z.",
-      "latitude": -35.4007,
-      "longitude": 178.737,
-      "epoch_ms": 1795665651308
-    },
     {
       "id": "emsc_20261126_0000086",
       "mag": 4.3,
@@ -1185,6 +1177,14 @@
       "latitude": 22.2443,
       "longitude": 101.6903,
       "epoch_ms": 1795828667630
+    },
+    {
+      "id": "us6000ue1d",
+      "mag": 4.7,
+      "place": "130 km NE of Bitung, Indonesia",
+      "latitude": 2.2665,
+      "longitude": 125.9667,
+      "epoch_ms": 1795829806461
     }
   ]
 }
