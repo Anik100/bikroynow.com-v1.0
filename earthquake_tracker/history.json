@@ -286,7 +286,6 @@
     "122124579243450344_1152222154076510"
   ],
   "posted_ids": [
-    "emsc_20261117_0000382",
     "emsc_20261118_0000147",
     "emsc_20261118_0000148",
     "emsc_20261118_0000151",
@@ -785,17 +784,10 @@
     "emsc_20261128_0000152",
     "emsc_20261128_0000161",
     "us6000ue3f",
-    "emsc_20261128_0000175"
+    "emsc_20261128_0000175",
+    "us6000ue3p"
   ],
   "recent_posted_events": [
-    {
-      "id": "emsc_20261126_0000229",
-      "mag": 4.1,
-      "place": "OFF COAST OF CHIAPAS, MEXICO",
-      "latitude": 13.923,
-      "longitude": -93.273,
-      "epoch_ms": 1795696669000
-    },
     {
       "id": "emsc_20261126_0000248",
       "mag": 4.1,
@@ -1187,6 +1179,14 @@
       "latitude": 15.982,
       "longitude": -98.646,
       "epoch_ms": 1795867777000
+    },
+    {
+      "id": "us6000ue3p",
+      "mag": 6.7,
+      "place": "62 km NNW of Yelizovo, Russia",
+      "latitude": 53.7187,
+      "longitude": 158.0792,
+      "epoch_ms": 1795871706781
     }
   ]
 }
